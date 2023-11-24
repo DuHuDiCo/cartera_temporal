@@ -21,9 +21,9 @@ public class SedeServiceImpl implements SedeService{
     
     
     @Override
-    public Sede guardarSede(@NotBlank String sede) {
+    public Sede guardarSede( String sede) {
         Sede findSede = sedeRepository.findBySede(sede);
-        if(Objects.nonNull(sede)){
+        if(Objects.nonNull(findSede)){
             return findSede;
         }
         findSede = new Sede();

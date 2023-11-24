@@ -321,6 +321,14 @@ public class CuentasPorCobrarDto {
     public void setPagare(String pagare) {
         this.pagare = pagare;
     }
+
+    public String getNumeroObligacion() {
+        return numeroObligacion;
+    }
+
+    public void setNumeroObligacion(String numeroObligacion) {
+        this.numeroObligacion = numeroObligacion;
+    }
     
     
     

@@ -14,13 +14,27 @@ import com.cartera_temp.cartera_temp.ModelsClients.Usuario;
 import com.cartera_temp.cartera_temp.Service.AsesorCarteraService;
 import com.cartera_temp.cartera_temp.Service.BancoService;
 import com.cartera_temp.cartera_temp.Service.CuentasPorCobrarService;
+import com.cartera_temp.cartera_temp.Service.FileService;
 import com.cartera_temp.cartera_temp.Service.SedeService;
+import com.cartera_temp.cartera_temp.repository.AsesorCarteraRepository;
+import com.cartera_temp.cartera_temp.repository.BancoRepository;
 import com.cartera_temp.cartera_temp.repository.CuentasPorCobrarRepository;
+import com.cartera_temp.cartera_temp.repository.SedeRepository;
+import java.net.http.HttpRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import javax.servlet.http.HttpServletRequest;
+
 import org.modelmapper.ModelMapper;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
@@ -32,8 +46,13 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
     private final usuario_client usuarioClient;
     private final ModelMapper modelMapper;
     private final ClientesClient clientesClient;
+    private final FileService fileService;
+    private final HttpServletRequest httpServletRequest;
+    private final BancoRepository bancoRepository;
+    private final SedeRepository sedeRepository;
+    private final AsesorCarteraRepository asesorCarteraRepository;
 
-    public CuentaPorCobrarServiceImpl(CuentasPorCobrarRepository cuentasPorCobrarRepository, SedeService sedeService, AsesorCarteraService asesorCarteraService, BancoService bancoService, usuario_client usuarioClient, ModelMapper modelMapper, ClientesClient clientesClient) {
+    public CuentaPorCobrarServiceImpl(CuentasPorCobrarRepository cuentasPorCobrarRepository, SedeService sedeService, AsesorCarteraService asesorCarteraService, BancoService bancoService, usuario_client usuarioClient, ModelMapper modelMapper, ClientesClient clientesClient, FileService fileService, HttpServletRequest httpServletRequest, BancoRepository bancoRepository, SedeRepository sedeRepository, AsesorCarteraRepository asesorCarteraRepository) {
         this.cuentasPorCobrarRepository = cuentasPorCobrarRepository;
         this.sedeService = sedeService;
         this.asesorCarteraService = asesorCarteraService;
@@ -41,21 +60,28 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
         this.usuarioClient = usuarioClient;
         this.modelMapper = modelMapper;
         this.clientesClient = clientesClient;
+        this.fileService = fileService;
+        this.httpServletRequest = httpServletRequest;
+        this.bancoRepository = bancoRepository;
+        this.sedeRepository = sedeRepository;
+        this.asesorCarteraRepository = asesorCarteraRepository;
     }
-
-    
-
-    
 
     @Override
     public List<CuentasPorCobrar> guardarCuentas(List<CuentasPorCobrarDto> cuentasPorCobrarDto) {
-        
-        List<CuentasPorCobrar> cuentasSaved = new ArrayList<>();
-        
-        for (CuentasPorCobrarDto cuentaPorCobrar : cuentasPorCobrarDto) {
-            CuentasPorCobrar cuentas = new CuentasPorCobrar();
 
+        List<CuentasPorCobrar> cuentasSaved = new ArrayList<>();
+
+        for (CuentasPorCobrarDto cuentaPorCobrar : cuentasPorCobrarDto) {
+            CuentasPorCobrar cuentas = cuentasPorCobrarRepository.findByNumeroObligacion(cuentaPorCobrar.getNumeroObligacion());
+            if (Objects.isNull(cuentas)) {
+                cuentas = new CuentasPorCobrar();
+
+            }
+
+            cuentas.setNumeroObligacion(cuentaPorCobrar.getNumeroObligacion());
             cuentas.setClasificacion(cuentaPorCobrar.getClasificacion());
+            cuentas.setClasificacionJuridica(cuentaPorCobrar.getClasificacionJuridica());
             cuentas.setCliente(cuentaPorCobrar.getCliente());
             cuentas.setCondicionEspecial(cuentaPorCobrar.getCondicionEspecial());
             cuentas.setCuotas(cuentaPorCobrar.getNumeroCuotas());
@@ -77,9 +103,13 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             cuentas.setVendedor(cuentaPorCobrar.getVendedor());
 
             Sede sede = sedeService.findSede(cuentaPorCobrar.getSede());
+            System.out.println(cuentaPorCobrar.getSede());
+
             if (Objects.isNull(sede)) {
                 sede = sedeService.guardarSede(cuentaPorCobrar.getSede());
+                System.out.println(sede.getSede());
             }
+
             cuentas.setSede(sede);
 
             Banco banco = bancoService.findBanco(cuentaPorCobrar.getBanco());
@@ -90,7 +120,9 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
 
             String[] asesorSplit = cuentaPorCobrar.getAsesorCartera().split(" ");
 
-            Usuario user = usuarioClient.getUsuarioByNombresAndApellidos(asesorSplit[0], asesorSplit[1]);
+            String token = httpServletRequest.getAttribute("token").toString();
+
+            Usuario user = usuarioClient.getUsuarioByNombresAndApellidos(asesorSplit[0], asesorSplit[1], token);
             if (Objects.isNull(user)) {
                 return null;
             }
@@ -107,40 +139,57 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
     }
 
     @Override
-    public List<CuentasPorCobrarResponse> listarCuentasCobrarByAsesor(String username) {
+    public Page<CuentasPorCobrarResponse> listarCuentasCobrarByAsesor(String username, Pageable pageable) {
+        String token = httpServletRequest.getAttribute("token").toString();
+
         Usuario usuario = usuarioClient.getUserByUsername(username);
-        if(Objects.isNull(usuario)){
+        if (Objects.isNull(usuario)) {
             return null;
         }
-        
+
         AsesorCartera asesor = asesorCarteraService.findAsesor(usuario.getIdUsuario());
-        if(Objects.isNull(asesor)){
+        if (Objects.isNull(asesor)) {
             return null;
         }
-        
-        List<CuentasPorCobrar> cuentas = cuentasPorCobrarRepository.findByAsesor(asesor);
+
+        Page<CuentasPorCobrar> cuentas = cuentasPorCobrarRepository.findByAsesor(asesor, pageable);
         List<CuentasPorCobrarResponse> cuentasResponse = new ArrayList<>();
-        
-        for (CuentasPorCobrar cuenta : cuentas) {
+
+        for (CuentasPorCobrar cuenta : cuentas.getContent()) {
             CuentasPorCobrarResponse c = modelMapper.map(cuenta, CuentasPorCobrarResponse.class);
             AsesorCarteraResponse asesorResponse = new AsesorCarteraResponse();
             asesorResponse.setIdAsesorCartera(cuenta.getAsesor().getIdAsesorCartera());
             asesorResponse.setUsuario(usuario);
             c.setAsesorCarteraResponse(asesorResponse);
-            
-            
-            List<ClientesDto> clientes = clientesClient.buscarClientesByNumeroObligacion(cuenta.getDocumentoCliente());
+
+            List<ClientesDto> clientes = clientesClient.buscarClientesByNumeroObligacion(cuenta.getDocumentoCliente(), token);
             c.setClientes(clientes);
-            
-            
-            
+
             cuentasResponse.add(c);
         }
-        
-        
-        
-        return cuentasResponse;
-        
+
+        Page<CuentasPorCobrarResponse> cuentasPage = new PageImpl(cuentasResponse, pageable, cuentas.getTotalElements());
+
+        return cuentasPage;
+
+    }
+
+    @Override
+    public List<CuentasPorCobrar> processingData(MultipartFile file, String delimitante) {
+        List<CuentasPorCobrarDto> cuentasDto = fileService.readFile(file, delimitante);
+        System.out.println(cuentasDto.size());
+
+        CuentasPorCobrar cuentasClean = cuentasPorCobrarRepository.isEmpty();
+        if (Objects.nonNull(cuentasClean)) {
+            cuentasPorCobrarRepository.deleteAll();
+//            cuentasPorCobrarRepository.reinicarIds();
+//            bancoRepository.reinicarIds();
+//            sedeRepository.reinicarIds();
+//            asesorCarteraRepository.reinicarIds();
+        }
+
+        List<CuentasPorCobrar> cuentas = guardarCuentas(cuentasDto);
+        return cuentas;
     }
 
 }

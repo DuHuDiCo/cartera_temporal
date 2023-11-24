@@ -19,5 +19,5 @@ public interface usuario_client {
     Usuario getUsuarioById(@PathVariable("id") Long id, @RequestHeader("Authorization") String token);
     
     @GetMapping("/usuarioByNombresAndApellidos")
-    Usuario getUsuarioByNombresAndApellidos(@RequestParam(name = "nombres") String nombres, @RequestParam(name = "apellidos") String apellidos);
+    Usuario getUsuarioByNombresAndApellidos(@RequestParam(name = "nombres") String nombres, @RequestParam(name = "apellidos") String apellidos, @RequestHeader("Authorization") String token);
 }
