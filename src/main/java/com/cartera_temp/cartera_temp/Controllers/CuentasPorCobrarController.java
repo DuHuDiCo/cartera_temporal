@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
+import java.util.Objects;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.util.CollectionUtils;
@@ -47,6 +48,17 @@ public class CuentasPorCobrarController {
     public ResponseEntity<Page<CuentasPorCobrarResponse>> listarCuentasCobrarByObligacion(@RequestParam(name = "username") String username, @RequestParam(defaultValue = "0", name = "page") int page, @RequestParam(defaultValue = "10", name = "size") int size , @RequestParam(defaultValue = "fecha_creacion", name = "fechaCreacion") String  order){
         Page<CuentasPorCobrarResponse> cuentas = cuentasPorCobrarService.listarCuentasCobrarByAsesor(username,  PageRequest.of(page, size));
         return ResponseEntity.ok(cuentas);
+    }
+    
+    @GetMapping("/getCuentaCobrarByNumeroObligacion")
+    public ResponseEntity<CuentasPorCobrarResponse>obtenerCuentaCobrarByNumObligacion(@RequestParam(name = "numeroObligacion")String numeroObligacion){
+        
+        CuentasPorCobrarResponse cpcRes = cuentasPorCobrarService.getCpcByNumeroObligacion(numeroObligacion);
+        if(Objects.isNull(cpcRes)){
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(cpcRes);
+        
     }
 
 }
