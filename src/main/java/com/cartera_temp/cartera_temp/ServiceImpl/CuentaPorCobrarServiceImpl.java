@@ -9,6 +9,7 @@ import com.cartera_temp.cartera_temp.FeignClients.usuario_client;
 import com.cartera_temp.cartera_temp.Models.AsesorCartera;
 import com.cartera_temp.cartera_temp.Models.Banco;
 import com.cartera_temp.cartera_temp.Models.CuentasPorCobrar;
+import com.cartera_temp.cartera_temp.Models.Gestiones;
 import com.cartera_temp.cartera_temp.Models.Sede;
 import com.cartera_temp.cartera_temp.ModelsClients.Usuario;
 import com.cartera_temp.cartera_temp.Service.AsesorCarteraService;
@@ -190,6 +191,27 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
 
         List<CuentasPorCobrar> cuentas = guardarCuentas(cuentasDto);
         return cuentas;
+    }
+
+    @Override
+    public CuentasPorCobrarResponse getCpcByNumeroObligacion(String numeroObligacion) {
+        
+        if(numeroObligacion == "" || numeroObligacion == null){
+            return null;
+        }
+        
+        CuentasPorCobrar cpc = cuentasPorCobrarRepository.findByNumeroObligacion(numeroObligacion);
+        
+        if(Objects.isNull(cpc)){
+            return null;
+        }
+        
+        for (Gestiones gestione : cpc.getGestiones()) {
+            
+            ModelMapper map = new ModelMapper();
+            
+        }
+        
     }
 
 }
