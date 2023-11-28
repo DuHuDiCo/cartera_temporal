@@ -15,8 +15,12 @@ public class GestionesServiceImpl implements GestionesService{
     @Autowired GestionesRepository gestionesRepository;
 
     @Override
-    public Gestiones saveOneGestion(GestionesDto dto) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public Gestiones saveOneGestion(GestionesDto dto, String numeroObligacion) {
+        
+        if(numeroObligacion.equals(null)||numeroObligacion.equals("")){
+            return null;
+        }
+        
     }
 
     @Override
