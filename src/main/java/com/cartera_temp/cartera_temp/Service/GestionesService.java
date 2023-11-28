@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface GestionesService {
  
-    public Gestiones saveOneGestion(GestionesDto dto, String numeroObligacion);
+    public Gestiones saveOneGestion(GestionesDto dto);
     
     public List<Gestiones> saveMultipleGestiones(List<GestionesDto> dto);
     

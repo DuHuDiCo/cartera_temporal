@@ -10,6 +10,8 @@ public interface AsesorCarteraService {
     public List<AsesorCartera> listarAsesores();
 
     public AsesorCartera findAsesor(Long asesor);
+    
+    public AsesorCartera findAsesorByNombreAsesor(String nombreAsesor);
 
     
 }
