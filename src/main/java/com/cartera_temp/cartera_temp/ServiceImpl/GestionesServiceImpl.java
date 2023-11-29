@@ -1,6 +1,7 @@
 package com.cartera_temp.cartera_temp.ServiceImpl;
 
 import com.cartera_temp.cartera_temp.Dtos.GestionResponse;
+import com.cartera_temp.cartera_temp.Dtos.GestionToSaveDto;
 import com.cartera_temp.cartera_temp.Dtos.GestionesDto;
 import com.cartera_temp.cartera_temp.Models.AsesorCartera;
 import com.cartera_temp.cartera_temp.Models.Clasificacion;
@@ -51,9 +52,9 @@ public class GestionesServiceImpl implements GestionesService {
     }
 
     @Override
-    public GestionResponse saveOneGestion(GestionesDto dto) {
+    public GestionResponse saveOneGestion(GestionToSaveDto dto) {
 
-        if (dto.getAsesor().equals("") || dto.getNumeroObligacion() == null || dto.getNumeroObligacion().equals("") || dto.getClasificacion() == null || dto.getClasificacion().equals("") || dto.getAsesor() == null || dto.getGestion().equals("") || dto.getGestion() == null) {
+        if (dto.getAsesorCartera().equals("") || dto.getNumeroObligacion() == null || dto.getNumeroObligacion().equals("") || dto.getClasificacion() == null || dto.getClasificacion().equals("") || dto.getAsesorCartera()== null || dto.getGestion().equals("") || dto.getGestion() == null) {
             return null;
         }
 
@@ -62,7 +63,7 @@ public class GestionesServiceImpl implements GestionesService {
             return null;
         }
 
-        Usuario usu = usuarioClientService.obtenerUsuario(dto.getAsesor());
+        Usuario usu = usuarioClientService.obtenerUsuario(dto.getAsesorCartera());
         if (Objects.isNull(usu)) {
             return null;
         }
