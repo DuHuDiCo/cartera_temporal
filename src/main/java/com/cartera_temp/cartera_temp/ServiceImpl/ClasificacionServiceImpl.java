@@ -1,5 +1,6 @@
 package com.cartera_temp.cartera_temp.ServiceImpl;
 
+import com.cartera_temp.cartera_temp.Dtos.ClasificacionDto;
 import com.cartera_temp.cartera_temp.Models.Clasificacion;
 import com.cartera_temp.cartera_temp.Service.ClasificacionService;
 import com.cartera_temp.cartera_temp.repository.ClasificacionRepository;
@@ -15,17 +16,17 @@ public class ClasificacionServiceImpl implements ClasificacionService{
     @Autowired ClasificacionRepository clasificacionRepository;
 
     @Override
-    public Clasificacion saveClasificacion(String clasificacion) {
+    public Clasificacion saveClasificacion(Clasificacion clasificacion) {
         
-        if(clasificacion.equals(null)||clasificacion.equals("")){
+        if(clasificacion.getTipoClasificacion().equals(null)||clasificacion.getTipoClasificacion().equals("")){
             return null;
         }
         
-        Clasificacion newClasi = clasificacionRepository.findClasificacionByTipoClasificacion(clasificacion);
+        Clasificacion newClasi = clasificacionRepository.findClasificacionByTipoClasificacion(clasificacion.getTipoClasificacion());
         
         if(Objects.isNull(newClasi)){
             Clasificacion clasiToSave = new Clasificacion();
-            clasiToSave.setTipoClasificacion(clasificacion);
+            clasiToSave.setTipoClasificacion(clasificacion.getTipoClasificacion());
             clasiToSave = clasificacionRepository.save(clasiToSave);
             return clasiToSave;
         }
@@ -43,17 +44,17 @@ public class ClasificacionServiceImpl implements ClasificacionService{
     }
 
     @Override
-    public Clasificacion updateClasificacion(Long idClasificacion, String newClasificacion) {
+    public Clasificacion updateClasificacion(ClasificacionDto dto) {
         
-        if(idClasificacion == null || idClasificacion == 0 || newClasificacion.equals("")||newClasificacion.equals(null)){
+        if(dto.getIdClasificacion() == null || dto.getIdClasificacion() == 0 || dto.getNewClasificacion().equals("")||dto.getNewClasificacion().equals(null)){
             return null;
         }
         
-        Clasificacion clasificacionObtenida = clasificacionRepository.findById(idClasificacion).orElse(null);
+        Clasificacion clasificacionObtenida = clasificacionRepository.findById(dto.getIdClasificacion()).orElse(null);
         if(Objects.isNull(clasificacionObtenida)){
             return null;
         }
-        clasificacionObtenida.setTipoClasificacion(newClasificacion);
+        clasificacionObtenida.setTipoClasificacion(dto.getNewClasificacion());
         clasificacionObtenida = clasificacionRepository.save(clasificacionObtenida);
         return clasificacionObtenida;
         
