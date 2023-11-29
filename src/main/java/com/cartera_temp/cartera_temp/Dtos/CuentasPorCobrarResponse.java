@@ -1,6 +1,7 @@
 package com.cartera_temp.cartera_temp.Dtos;
 
 import com.cartera_temp.cartera_temp.Models.Banco;
+import com.cartera_temp.cartera_temp.Models.Gestiones;
 import com.cartera_temp.cartera_temp.Models.Sede;
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,6 +27,7 @@ public class CuentasPorCobrarResponse {
     private Sede sede;
     private Banco banco;
     private int diasVencidos;
+    private List<Gestiones> gestion;
     private String edadVencimiento;
     private String condicionEspecial;
     private int numeroCreditos;
@@ -253,6 +255,14 @@ public class CuentasPorCobrarResponse {
 
     public void setClientes(List<ClientesDto> clientes) {
         this.clientes = clientes;
+    }
+
+    public List<Gestiones> getGestion() {
+        return gestion;
+    }
+
+    public void setGestion(List<Gestiones> gestion) {
+        this.gestion = gestion;
     }
 
         

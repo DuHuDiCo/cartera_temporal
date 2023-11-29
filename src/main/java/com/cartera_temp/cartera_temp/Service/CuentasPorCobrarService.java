@@ -18,5 +18,7 @@ public interface CuentasPorCobrarService {
     public Page<CuentasPorCobrarResponse> listarCuentasCobrarByAsesor(String username, Pageable pageable);
     
     public List<CuentasPorCobrar> processingData(MultipartFile file, String delimitante);
+    
+    public CuentasPorCobrarResponse getCpcByNumeroObligacion(String numeroObligacion);
 
 }

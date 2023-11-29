@@ -1,6 +1,8 @@
 package com.cartera_temp.cartera_temp.Models;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -74,6 +77,9 @@ public class CuentasPorCobrar {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "banco_id", referencedColumnName = "id_banco")
     private Banco banco;
+    
+    @OneToMany(mappedBy = "cuenta_por_cobrar", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Gestiones> gestiones = new ArrayList<>();
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "asesor_cartera_id", referencedColumnName = "id_asesor_cartera")
@@ -104,6 +110,11 @@ public class CuentasPorCobrar {
     private int cuotas;
 
     public CuentasPorCobrar() {
+    }
+    
+    public void agregarGestion(Gestiones gestion){
+        gestiones.add(gestion);
+        gestion.setCuentasPorCobrar(this);
     }
 
     public Long getIdCuentasPorCobrar() {
@@ -312,6 +323,14 @@ public class CuentasPorCobrar {
 
     public void setNumeroObligacion(String numeroObligacion) {
         this.numeroObligacion = numeroObligacion;
+    }
+
+    public List<Gestiones> getGestiones() {
+        return gestiones;
+    }
+
+    public void setGestiones(List<Gestiones> gestiones) {
+        this.gestiones = gestiones;
     }
 
     

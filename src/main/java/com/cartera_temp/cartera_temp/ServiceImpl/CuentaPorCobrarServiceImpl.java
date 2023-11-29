@@ -9,6 +9,7 @@ import com.cartera_temp.cartera_temp.FeignClients.usuario_client;
 import com.cartera_temp.cartera_temp.Models.AsesorCartera;
 import com.cartera_temp.cartera_temp.Models.Banco;
 import com.cartera_temp.cartera_temp.Models.CuentasPorCobrar;
+import com.cartera_temp.cartera_temp.Models.Gestiones;
 import com.cartera_temp.cartera_temp.Models.Sede;
 import com.cartera_temp.cartera_temp.ModelsClients.Usuario;
 import com.cartera_temp.cartera_temp.Service.AsesorCarteraService;
@@ -22,6 +23,7 @@ import com.cartera_temp.cartera_temp.repository.CuentasPorCobrarRepository;
 import com.cartera_temp.cartera_temp.repository.SedeRepository;
 import java.net.http.HttpRequest;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
@@ -34,6 +36,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
@@ -190,6 +193,52 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
 
         List<CuentasPorCobrar> cuentas = guardarCuentas(cuentasDto);
         return cuentas;
+    }
+
+    @Override
+    public CuentasPorCobrarResponse getCpcByNumeroObligacion(String numeroObligacion) {
+        
+        String token = httpServletRequest.getAttribute("token").toString();
+        
+        if(numeroObligacion == "" || numeroObligacion == null){
+            return null;
+        }
+        
+        CuentasPorCobrar cpc = cuentasPorCobrarRepository.findByNumeroObligacion(numeroObligacion);
+        
+        if(Objects.isNull(cpc)){
+            return null;
+        }
+        
+        CuentasPorCobrarResponse cpcRes = new CuentasPorCobrarResponse();
+       
+        ModelMapper map = new ModelMapper();
+        
+        cpcRes = map.map(cpc, CuentasPorCobrarResponse.class);
+        
+        List<ClientesDto> cliente = clientesClient.buscarClientesByNumeroObligacion(cpc.getDocumentoCliente(), token);
+        
+        if(CollectionUtils.isEmpty(cliente)){
+            return null;
+        }
+        
+        cpcRes.setClientes(cliente);
+        
+        Usuario usu = usuarioClient.getUsuarioById(cpc.getAsesor().getUsuarioId(), token);
+        
+        if(Objects.isNull(usu)){
+            return null;
+        }
+        
+        AsesorCarteraResponse asesor = new AsesorCarteraResponse();
+        
+        asesor.setUsuario(usu);
+        asesor.setIdAsesorCartera(cpc.getAsesor().getIdAsesorCartera());
+        
+        cpcRes.setAsesorCarteraResponse(asesor);
+        
+        return cpcRes;
+        
     }
 
 }
