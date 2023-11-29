@@ -52,14 +52,20 @@ public class Gestiones {
     @Temporal(TemporalType.DATE)
     private Date fechaCompromiso;
     
-    @Column(name = "gestion")
+    @Column(name = "gestion", length = 2000)
     private String gestion;
     
     @Column(name = "is_contactado")
     private boolean isContacted;
     
     @Column(name = "valor_compromiso", nullable = true)
-    private String valorCompromiso;
+    private double valorCompromiso;
+    
+    @Column(name = "datos_adicionales", nullable = true , length = 2000)
+    private String datosAdicionales;
+    
+    @Column(name = "gestion_llamada", nullable = true )
+    private String gestionLlamada;
     
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "id_asesor", referencedColumnName = "id_asesor_cartera")
@@ -148,11 +154,11 @@ public class Gestiones {
         this.gestion = gestion;
     }
 
-    public String getValorCompromiso() {
+    public double getValorCompromiso() {
         return valorCompromiso;
     }
 
-    public void setValorCompromiso(String valorCompromiso) {
+    public void setValorCompromiso(double valorCompromiso) {
         this.valorCompromiso = valorCompromiso;
     }
 
@@ -195,5 +201,23 @@ public class Gestiones {
     public void setIsContacted(boolean isContacted) {
         this.isContacted = isContacted;
     }
+
+    public String getDatosAdicionales() {
+        return datosAdicionales;
+    }
+
+    public void setDatosAdicionales(String datosAdicionales) {
+        this.datosAdicionales = datosAdicionales;
+    }
+
+    public String getGestionLlamada() {
+        return gestionLlamada;
+    }
+
+    public void setGestionLlamada(String gestionLlamada) {
+        this.gestionLlamada = gestionLlamada;
+    }
+    
+    
     
 }

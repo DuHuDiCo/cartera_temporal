@@ -5,6 +5,7 @@ import com.cartera_temp.cartera_temp.Dtos.GestionesDto;
 import com.cartera_temp.cartera_temp.Service.FileService;
 import com.cartera_temp.cartera_temp.Utils.Functions;
 import java.io.BufferedReader;
+import java.io.IOException;
 
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -13,6 +14,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -138,16 +141,72 @@ public class FileServiceImpl implements FileService {
             String[] columnNames = firstLine.split(delimitante);
 
             String line;
-            
-             List<GestionesDto> gestionesDto = new ArrayList<>();
 
+            List<GestionesDto> gestionesDto = new ArrayList<>();
+            while ((line = reader.readLine()) != null) {
+                String[] values = line.split(delimitante);
+                try {
+                    StringBuilder sbNumeroObligacion = new StringBuilder();
+                    sbNumeroObligacion.append(values[0] == null || " ".equals(values[0]) ? "N/A" : Functions.quitarCaracteresEspeciales(values[0]));
+                    String numeroObligacion = sbNumeroObligacion.toString();
 
-        } catch (Exception e) {
-            
-            
+                    StringBuilder sbCedula = new StringBuilder();
+                    sbCedula.append(values[1] == null || " ".equals(values[1]) ? null : Functions.quitarCaracteresEspeciales(values[1]));
+                    String cedula = sbCedula.toString();
 
+                    StringBuilder sbClientes = new StringBuilder();
+                    sbClientes.append(values[2] == null || " ".equals(values[2]) ? "N/A" : values[2]);
+                    String clientes = sbClientes.toString();
+
+                    StringBuilder sbSede = new StringBuilder();
+                    sbSede.append(values[3] == null || " ".equals(values[3]) ? null : Functions.quitarCaracteresEspeciales(values[3]));
+                    String sede = sbSede.toString();
+
+                    StringBuilder sbBanco = new StringBuilder();
+                    sbBanco.append(values[4] == null || " ".equals(values[4]) ? null : Functions.quitarCaracteresEspeciales(values[4]));
+                    String banco = sbBanco.toString();
+
+                    StringBuilder sbAsesorCartera = new StringBuilder();
+                    sbAsesorCartera.append(values[5] == null || " ".equals(values[5]) ? null : Functions.quitarCaracteresEspeciales(values[5]));
+                    String asesor = sbAsesorCartera.toString();
+
+                    Date fechaGestion = (values[6] == null || " ".equals(values[6])) ? null : Functions.fechaDateToString(values[6]);
+                    Date fechaCompromiso = (values[7] == null || " ".equals(values[7])) ? null : Functions.stringToDate(values[7]);
+
+                    StringBuilder sbClasificacion = new StringBuilder();
+                    sbClasificacion.append(values[8] == null || " ".equals(values[8]) ? null : values[8]);
+                    String clasificacion = sbClasificacion.toString();
+
+                    StringBuilder sbGestion = new StringBuilder();
+                    sbGestion.append(values[9] == null || " ".equals(values[9]) ? null : values[9]);
+                    String gestion = sbGestion.toString();
+
+                    int valorCompromiso = (values[10] == null || " ".equals(values[10]) ? null : Integer.parseInt(values[10]));
+
+                    StringBuilder sbDatosAdicionales = new StringBuilder();
+                    sbDatosAdicionales.append(values[11] == null || " ".equals(values[11]) ? null : values[11]);
+                    String datosAdicionales = sbDatosAdicionales.toString();
+
+                    StringBuilder sbGestionLlamada = new StringBuilder();
+                    sbGestionLlamada.append(values[11] == null || " ".equals(values[11]) ? null : values[11]);
+                    String gestionLlamada = sbGestionLlamada.toString();
+
+                    GestionesDto gestiones = new GestionesDto(numeroObligacion, cedula, clientes, sede, banco, asesor, fechaGestion, fechaCompromiso, clasificacion, gestion, valorCompromiso, datosAdicionales, gestionLlamada);
+
+                    gestionesDto.add(gestiones);
+
+                } catch (Exception e) {
+                    System.err.println(e.getMessage());
+                }
+                return gestionesDto;
+            }
+
+        } catch (IOException ex) {
+            Logger.getLogger(FileServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
+
+   
 
 }

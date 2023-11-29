@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 
 @RestController
@@ -39,6 +41,14 @@ public class GestionesController {
     public ResponseEntity<List<Gestiones>> getGestionesByNumObligacion(@PathVariable("num_obligacion") String numeroObligacion){
         List<Gestiones> gestion = gestionesService.findHistoricoGestiones(numeroObligacion);
         return ResponseEntity.ok(gestion);
+    }
+    
+    
+    @PostMapping("/saveGestiones")
+    public ResponseEntity<List<Gestiones>> guardarGestiones(@RequestBody MultipartFile file, @RequestParam(name = "delimitante") String delimitante){
+       List<Gestiones> gestiones = gestionesService.saveMultipleGestiones(file, delimitante);
+        
+        return ResponseEntity.ok(gestiones);
     }
     
 }

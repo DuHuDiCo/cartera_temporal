@@ -1,4 +1,3 @@
-
 package com.cartera_temp.cartera_temp.Utils;
 
 import com.cartera_temp.cartera_temp.Exceptions.DateFormatException;
@@ -11,20 +10,17 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
 public class Functions {
-    
-    
-    public static String quitarCaracteresEspeciales(String cadena){
+
+    public static String quitarCaracteresEspeciales(String cadena) {
         String caracteres = "[\\.\\'\\p{P}]";
-        
-        String cleanInput = cadena.replaceAll( caracteres, "");
-        
-        String cleanInput2 = cleanInput.replaceAll("\\s+"," ");
+
+        String cleanInput = cadena.replaceAll(caracteres, "");
+
+        String cleanInput2 = cleanInput.replaceAll("\\s+", " ");
         return cleanInput2;
     }
-    
-    
+
     public static Date stringToDate(String fecha) throws ParseException {
         try {
 
@@ -43,7 +39,7 @@ public class Functions {
         }
 
     }
-    
+
     public static String containsOnlyNumbers(String input) {
         String regex = "^[0-9]+$";
 
@@ -56,7 +52,7 @@ public class Functions {
             throw new NumberFormatException("EL NUMERO DE  ".concat(" : ").concat(input).concat(" TIENE UN FORMATO INCORRECTO.  POR FAVOR INGRESE SOLO NUMEROS  "));
         }
     }
-    
+
     public static Date obtenerFechaYhora() throws ParseException {
         Date fecha = new Date(Calendar.getInstance().getTimeInMillis());
 
@@ -114,10 +110,15 @@ public class Functions {
 
     }
 
-    public static String fechaDateToString(Date fecha) {
-        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+    public static Date fechaDateToString(String fecha) throws ParseException {
+
+        
+        SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         String fechaString = formato.format(fecha);
-        return fechaString;
+        Date dateOk = formato.parse(fechaString);
+        
+        
+        return dateOk;
     }
 
     public static String stringDoubleToMoney(double valor) {
