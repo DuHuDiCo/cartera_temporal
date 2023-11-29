@@ -27,7 +27,7 @@ public class GestionesServiceImpl implements GestionesService{
     @Override
     public List<Gestiones> findHistoricoGestiones(String numeroObligacion) {
         
-        if(numeroObligacion == "" || numeroObligacion == null){
+        if("".equals(numeroObligacion) || numeroObligacion == null){
             return null;
         }
         

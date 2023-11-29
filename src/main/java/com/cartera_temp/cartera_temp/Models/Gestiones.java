@@ -64,15 +64,15 @@ public class Gestiones {
     private String gestionLlamada;
     
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "asesor", referencedColumnName = "id_asesor_cartera")
+    @JoinColumn(name = "id_asesor", referencedColumnName = "id_asesor_cartera")
     private AsesorCartera asesorCartera;
     
     @OneToOne(cascade = CascadeType.ALL, fetch =FetchType.EAGER)
-    @JoinColumn(name = "banco", referencedColumnName = "id_banco")
+    @JoinColumn(name = "id_banco", referencedColumnName = "id_banco")
     private Banco banco;
     
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "sede", referencedColumnName = "id_sede")
+    @JoinColumn(name = "id_sede", referencedColumnName = "id_sede")
     private Sede sede;
     
     @ManyToOne
