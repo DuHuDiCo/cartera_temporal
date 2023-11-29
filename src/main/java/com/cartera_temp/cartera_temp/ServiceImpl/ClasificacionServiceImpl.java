@@ -59,5 +59,21 @@ public class ClasificacionServiceImpl implements ClasificacionService{
         return clasificacionObtenida;
         
     }
+
+    @Override
+    public Clasificacion getClasificacionById(Long idClasificacion) {
+        
+        if(idClasificacion.equals(null)||idClasificacion == 0){
+            return null;
+        }
+        
+        Clasificacion clasificacion = clasificacionRepository.findById(idClasificacion).orElse(null);
+        if(Objects.isNull(clasificacion)){
+            return null;
+        }
+        
+        return clasificacion;
+        
+    }
     
 }

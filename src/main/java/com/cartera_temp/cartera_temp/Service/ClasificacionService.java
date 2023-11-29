@@ -12,4 +12,6 @@ public interface ClasificacionService {
     
     public Clasificacion updateClasificacion(ClasificacionDto dto);
     
+    public Clasificacion getClasificacionById(Long idClasificacion);
+    
 }
