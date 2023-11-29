@@ -46,8 +46,8 @@ public class GestionesController {
     
     
     @PostMapping("/saveGestiones")
-    public ResponseEntity<List<Gestiones>> guardarGestiones(@RequestBody MultipartFile file, @RequestParam(name = "delimitante") String delimitante){
-       List<Gestiones> gestiones = gestionesService.saveMultipleGestiones(file, delimitante);
+    public ResponseEntity<List<GestionesDto>> guardarGestiones(@RequestBody MultipartFile file, @RequestParam(name = "delimitante") String delimitante){
+       List<GestionesDto> gestiones = gestionesService.saveMultipleGestiones(file, delimitante);
         
         return ResponseEntity.ok(gestiones);
     }

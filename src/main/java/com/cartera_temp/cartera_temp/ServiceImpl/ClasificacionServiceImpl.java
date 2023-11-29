@@ -46,7 +46,7 @@ public class ClasificacionServiceImpl implements ClasificacionService{
     @Override
     public Clasificacion updateClasificacion(ClasificacionDto dto) {
         
-        if(dto.getIdClasificacion() == null || dto.getIdClasificacion() == 0 || dto.getNewClasificacion().equals("")||dto.getNewClasificacion().equals(null)){
+        if(dto.getIdClasificacion() == null || dto.getIdClasificacion() == 0 || dto.getNewClasificacion().equals("")){
             return null;
         }
         

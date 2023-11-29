@@ -10,7 +10,7 @@ public interface GestionesService {
  
     public GestionResponse saveOneGestion(GestionesDto dto);
     
-    public List<Gestiones> saveMultipleGestiones(MultipartFile file, String delimitante);
+    public List<GestionesDto> saveMultipleGestiones(MultipartFile file, String delimitante);
     
     public List<GestionResponse> findHistoricoGestiones(String numeroObligacion);
     

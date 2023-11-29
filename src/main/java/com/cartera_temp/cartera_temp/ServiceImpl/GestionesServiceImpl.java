@@ -3,15 +3,11 @@ package com.cartera_temp.cartera_temp.ServiceImpl;
 import com.cartera_temp.cartera_temp.Dtos.GestionResponse;
 import com.cartera_temp.cartera_temp.Dtos.GestionesDto;
 import com.cartera_temp.cartera_temp.Models.AsesorCartera;
-import com.cartera_temp.cartera_temp.Models.Banco;
 import com.cartera_temp.cartera_temp.Models.Clasificacion;
 import com.cartera_temp.cartera_temp.Models.CuentasPorCobrar;
 import com.cartera_temp.cartera_temp.Models.Gestiones;
-import com.cartera_temp.cartera_temp.Models.Sede;
 import com.cartera_temp.cartera_temp.ModelsClients.Usuario;
 import com.cartera_temp.cartera_temp.Service.AsesorCarteraService;
-import com.cartera_temp.cartera_temp.Service.ClasificacionService;
-import com.cartera_temp.cartera_temp.Service.CuentasPorCobrarService;
 import com.cartera_temp.cartera_temp.Service.FileService;
 import com.cartera_temp.cartera_temp.Service.GestionesService;
 import com.cartera_temp.cartera_temp.Service.UsuarioClientService;
@@ -28,7 +24,6 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -58,7 +53,7 @@ public class GestionesServiceImpl implements GestionesService {
     @Override
     public GestionResponse saveOneGestion(GestionesDto dto) {
 
-        if (dto.getNumeroObligacion().equals(null) || dto.getNumeroObligacion().equals("") || dto.getClasificacion().equals(null) || dto.getClasificacion().equals("") || dto.getAsesorCartera().equals(null) || dto.getAsesorCartera().equals("") || dto.getGestion().equals("") || dto.getGestion().equals(null)) {
+        if (dto.getAsesor().equals("") || dto.getNumeroObligacion() == null || dto.getNumeroObligacion().equals("") || dto.getClasificacion() == null || dto.getClasificacion().equals("") || dto.getAsesor() == null || dto.getGestion().equals("") || dto.getGestion() == null) {
             return null;
         }
 
@@ -67,7 +62,7 @@ public class GestionesServiceImpl implements GestionesService {
             return null;
         }
 
-        Usuario usu = usuarioClientService.obtenerUsuario(dto.getAsesorCartera());
+        Usuario usu = usuarioClientService.obtenerUsuario(dto.getAsesor());
         if (Objects.isNull(usu)) {
             return null;
         }
@@ -113,15 +108,15 @@ public class GestionesServiceImpl implements GestionesService {
     }
 
     @Override
-    public List<Gestiones> saveMultipleGestiones(MultipartFile file, String delimitante) {
+    public List<GestionesDto> saveMultipleGestiones(MultipartFile file, String delimitante) {
         List<GestionesDto> gestiones = fileService.readFileGestiones(file, delimitante);
         
-        List<Gestiones> gestionesSaved = guardarGestiones(gestiones);
-        return gestionesSaved;
+        //List<Gestiones> gestionesSaved = guardarGestiones(gestiones);
+        return gestiones;
     }
 
     @Override
-    public List<Gestiones> findHistoricoGestiones(String numeroObligacion) {
+    public List<GestionResponse> findHistoricoGestiones(String numeroObligacion) {
 
         if ("".equals(numeroObligacion) || numeroObligacion == null) {
             return null;

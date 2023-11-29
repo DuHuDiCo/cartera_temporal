@@ -112,13 +112,10 @@ public class Functions {
 
     public static Date fechaDateToString(String fecha) throws ParseException {
 
-        
         SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        String fechaString = formato.format(fecha);
-        Date dateOk = formato.parse(fechaString);
-        
-        
-        return dateOk;
+        Date date = formato.parse(fecha);
+
+        return date;
     }
 
     public static String stringDoubleToMoney(double valor) {
