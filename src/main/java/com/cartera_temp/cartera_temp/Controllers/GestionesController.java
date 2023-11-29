@@ -1,5 +1,6 @@
 package com.cartera_temp.cartera_temp.Controllers;
 
+import com.cartera_temp.cartera_temp.Dtos.GestionResponse;
 import com.cartera_temp.cartera_temp.Dtos.GestionesDto;
 import com.cartera_temp.cartera_temp.Models.Gestiones;
 import com.cartera_temp.cartera_temp.Service.GestionesService;
@@ -27,8 +28,8 @@ public class GestionesController {
     }
     
     @PostMapping("/saveOneGestion")
-    public ResponseEntity<Gestiones> saveOneGestion(@RequestBody GestionesDto dto){
-        Gestiones gestion = gestionesService.saveOneGestion(dto);
+    public ResponseEntity<GestionResponse> saveOneGestion(@RequestBody GestionesDto dto){
+        GestionResponse gestion = gestionesService.saveOneGestion(dto);
         if(Objects.isNull(gestion)){
             return ResponseEntity.badRequest().build();
         }
