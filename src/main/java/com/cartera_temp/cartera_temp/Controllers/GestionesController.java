@@ -37,8 +37,8 @@ public class GestionesController {
     }
     
     @GetMapping("/getGestionByNumObligacion/{num_obligacion}")
-    public ResponseEntity<List<Gestiones>> getGestionesByNumObligacion(@PathVariable("num_obligacion") String numeroObligacion){
-        List<Gestiones> gestion = gestionesService.findHistoricoGestiones(numeroObligacion);
+    public ResponseEntity<List<GestionResponse>> getGestionesByNumObligacion(@PathVariable("num_obligacion") String numeroObligacion){
+        List<GestionResponse> gestion = gestionesService.findHistoricoGestiones(numeroObligacion);
         return ResponseEntity.ok(gestion);
     }
     
