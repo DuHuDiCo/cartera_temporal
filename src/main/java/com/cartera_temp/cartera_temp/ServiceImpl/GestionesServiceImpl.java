@@ -1,5 +1,6 @@
 package com.cartera_temp.cartera_temp.ServiceImpl;
 
+import com.cartera_temp.cartera_temp.Dtos.GestionResponse;
 import com.cartera_temp.cartera_temp.Dtos.GestionesDto;
 import com.cartera_temp.cartera_temp.Models.AsesorCartera;
 import com.cartera_temp.cartera_temp.Models.Banco;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -54,9 +56,9 @@ public class GestionesServiceImpl implements GestionesService {
     }
 
     @Override
-    public Gestiones saveOneGestion(GestionesDto dto) {
+    public GestionResponse saveOneGestion(GestionesDto dto) {
 
-        if (dto.getNumeroObligacion() == null || dto.getNumeroObligacion().equals("") || dto.getClasificacion() == null || dto.getClasificacion().equals("") || dto.getAsesor() == null || dto.getAsesor().equals("") || dto.getGestion().equals("") || dto.getGestion() == null) {
+        if (dto.getNumeroObligacion().equals(null) || dto.getNumeroObligacion().equals("") || dto.getClasificacion().equals(null) || dto.getClasificacion().equals("") || dto.getAsesorCartera().equals(null) || dto.getAsesorCartera().equals("") || dto.getGestion().equals("") || dto.getGestion().equals(null)) {
             return null;
         }
 
@@ -65,7 +67,7 @@ public class GestionesServiceImpl implements GestionesService {
             return null;
         }
 
-        Usuario usu = usuarioClientService.obtenerUsuario(dto.getAsesor());
+        Usuario usu = usuarioClientService.obtenerUsuario(dto.getAsesorCartera());
         if (Objects.isNull(usu)) {
             return null;
         }
@@ -100,7 +102,13 @@ public class GestionesServiceImpl implements GestionesService {
         gestion.setSede(cpc.getSede());
         gestion.setValorCompromiso(dto.getValorCompromiso());
         gestion = gestionesRepository.save(gestion);
-        return gestion;
+
+        ModelMapper map = new ModelMapper();
+        GestionResponse gesRes = map.map(gestion, GestionResponse.class);
+
+        gesRes.setAsesorCartera(usu.getNombres() + usu.getApellidos());
+
+        return gesRes;
 
     }
 
@@ -125,7 +133,22 @@ public class GestionesServiceImpl implements GestionesService {
             return null;
         }
 
-        return gestion;
+        List<GestionResponse> gesResList = new ArrayList<>();
+        for (Gestiones gestiones : gestion) {
+            ModelMapper map = new ModelMapper();
+            GestionResponse gesRes = map.map(gestiones, GestionResponse.class);
+            
+            Usuario usu = usuarioClientService.obtenerUsuarioById(gestiones.getAsesorCartera().getUsuarioId());
+            if(Objects.isNull(usu)){
+                return null;
+            }
+            
+            gesRes.setAsesorCartera(usu.getNombres() + usu.getApellidos());
+
+            gesResList.add(gesRes);
+        }
+
+        return gesResList;
 
     }
 

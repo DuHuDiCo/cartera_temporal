@@ -8,6 +8,7 @@ import java.util.Objects;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -44,6 +45,15 @@ public class ClasificacionController {
     public ResponseEntity<List<Clasificacion>> obtenerTodasClasificaciones(){
         List<Clasificacion> clasificacions = clasificacionService.findAllClasificacion();
         return ResponseEntity.ok(clasificacions);
+    }
+    
+    @GetMapping("/getClasificacionById/{id_clasificacion}")
+    public ResponseEntity<Clasificacion> obtenerClasificacionById(@PathVariable("id_clasificacion") Long idClasificacion){
+        Clasificacion clasificacion = clasificacionService.getClasificacionById(idClasificacion);
+        if(Objects.isNull(clasificacion)){
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(clasificacion);
     }
     
     @PutMapping("/updateClasificacion")
