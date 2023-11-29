@@ -11,6 +11,6 @@ public interface GestionesService {
     
     public List<Gestiones> saveMultipleGestiones(List<GestionesDto> dto);
     
-    public List<Gestiones> findHistoricoGestiones(String numeroObligacion);
+    public List<GestionResponse> findHistoricoGestiones(String numeroObligacion);
     
 }

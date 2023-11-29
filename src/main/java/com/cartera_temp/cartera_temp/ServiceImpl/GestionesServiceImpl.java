@@ -17,6 +17,7 @@ import com.cartera_temp.cartera_temp.repository.ClasificacionRepository;
 import com.cartera_temp.cartera_temp.repository.CuentasPorCobrarRepository;
 import com.cartera_temp.cartera_temp.repository.GestionesRepository;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
@@ -26,43 +27,48 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class GestionesServiceImpl implements GestionesService{
-    
-    @Autowired GestionesRepository gestionesRepository;
-    @Autowired CuentasPorCobrarRepository cuentaCobrarRepository;
-    @Autowired UsuarioClientService usuarioClientService;
-    @Autowired ClasificacionRepository clasificacionRepository;
-    @Autowired AsesorCarteraService asesorCartera;
+public class GestionesServiceImpl implements GestionesService {
+
+    @Autowired
+    GestionesRepository gestionesRepository;
+    @Autowired
+    CuentasPorCobrarRepository cuentaCobrarRepository;
+    @Autowired
+    UsuarioClientService usuarioClientService;
+    @Autowired
+    ClasificacionRepository clasificacionRepository;
+    @Autowired
+    AsesorCarteraService asesorCartera;
 
     @Override
     public GestionResponse saveOneGestion(GestionesDto dto) {
-        
-        if(dto.getNumeroObligacion().equals(null)||dto.getNumeroObligacion().equals("")|| dto.getClasificacion().equals(null)||dto.getClasificacion().equals("")|| dto.getAsesorCartera().equals(null)|| dto.getAsesorCartera().equals("")||dto.getGestion().equals("")||dto.getGestion().equals(null)){
+
+        if (dto.getNumeroObligacion().equals(null) || dto.getNumeroObligacion().equals("") || dto.getClasificacion().equals(null) || dto.getClasificacion().equals("") || dto.getAsesorCartera().equals(null) || dto.getAsesorCartera().equals("") || dto.getGestion().equals("") || dto.getGestion().equals(null)) {
             return null;
         }
-        
+
         CuentasPorCobrar cpc = cuentaCobrarRepository.findByNumeroObligacion(dto.getNumeroObligacion());
-        if(Objects.isNull(cpc)){
+        if (Objects.isNull(cpc)) {
             return null;
         }
-        
+
         Usuario usu = usuarioClientService.obtenerUsuario(dto.getAsesorCartera());
-        if(Objects.isNull(usu)){
+        if (Objects.isNull(usu)) {
             return null;
         }
-        
+
         AsesorCartera asesor = asesorCartera.findAsesor(usu.getIdUsuario());
-        if(Objects.isNull(asesor)){
+        if (Objects.isNull(asesor)) {
             return null;
         }
-        
+
         Clasificacion clasificacion = clasificacionRepository.findClasificacionByTipoClasificacion(dto.getClasificacion());
-        if(Objects.isNull(clasificacion)){
+        if (Objects.isNull(clasificacion)) {
             return null;
         }
-        
+
         Gestiones gestion = new Gestiones();
-        
+
         gestion.setAsesorCartera(asesor);
         gestion.setBanco(cpc.getBanco());
         gestion.setClasificacion(clasificacion);
@@ -81,14 +87,14 @@ public class GestionesServiceImpl implements GestionesService{
         gestion.setSede(cpc.getSede());
         gestion.setValorCompromiso(dto.getValorCompromiso());
         gestion = gestionesRepository.save(gestion);
-        
+
         ModelMapper map = new ModelMapper();
         GestionResponse gesRes = map.map(gestion, GestionResponse.class);
-        
+
         gesRes.setAsesorCartera(usu.getNombres() + usu.getApellidos());
-        
+
         return gesRes;
-        
+
     }
 
     @Override
@@ -97,20 +103,35 @@ public class GestionesServiceImpl implements GestionesService{
     }
 
     @Override
-    public List<Gestiones> findHistoricoGestiones(String numeroObligacion) {
-        
-        if(numeroObligacion == "" || numeroObligacion == null){
+    public List<GestionResponse> findHistoricoGestiones(String numeroObligacion) {
+
+        if (numeroObligacion == "" || numeroObligacion == null) {
             return null;
         }
-        
+
         List<Gestiones> gestion = gestionesRepository.findGestionesByNumeroObligacion(numeroObligacion);
-        
-        if(Objects.isNull(gestion)){
+
+        if (Objects.isNull(gestion)) {
             return null;
         }
-        
-        return gestion;
-        
+
+        List<GestionResponse> gesResList = new ArrayList<>();
+        for (Gestiones gestiones : gestion) {
+            ModelMapper map = new ModelMapper();
+            GestionResponse gesRes = map.map(gestiones, GestionResponse.class);
+            
+            Usuario usu = usuarioClientService.obtenerUsuarioById(gestiones.getAsesorCartera().getUsuarioId());
+            if(Objects.isNull(usu)){
+                return null;
+            }
+            
+            gesRes.setAsesorCartera(usu.getNombres() + usu.getApellidos());
+
+            gesResList.add(gesRes);
+        }
+
+        return gesResList;
+
     }
-    
+
 }
