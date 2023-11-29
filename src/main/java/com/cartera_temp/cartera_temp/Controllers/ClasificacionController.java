@@ -1,5 +1,6 @@
 package com.cartera_temp.cartera_temp.Controllers;
 
+import com.cartera_temp.cartera_temp.Dtos.ClasificacionDto;
 import com.cartera_temp.cartera_temp.Models.Clasificacion;
 import com.cartera_temp.cartera_temp.Service.ClasificacionService;
 import java.util.List;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,9 +30,9 @@ public class ClasificacionController {
     }
     
     @PostMapping("/saveClasificacion")
-    public ResponseEntity<Clasificacion> guardarClasificacion(@RequestParam("tipo_clasificacion") String tipoClasificacion){
+    public ResponseEntity<Clasificacion> guardarClasificacion(@RequestBody Clasificacion clasificacionBody){
      
-        Clasificacion clasificacion = clasificacionService.saveClasificacion(tipoClasificacion);
+        Clasificacion clasificacion = clasificacionService.saveClasificacion(clasificacionBody);
         if(Objects.isNull(clasificacion)){
             return ResponseEntity.badRequest().build();
         }
@@ -45,8 +47,8 @@ public class ClasificacionController {
     }
     
     @PutMapping("/updateClasificacion")
-    public ResponseEntity<Clasificacion> actualizarClasificacion(@RequestParam("id_clasificacion") Long idClasificacion, @RequestParam("new_clasificacion") String newClasificacion){
-        Clasificacion clasificacion = clasificacionService.updateClasificacion(idClasificacion, newClasificacion);
+    public ResponseEntity<Clasificacion> actualizarClasificacion(@RequestBody ClasificacionDto dto){
+        Clasificacion clasificacion = clasificacionService.updateClasificacion(dto);
         if(Objects.isNull(clasificacion)){
             ResponseEntity.badRequest().build();
         }
