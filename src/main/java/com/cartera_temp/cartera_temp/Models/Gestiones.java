@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -24,7 +25,7 @@ import javax.validation.constraints.NotNull;
 public class Gestiones {
     
     @Id
-    @GeneratedValue    
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_gestion")
     private Long idGestion;
     
@@ -51,17 +52,14 @@ public class Gestiones {
     @Temporal(TemporalType.DATE)
     private Date fechaCompromiso;
     
-    @Column(name = "clasificacion", nullable =true)
-    private String clasificacion;
-    
     @Column(name = "gestion")
     private String gestion;
     
+    @Column(name = "is_contactado")
+    private boolean isContacted;
+    
     @Column(name = "valor_compromiso", nullable = true)
     private String valorCompromiso;
-    
-    @Column(name = "datos_adicionales", nullable = true)
-    private String gestionLlamada;
     
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "id_asesor", referencedColumnName = "id_asesor_cartera")
@@ -70,6 +68,10 @@ public class Gestiones {
     @OneToOne(cascade = CascadeType.ALL, fetch =FetchType.EAGER)
     @JoinColumn(name = "id_banco", referencedColumnName = "id_banco")
     private Banco banco;
+    
+    @OneToOne(cascade = CascadeType.ALL, fetch =FetchType.EAGER)
+    @JoinColumn(name = "clasificacion", referencedColumnName = "id_clasificacion")
+    private Clasificacion clasificacion;
     
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "id_sede", referencedColumnName = "id_sede")
@@ -131,14 +133,13 @@ public class Gestiones {
         this.fechaCompromiso = fechaCompromiso;
     }
 
-    public String getClasificacion() {
+    public Clasificacion getClasificacion() {
         return clasificacion;
     }
 
-    public void setClasificacion(String clasificacion) {
+    public void setClasificacion(Clasificacion clasificacion) {
         this.clasificacion = clasificacion;
     }
-
     public String getGestion() {
         return gestion;
     }
@@ -153,14 +154,6 @@ public class Gestiones {
 
     public void setValorCompromiso(String valorCompromiso) {
         this.valorCompromiso = valorCompromiso;
-    }
-
-    public String getGestionLlamada() {
-        return gestionLlamada;
-    }
-
-    public void setGestionLlamada(String gestionLlamada) {
-        this.gestionLlamada = gestionLlamada;
     }
 
     public AsesorCartera getAsesorCartera() {
@@ -194,7 +187,13 @@ public class Gestiones {
     public void setCuentasPorCobrar(CuentasPorCobrar cuentasPorCobrar) {
         this.cuentasPorCobrar = cuentasPorCobrar;
     }
-    
-    
+
+    public boolean isIsContacted() {
+        return isContacted;
+    }
+
+    public void setIsContacted(boolean isContacted) {
+        this.isContacted = isContacted;
+    }
     
 }

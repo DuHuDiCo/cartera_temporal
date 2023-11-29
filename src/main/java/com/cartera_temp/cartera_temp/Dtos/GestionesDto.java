@@ -6,12 +6,6 @@ public class GestionesDto {
 
     private String numeroObligacion;
     
-    private String numeroDoc;
-    
-    private String nombreCliente;
-    
-    private Date fechaGestion;
-    
     private Date fechaCompromiso;
     
     private String clasificacion;
@@ -20,12 +14,76 @@ public class GestionesDto {
     
     private String valorCompromiso;
     
-    private String gestionLlamada;
-    
     private String asesorCartera;
     
-    private String banco;
+    private boolean contact;
     
-    private String sede;
-    
+    private String detallesAdicionales;
+
+    public GestionesDto() {
+    }
+
+    public String getNumeroObligacion() {
+        return numeroObligacion;
+    }
+
+    public void setNumeroObligacion(String numeroObligacion) {
+        this.numeroObligacion = numeroObligacion;
+    }
+
+    public Date getFechaCompromiso() {
+        return fechaCompromiso;
+    }
+
+    public void setFechaCompromiso(Date fechaCompromiso) {
+        this.fechaCompromiso = fechaCompromiso;
+    }
+
+    public String getClasificacion() {
+        return clasificacion;
+    }
+
+    public void setClasificacion(String clasificacion) {
+        this.clasificacion = clasificacion;
+    }
+
+    public String getGestion() {
+        return gestion;
+    }
+
+    public void setGestion(String gestion) {
+        this.gestion = gestion;
+    }
+
+    public String getValorCompromiso() {
+        return valorCompromiso;
+    }
+
+    public void setValorCompromiso(String valorCompromiso) {
+        this.valorCompromiso = valorCompromiso;
+    }
+
+    public String getAsesorCartera() {
+        return asesorCartera;
+    }
+
+    public void setAsesorCartera(String asesorCartera) {
+        this.asesorCartera = asesorCartera;
+    }
+
+    public boolean isContact() {
+        return contact;
+    }
+
+    public void setContact(boolean contact) {
+        this.contact = contact;
+    }
+
+    public String getDetallesAdicionales() {
+        return detallesAdicionales;
+    }
+
+    public void setDetallesAdicionales(String detallesAdicionales) {
+        this.detallesAdicionales = detallesAdicionales;
+    }
 }
