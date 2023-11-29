@@ -1,5 +1,6 @@
 package com.cartera_temp.cartera_temp.ServiceImpl;
 
+import com.cartera_temp.cartera_temp.Dtos.GestionResponse;
 import com.cartera_temp.cartera_temp.Dtos.GestionesDto;
 import com.cartera_temp.cartera_temp.Models.AsesorCartera;
 import com.cartera_temp.cartera_temp.Models.Clasificacion;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +35,7 @@ public class GestionesServiceImpl implements GestionesService{
     @Autowired AsesorCarteraService asesorCartera;
 
     @Override
-    public Gestiones saveOneGestion(GestionesDto dto) {
+    public GestionResponse saveOneGestion(GestionesDto dto) {
         
         if(dto.getNumeroObligacion().equals(null)||dto.getNumeroObligacion().equals("")|| dto.getClasificacion().equals(null)||dto.getClasificacion().equals("")|| dto.getAsesorCartera().equals(null)|| dto.getAsesorCartera().equals("")||dto.getGestion().equals("")||dto.getGestion().equals(null)){
             return null;
@@ -79,7 +81,13 @@ public class GestionesServiceImpl implements GestionesService{
         gestion.setSede(cpc.getSede());
         gestion.setValorCompromiso(dto.getValorCompromiso());
         gestion = gestionesRepository.save(gestion);
-        return gestion;
+        
+        ModelMapper map = new ModelMapper();
+        GestionResponse gesRes = map.map(gestion, GestionResponse.class);
+        
+        gesRes.setAsesorCartera(usu.getNombres() + usu.getApellidos());
+        
+        return gesRes;
         
     }
 
