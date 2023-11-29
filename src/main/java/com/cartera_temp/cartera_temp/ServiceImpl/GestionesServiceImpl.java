@@ -54,7 +54,7 @@ public class GestionesServiceImpl implements GestionesService {
     @Override
     public GestionResponse saveOneGestion(GestionToSaveDto dto) {
 
-        if (dto.getAsesorCartera().equals("") || dto.getNumeroObligacion() == null || dto.getNumeroObligacion().equals("") || dto.getClasificacion() == null || dto.getClasificacion().equals("") || dto.getAsesorCartera()== null || dto.getGestion().equals("") || dto.getGestion() == null) {
+        if (dto.getAsesorCartera().equals("") || dto.getNumeroObligacion() == null || dto.getNumeroObligacion().equals("") || dto.getClasificacion() == null || dto.getClasificacion().equals("") || dto.getAsesorCartera() == null || dto.getGestion().equals("") || dto.getGestion() == null) {
             return null;
         }
 
@@ -111,7 +111,7 @@ public class GestionesServiceImpl implements GestionesService {
     @Override
     public List<GestionesDto> saveMultipleGestiones(MultipartFile file, String delimitante) {
         List<GestionesDto> gestiones = fileService.readFileGestiones(file, delimitante);
-        
+
         //List<Gestiones> gestionesSaved = guardarGestiones(gestiones);
         return gestiones;
     }
@@ -133,12 +133,12 @@ public class GestionesServiceImpl implements GestionesService {
         for (Gestiones gestiones : gestion) {
             ModelMapper map = new ModelMapper();
             GestionResponse gesRes = map.map(gestiones, GestionResponse.class);
-            
+
             Usuario usu = usuarioClientService.obtenerUsuarioById(gestiones.getAsesorCartera().getUsuarioId());
-            if(Objects.isNull(usu)){
+            if (Objects.isNull(usu)) {
                 return null;
             }
-            
+
             gesRes.setAsesorCartera(usu.getNombres() + usu.getApellidos());
 
             gesResList.add(gesRes);
@@ -183,9 +183,27 @@ public class GestionesServiceImpl implements GestionesService {
             gestionesSaved.add(newGestion);
 
         }
-        
-        
+
         return gestionesRepository.saveAll(gestionesSaved);
+    }
+
+    @Override
+    public String sendLastDatoAdicional(String numeroObligacion) {
+
+        if ("".equals(numeroObligacion) || numeroObligacion == null) {
+            return null;
+        }
+
+        Gestiones ultimaGestion = gestionesRepository.findTopByNumeroObligacionOrderByFechaGestionDesc(numeroObligacion);
+
+        if (Objects.isNull(ultimaGestion)) {
+            return null;
+        }
+
+        String datoAdicionalUltimaGestion = ultimaGestion.getDatosAdicionales();
+        
+        return datoAdicionalUltimaGestion;
+
     }
 
 }

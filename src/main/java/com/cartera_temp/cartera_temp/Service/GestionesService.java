@@ -17,5 +17,5 @@ public interface GestionesService {
     
     public List<Gestiones> guardarGestiones(List<GestionesDto> gestiones);
     
-    
+    public String sendLastDatoAdicional(String numeroObligacion);
 }
