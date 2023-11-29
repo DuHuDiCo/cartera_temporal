@@ -30,9 +30,9 @@ public class ClasificacionController {
     }
     
     @PostMapping("/saveClasificacion")
-    public ResponseEntity<Clasificacion> guardarClasificacion(@RequestParam("tipo_clasificacion") String tipoClasificacion){
+    public ResponseEntity<Clasificacion> guardarClasificacion(@RequestBody Clasificacion clasificacion){
      
-        Clasificacion clasificacion = clasificacionService.saveClasificacion(tipoClasificacion);
+        Clasificacion clasificacion = clasificacionService.saveClasificacion(clasificacion);
         if(Objects.isNull(clasificacion)){
             return ResponseEntity.badRequest().build();
         }

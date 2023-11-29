@@ -16,17 +16,17 @@ public class ClasificacionServiceImpl implements ClasificacionService{
     @Autowired ClasificacionRepository clasificacionRepository;
 
     @Override
-    public Clasificacion saveClasificacion(String clasificacion) {
+    public Clasificacion saveClasificacion(Clasificacion clasificacion) {
         
-        if(clasificacion.equals(null)||clasificacion.equals("")){
+        if(clasificacion.getTipoClasificacion().equals(null)||clasificacion.getTipoClasificacion().equals("")){
             return null;
         }
         
-        Clasificacion newClasi = clasificacionRepository.findClasificacionByTipoClasificacion(clasificacion);
+        Clasificacion newClasi = clasificacionRepository.findClasificacionByTipoClasificacion(clasificacion.getTipoClasificacion());
         
         if(Objects.isNull(newClasi)){
             Clasificacion clasiToSave = new Clasificacion();
-            clasiToSave.setTipoClasificacion(clasificacion);
+            clasiToSave.setTipoClasificacion(clasificacion.getTipoClasificacion());
             clasiToSave = clasificacionRepository.save(clasiToSave);
             return clasiToSave;
         }

@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface ClasificacionService {
 
-    public Clasificacion saveClasificacion(String clasificacion);
+    public Clasificacion saveClasificacion(Clasificacion clasificacion);
     
     public List<Clasificacion> findAllClasificacion();
     
