@@ -1,7 +1,9 @@
 package com.cartera_temp.cartera_temp.Models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -83,12 +86,20 @@ public class Gestiones {
     @JoinColumn(name = "id_sede", referencedColumnName = "id_sede")
     private Sede sede;
     
+    @OneToMany(mappedBy = "gestiones", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Discriminacion> discriminacion = new ArrayList<>();
+    
     @ManyToOne
     @JoinColumn(name = "cuenta_cobrar_id")
     @JsonIgnore
     private CuentasPorCobrar cuentasPorCobrar;
 
     public Gestiones() {
+    }
+    
+    public void agregarDiscriminacion(Discriminacion discriminacions){
+        discriminacion.add(discriminacions);
+        discriminacions.setGestiones(this);
     }
 
     public Long getIdGestion() {
@@ -216,6 +227,14 @@ public class Gestiones {
 
     public void setGestionLlamada(String gestionLlamada) {
         this.gestionLlamada = gestionLlamada;
+    }
+
+    public List<Discriminacion> getDiscriminacion() {
+        return discriminacion;
+    }
+
+    public void setDiscriminacion(List<Discriminacion> discriminacion) {
+        this.discriminacion = discriminacion;
     }
     
     
