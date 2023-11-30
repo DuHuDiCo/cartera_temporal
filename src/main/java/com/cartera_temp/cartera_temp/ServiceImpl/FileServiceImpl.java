@@ -139,7 +139,7 @@ public class FileServiceImpl implements FileService {
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8))) {
             String firstLine = reader.readLine();
-            String[] columnNames = firstLine.split(delimitante);
+            String[] columnNames = firstLine.split("\\".concat(delimitante));
 
             String line;
 

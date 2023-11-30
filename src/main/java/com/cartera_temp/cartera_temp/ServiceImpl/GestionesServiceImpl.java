@@ -1,5 +1,6 @@
 package com.cartera_temp.cartera_temp.ServiceImpl;
 
+import GestionesDataDto.GestionesDataDto;
 import com.cartera_temp.cartera_temp.Dtos.GestionResponse;
 import com.cartera_temp.cartera_temp.Dtos.GestionToSaveDto;
 import com.cartera_temp.cartera_temp.Dtos.GestionesDto;
@@ -13,6 +14,7 @@ import com.cartera_temp.cartera_temp.Service.FileService;
 import com.cartera_temp.cartera_temp.Service.GestionesService;
 import com.cartera_temp.cartera_temp.Service.UsuarioClientService;
 import com.cartera_temp.cartera_temp.Utils.Functions;
+import com.cartera_temp.cartera_temp.Utils.SaveFiles;
 import com.cartera_temp.cartera_temp.repository.BancoRepository;
 import com.cartera_temp.cartera_temp.repository.ClasificacionRepository;
 import com.cartera_temp.cartera_temp.repository.CuentasPorCobrarRepository;
@@ -39,8 +41,9 @@ public class GestionesServiceImpl implements GestionesService {
     private final FileService fileService;
     private final SedeRepository sedeRepository;
     private final BancoRepository bancoRepository;
+    private final SaveFiles saveFiles;
 
-    public GestionesServiceImpl(GestionesRepository gestionesRepository, CuentasPorCobrarRepository cuentaCobrarRepository, UsuarioClientService usuarioClientService, ClasificacionRepository clasificacionRepository, AsesorCarteraService asesorCartera, FileService fileService, SedeRepository sedeRepository, BancoRepository bancoRepository) {
+    public GestionesServiceImpl(GestionesRepository gestionesRepository, CuentasPorCobrarRepository cuentaCobrarRepository, UsuarioClientService usuarioClientService, ClasificacionRepository clasificacionRepository, AsesorCarteraService asesorCartera, FileService fileService, SedeRepository sedeRepository, BancoRepository bancoRepository, SaveFiles saveFiles) {
         this.gestionesRepository = gestionesRepository;
         this.cuentaCobrarRepository = cuentaCobrarRepository;
         this.usuarioClientService = usuarioClientService;
@@ -49,7 +52,10 @@ public class GestionesServiceImpl implements GestionesService {
         this.fileService = fileService;
         this.sedeRepository = sedeRepository;
         this.bancoRepository = bancoRepository;
+        this.saveFiles = saveFiles;
     }
+
+    
 
     @Override
     public GestionResponse saveOneGestion(GestionToSaveDto dto) {
@@ -109,8 +115,11 @@ public class GestionesServiceImpl implements GestionesService {
     }
 
     @Override
-    public List<GestionesDto> saveMultipleGestiones(MultipartFile file, String delimitante) {
-        List<GestionesDto> gestiones = fileService.readFileGestiones(file, delimitante);
+    public List<GestionesDto> saveMultipleGestiones(GestionesDataDto dataDto) {
+        
+        MultipartFile multipartFile = saveFiles.convertirFile(dataDto.getMultipartFile());
+        
+        List<GestionesDto> gestiones = fileService.readFileGestiones(multipartFile, dataDto.getDelimitante());
         
         //List<Gestiones> gestionesSaved = guardarGestiones(gestiones);
         return gestiones;
