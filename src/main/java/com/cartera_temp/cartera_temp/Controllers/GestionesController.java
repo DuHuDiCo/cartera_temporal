@@ -53,4 +53,12 @@ public class GestionesController {
         return ResponseEntity.ok(gestiones);
     }
     
+    @GetMapping("/getLastDatoAdicionalGestion/{num_obligacion}")
+    public ResponseEntity<String> getLastDatoAdicional(@PathVariable("num_obligacion")String numeroObligacion){
+        
+        String datoAdicional = gestionesService.sendLastDatoAdicional(numeroObligacion);
+        return ResponseEntity.ok(datoAdicional);
+        
+    }
+    
 }
