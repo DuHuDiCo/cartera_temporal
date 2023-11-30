@@ -103,6 +103,7 @@ public class GestionesServiceImpl implements GestionesService {
         gestion.setNumeroObligacion(dto.getNumeroObligacion());
         gestion.setSede(cpc.getSede());
         gestion.setValorCompromiso(dto.getValorCompromiso());
+        gestion.setDatosAdicionales(dto.getDetallesAdicionales());
         gestion = gestionesRepository.save(gestion);
 
         ModelMapper map = new ModelMapper();

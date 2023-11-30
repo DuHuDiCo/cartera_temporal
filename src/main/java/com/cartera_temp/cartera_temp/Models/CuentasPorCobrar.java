@@ -116,8 +116,6 @@ public class CuentasPorCobrar {
         gestiones.add(gestion);
         gestion.setCuentasPorCobrar(this);
     }
-
-    
     
     public Long getIdCuentasPorCobrar() {
         return idCuentasPorCobrar;
