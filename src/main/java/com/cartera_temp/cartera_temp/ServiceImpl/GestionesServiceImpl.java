@@ -54,7 +54,7 @@ public class GestionesServiceImpl implements GestionesService {
     @Override
     public GestionResponse saveOneGestion(GestionToSaveDto dto) {
 
-        if (dto.getAsesorCartera().equals("") || dto.getNumeroObligacion() == null || dto.getNumeroObligacion().equals("") || dto.getClasificacion() == null || dto.getClasificacion().equals("") || dto.getAsesorCartera() == null || dto.getGestion().equals("") || dto.getGestion() == null) {
+        if (dto.getNumeroObligacion() == null || dto.getNumeroObligacion().equals("") || dto.getClasificacion() == null || dto.getClasificacion().equals("") || dto.getGestion().equals("") || dto.getGestion() == null) {
             return null;
         }
 
@@ -63,7 +63,7 @@ public class GestionesServiceImpl implements GestionesService {
             return null;
         }
 
-        Usuario usu = usuarioClientService.obtenerUsuario(dto.getAsesorCartera());
+        Usuario usu = usuarioClientService.obtenerUsuarioById(cpc.getAsesor().getUsuarioId());
         if (Objects.isNull(usu)) {
             return null;
         }

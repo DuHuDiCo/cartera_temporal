@@ -15,8 +15,6 @@ public class GestionToSaveDto {
     
     private double valorCompromiso;
     
-    private String asesorCartera;
-    
     private boolean contact;
     
     private String detallesAdicionales;
@@ -62,14 +60,6 @@ public class GestionToSaveDto {
 
     public void setValorCompromiso(double valorCompromiso) {
         this.valorCompromiso = valorCompromiso;
-    }
-
-    public String getAsesorCartera() {
-        return asesorCartera;
-    }
-
-    public void setAsesorCartera(String asesorCartera) {
-        this.asesorCartera = asesorCartera;
     }
 
     public boolean isContact() {
