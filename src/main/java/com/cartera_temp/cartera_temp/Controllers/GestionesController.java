@@ -4,6 +4,7 @@ import GestionesDataDto.GestionesDataDto;
 import com.cartera_temp.cartera_temp.Dtos.GestionResponse;
 import com.cartera_temp.cartera_temp.Dtos.GestionToSaveDto;
 import com.cartera_temp.cartera_temp.Dtos.GestionesDto;
+import com.cartera_temp.cartera_temp.Dtos.MessageResponse;
 import com.cartera_temp.cartera_temp.Models.Gestiones;
 import com.cartera_temp.cartera_temp.Service.GestionesService;
 import java.util.List;
@@ -55,10 +56,10 @@ public class GestionesController {
     }
     
     @GetMapping("/getLastDatoAdicionalGestion/{num_obligacion}")
-    public ResponseEntity<String> getLastDatoAdicional(@PathVariable("num_obligacion")String numeroObligacion){
+    public ResponseEntity<MessageResponse> getLastDatoAdicional(@PathVariable("num_obligacion")String numeroObligacion){
         
         String datoAdicional = gestionesService.sendLastDatoAdicional(numeroObligacion);
-        return ResponseEntity.ok(datoAdicional);
+        return ResponseEntity.ok(new MessageResponse(datoAdicional));
         
     }
     
