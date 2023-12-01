@@ -11,4 +11,6 @@ public interface DiscriminacionService {
     
     public List<DiscriminacionResponse> findDiscriminacionesByNumeroObligacion(String numeroObligacion);
     
+    public DiscriminacionResponse sendLastDiscriminacion(String numeroObligacion);
+    
 }

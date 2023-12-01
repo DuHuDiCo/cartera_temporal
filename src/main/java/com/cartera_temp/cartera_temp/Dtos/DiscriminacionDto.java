@@ -5,47 +5,20 @@ import java.util.Date;
 
 public class DiscriminacionDto {
 
-    private Date fechaPactada;
-    private double valorCapital;
-    private double valorIntereses;
-    private double valorHonorarios;
+    private double cuota;
     private String observacionDiscriminacion;
 
     public DiscriminacionDto() {
     }
 
-    public Date getFechaPactada() {
-        return fechaPactada;
+    public double getCuota() {
+        return cuota;
     }
 
-    public void setFechaPactada(Date fechaPactada) {
-        this.fechaPactada = fechaPactada;
+    public void setCuota(double cuota) {
+        this.cuota = cuota;
     }
-
-    public double getValorCapital() {
-        return valorCapital;
-    }
-
-    public void setValorCapital(double valorCapital) {
-        this.valorCapital = valorCapital;
-    }
-
-    public double getValorIntereses() {
-        return valorIntereses;
-    }
-
-    public void setValorIntereses(double valorIntereses) {
-        this.valorIntereses = valorIntereses;
-    }
-
-    public double getValorHonorarios() {
-        return valorHonorarios;
-    }
-
-    public void setValorHonorarios(double valorHonorarios) {
-        this.valorHonorarios = valorHonorarios;
-    }
-
+    
     public String getObservacionDiscriminacion() {
         return observacionDiscriminacion;
     }

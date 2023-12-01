@@ -19,6 +19,8 @@ public interface CuentasPorCobrarService {
     
     public List<CuentasPorCobrar> processingData(MultipartFile file, String delimitante);
     
+    public List<CuentasPorCobrarResponse> getCpcByNumeroObligacionContaining(String numeroObligacion);
+    
     public CuentasPorCobrarResponse getCpcByNumeroObligacion(String numeroObligacion);
 
 }
