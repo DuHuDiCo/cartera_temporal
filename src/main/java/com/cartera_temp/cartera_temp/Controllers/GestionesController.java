@@ -49,8 +49,8 @@ public class GestionesController {
     
     
     @PostMapping("/saveGestiones")
-    public ResponseEntity<List<GestionesDto>> guardarGestiones(@RequestBody GestionesDataDto dataDto){
-       List<GestionesDto> gestiones = gestionesService.saveMultipleGestiones(dataDto);
+    public ResponseEntity<List<Gestiones>> guardarGestiones(@RequestBody GestionesDataDto dataDto){
+       List<Gestiones> gestiones = gestionesService.saveMultipleGestiones(dataDto);
         
         return ResponseEntity.ok(gestiones);
     }

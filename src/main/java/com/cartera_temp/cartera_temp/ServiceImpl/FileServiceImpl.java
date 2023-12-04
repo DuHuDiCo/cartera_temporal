@@ -4,10 +4,12 @@ import com.cartera_temp.cartera_temp.Dtos.CuentasPorCobrarDto;
 import com.cartera_temp.cartera_temp.Dtos.GestionesDto;
 import com.cartera_temp.cartera_temp.Service.FileService;
 import com.cartera_temp.cartera_temp.Utils.Functions;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -17,6 +19,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -137,69 +142,71 @@ public class FileServiceImpl implements FileService {
             return null;
         }
 
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8))) {
-            String firstLine = reader.readLine();
-            String[] columnNames = firstLine.split("\\".concat(delimitante));
+        try (Reader reader = new InputStreamReader(file.getInputStream())) {
+            CSVParser csvParser = CSVFormat.DEFAULT.withDelimiter(';').withQuote('"').parse(reader);
 
-            String line;
+            csvParser.iterator().next();
 
             List<GestionesDto> gestionesDto = new ArrayList<>();
-            while ((line = reader.readLine()) != null) {
-                String[] values = line.split(delimitante);
-//                try {
-//                    StringBuilder sbNumeroObligacion = new StringBuilder();
-//                    sbNumeroObligacion.append(values[0] == null || " ".equals(values[0]) ? "N/A" : values[0]);
-//                    String numeroObligacion = sbNumeroObligacion.toString();
-//
-//                    StringBuilder sbCedula = new StringBuilder();
-//                    sbCedula.append(values[1] == null || " ".equals(values[1]) ? null : values[1]);
-//                    String cedula = sbCedula.toString();
-//
-//                    StringBuilder sbClientes = new StringBuilder();
-//                    sbClientes.append(values[2] == null || " ".equals(values[2]) ? "N/A" : values[2]);
-//                    String clientes = sbClientes.toString();
-//
-//                    StringBuilder sbSede = new StringBuilder();
-//                    sbSede.append(values[3] == null || " ".equals(values[3]) ? null : values[3]);
-//                    String sede = sbSede.toString();
-//
-//                    StringBuilder sbBanco = new StringBuilder();
-//                    sbBanco.append(values[4] == null || " ".equals(values[4]) ? null : values[4]);
-//                    String banco = sbBanco.toString();
-//
-//                    StringBuilder sbAsesorCartera = new StringBuilder();
-//                    sbAsesorCartera.append(values[5] == null || " ".equals(values[5]) ? null : values[5]);
-//                    String asesor = sbAsesorCartera.toString();
-//
-//                    Date fechaGestion = (values[6] == null || "".equals(values[6])) ? null : Functions.fechaDateToString(values[6]);
-//                    Date fechaCompromiso = (values[7] == null || "".equals(values[7])) ? null : Functions.stringToDate(values[7]);
-//
-//                    StringBuilder sbClasificacion = new StringBuilder();
-//                    sbClasificacion.append(values[8] == null || " ".equals(values[8]) ? null : values[8]);
-//                    String clasificacion = sbClasificacion.toString();
-//
-//                    StringBuilder sbGestion = new StringBuilder();
-//                    sbGestion.append(values[9] == null || " ".equals(values[9]) ? null : values[9]);
-//                    String gestion = sbGestion.toString();
-//
-//                    int valorCompromiso = (values[10] == null || " ".equals(values[10]) ? null : Integer.parseInt(values[10]));
-//
-//                    StringBuilder sbDatosAdicionales = new StringBuilder();
-//                    sbDatosAdicionales.append(values[11] == null || " ".equals(values[11]) ? null : values[11]);
-//                    String datosAdicionales = sbDatosAdicionales.toString();
-//
-//                    StringBuilder sbGestionLlamada = new StringBuilder();
-//                    sbGestionLlamada.append(values[12] == null || " ".equals(values[12]) ? null : values[12]);
-//                    String gestionLlamada = sbGestionLlamada.toString();
-//
-//                    GestionesDto gestiones = new GestionesDto(numeroObligacion, cedula, clientes, sede, banco, asesor, fechaGestion, fechaCompromiso, clasificacion, gestion, valorCompromiso, datosAdicionales, gestionLlamada);
-//
-//                    gestionesDto.add(gestiones);
-//
-//                } catch (Exception e) {
-//                    System.err.println(e.getMessage());
-//                }
-                    System.out.println(Arrays.toString(values));
+            for (CSVRecord csvRecord : csvParser) {
+
+                try {
+                    StringBuilder sbNumeroObligacion = new StringBuilder();
+                    sbNumeroObligacion.append(csvRecord.get(0) == null || " ".equals(csvRecord.get(0)) ? "N/A" : csvRecord.get(0));
+                    String numeroObligacion = sbNumeroObligacion.toString();
+
+                    StringBuilder sbCedula = new StringBuilder();
+                    sbCedula.append(csvRecord.get(1) == null || " ".equals(csvRecord.get(1)) ? null : csvRecord.get(1));
+                    String cedula = sbCedula.toString();
+
+                    StringBuilder sbClientes = new StringBuilder();
+                    sbClientes.append(csvRecord.get(2) == null || " ".equals(csvRecord.get(2)) ? "N/A" : csvRecord.get(2));
+                    String clientes = sbClientes.toString();
+
+                    StringBuilder sbSede = new StringBuilder();
+                    sbSede.append(csvRecord.get(3) == null || " ".equals(csvRecord.get(3)) ? null : csvRecord.get(3));
+                    String sede = sbSede.toString();
+
+                    StringBuilder sbBanco = new StringBuilder();
+                    sbBanco.append(csvRecord.get(4) == null || " ".equals(csvRecord.get(4)) ? null : csvRecord.get(4));
+                    String banco = sbBanco.toString();
+
+                    StringBuilder sbAsesorCartera = new StringBuilder();
+                    sbAsesorCartera.append(csvRecord.get(5) == null || " ".equals(csvRecord.get(5)) ? null : csvRecord.get(5));
+                    String asesor = sbAsesorCartera.toString();
+
+                    Date fechaGestion = (csvRecord.get(6) == null || "".equals(csvRecord.get(6))) ? null : Functions.fechaDateToString(csvRecord.get(6));
+                    Date fechaCompromiso = (csvRecord.get(7) == null || "".equals(csvRecord.get(7))) ? null : Functions.stringToDate(csvRecord.get(7));
+
+                    StringBuilder sbClasificacion = new StringBuilder();
+                    sbClasificacion.append(csvRecord.get(8) == null || " ".equals(csvRecord.get(8)) ? null : csvRecord.get(8));
+                    String clasificacion = sbClasificacion.toString();
+
+                    StringBuilder sbGestion = new StringBuilder();
+                    sbGestion.append(csvRecord.get(9) == null || " ".equals(csvRecord.get(9)) ? null : csvRecord.get(9));
+                    String gestion = sbGestion.toString();
+
+                    int valorCompromiso = (csvRecord.get(10) == null || " ".equals(csvRecord.get(10)) ? null : Integer.parseInt(csvRecord.get(10)));
+
+                    StringBuilder sbDatosAdicionales = new StringBuilder();
+                    sbDatosAdicionales.append(csvRecord.get(11) == null || " ".equals(csvRecord.get(11)) ? null : csvRecord.get(11));
+                    String datosAdicionales = sbDatosAdicionales.toString();
+
+                    StringBuilder sbGestionLlamada = new StringBuilder();
+                    sbGestionLlamada.append(csvRecord.get(12) == null || " ".equals(csvRecord.get(12)) ? null : csvRecord.get(12));
+                    String gestionLlamada = sbGestionLlamada.toString();
+
+                    GestionesDto gestiones = new GestionesDto(numeroObligacion, cedula, clientes, sede, banco, asesor, fechaGestion, fechaCompromiso, clasificacion, gestion, valorCompromiso, datosAdicionales, gestionLlamada);
+
+                    gestionesDto.add(gestiones);
+                    
+                    
+
+                } catch (Exception e) {
+                    
+                }
+
+                
             }
             return gestionesDto;
         } catch (IOException ex) {

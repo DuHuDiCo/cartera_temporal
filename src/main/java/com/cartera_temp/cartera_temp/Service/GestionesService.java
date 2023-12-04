@@ -12,7 +12,7 @@ public interface GestionesService {
  
     public GestionResponse saveOneGestion(GestionToSaveDto dto);
     
-    public List<GestionesDto> saveMultipleGestiones(GestionesDataDto dataDto);
+    public List<Gestiones> saveMultipleGestiones(GestionesDataDto dataDto);
     
     public List<GestionResponse> findHistoricoGestiones(String numeroObligacion);
     
