@@ -81,5 +81,19 @@ public class ClasificacionTareaServiceImpl implements ClasificacionTareaService{
         clasificacionTareaRepository.deleteById(idClasificacionTarea);
         return "ELIMINADO";
     }
+
+    @Override
+    public ClasificacionTarea obtenerClasificacionTareaById(Long idClasificacionTarea) {
+        
+        if(idClasificacionTarea == null || idClasificacionTarea == 0){
+            return null;
+        }
+        
+        ClasificacionTarea clasi = clasificacionTareaRepository.findById(idClasificacionTarea).orElse(null);
+        if(Objects.isNull(clasi)){
+            return null;
+        }
+        return clasi;
+    }
     
 }
