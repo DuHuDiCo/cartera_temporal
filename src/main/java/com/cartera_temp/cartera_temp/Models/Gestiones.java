@@ -32,7 +32,7 @@ public class Gestiones {
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaGestion;
 
-    @Column(name = "datos_adicionales", nullable = true, length = 20000)
+    @Column(name = "datos_adicionales", nullable = true, columnDefinition = "TEXT")
     private String datosAdicionales;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

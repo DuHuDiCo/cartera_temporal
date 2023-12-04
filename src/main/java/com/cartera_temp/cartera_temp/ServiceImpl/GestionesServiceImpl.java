@@ -69,10 +69,10 @@ public class GestionesServiceImpl implements GestionesService {
         MultipartFile multipartFile = saveFiles.convertirFile(dataDto.getMultipartFile());
         
         List<GestionesDto> gestiones = fileService.readFileGestiones(multipartFile, dataDto.getDelimitante());
-        //        List<Gestiones> gestionesSaved = guardarGestiones(gestiones);
+         List<Gestiones> gestionesSaved = guardarGestiones(gestiones);
 
         System.out.println(gestiones.size());
-        List<Gestiones> gestionesSaved = new ArrayList<>();
+       
         return gestionesSaved;
     }
     

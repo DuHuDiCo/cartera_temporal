@@ -17,7 +17,7 @@ public class Tarea  extends Clasificacion{
     @OneToOne(mappedBy = "clasificacion", cascade = CascadeType.ALL)
     private Gestiones gestion;
     
-    @Column(name = "detalle_tarea", length = 20000)
+    @Column(name = "detalle_tarea", columnDefinition = "TEXT")
     private String detalleTarea;
     
     @Temporal(TemporalType.TIMESTAMP)

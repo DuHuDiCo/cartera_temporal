@@ -17,7 +17,7 @@ public class Nota extends Clasificacion{
     @OneToOne(mappedBy = "clasificacion", cascade = CascadeType.ALL)
     private Gestiones gestion;
     
-   @Column(name = "detalle_nota", length = 20000)
+   @Column(name = "detalle_nota", columnDefinition = "TEXT")
     private String detalleNota;
     
     @Temporal(TemporalType.TIMESTAMP)
