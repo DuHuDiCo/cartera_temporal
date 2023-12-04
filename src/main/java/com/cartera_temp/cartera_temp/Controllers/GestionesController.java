@@ -1,5 +1,6 @@
 package com.cartera_temp.cartera_temp.Controllers;
 
+import GestionesDataDto.GestionesDataDto;
 import com.cartera_temp.cartera_temp.Dtos.GestionResponse;
 import com.cartera_temp.cartera_temp.Dtos.GestionToSaveDto;
 import com.cartera_temp.cartera_temp.Dtos.GestionesDto;
@@ -48,8 +49,8 @@ public class GestionesController {
     
     
     @PostMapping("/saveGestiones")
-    public ResponseEntity<List<GestionesDto>> guardarGestiones(@RequestBody MultipartFile file, @RequestParam(name = "delimitante") String delimitante){
-       List<GestionesDto> gestiones = gestionesService.saveMultipleGestiones(file, delimitante);
+    public ResponseEntity<List<Gestiones>> guardarGestiones(@RequestBody GestionesDataDto dataDto){
+       List<Gestiones> gestiones = gestionesService.saveMultipleGestiones(dataDto);
         
         return ResponseEntity.ok(gestiones);
     }

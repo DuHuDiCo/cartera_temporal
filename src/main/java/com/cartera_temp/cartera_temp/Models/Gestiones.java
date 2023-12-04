@@ -1,9 +1,7 @@
 package com.cartera_temp.cartera_temp.Models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,14 +11,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 
 @Entity
@@ -32,62 +26,29 @@ public class Gestiones {
     @Column(name = "id_gestion")
     private Long idGestion;
     
-    @NotNull
-    @NotEmpty
-    @NotBlank
-    @Column(name = "numero_obligacion", nullable = false)
-    private String numeroObligacion;
-    
-    @NotNull
-    @NotEmpty
-    @NotBlank
-    @Column(name = "numero_doc", nullable = false)
-    private String numeroDoc;
-    
-    @Column(name = "nombre_cliente", nullable = true)
-    private String nombreCliente;
     
     @Column(name = "fecha_gestion", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaGestion;
     
-    @Column(name = "fecha_compromisos", nullable = true)
-    @Temporal(TemporalType.DATE)
-    private Date fechaCompromiso;
     
-    @Column(name = "gestion", length = 2000)
-    private String gestion;
-    
-    @Column(name = "is_contactado")
-    private boolean isContacted;
-    
-    @Column(name = "valor_compromiso", nullable = true)
-    private double valorCompromiso;
-    
-    @Column(name = "datos_adicionales", nullable = true , length = 2000)
+  
+    @Column(name = "datos_adicionales", nullable = true , length = 20000)
     private String datosAdicionales;
     
-    @Column(name = "gestion_llamada", nullable = true )
-    private String gestionLlamada;
+
     
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "id_asesor", referencedColumnName = "id_asesor_cartera")
     private AsesorCartera asesorCartera;
     
-    @OneToOne(cascade = CascadeType.ALL, fetch =FetchType.EAGER)
-    @JoinColumn(name = "id_banco", referencedColumnName = "id_banco")
-    private Banco banco;
+ 
     
-    @OneToOne(cascade = CascadeType.ALL, fetch =FetchType.EAGER)
-    @JoinColumn(name = "clasificacion", referencedColumnName = "id_clasificacion")
+    @OneToOne
+    @JoinColumn(name = "clasificacion_id" )
     private Clasificacion clasificacion;
     
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_sede", referencedColumnName = "id_sede")
-    private Sede sede;
-    
-    @OneToMany(mappedBy = "gestiones", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Discriminacion> discriminacion = new ArrayList<>();
+   
     
     @ManyToOne
     @JoinColumn(name = "cuenta_cobrar_id")
@@ -97,10 +58,7 @@ public class Gestiones {
     public Gestiones() {
     }
     
-    public void agregarDiscriminacion(Discriminacion discriminacions){
-        discriminacion.add(discriminacions);
-        discriminacions.setGestiones(this);
-    }
+    
 
     public Long getIdGestion() {
         return idGestion;
@@ -110,44 +68,9 @@ public class Gestiones {
         this.idGestion = idGestion;
     }
 
-    public String getNumeroObligacion() {
-        return numeroObligacion;
-    }
-
-    public void setNumeroObligacion(String numeroObligacion) {
-        this.numeroObligacion = numeroObligacion;
-    }
-
-    public String getNumeroDoc() {
-        return numeroDoc;
-    }
-
-    public void setNumeroDoc(String numeroDoc) {
-        this.numeroDoc = numeroDoc;
-    }
-
-    public String getNombreCliente() {
-        return nombreCliente;
-    }
-
-    public void setNombreCliente(String nombreCliente) {
-        this.nombreCliente = nombreCliente;
-    }
-
+   
     public Date getFechaGestion() {
         return fechaGestion;
-    }
-
-    public void setFechaGestion(Date fechaGestion) {
-        this.fechaGestion = fechaGestion;
-    }
-
-    public Date getFechaCompromiso() {
-        return fechaCompromiso;
-    }
-
-    public void setFechaCompromiso(Date fechaCompromiso) {
-        this.fechaCompromiso = fechaCompromiso;
     }
 
     public Clasificacion getClasificacion() {
@@ -157,21 +80,7 @@ public class Gestiones {
     public void setClasificacion(Clasificacion clasificacion) {
         this.clasificacion = clasificacion;
     }
-    public String getGestion() {
-        return gestion;
-    }
-
-    public void setGestion(String gestion) {
-        this.gestion = gestion;
-    }
-
-    public double getValorCompromiso() {
-        return valorCompromiso;
-    }
-
-    public void setValorCompromiso(double valorCompromiso) {
-        this.valorCompromiso = valorCompromiso;
-    }
+   
 
     public AsesorCartera getAsesorCartera() {
         return asesorCartera;
@@ -181,22 +90,7 @@ public class Gestiones {
         this.asesorCartera = asesorCartera;
     }
 
-    public Banco getBanco() {
-        return banco;
-    }
-
-    public void setBanco(Banco banco) {
-        this.banco = banco;
-    }
-
-    public Sede getSede() {
-        return sede;
-    }
-
-    public void setSede(Sede sede) {
-        this.sede = sede;
-    }
-
+   
     public CuentasPorCobrar getCuentasPorCobrar() {
         return cuentasPorCobrar;
     }
@@ -205,13 +99,7 @@ public class Gestiones {
         this.cuentasPorCobrar = cuentasPorCobrar;
     }
 
-    public boolean isIsContacted() {
-        return isContacted;
-    }
-
-    public void setIsContacted(boolean isContacted) {
-        this.isContacted = isContacted;
-    }
+   
 
     public String getDatosAdicionales() {
         return datosAdicionales;
@@ -221,22 +109,6 @@ public class Gestiones {
         this.datosAdicionales = datosAdicionales;
     }
 
-    public String getGestionLlamada() {
-        return gestionLlamada;
-    }
-
-    public void setGestionLlamada(String gestionLlamada) {
-        this.gestionLlamada = gestionLlamada;
-    }
-
-    public List<Discriminacion> getDiscriminacion() {
-        return discriminacion;
-    }
-
-    public void setDiscriminacion(List<Discriminacion> discriminacion) {
-        this.discriminacion = discriminacion;
-    }
-    
     
     
 }

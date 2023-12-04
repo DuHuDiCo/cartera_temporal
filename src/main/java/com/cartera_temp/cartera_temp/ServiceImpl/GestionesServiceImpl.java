@@ -1,5 +1,6 @@
 package com.cartera_temp.cartera_temp.ServiceImpl;
 
+import GestionesDataDto.GestionesDataDto;
 import com.cartera_temp.cartera_temp.Dtos.GestionResponse;
 import com.cartera_temp.cartera_temp.Dtos.GestionToSaveDto;
 import com.cartera_temp.cartera_temp.Dtos.GestionesDto;
@@ -13,6 +14,7 @@ import com.cartera_temp.cartera_temp.Service.FileService;
 import com.cartera_temp.cartera_temp.Service.GestionesService;
 import com.cartera_temp.cartera_temp.Service.UsuarioClientService;
 import com.cartera_temp.cartera_temp.Utils.Functions;
+import com.cartera_temp.cartera_temp.Utils.SaveFiles;
 import com.cartera_temp.cartera_temp.repository.BancoRepository;
 import com.cartera_temp.cartera_temp.repository.ClasificacionRepository;
 import com.cartera_temp.cartera_temp.repository.CuentasPorCobrarRepository;
@@ -39,8 +41,9 @@ public class GestionesServiceImpl implements GestionesService {
     private final FileService fileService;
     private final SedeRepository sedeRepository;
     private final BancoRepository bancoRepository;
+    private final SaveFiles saveFiles;
 
-    public GestionesServiceImpl(GestionesRepository gestionesRepository, CuentasPorCobrarRepository cuentaCobrarRepository, UsuarioClientService usuarioClientService, ClasificacionRepository clasificacionRepository, AsesorCarteraService asesorCartera, FileService fileService, SedeRepository sedeRepository, BancoRepository bancoRepository) {
+    public GestionesServiceImpl(GestionesRepository gestionesRepository, CuentasPorCobrarRepository cuentaCobrarRepository, UsuarioClientService usuarioClientService, ClasificacionRepository clasificacionRepository, AsesorCarteraService asesorCartera, FileService fileService, SedeRepository sedeRepository, BancoRepository bancoRepository, SaveFiles saveFiles) {
         this.gestionesRepository = gestionesRepository;
         this.cuentaCobrarRepository = cuentaCobrarRepository;
         this.usuarioClientService = usuarioClientService;
@@ -49,6 +52,7 @@ public class GestionesServiceImpl implements GestionesService {
         this.fileService = fileService;
         this.sedeRepository = sedeRepository;
         this.bancoRepository = bancoRepository;
+        this.saveFiles = saveFiles;
     }
 
     @Override
@@ -81,22 +85,10 @@ public class GestionesServiceImpl implements GestionesService {
         Gestiones gestion = new Gestiones();
 
         gestion.setAsesorCartera(asesor);
-        gestion.setBanco(cpc.getBanco());
+
         gestion.setClasificacion(clasificacion);
         gestion.setCuentasPorCobrar(cpc);
-        gestion.setFechaCompromiso(dto.getFechaCompromiso());
-        try {
-            gestion.setFechaGestion(Functions.obtenerFechaYhora());
-        } catch (ParseException ex) {
-            Logger.getLogger(GestionesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        gestion.setGestion(dto.getGestion());
-        gestion.setIsContacted(dto.isContact());
-        gestion.setNombreCliente(cpc.getCliente());
-        gestion.setNumeroDoc(cpc.getDocumentoCliente());
-        gestion.setNumeroObligacion(dto.getNumeroObligacion());
-        gestion.setSede(cpc.getSede());
-        gestion.setValorCompromiso(dto.getValorCompromiso());
+
         gestion.setDatosAdicionales(dto.getDetallesAdicionales());
         gestion = gestionesRepository.save(gestion);
 
@@ -110,11 +102,16 @@ public class GestionesServiceImpl implements GestionesService {
     }
 
     @Override
-    public List<GestionesDto> saveMultipleGestiones(MultipartFile file, String delimitante) {
-        List<GestionesDto> gestiones = fileService.readFileGestiones(file, delimitante);
+    public List<Gestiones> saveMultipleGestiones(GestionesDataDto dataDto) {
 
-        //List<Gestiones> gestionesSaved = guardarGestiones(gestiones);
-        return gestiones;
+        MultipartFile multipartFile = saveFiles.convertirFile(dataDto.getMultipartFile());
+
+        List<GestionesDto> gestiones = fileService.readFileGestiones(multipartFile, dataDto.getDelimitante());
+        //        List<Gestiones> gestionesSaved = guardarGestiones(gestiones);
+
+        System.out.println(gestiones.size());
+        List<Gestiones> gestionesSaved = new ArrayList<>();
+        return gestionesSaved;
     }
 
     @Override
@@ -124,28 +121,25 @@ public class GestionesServiceImpl implements GestionesService {
             return null;
         }
 
-        List<Gestiones> gestion = gestionesRepository.findGestionesByNumeroObligacion(numeroObligacion);
-
-        if (Objects.isNull(gestion)) {
-            return null;
-        }
-
-        List<GestionResponse> gesResList = new ArrayList<>();
-        for (Gestiones gestiones : gestion) {
-            ModelMapper map = new ModelMapper();
-            GestionResponse gesRes = map.map(gestiones, GestionResponse.class);
-
-            Usuario usu = usuarioClientService.obtenerUsuarioById(gestiones.getAsesorCartera().getUsuarioId());
-            if (Objects.isNull(usu)) {
-                return null;
-            }
-
-            gesRes.setAsesorCartera(usu.getNombres() + usu.getApellidos());
-
-            gesResList.add(gesRes);
-        }
-
-        return gesResList;
+//        List<Gestiones> gestion = gestionesRepository.findGestionesByNumeroObligacion(numeroObligacion);
+//        if (Objects.isNull(gestion)) {
+//            return null;
+//        }
+//        List<GestionResponse> gesResList = new ArrayList<>();
+//        for (Gestiones gestiones : gestion) {
+//            ModelMapper map = new ModelMapper();
+//            GestionResponse gesRes = map.map(gestiones, GestionResponse.class);
+//
+//            Usuario usu = usuarioClientService.obtenerUsuarioById(gestiones.getAsesorCartera().getUsuarioId());
+//            if (Objects.isNull(usu)) {
+//                return null;
+//            }
+//
+//            gesRes.setAsesorCartera(usu.getNombres() + usu.getApellidos());
+//
+//            gesResList.add(gesRes);
+//        }
+        return null;
 
     }
 
@@ -158,30 +152,30 @@ public class GestionesServiceImpl implements GestionesService {
             Gestiones newGestion = new Gestiones();
 
             newGestion.setDatosAdicionales(gestione.getDetallesAdicionales());
-            newGestion.setFechaCompromiso(gestione.getFechaCompromiso());
-            newGestion.setFechaGestion(gestione.getFechaGestion());
-            newGestion.setGestion(gestione.getGestion());
-            newGestion.setGestionLlamada(gestione.getGestionLlamada());
-            newGestion.setNombreCliente(gestione.getCliente());
-            newGestion.setNumeroDoc(gestione.getCedula());
-            newGestion.setNumeroObligacion(gestione.getNumeroObligacion());
-            newGestion.setValorCompromiso(gestione.getValorCompromiso());
 
             CuentasPorCobrar cuenta = cuentaCobrarRepository.findByNumeroObligacion(gestione.getNumeroObligacion());
-            if (Objects.nonNull(cuenta)) {
-                newGestion.setAsesorCartera(cuenta.getAsesor());
-                newGestion.setBanco(cuenta.getBanco());
-                newGestion.setSede(cuenta.getSede());
+            if (Objects.isNull(cuenta)) {
+                continue;
 
             }
+            newGestion.setAsesorCartera(cuenta.getAsesor());
 
             Clasificacion clasi = clasificacionRepository.findClasificacionByTipoClasificacion(gestione.getClasificacion());
-            if (Objects.nonNull(clasi)) {
-                newGestion.setClasificacion(clasi);
+            if (Objects.isNull(clasi)) {
+                continue;
             }
+
+            newGestion.setClasificacion(clasi);
 
             cuenta.agregarGestion(newGestion);
             gestionesSaved.add(newGestion);
+
+            StringBuilder sbText = new StringBuilder();
+            sbText.append(gestione.getNumeroObligacion());
+            sbText.append("--------------------");
+            sbText.append(gestionesSaved.size());
+
+            System.out.println(sbText.toString());
 
         }
 
@@ -195,15 +189,13 @@ public class GestionesServiceImpl implements GestionesService {
             return null;
         }
 
-        Gestiones ultimaGestion = gestionesRepository.findTopByNumeroObligacionOrderByFechaGestionDesc(numeroObligacion);
-
-        if (Objects.isNull(ultimaGestion)) {
-            return null;
-        }
-
-        String datoAdicionalUltimaGestion = ultimaGestion.getDatosAdicionales();
-        
-        return datoAdicionalUltimaGestion;
+//        Gestiones ultimaGestion = gestionesRepository.findTopByNumeroObligacionOrderByFechaGestionDesc(numeroObligacion);
+//        if (Objects.isNull(ultimaGestion)) {
+//            return null;
+//        }
+//
+//        String datoAdicionalUltimaGestion = ultimaGestion.getDatosAdicionales();
+        return null;
 
     }
 

@@ -1,5 +1,6 @@
 package com.cartera_temp.cartera_temp.Service;
 
+import GestionesDataDto.GestionesDataDto;
 import com.cartera_temp.cartera_temp.Dtos.GestionResponse;
 import com.cartera_temp.cartera_temp.Dtos.GestionToSaveDto;
 import com.cartera_temp.cartera_temp.Dtos.GestionesDto;
@@ -11,7 +12,7 @@ public interface GestionesService {
  
     public GestionResponse saveOneGestion(GestionToSaveDto dto);
     
-    public List<GestionesDto> saveMultipleGestiones(MultipartFile file, String delimitante);
+    public List<Gestiones> saveMultipleGestiones(GestionesDataDto dataDto);
     
     public List<GestionResponse> findHistoricoGestiones(String numeroObligacion);
     

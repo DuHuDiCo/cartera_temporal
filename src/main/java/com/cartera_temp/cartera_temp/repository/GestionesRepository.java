@@ -9,8 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface GestionesRepository extends JpaRepository<Gestiones, Long>{
     
-    List<Gestiones> findGestionesByNumeroObligacion(String numeroObligacion);
     
-    Gestiones findTopByNumeroObligacionOrderByFechaGestionDesc(String numeroObligacion);
     
 }
