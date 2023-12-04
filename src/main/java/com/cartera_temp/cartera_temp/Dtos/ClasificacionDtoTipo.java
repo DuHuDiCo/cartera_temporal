@@ -1,14 +1,10 @@
 package com.cartera_temp.cartera_temp.Dtos;
 
-import com.cartera_temp.cartera_temp.Models.AcuerdoPago;
-import com.cartera_temp.cartera_temp.Models.Nota;
-import com.cartera_temp.cartera_temp.Models.Tarea;
-
 public class ClasificacionDtoTipo {
 
     private String tipoClasificacion;
-    private Tarea tarea;
-    private Nota nota;
+    private TareaDto tarea;
+    private NotaDto nota;
     private AcuerdoPagoDto acuerdoPago;
 
     public ClasificacionDtoTipo() {
@@ -22,19 +18,19 @@ public class ClasificacionDtoTipo {
         this.tipoClasificacion = tipoClasificacion;
     }
 
-    public Tarea getTarea() {
+    public TareaDto getTarea() {
         return tarea;
     }
 
-    public void setTarea(Tarea tarea) {
+    public void setTarea(TareaDto tarea) {
         this.tarea = tarea;
     }
 
-    public Nota getNota() {
+    public NotaDto getNota() {
         return nota;
     }
 
-    public void setNota(Nota nota) {
+    public void setNota(NotaDto nota) {
         this.nota = nota;
     }
 
