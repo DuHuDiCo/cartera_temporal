@@ -1,9 +1,11 @@
 package com.cartera_temp.cartera_temp.ServiceImpl;
 
 import GestionesDataDto.GestionesDataDto;
+import com.cartera_temp.cartera_temp.Dtos.AcuerdoPagoDto;
 import com.cartera_temp.cartera_temp.Dtos.GestionResponse;
 import com.cartera_temp.cartera_temp.Dtos.GestionToSaveDto;
 import com.cartera_temp.cartera_temp.Dtos.GestionesDto;
+import com.cartera_temp.cartera_temp.Models.AcuerdoPago;
 import com.cartera_temp.cartera_temp.Models.AsesorCartera;
 import com.cartera_temp.cartera_temp.Models.Clasificacion;
 import com.cartera_temp.cartera_temp.Models.CuentasPorCobrar;
@@ -15,9 +17,11 @@ import com.cartera_temp.cartera_temp.Service.GestionesService;
 import com.cartera_temp.cartera_temp.Service.UsuarioClientService;
 import com.cartera_temp.cartera_temp.Utils.Functions;
 import com.cartera_temp.cartera_temp.Utils.SaveFiles;
+import com.cartera_temp.cartera_temp.repository.AcuerdoPagoRepository;
 import com.cartera_temp.cartera_temp.repository.BancoRepository;
 import com.cartera_temp.cartera_temp.repository.ClasificacionRepository;
 import com.cartera_temp.cartera_temp.repository.CuentasPorCobrarRepository;
+import com.cartera_temp.cartera_temp.repository.CuotaRepository;
 import com.cartera_temp.cartera_temp.repository.GestionesRepository;
 import com.cartera_temp.cartera_temp.repository.SedeRepository;
 import java.text.ParseException;
@@ -42,6 +46,8 @@ public class GestionesServiceImpl implements GestionesService {
     private final SedeRepository sedeRepository;
     private final BancoRepository bancoRepository;
     private final SaveFiles saveFiles;
+    private final CuotaRepository cuotaRepository;
+    private final AcuerdoPagoRepository acuerdoPagoRepository;
 
     public GestionesServiceImpl(GestionesRepository gestionesRepository, CuentasPorCobrarRepository cuentaCobrarRepository, UsuarioClientService usuarioClientService, ClasificacionRepository clasificacionRepository, AsesorCarteraService asesorCartera, FileService fileService, SedeRepository sedeRepository, BancoRepository bancoRepository, SaveFiles saveFiles) {
         this.gestionesRepository = gestionesRepository;
@@ -77,21 +83,41 @@ public class GestionesServiceImpl implements GestionesService {
             return null;
         }
 
-        Clasificacion clasificacion = clasificacionRepository.findClasificacionByTipoClasificacion(dto.getClasificacion());
-        if (Objects.isNull(clasificacion)) {
-            return null;
-        }
-
         Gestiones gestion = new Gestiones();
 
         gestion.setAsesorCartera(asesor);
 
-        gestion.setClasificacion(clasificacion);
+        
         gestion.setCuentasPorCobrar(cpc);
 
         gestion.setDatosAdicionales(dto.getDetallesAdicionales());
+        
+        if(dto.getClasificacion().getTipoClasificacion().equals("Acuerdo de pago")){
+            
+            AcuerdoPago acuerdoPago = new AcuerdoPago();
+            
+            acuerdoPago.setAsesor(asesor);
+            acuerdoPago.setDetalle(dto.getClasificacion().getAcuerdoPago().getDetalle());
+            try {
+                acuerdoPago.setFechaAcuerdo(Functions.obtenerFechaYhora());
+            } catch (ParseException ex) {
+                Logger.getLogger(GestionesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            acuerdoPago.setFechaCompromiso(dto.getClasificacion().getAcuerdoPago().getFechaCompromiso());
+            acuerdoPago.setGestion(gestion);
+            gestion.setClasificacion(acuerdoPago);
+            acuerdoPago.setTipoAcuerdo(dto.getClasificacion().getAcuerdoPago().getTipoAcuerdo());
+            acuerdoPago.setTipoClasificacion(dto.getClasificacion().getTipoClasificacion());
+            acuerdoPago.setValorCuotaMensual(dto.getClasificacion().getAcuerdoPago().getValorCuotaMensual());
+            acuerdoPago.setHonoriarioAcuerdo(dto.getClasificacion().getAcuerdoPago().getHonoriarioAcuerdo());
+            acuerdoPago.setValorInteresesMora(dto.getClasificacion().getAcuerdoPago().getValorInteresesMora());
+            acuerdoPago.setValorTotalAcuerdo(dto.getClasificacion().getAcuerdoPago().getValorTotalAcuerdo());
+            acuerdoPago = acuerdoPagoRepository.save(acuerdoPago);
+            
+        }
+        
         gestion = gestionesRepository.save(gestion);
-
+        
         ModelMapper map = new ModelMapper();
         GestionResponse gesRes = map.map(gestion, GestionResponse.class);
 

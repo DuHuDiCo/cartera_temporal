@@ -1,11 +1,14 @@
 package com.cartera_temp.cartera_temp.Models;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -41,12 +44,20 @@ public class AcuerdoPago extends Clasificacion {
     @Column(name = "fecha_compromiso")
     @Temporal(TemporalType.DATE)
     private Date fechaCompromiso;
+    
+    @OneToMany(mappedBy = "acuerdoPago", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Cuotas> cuotasList = new ArrayList<>();
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "asesor_cartera_id", referencedColumnName = "id_asesor_cartera")
     private AsesorCartera asesor;
 
     public AcuerdoPago() {
+    }
+    
+    public void agregarCuota(Cuotas cuota){
+        cuotasList.add(cuota);
+        cuota.setAcuerdoPago(this);
     }
 
     public Gestiones getGestion() {

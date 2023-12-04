@@ -57,8 +57,6 @@ public class Gestiones {
 
     public Gestiones() {
     }
-    
-    
 
     public Long getIdGestion() {
         return idGestion;
