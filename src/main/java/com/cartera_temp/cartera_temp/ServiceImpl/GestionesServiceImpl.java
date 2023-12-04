@@ -99,7 +99,7 @@ public class GestionesServiceImpl implements GestionesService {
         
         gestion.setCuentasPorCobrar(cpc);
 
-        gestion.setDatosAdicionales(dto.getDetallesAdicionales());
+       
         
         if(dto.getClasificacion().getTipoClasificacion().equals("Acuerdo de pago")){
             
@@ -128,7 +128,7 @@ public class GestionesServiceImpl implements GestionesService {
             
         }
         
-        if(dto.getClasificacion().getTipoClasificacion().equals("Nota")){
+        if(dto.getClasificacion().getTipoClasificacion().equals("NOTA")){
             
             Nota nota = new Nota();
             
@@ -184,7 +184,7 @@ public class GestionesServiceImpl implements GestionesService {
         List<GestionesDto> gestiones = fileService.readFileGestiones(multipartFile, dataDto.getDelimitante());
          List<Gestiones> gestionesSaved = guardarGestiones(gestiones);
 
-        System.out.println(gestiones.size());
+        
        
         return gestionesSaved;
     }
@@ -226,7 +226,7 @@ public class GestionesServiceImpl implements GestionesService {
         for (GestionesDto gestione : gestiones) {
             Gestiones newGestion = new Gestiones();
             
-            newGestion.setDatosAdicionales(gestione.getDetallesAdicionales());
+            
             
             CuentasPorCobrar cuenta = cuentaCobrarRepository.findByNumeroObligacion(gestione.getNumeroObligacion());
             if (Objects.isNull(cuenta)) {
@@ -234,18 +234,32 @@ public class GestionesServiceImpl implements GestionesService {
                 
             }
             newGestion.setAsesorCartera(cuenta.getAsesor());
-            
-            Clasificacion clasi = clasificacionRepository.findClasificacionByTipoClasificacion(gestione.getClasificacion());
-            if (Objects.isNull(clasi)) {
-                continue;
-            }
-            
-            newGestion.setClasificacion(clasi);
-            newGestion.setNumeroObligacion(gestione.getNumeroObligacion());
+             newGestion.setNumeroObligacion(gestione.getNumeroObligacion());
             newGestion.setFechaGestion(gestione.getFechaGestion());
             
+            Clasificacion clasi = clasificacionRepository.findByTipoClasificacion(gestione.getClasificacion().toUpperCase());
+            if (Objects.isNull(clasi)) {
+                clasi = new Clasificacion();
+                clasi.setTipoClasificacion(gestione.getClasificacion().toUpperCase());
+                clasi = clasificacionRepository.save(clasi);
+            }
+            
+            Nota nota = new Nota();
+            nota.setDetalleNota(gestione.getDetallesAdicionales());
+            try {
+                nota.setFechaNota(Functions.obtenerFechaYhora());
+            } catch (ParseException ex) {
+                Logger.getLogger(GestionesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+           nota.setAsesor(cuenta.getAsesor());
+           nota.setGestion(newGestion);
+            
+           newGestion.setClasificacion(nota);
+           
             cuenta.agregarGestion(newGestion);
             gestionesSaved.add(newGestion);
+            
+            System.out.println(gestionesSaved.size());
             
         }
         

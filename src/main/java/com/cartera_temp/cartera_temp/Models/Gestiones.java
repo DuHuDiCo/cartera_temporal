@@ -32,8 +32,7 @@ public class Gestiones {
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaGestion;
 
-    @Column(name = "datos_adicionales", nullable = true, columnDefinition = "TEXT")
-    private String datosAdicionales;
+    
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "id_asesor", referencedColumnName = "id_asesor_cartera")
@@ -93,14 +92,7 @@ public class Gestiones {
         this.cuentasPorCobrar = cuentasPorCobrar;
     }
 
-    public String getDatosAdicionales() {
-        return datosAdicionales;
-    }
-
-    public void setDatosAdicionales(String datosAdicionales) {
-        this.datosAdicionales = datosAdicionales;
-    }
-
+  
     public String getNumeroObligacion() {
         return numeroObligacion;
     }

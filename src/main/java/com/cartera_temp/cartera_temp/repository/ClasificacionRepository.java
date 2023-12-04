@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ClasificacionRepository extends JpaRepository<Clasificacion, Long>{
     
-    Clasificacion findClasificacionByTipoClasificacion(String tipoClasificacion);
+    Clasificacion findByTipoClasificacion(String tipoClasificacion);
     
 }

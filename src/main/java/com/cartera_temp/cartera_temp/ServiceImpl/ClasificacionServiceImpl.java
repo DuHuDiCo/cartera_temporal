@@ -22,7 +22,7 @@ public class ClasificacionServiceImpl implements ClasificacionService{
             return null;
         }
         
-        Clasificacion newClasi = clasificacionRepository.findClasificacionByTipoClasificacion(clasificacion.getTipoClasificacion());
+        Clasificacion newClasi = clasificacionRepository.findByTipoClasificacion(clasificacion.getTipoClasificacion());
         
         if(Objects.isNull(newClasi)){
             Clasificacion clasiToSave = new Clasificacion();
