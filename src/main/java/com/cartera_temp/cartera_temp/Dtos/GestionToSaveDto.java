@@ -7,13 +7,9 @@ public class GestionToSaveDto {
     
     private String numeroObligacion;
     
-    private Date fechaCompromiso;
-    
-    private String clasificacion;
+    private ClasificacionDtoTipo clasificacion;
     
     private String gestion;
-    
-    private double valorCompromiso;
     
     private boolean contact;
     
@@ -30,36 +26,12 @@ public class GestionToSaveDto {
         this.numeroObligacion = numeroObligacion;
     }
 
-    public Date getFechaCompromiso() {
-        return fechaCompromiso;
-    }
-
-    public void setFechaCompromiso(Date fechaCompromiso) {
-        this.fechaCompromiso = fechaCompromiso;
-    }
-
-    public String getClasificacion() {
-        return clasificacion;
-    }
-
-    public void setClasificacion(String clasificacion) {
-        this.clasificacion = clasificacion;
-    }
-
     public String getGestion() {
         return gestion;
     }
 
     public void setGestion(String gestion) {
         this.gestion = gestion;
-    }
-
-    public double getValorCompromiso() {
-        return valorCompromiso;
-    }
-
-    public void setValorCompromiso(double valorCompromiso) {
-        this.valorCompromiso = valorCompromiso;
     }
 
     public boolean isContact() {
@@ -76,6 +48,14 @@ public class GestionToSaveDto {
 
     public void setDetallesAdicionales(String detallesAdicionales) {
         this.detallesAdicionales = detallesAdicionales;
+    }
+
+    public ClasificacionDtoTipo getClasificacion() {
+        return clasificacion;
+    }
+
+    public void setClasificacion(ClasificacionDtoTipo clasificacion) {
+        this.clasificacion = clasificacion;
     }
     
 }
