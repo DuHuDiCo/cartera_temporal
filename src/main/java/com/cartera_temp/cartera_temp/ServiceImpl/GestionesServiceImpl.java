@@ -4,6 +4,7 @@ import GestionesDataDto.GestionesDataDto;
 import com.cartera_temp.cartera_temp.Dtos.GestionResponse;
 import com.cartera_temp.cartera_temp.Dtos.GestionToSaveDto;
 import com.cartera_temp.cartera_temp.Dtos.GestionesDto;
+import com.cartera_temp.cartera_temp.Models.AcuerdoPago;
 import com.cartera_temp.cartera_temp.Models.AsesorCartera;
 import com.cartera_temp.cartera_temp.Models.Clasificacion;
 import com.cartera_temp.cartera_temp.Models.CuentasPorCobrar;
@@ -32,7 +33,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class GestionesServiceImpl implements GestionesService {
-
+    
     private final GestionesRepository gestionesRepository;
     private final CuentasPorCobrarRepository cuentaCobrarRepository;
     private final UsuarioClientService usuarioClientService;
@@ -42,7 +43,7 @@ public class GestionesServiceImpl implements GestionesService {
     private final SedeRepository sedeRepository;
     private final BancoRepository bancoRepository;
     private final SaveFiles saveFiles;
-
+    
     public GestionesServiceImpl(GestionesRepository gestionesRepository, CuentasPorCobrarRepository cuentaCobrarRepository, UsuarioClientService usuarioClientService, ClasificacionRepository clasificacionRepository, AsesorCarteraService asesorCartera, FileService fileService, SedeRepository sedeRepository, BancoRepository bancoRepository, SaveFiles saveFiles) {
         this.gestionesRepository = gestionesRepository;
         this.cuentaCobrarRepository = cuentaCobrarRepository;
@@ -54,58 +55,19 @@ public class GestionesServiceImpl implements GestionesService {
         this.bancoRepository = bancoRepository;
         this.saveFiles = saveFiles;
     }
-
+    
     @Override
     public GestionResponse saveOneGestion(GestionToSaveDto dto) {
-
-        if (dto.getNumeroObligacion() == null || dto.getNumeroObligacion().equals("") || dto.getClasificacion() == null || dto.getClasificacion().equals("") || dto.getGestion().equals("") || dto.getGestion() == null) {
-            return null;
-        }
-
-        CuentasPorCobrar cpc = cuentaCobrarRepository.findByNumeroObligacion(dto.getNumeroObligacion());
-        if (Objects.isNull(cpc)) {
-            return null;
-        }
-
-        Usuario usu = usuarioClientService.obtenerUsuarioById(cpc.getAsesor().getUsuarioId());
-        if (Objects.isNull(usu)) {
-            return null;
-        }
-
-        AsesorCartera asesor = asesorCartera.findAsesor(usu.getIdUsuario());
-        if (Objects.isNull(asesor)) {
-            return null;
-        }
-
-        Clasificacion clasificacion = clasificacionRepository.findClasificacionByTipoClasificacion(dto.getClasificacion());
-        if (Objects.isNull(clasificacion)) {
-            return null;
-        }
-
-        Gestiones gestion = new Gestiones();
-
-        gestion.setAsesorCartera(asesor);
-
-        gestion.setClasificacion(clasificacion);
-        gestion.setCuentasPorCobrar(cpc);
-
-        gestion.setDatosAdicionales(dto.getDetallesAdicionales());
-        gestion = gestionesRepository.save(gestion);
-
-        ModelMapper map = new ModelMapper();
-        GestionResponse gesRes = map.map(gestion, GestionResponse.class);
-
-        gesRes.setAsesorCartera(usu.getNombres() + usu.getApellidos());
-
-        return gesRes;
-
+        
+        return null;
+        
     }
-
+    
     @Override
     public List<Gestiones> saveMultipleGestiones(GestionesDataDto dataDto) {
-
+        
         MultipartFile multipartFile = saveFiles.convertirFile(dataDto.getMultipartFile());
-
+        
         List<GestionesDto> gestiones = fileService.readFileGestiones(multipartFile, dataDto.getDelimitante());
         //        List<Gestiones> gestionesSaved = guardarGestiones(gestiones);
 
@@ -113,10 +75,10 @@ public class GestionesServiceImpl implements GestionesService {
         List<Gestiones> gestionesSaved = new ArrayList<>();
         return gestionesSaved;
     }
-
+    
     @Override
     public List<GestionResponse> findHistoricoGestiones(String numeroObligacion) {
-
+        
         if ("".equals(numeroObligacion) || numeroObligacion == null) {
             return null;
         }
@@ -140,51 +102,46 @@ public class GestionesServiceImpl implements GestionesService {
 //            gesResList.add(gesRes);
 //        }
         return null;
-
+        
     }
-
+    
     @Override
     public List<Gestiones> guardarGestiones(List<GestionesDto> gestiones) {
-
+        
         List<Gestiones> gestionesSaved = new ArrayList<>();
-
+        
         for (GestionesDto gestione : gestiones) {
             Gestiones newGestion = new Gestiones();
-
+            
             newGestion.setDatosAdicionales(gestione.getDetallesAdicionales());
-
+            
             CuentasPorCobrar cuenta = cuentaCobrarRepository.findByNumeroObligacion(gestione.getNumeroObligacion());
             if (Objects.isNull(cuenta)) {
                 continue;
-
+                
             }
             newGestion.setAsesorCartera(cuenta.getAsesor());
-
+            
             Clasificacion clasi = clasificacionRepository.findClasificacionByTipoClasificacion(gestione.getClasificacion());
             if (Objects.isNull(clasi)) {
                 continue;
             }
-
+            
             newGestion.setClasificacion(clasi);
-
+            newGestion.setNumeroObligacion(gestione.getNumeroObligacion());
+            newGestion.setFechaGestion(gestione.getFechaGestion());
+            
             cuenta.agregarGestion(newGestion);
             gestionesSaved.add(newGestion);
-
-            StringBuilder sbText = new StringBuilder();
-            sbText.append(gestione.getNumeroObligacion());
-            sbText.append("--------------------");
-            sbText.append(gestionesSaved.size());
-
-            System.out.println(sbText.toString());
-
+            
         }
-
+        
         return gestionesRepository.saveAll(gestionesSaved);
     }
-
+    
     @Override
     public String sendLastDatoAdicional(String numeroObligacion) {
-
+        
         if ("".equals(numeroObligacion) || numeroObligacion == null) {
             return null;
         }
@@ -196,7 +153,7 @@ public class GestionesServiceImpl implements GestionesService {
 //
 //        String datoAdicionalUltimaGestion = ultimaGestion.getDatosAdicionales();
         return null;
-
+        
     }
-
+    
 }

@@ -16,40 +16,33 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-
 @Entity
 @Table(name = "gestiones")
 public class Gestiones {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_gestion")
     private Long idGestion;
-    
-    
+
+    @Column(name = "numero_obligacion", nullable = true, length = 30)
+    private String numeroObligacion;
+
     @Column(name = "fecha_gestion", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaGestion;
-    
-    
-  
-    @Column(name = "datos_adicionales", nullable = true , length = 20000)
-    private String datosAdicionales;
-    
 
-    
+    @Column(name = "datos_adicionales", nullable = true, length = 20000)
+    private String datosAdicionales;
+
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "id_asesor", referencedColumnName = "id_asesor_cartera")
     private AsesorCartera asesorCartera;
-    
- 
-    
+
     @OneToOne
-    @JoinColumn(name = "clasificacion_id" )
+    @JoinColumn(name = "clasificacion_id")
     private Clasificacion clasificacion;
-    
-   
-    
+
     @ManyToOne
     @JoinColumn(name = "cuenta_cobrar_id")
     @JsonIgnore
@@ -57,8 +50,6 @@ public class Gestiones {
 
     public Gestiones() {
     }
-    
-    
 
     public Long getIdGestion() {
         return idGestion;
@@ -68,10 +59,15 @@ public class Gestiones {
         this.idGestion = idGestion;
     }
 
-   
     public Date getFechaGestion() {
         return fechaGestion;
     }
+
+    public void setFechaGestion(Date fechaGestion) {
+        this.fechaGestion = fechaGestion;
+    }
+    
+    
 
     public Clasificacion getClasificacion() {
         return clasificacion;
@@ -80,7 +76,6 @@ public class Gestiones {
     public void setClasificacion(Clasificacion clasificacion) {
         this.clasificacion = clasificacion;
     }
-   
 
     public AsesorCartera getAsesorCartera() {
         return asesorCartera;
@@ -90,7 +85,6 @@ public class Gestiones {
         this.asesorCartera = asesorCartera;
     }
 
-   
     public CuentasPorCobrar getCuentasPorCobrar() {
         return cuentasPorCobrar;
     }
@@ -98,8 +92,6 @@ public class Gestiones {
     public void setCuentasPorCobrar(CuentasPorCobrar cuentasPorCobrar) {
         this.cuentasPorCobrar = cuentasPorCobrar;
     }
-
-   
 
     public String getDatosAdicionales() {
         return datosAdicionales;
@@ -109,6 +101,14 @@ public class Gestiones {
         this.datosAdicionales = datosAdicionales;
     }
 
+    public String getNumeroObligacion() {
+        return numeroObligacion;
+    }
+
+    public void setNumeroObligacion(String numeroObligacion) {
+        this.numeroObligacion = numeroObligacion;
+    }
     
     
+
 }

@@ -155,58 +155,26 @@ public class FileServiceImpl implements FileService {
                     sbNumeroObligacion.append(csvRecord.get(0) == null || " ".equals(csvRecord.get(0)) ? "N/A" : csvRecord.get(0));
                     String numeroObligacion = sbNumeroObligacion.toString();
 
-                    StringBuilder sbCedula = new StringBuilder();
-                    sbCedula.append(csvRecord.get(1) == null || " ".equals(csvRecord.get(1)) ? null : csvRecord.get(1));
-                    String cedula = sbCedula.toString();
-
-                    StringBuilder sbClientes = new StringBuilder();
-                    sbClientes.append(csvRecord.get(2) == null || " ".equals(csvRecord.get(2)) ? "N/A" : csvRecord.get(2));
-                    String clientes = sbClientes.toString();
-
-                    StringBuilder sbSede = new StringBuilder();
-                    sbSede.append(csvRecord.get(3) == null || " ".equals(csvRecord.get(3)) ? null : csvRecord.get(3));
-                    String sede = sbSede.toString();
-
-                    StringBuilder sbBanco = new StringBuilder();
-                    sbBanco.append(csvRecord.get(4) == null || " ".equals(csvRecord.get(4)) ? null : csvRecord.get(4));
-                    String banco = sbBanco.toString();
-
                     StringBuilder sbAsesorCartera = new StringBuilder();
-                    sbAsesorCartera.append(csvRecord.get(5) == null || " ".equals(csvRecord.get(5)) ? null : csvRecord.get(5));
+                    sbAsesorCartera.append(csvRecord.get(1) == null || " ".equals(csvRecord.get(1)) ? null : csvRecord.get(1));
                     String asesor = sbAsesorCartera.toString();
 
-                    Date fechaGestion = (csvRecord.get(6) == null || "".equals(csvRecord.get(6))) ? null : Functions.fechaDateToString(csvRecord.get(6));
-                    Date fechaCompromiso = (csvRecord.get(7) == null || "".equals(csvRecord.get(7))) ? null : Functions.stringToDate(csvRecord.get(7));
+                    Date fechaGestion = (csvRecord.get(2) == null || "".equals(csvRecord.get(2))) ? null : Functions.fechaDateToString(csvRecord.get(2));
 
                     StringBuilder sbClasificacion = new StringBuilder();
-                    sbClasificacion.append(csvRecord.get(8) == null || " ".equals(csvRecord.get(8)) ? null : csvRecord.get(8));
+                    sbClasificacion.append(csvRecord.get(3) == null || " ".equals(csvRecord.get(3)) ? null : csvRecord.get(3));
                     String clasificacion = sbClasificacion.toString();
 
-                    StringBuilder sbGestion = new StringBuilder();
-                    sbGestion.append(csvRecord.get(9) == null || " ".equals(csvRecord.get(9)) ? null : csvRecord.get(9));
-                    String gestion = sbGestion.toString();
-
-                    int valorCompromiso = (csvRecord.get(10) == null || " ".equals(csvRecord.get(10)) ? null : Integer.parseInt(csvRecord.get(10)));
-
                     StringBuilder sbDatosAdicionales = new StringBuilder();
-                    sbDatosAdicionales.append(csvRecord.get(11) == null || " ".equals(csvRecord.get(11)) ? null : csvRecord.get(11));
+                    sbDatosAdicionales.append(csvRecord.get(4) == null || " ".equals(csvRecord.get(4)) ? null : csvRecord.get(4));
                     String datosAdicionales = sbDatosAdicionales.toString();
 
-                    StringBuilder sbGestionLlamada = new StringBuilder();
-                    sbGestionLlamada.append(csvRecord.get(12) == null || " ".equals(csvRecord.get(12)) ? null : csvRecord.get(12));
-                    String gestionLlamada = sbGestionLlamada.toString();
-
-                    GestionesDto gestiones = new GestionesDto(numeroObligacion, cedula, clientes, sede, banco, asesor, fechaGestion, fechaCompromiso, clasificacion, gestion, valorCompromiso, datosAdicionales, gestionLlamada);
-
+                    GestionesDto gestiones = new GestionesDto(numeroObligacion, asesor, fechaGestion, clasificacion, datosAdicionales);
                     gestionesDto.add(gestiones);
-                    
-                    
-
                 } catch (Exception e) {
-                    
+
                 }
 
-                
             }
             return gestionesDto;
         } catch (IOException ex) {
