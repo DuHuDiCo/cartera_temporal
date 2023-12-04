@@ -60,5 +60,13 @@ public class CuentasPorCobrarController {
         return ResponseEntity.ok(cpcRes);
         
     }
+    
+    @GetMapping("/getCuentaCobrarByCedula")
+    public ResponseEntity<List<CuentasPorCobrarResponse>> obtenerCuentasPorCobrarByNumeroCedula(@RequestParam(name = "cedula")String numeroObligacion){
+        
+        List<CuentasPorCobrarResponse> cpcRes = cuentasPorCobrarService.getCpcByNumeroObligacionContaining(numeroObligacion);
+        return ResponseEntity.ok(cpcRes);
+        
+    }
 
 }
