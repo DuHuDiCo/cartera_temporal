@@ -25,11 +25,13 @@ public class ClasificacionTareaServiceImpl implements ClasificacionTareaService{
             return null;
         }
         
-        ClasificacionTarea clasiTarea = new ClasificacionTarea();
-        clasiTarea = clasificacionTareaRepository.findByClasificacionTarea(clasificacionTarea);
-        if(!Objects.isNull(clasiTarea)){
+        
+        ClasificacionTarea clasiTarea = clasificacionTareaRepository.findByClasificacionTarea(clasificacionTarea);
+        if(Objects.nonNull(clasiTarea)){
             return null;
         }
+        
+        clasiTarea = new ClasificacionTarea();
         
         clasiTarea.setClasificacionTarea(clasificacionTarea);
         clasiTarea = clasificacionTareaRepository.save(clasiTarea);
