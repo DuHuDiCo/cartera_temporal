@@ -21,15 +21,17 @@ public class ClasificacionTareaServiceImpl implements ClasificacionTareaService{
     @Override
     public ClasificacionTarea guardarClasificacionTarea(String clasificacionTarea) {
         
-        if(clasificacionTarea.equals("") || clasificacionTarea == null){
+        if(clasificacionTarea == "" || clasificacionTarea == null){
             return null;
         }
         
-        ClasificacionTarea clasiTarea = new ClasificacionTarea();
-        clasiTarea = clasificacionTareaRepository.findByClasificacionTarea(clasificacionTarea);
-        if(!Objects.isNull(clasiTarea)){
+        
+        ClasificacionTarea clasiTarea = clasificacionTareaRepository.findByClasificacionTarea(clasificacionTarea);
+        if(Objects.nonNull(clasiTarea)){
             return null;
         }
+        
+        clasiTarea = new ClasificacionTarea();
         
         clasiTarea.setClasificacionTarea(clasificacionTarea);
         clasiTarea = clasificacionTareaRepository.save(clasiTarea);
@@ -48,7 +50,7 @@ public class ClasificacionTareaServiceImpl implements ClasificacionTareaService{
     @Override
     public ClasificacionTarea obtenerClasificacionTareaByNombre(String clasificacionTarea) {
         
-        if(clasificacionTarea.equals("") || clasificacionTarea == null){
+        if(clasificacionTarea == "" || clasificacionTarea == null){
             return null;
         }
         
@@ -62,7 +64,7 @@ public class ClasificacionTareaServiceImpl implements ClasificacionTareaService{
     @Override
     public ClasificacionTarea actualizarClasificacionTarea(ClasificacionToUpdateDto dto) {
         
-        if(dto.getClasificacionToUpdate().equals("")|| dto.getClasificacionToUpdate() == null || dto.getIdClasificacion() == 0 || dto.getIdClasificacion() == null){
+        if(dto.getClasificacionToUpdate() == ""|| dto.getClasificacionToUpdate() == null || dto.getIdClasificacion() == 0 || dto.getIdClasificacion() == null){
             return null;
         }
         
