@@ -21,7 +21,7 @@ public class ClasificacionTareaServiceImpl implements ClasificacionTareaService{
     @Override
     public ClasificacionTarea guardarClasificacionTarea(String clasificacionTarea) {
         
-        if(clasificacionTarea.equals("") || clasificacionTarea == null){
+        if(clasificacionTarea == "" || clasificacionTarea == null){
             return null;
         }
         
