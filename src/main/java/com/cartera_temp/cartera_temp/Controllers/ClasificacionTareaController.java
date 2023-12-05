@@ -62,9 +62,8 @@ public class ClasificacionTareaController {
     }
     
     @DeleteMapping("/eliminarClasificacionTarea/{id}")
-    public ResponseEntity<String> deleteClasificacionTarea(@PathVariable("id") Long idClasificacionTarea){
+    public void deleteClasificacionTarea(@PathVariable("id") Long idClasificacionTarea){
         clasificacionTareaService.eliminarClasificacionTarea(idClasificacionTarea);
-        return ResponseEntity.ok("ELIMINADO");
     }
     
     @PutMapping("/actualizarClasificacionTarea")

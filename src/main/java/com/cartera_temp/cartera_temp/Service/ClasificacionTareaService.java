@@ -16,6 +16,6 @@ public interface ClasificacionTareaService {
 
     public ClasificacionTarea actualizarClasificacionTarea(ClasificacionToUpdateDto dto);
 
-    public String eliminarClasificacionTarea(Long idClasificacionTarea);
+    public void eliminarClasificacionTarea(Long idClasificacionTarea);
 
 }

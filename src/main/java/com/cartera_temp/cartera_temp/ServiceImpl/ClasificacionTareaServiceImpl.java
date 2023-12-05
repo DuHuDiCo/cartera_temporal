@@ -79,9 +79,8 @@ public class ClasificacionTareaServiceImpl implements ClasificacionTareaService{
     }
 
     @Override
-    public String eliminarClasificacionTarea(Long idClasificacionTarea) {
+    public void eliminarClasificacionTarea(Long idClasificacionTarea) {
         clasificacionTareaRepository.deleteById(idClasificacionTarea);
-        return "ELIMINADO";
     }
 
     @Override
