@@ -48,7 +48,7 @@ public class ClasificacionTareaServiceImpl implements ClasificacionTareaService{
     @Override
     public ClasificacionTarea obtenerClasificacionTareaByNombre(String clasificacionTarea) {
         
-        if(clasificacionTarea.equals("") || clasificacionTarea == null){
+        if(clasificacionTarea == "" || clasificacionTarea == null){
             return null;
         }
         
@@ -62,7 +62,7 @@ public class ClasificacionTareaServiceImpl implements ClasificacionTareaService{
     @Override
     public ClasificacionTarea actualizarClasificacionTarea(ClasificacionToUpdateDto dto) {
         
-        if(dto.getClasificacionToUpdate().equals("")|| dto.getClasificacionToUpdate() == null || dto.getIdClasificacion() == 0 || dto.getIdClasificacion() == null){
+        if(dto.getClasificacionToUpdate() == ""|| dto.getClasificacionToUpdate() == null || dto.getIdClasificacion() == 0 || dto.getIdClasificacion() == null){
             return null;
         }
         
