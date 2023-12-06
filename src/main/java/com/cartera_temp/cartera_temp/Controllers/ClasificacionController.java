@@ -1,7 +1,8 @@
 package com.cartera_temp.cartera_temp.Controllers;
 
 import com.cartera_temp.cartera_temp.Dtos.ClasificacionDto;
-import com.cartera_temp.cartera_temp.Models.Clasificacion;
+
+import com.cartera_temp.cartera_temp.Models.TipoClasificacionGestion;
 import com.cartera_temp.cartera_temp.Service.ClasificacionService;
 import java.util.List;
 import java.util.Objects;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -31,9 +31,9 @@ public class ClasificacionController {
     }
     
     @PostMapping("/saveClasificacion")
-    public ResponseEntity<Clasificacion> guardarClasificacion(@RequestBody Clasificacion clasificacionBody){
+    public ResponseEntity<TipoClasificacionGestion> guardarClasificacion(@RequestBody TipoClasificacionGestion clasificacionBody){
      
-        Clasificacion clasificacion = clasificacionService.saveClasificacion(clasificacionBody);
+        TipoClasificacionGestion clasificacion = clasificacionService.saveClasificacion(clasificacionBody);
         if(Objects.isNull(clasificacion)){
             return ResponseEntity.badRequest().build();
         }
@@ -42,14 +42,14 @@ public class ClasificacionController {
     }
     
     @GetMapping("/getClasificaciones")
-    public ResponseEntity<List<Clasificacion>> obtenerTodasClasificaciones(){
-        List<Clasificacion> clasificacions = clasificacionService.findAllClasificacion();
+    public ResponseEntity<List<TipoClasificacionGestion>> obtenerTodasClasificaciones(){
+        List<TipoClasificacionGestion> clasificacions = clasificacionService.findAllClasificacion();
         return ResponseEntity.ok(clasificacions);
     }
     
     @GetMapping("/getClasificacionById/{id_clasificacion}")
-    public ResponseEntity<Clasificacion> obtenerClasificacionById(@PathVariable("id_clasificacion") Long idClasificacion){
-        Clasificacion clasificacion = clasificacionService.getClasificacionById(idClasificacion);
+    public ResponseEntity<TipoClasificacionGestion> obtenerClasificacionById(@PathVariable("id_clasificacion") Long idClasificacion){
+        TipoClasificacionGestion clasificacion = clasificacionService.getClasificacionById(idClasificacion);
         if(Objects.isNull(clasificacion)){
             return ResponseEntity.badRequest().build();
         }
@@ -57,8 +57,8 @@ public class ClasificacionController {
     }
     
     @PutMapping("/updateClasificacion")
-    public ResponseEntity<Clasificacion> actualizarClasificacion(@RequestBody ClasificacionDto dto){
-        Clasificacion clasificacion = clasificacionService.updateClasificacion(dto);
+    public ResponseEntity<TipoClasificacionGestion> actualizarClasificacion(@RequestBody ClasificacionDto dto){
+        TipoClasificacionGestion clasificacion = clasificacionService.updateClasificacion(dto);
         if(Objects.isNull(clasificacion)){
             ResponseEntity.badRequest().build();
         }

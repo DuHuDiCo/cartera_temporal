@@ -33,8 +33,8 @@ public class GestionesController {
     }
     
     @PostMapping("/saveOneGestion")
-    public ResponseEntity<GestionResponse> saveOneGestion(@RequestBody GestionToSaveDto  dto){
-        GestionResponse gestion = gestionesService.saveOneGestion(dto);
+    public ResponseEntity<Gestiones> saveOneGestion(@RequestBody GestionToSaveDto  dto){
+        Gestiones gestion = gestionesService.saveOneGestion(dto);
         if(Objects.isNull(gestion)){
             return ResponseEntity.badRequest().build();
         }

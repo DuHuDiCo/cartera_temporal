@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AcuerdoPagoRepository extends JpaRepository<AcuerdoPago, Long>{
     
+    AcuerdoPago findByClasificacion(String clasificacion);
+    
 }

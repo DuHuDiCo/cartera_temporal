@@ -1,5 +1,6 @@
 package com.cartera_temp.cartera_temp.Models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -8,16 +9,18 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
-public class AcuerdoPago extends Clasificacion {
+public class AcuerdoPago extends ClasificacionGestion {
 
-    @OneToOne(mappedBy = "clasificacion", cascade = CascadeType.ALL)
-    private Gestiones gestion;
+    @OneToOne(mappedBy = "clasificacionGestion", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Gestiones gestiones;
 
     @Column(name = "detalle", length = 2000)
     private String detalle;
@@ -44,7 +47,7 @@ public class AcuerdoPago extends Clasificacion {
     @Column(name = "fecha_compromiso")
     @Temporal(TemporalType.DATE)
     private Date fechaCompromiso;
-    
+
     @OneToMany(mappedBy = "acuerdoPago", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Cuotas> cuotasList = new ArrayList<>();
 
@@ -54,18 +57,26 @@ public class AcuerdoPago extends Clasificacion {
 
     public AcuerdoPago() {
     }
-    
-    public void agregarCuota(Cuotas cuota){
+
+    public void agregarCuota(Cuotas cuota) {
         cuotasList.add(cuota);
         cuota.setAcuerdoPago(this);
     }
 
-    public Gestiones getGestion() {
-        return gestion;
+    public Gestiones getGestiones() {
+        return gestiones;
     }
 
-    public void setGestion(Gestiones gestion) {
-        this.gestion = gestion;
+    public void setGestiones(Gestiones gestiones) {
+        this.gestiones = gestiones;
+    }
+
+    public List<Cuotas> getCuotasList() {
+        return cuotasList;
+    }
+
+    public void setCuotasList(List<Cuotas> cuotasList) {
+        this.cuotasList = cuotasList;
     }
 
     public String getDetalle() {
@@ -140,6 +151,4 @@ public class AcuerdoPago extends Clasificacion {
         this.asesor = asesor;
     }
 
-    
-    
 }

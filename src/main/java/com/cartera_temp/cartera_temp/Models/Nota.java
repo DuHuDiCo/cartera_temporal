@@ -1,29 +1,33 @@
-
 package com.cartera_temp.cartera_temp.Models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Date;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
-public class Nota extends Clasificacion{
-    
-    @OneToOne(mappedBy = "clasificacion", cascade = CascadeType.ALL)
-    private Gestiones gestion;
-    
-   @Column(name = "detalle_nota", columnDefinition = "TEXT")
+public class Nota extends ClasificacionGestion {
+
+
+    @OneToOne(mappedBy = "clasificacionGestion", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Gestiones gestiones;
+
+    @Column(name = "detalle_nota", columnDefinition = "TEXT")
     private String detalleNota;
-    
+
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "fecha_nota")
     private Date fechaNota;
-    
+
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "asesor_cartera_id", referencedColumnName = "id_asesor_cartera")
     private AsesorCartera asesor;
@@ -31,13 +35,16 @@ public class Nota extends Clasificacion{
     public Nota() {
     }
 
-    public Gestiones getGestion() {
-        return gestion;
+    public Gestiones getGestiones() {
+        return gestiones;
     }
 
-    public void setGestion(Gestiones gestion) {
-        this.gestion = gestion;
+    public void setGestiones(Gestiones gestiones) {
+        this.gestiones = gestiones;
     }
+
+    
+    
 
     public String getDetalleNota() {
         return detalleNota;
@@ -62,12 +69,5 @@ public class Nota extends Clasificacion{
     public void setAsesor(AsesorCartera asesor) {
         this.asesor = asesor;
     }
-    
-    
-    
-    
-    
-    
-
 
 }

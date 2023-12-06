@@ -1,17 +1,19 @@
 package com.cartera_temp.cartera_temp.Service;
 
 import com.cartera_temp.cartera_temp.Dtos.ClasificacionDto;
-import com.cartera_temp.cartera_temp.Models.Clasificacion;
+
+import com.cartera_temp.cartera_temp.Models.ClasificacionGestion;
+import com.cartera_temp.cartera_temp.Models.TipoClasificacionGestion;
 import java.util.List;
 
 public interface ClasificacionService {
 
-    public Clasificacion saveClasificacion(Clasificacion clasificacion);
+    public TipoClasificacionGestion saveClasificacion(TipoClasificacionGestion clasificacion);
     
-    public List<Clasificacion> findAllClasificacion();
+    public List<TipoClasificacionGestion> findAllClasificacion();
     
-    public Clasificacion updateClasificacion(ClasificacionDto dto);
+    public TipoClasificacionGestion updateClasificacion(ClasificacionDto dto);
     
-    public Clasificacion getClasificacionById(Long idClasificacion);
+    public TipoClasificacionGestion getClasificacionById(Long idClasificacion);
     
 }

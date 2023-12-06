@@ -1,26 +1,23 @@
 package com.cartera_temp.cartera_temp.Dtos;
 
-import com.cartera_temp.cartera_temp.Models.Banco;
-import com.cartera_temp.cartera_temp.Models.Clasificacion;
+import com.cartera_temp.cartera_temp.Models.ClasificacionGestion;
+
 import com.cartera_temp.cartera_temp.Models.CuentasPorCobrar;
-import com.cartera_temp.cartera_temp.Models.Sede;
 import java.util.Date;
 
 public class GestionResponse {
 
     private Long idGestion;
     private String numeroObligacion;
-    private String numeroDoc;
-    private String nombreCliente;
+
     private Date fechaGestion;
-    private Date fechaCompromiso;
-    private String gestion;
-    private boolean isContacted;
-    private double valorCompromiso;
+    private String detallesGestion;
+    private String detallesAdicionales;
+
     private String asesorCartera;
-    private Banco banco;
-    private Clasificacion clasificacion;
-    private Sede sede;
+
+    private ClasificacionGestion clasificacion;
+
     private CuentasPorCobrar cpc;
 
     public GestionResponse() {
@@ -42,22 +39,6 @@ public class GestionResponse {
         this.numeroObligacion = numeroObligacion;
     }
 
-    public String getNumeroDoc() {
-        return numeroDoc;
-    }
-
-    public void setNumeroDoc(String numeroDoc) {
-        this.numeroDoc = numeroDoc;
-    }
-
-    public String getNombreCliente() {
-        return nombreCliente;
-    }
-
-    public void setNombreCliente(String nombreCliente) {
-        this.nombreCliente = nombreCliente;
-    }
-
     public Date getFechaGestion() {
         return fechaGestion;
     }
@@ -66,36 +47,20 @@ public class GestionResponse {
         this.fechaGestion = fechaGestion;
     }
 
-    public Date getFechaCompromiso() {
-        return fechaCompromiso;
+    public ClasificacionGestion getClasificacion() {
+        return clasificacion;
     }
 
-    public void setFechaCompromiso(Date fechaCompromiso) {
-        this.fechaCompromiso = fechaCompromiso;
+    public void setClasificacion(ClasificacionGestion clasificacion) {
+        this.clasificacion = clasificacion;
     }
 
-    public String getGestion() {
-        return gestion;
+    public CuentasPorCobrar getCpc() {
+        return cpc;
     }
 
-    public void setGestion(String gestion) {
-        this.gestion = gestion;
-    }
-
-    public boolean isIsContacted() {
-        return isContacted;
-    }
-
-    public void setIsContacted(boolean isContacted) {
-        this.isContacted = isContacted;
-    }
-
-    public double getValorCompromiso() {
-        return valorCompromiso;
-    }
-
-    public void setValorCompromiso(double valorCompromiso) {
-        this.valorCompromiso = valorCompromiso;
+    public void setCpc(CuentasPorCobrar cpc) {
+        this.cpc = cpc;
     }
 
     public String getAsesorCartera() {
@@ -106,38 +71,22 @@ public class GestionResponse {
         this.asesorCartera = asesorCartera;
     }
 
-    public Banco getBanco() {
-        return banco;
+    public String getDetallesGestion() {
+        return detallesGestion;
     }
 
-    public void setBanco(Banco banco) {
-        this.banco = banco;
+    public void setDetallesGestion(String detallesGestion) {
+        this.detallesGestion = detallesGestion;
     }
 
-    public Clasificacion getClasificacion() {
-        return clasificacion;
+    public String getDetallesAdicionales() {
+        return detallesAdicionales;
     }
 
-    public void setClasificacion(Clasificacion clasificacion) {
-        this.clasificacion = clasificacion;
+    public void setDetallesAdicionales(String detallesAdicionales) {
+        this.detallesAdicionales = detallesAdicionales;
     }
 
-    public Sede getSede() {
-        return sede;
-    }
-
-    public void setSede(Sede sede) {
-        this.sede = sede;
-    }
-
-    public CuentasPorCobrar getCpc() {
-        return cpc;
-    }
-
-    public void setCpc(CuentasPorCobrar cpc) {
-        this.cpc = cpc;
-    }
-    
     
     
 }

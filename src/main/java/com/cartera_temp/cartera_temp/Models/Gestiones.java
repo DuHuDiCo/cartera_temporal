@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -32,15 +33,20 @@ public class Gestiones {
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaGestion;
 
+    @Column(name = "detalles_gestion", nullable = true, columnDefinition = "TEXT")
+    private String detallesGestion;
     
+    @Column(name = "detalles_adicionales", nullable = true, columnDefinition = "TEXT")
+    private String detallesAdicionales;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "id_asesor", referencedColumnName = "id_asesor_cartera")
     private AsesorCartera asesorCartera;
+    
 
-    @OneToOne
-    @JoinColumn(name = "clasificacion_id")
-    private Clasificacion clasificacion;
+   @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "clasificacion_id", referencedColumnName = "id_clasificacion_gestion")
+    private ClasificacionGestion clasificacionGestion;
 
     @ManyToOne
     @JoinColumn(name = "cuenta_cobrar_id")
@@ -65,16 +71,19 @@ public class Gestiones {
     public void setFechaGestion(Date fechaGestion) {
         this.fechaGestion = fechaGestion;
     }
+
+    public ClasificacionGestion getClasificacion() {
+        return clasificacionGestion;
+    }
+
+    public void setClasificacion(ClasificacionGestion clasificacion) {
+        this.clasificacionGestion = clasificacion;
+    }
+    
     
     
 
-    public Clasificacion getClasificacion() {
-        return clasificacion;
-    }
-
-    public void setClasificacion(Clasificacion clasificacion) {
-        this.clasificacion = clasificacion;
-    }
+   
 
     public AsesorCartera getAsesorCartera() {
         return asesorCartera;
@@ -100,6 +109,31 @@ public class Gestiones {
     public void setNumeroObligacion(String numeroObligacion) {
         this.numeroObligacion = numeroObligacion;
     }
+
+    public ClasificacionGestion getClasificacionGestion() {
+        return clasificacionGestion;
+    }
+
+    public void setClasificacionGestion(ClasificacionGestion clasificacionGestion) {
+        this.clasificacionGestion = clasificacionGestion;
+    }
+
+    public String getDetallesGestion() {
+        return detallesGestion;
+    }
+
+    public void setDetallesGestion(String detallesGestion) {
+        this.detallesGestion = detallesGestion;
+    }
+
+    public String getDetallesAdicionales() {
+        return detallesAdicionales;
+    }
+
+    public void setDetallesAdicionales(String detallesAdicionales) {
+        this.detallesAdicionales = detallesAdicionales;
+    }
+    
     
     
 
