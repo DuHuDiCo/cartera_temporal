@@ -78,7 +78,7 @@ public class GestionesServiceImpl implements GestionesService {
     }
 
     @Override
-    public Gestiones saveOneGestion(GestionToSaveDto dto) {
+    public GestionResponse saveOneGestion(GestionToSaveDto dto) {
 
         if (dto.getNumeroObligacion() == null || dto.getNumeroObligacion().equals("") || dto.getClasificacion() == null || dto.getClasificacion().equals("") || dto.getGestion().equals("") || dto.getGestion() == null) {
             return null;
@@ -200,7 +200,12 @@ public class GestionesServiceImpl implements GestionesService {
 
         gestion = gestionesRepository.save(gestion);
 
-        return gestion;
+        ModelMapper map = new ModelMapper();
+        GestionResponse gesRes = map.map(gestion, GestionResponse.class);
+
+        gesRes.setAsesorCartera(usu.getNombres() + usu.getApellidos());
+
+        return gesRes;
 
     }
 

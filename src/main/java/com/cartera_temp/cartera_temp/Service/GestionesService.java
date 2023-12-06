@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface GestionesService {
  
-    public Gestiones saveOneGestion(GestionToSaveDto dto);
+    public GestionResponse saveOneGestion(GestionToSaveDto dto);
     
     public List<Gestiones> saveMultipleGestiones(GestionesDataDto dataDto);
     
