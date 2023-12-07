@@ -297,7 +297,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
     @Override
     public CuentasPorCobrarResponse updateCpcToCalculate(CuentaToCalculateDto dto) {
 
-        if(dto.getFechaVencimiento() == null || dto.getMoraObligatoria() == 0 || dto.getNumeroObligacion() == null || dto.getNumeroObligacion() == "" || dto.getUsername() == null || dto.getUsername() == "" || dto.getValorTotal() == 0){
+        if(dto.getFechaVencimiento() == null || dto.getNumeroObligacion() == null || dto.getNumeroObligacion() == "" || dto.getUsername() == null || dto.getUsername() == "" || dto.getValorTotal() == 0){
             return null;
         }
         
