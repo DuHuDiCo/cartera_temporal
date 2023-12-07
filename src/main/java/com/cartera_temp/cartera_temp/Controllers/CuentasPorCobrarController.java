@@ -1,6 +1,7 @@
 
 package com.cartera_temp.cartera_temp.Controllers;
 
+import com.cartera_temp.cartera_temp.Dtos.CuentaToCalculateDto;
 import com.cartera_temp.cartera_temp.Dtos.CuentasPorCobrarDto;
 import com.cartera_temp.cartera_temp.Dtos.CuentasPorCobrarResponse;
 import com.cartera_temp.cartera_temp.Models.CuentasPorCobrar;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
@@ -67,6 +69,15 @@ public class CuentasPorCobrarController {
         List<CuentasPorCobrarResponse> cpcRes = cuentasPorCobrarService.getCpcByNumeroObligacionContaining(numeroObligacion);
         return ResponseEntity.ok(cpcRes);
         
+    }
+    
+    @PutMapping("/updateCuentaCobrarToCalculate")
+    public ResponseEntity<CuentasPorCobrarResponse> updateCuentaCobrarToCalculate(@RequestBody CuentaToCalculateDto dto){
+        CuentasPorCobrarResponse cpc = cuentasPorCobrarService.updateCpcToCalculate(dto);
+        if(Objects.isNull(cpc)){
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(cpc);
     }
 
 }

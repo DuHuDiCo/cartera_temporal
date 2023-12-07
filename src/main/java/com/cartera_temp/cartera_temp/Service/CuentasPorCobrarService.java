@@ -2,6 +2,7 @@
 
 package com.cartera_temp.cartera_temp.Service;
 
+import com.cartera_temp.cartera_temp.Dtos.CuentaToCalculateDto;
 import com.cartera_temp.cartera_temp.Dtos.CuentasPorCobrarDto;
 import com.cartera_temp.cartera_temp.Dtos.CuentasPorCobrarResponse;
 import com.cartera_temp.cartera_temp.Models.CuentasPorCobrar;
@@ -22,5 +23,7 @@ public interface CuentasPorCobrarService {
     public List<CuentasPorCobrarResponse> getCpcByNumeroObligacionContaining(String numeroObligacion);
     
     public CuentasPorCobrarResponse getCpcByNumeroObligacion(String numeroObligacion);
+    
+    public CuentasPorCobrarResponse updateCpcToCalculate(CuentaToCalculateDto dto);
 
 }

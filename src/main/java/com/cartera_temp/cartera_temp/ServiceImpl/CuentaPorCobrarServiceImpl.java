@@ -2,6 +2,7 @@ package com.cartera_temp.cartera_temp.ServiceImpl;
 
 import com.cartera_temp.cartera_temp.Dtos.AsesorCarteraResponse;
 import com.cartera_temp.cartera_temp.Dtos.ClientesDto;
+import com.cartera_temp.cartera_temp.Dtos.CuentaToCalculateDto;
 import com.cartera_temp.cartera_temp.Dtos.CuentasPorCobrarDto;
 import com.cartera_temp.cartera_temp.Dtos.CuentasPorCobrarResponse;
 import com.cartera_temp.cartera_temp.FeignClients.ClientesClient;
@@ -107,7 +108,6 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             cuentas.setTotalObligatoria(cuentaPorCobrar.getTotalObligacion());
 
             Sede sede = sedeService.findSede(cuentaPorCobrar.getSede());
-            
 
             if (Objects.isNull(sede)) {
                 sede = sedeService.guardarSede(cuentaPorCobrar.getSede());
@@ -263,34 +263,90 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
         ModelMapper map = new ModelMapper();
 
         for (CuentasPorCobrar cuentasPorCobrar : cpcList) {
-            
+
             CuentasPorCobrarResponse cuentasPorCobrarResponse = new CuentasPorCobrarResponse();
-            
+
             List<ClientesDto> cliente = clientesClient.buscarClientesByNumeroObligacion(cuentasPorCobrar.getNumeroObligacion(), token);
-                if (CollectionUtils.isEmpty(cliente)) {
-                    return null;
-                }
-                cuentasPorCobrarResponse.setClientes(cliente);
+            if (CollectionUtils.isEmpty(cliente)) {
+                return null;
+            }
+            cuentasPorCobrarResponse.setClientes(cliente);
 
-                Usuario usu = usuarioClient.getUsuarioById(cuentasPorCobrar.getAsesor().getUsuarioId(), token);
+            Usuario usu = usuarioClient.getUsuarioById(cuentasPorCobrar.getAsesor().getUsuarioId(), token);
 
-                if (Objects.isNull(usu)) {
-                    return null;
-                }
+            if (Objects.isNull(usu)) {
+                return null;
+            }
 
-                AsesorCarteraResponse asesor = new AsesorCarteraResponse();
+            AsesorCarteraResponse asesor = new AsesorCarteraResponse();
 
-                asesor.setUsuario(usu);
-                asesor.setIdAsesorCartera(cuentasPorCobrar.getAsesor().getIdAsesorCartera());
+            asesor.setUsuario(usu);
+            asesor.setIdAsesorCartera(cuentasPorCobrar.getAsesor().getIdAsesorCartera());
 
-                cuentasPorCobrarResponse.setAsesorCarteraResponse(asesor);
+            cuentasPorCobrarResponse.setAsesorCarteraResponse(asesor);
 
-                cuentasPorCobrarResponse = map.map(cuentasPorCobrar, CuentasPorCobrarResponse.class);
-                cpcResList.add(cuentasPorCobrarResponse);
-            
+            cuentasPorCobrarResponse = map.map(cuentasPorCobrar, CuentasPorCobrarResponse.class);
+            cpcResList.add(cuentasPorCobrarResponse);
+
         }
 
         return cpcResList;
+
+    }
+
+    @Override
+    public CuentasPorCobrarResponse updateCpcToCalculate(CuentaToCalculateDto dto) {
+
+        if(dto.getFechaVencimiento() == null || dto.getMoraObligatoria() == 0 || dto.getNumeroObligacion() == null || dto.getNumeroObligacion() == "" || dto.getUsername() == null || dto.getUsername() == "" || dto.getValorTotal() == 0){
+            return null;
+        }
+        
+        CuentasPorCobrar cpc = cuentasPorCobrarRepository.findByNumeroObligacion(dto.getNumeroObligacion());
+        if(Objects.isNull(cpc)){
+            return null;
+        }
+        
+        Usuario usu = usuarioClient.getUserByUsername(dto.getUsername());
+        
+        if(Objects.isNull(usu)){
+            return  null;
+        }
+        
+        AsesorCartera asesor = asesorCarteraRepository.findByUsuarioId(usu.getIdUsuario());
+        if(Objects.isNull(asesor)){
+            return null;
+        }
+        
+        if(cpc.getAsesor() != asesor ){
+            cpc.setAsesor(asesor);
+        }
+        
+        if(cpc.getTotalObligatoria() != dto.getValorTotal()){
+            cpc.setTotalObligatoria(dto.getValorTotal());
+        }
+        
+        if(cpc.getMoraObligatoria() != dto.getMoraObligatoria()){
+            cpc.setMoraObligatoria(dto.getMoraObligatoria());
+        }
+        
+        if(cpc.getFechaVencimiento() != dto.getFechaVencimiento()){
+            cpc.setFechaVencimiento(dto.getFechaVencimiento());
+        }
+        
+        cpc =cuentasPorCobrarRepository.save(cpc);
+        
+        ModelMapper map = new ModelMapper();
+        
+        CuentasPorCobrarResponse cpcRes = map.map(cpc, CuentasPorCobrarResponse.class);
+        
+        AsesorCarteraResponse asesorRes = new AsesorCarteraResponse();
+        
+        asesorRes.setIdAsesorCartera(asesor.getIdAsesorCartera());
+        asesorRes.setUsuario(usu);
+        
+        cpcRes.setAsesorCarteraResponse(asesorRes);
+        
+        return cpcRes;
 
     }
 
