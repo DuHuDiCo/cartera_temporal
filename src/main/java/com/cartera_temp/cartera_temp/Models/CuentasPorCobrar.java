@@ -103,6 +103,9 @@ public class CuentasPorCobrar {
     @Column(name = "mora_obligatoria")
     private double moraObligatoria;
 
+    @Column(name = "total_obligatoria")
+    private double totalObligatoria;
+
     @Column(name = "cuotas_mora")
     private int cuotasMora;
 
@@ -331,6 +334,14 @@ public class CuentasPorCobrar {
 
     public void setGestiones(List<Gestiones> gestiones) {
         this.gestiones = gestiones;
+    }
+
+    public double getTotalObligatoria() {
+        return totalObligatoria;
+    }
+
+    public void setTotalObligatoria(double totalObligatoria) {
+        this.totalObligatoria = totalObligatoria;
     }
 
     

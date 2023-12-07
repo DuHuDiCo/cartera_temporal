@@ -104,9 +104,10 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             cuentas.setValorNotaDebito(cuentaPorCobrar.getValorNotaDebito());
             cuentas.setValorPagos(cuentaPorCobrar.getValorPagos());
             cuentas.setVendedor(cuentaPorCobrar.getVendedor());
+            cuentas.setTotalObligatoria(cuentaPorCobrar.getTotalObligacion());
 
             Sede sede = sedeService.findSede(cuentaPorCobrar.getSede());
-            System.out.println(cuentaPorCobrar.getSede());
+            
 
             if (Objects.isNull(sede)) {
                 sede = sedeService.guardarSede(cuentaPorCobrar.getSede());
@@ -136,6 +137,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             }
             cuentas.setAsesor(asesor);
             cuentasSaved.add(cuentas);
+            System.out.println(cuentasSaved.size());
         }
         return cuentasPorCobrarRepository.saveAll(cuentasSaved);
 

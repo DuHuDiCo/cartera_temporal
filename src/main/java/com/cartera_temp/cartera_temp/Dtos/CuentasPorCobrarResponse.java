@@ -33,6 +33,7 @@ public class CuentasPorCobrarResponse {
     private int numeroCreditos;
     private String pagare;
     private double moraObligatoria;
+    private double totalObligatoria;
     private int cuotasMora;
     private int cuotas;
     private AsesorCarteraResponse asesorCarteraResponse;
@@ -61,6 +62,15 @@ public class CuentasPorCobrarResponse {
         return documentoCliente;
     }
 
+    public double getTotalObligatoria() {
+        return totalObligatoria;
+    }
+
+    public void setTotalObligatoria(double totalObligatoria) {
+        this.totalObligatoria = totalObligatoria;
+    }
+
+    
     public void setDocumentoCliente(String documentoCliente) {
         this.documentoCliente = documentoCliente;
     }
@@ -264,9 +274,5 @@ public class CuentasPorCobrarResponse {
     public void setGestion(List<Gestiones> gestion) {
         this.gestion = gestion;
     }
-
-        
-    
-    
 
 }
