@@ -3,7 +3,6 @@ package com.cartera_temp.cartera_temp.Controllers;
 import GestionesDataDto.GestionesDataDto;
 import com.cartera_temp.cartera_temp.Dtos.GestionResponse;
 import com.cartera_temp.cartera_temp.Dtos.GestionToSaveDto;
-import com.cartera_temp.cartera_temp.Dtos.GestionesDto;
 import com.cartera_temp.cartera_temp.Dtos.MessageResponse;
 import com.cartera_temp.cartera_temp.Models.Gestiones;
 import com.cartera_temp.cartera_temp.Service.GestionesService;
@@ -16,9 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 
 @RestController
