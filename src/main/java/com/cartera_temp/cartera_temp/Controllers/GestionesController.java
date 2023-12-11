@@ -4,6 +4,7 @@ import GestionesDataDto.GestionesDataDto;
 import com.cartera_temp.cartera_temp.Dtos.GestionResponse;
 import com.cartera_temp.cartera_temp.Dtos.GestionToSaveDto;
 import com.cartera_temp.cartera_temp.Dtos.MessageResponse;
+import com.cartera_temp.cartera_temp.Models.AcuerdoPago;
 import com.cartera_temp.cartera_temp.Models.Gestiones;
 import com.cartera_temp.cartera_temp.Service.GestionesService;
 import java.util.List;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -58,6 +60,11 @@ public class GestionesController {
         String datoAdicional = gestionesService.sendLastDatoAdicional(numeroObligacion);
         return ResponseEntity.ok(new MessageResponse(datoAdicional));
         
+    }
+    
+    @PutMapping("/desactivateAcuerdoPago/{id}")
+    public void desactivateAcuerpoPago(@PathVariable("id")Long idAcuerdoPago){
+        gestionesService.desactivateAcuerdoPago(idAcuerdoPago);
     }
     
 }

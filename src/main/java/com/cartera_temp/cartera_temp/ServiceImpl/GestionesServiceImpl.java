@@ -134,6 +134,7 @@ public class GestionesServiceImpl implements GestionesService {
             acuerdoPago.setHonoriarioAcuerdo(dto.getClasificacion().getAcuerdoPago().getHonoriarioAcuerdo());
             acuerdoPago.setValorInteresesMora(dto.getClasificacion().getAcuerdoPago().getValorInteresesMora());
             acuerdoPago.setValorTotalAcuerdo(dto.getClasificacion().getAcuerdoPago().getValorTotalAcuerdo());
+            acuerdoPago.setIsActive(true);
             
 
             for (Cuotas cuotas : dto.getClasificacion().getAcuerdoPago().getCuotasList()) {
@@ -312,6 +313,14 @@ public class GestionesServiceImpl implements GestionesService {
         String datoAdicionalUltimaGestion = ultimaGestion.getDetallesAdicionales();
         return datoAdicionalUltimaGestion;
 
+    }
+
+    @Override
+    public void desactivateAcuerdoPago(Long idAcuerdoPago) {
+        
+        AcuerdoPago ap = acuerdoPagoRepository.findById(idAcuerdoPago).orElse(null);
+        ap.setIsActive(false);
+        
     }
 
 }
