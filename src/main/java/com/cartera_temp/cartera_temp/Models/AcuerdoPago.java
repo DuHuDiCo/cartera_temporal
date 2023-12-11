@@ -47,6 +47,9 @@ public class AcuerdoPago extends ClasificacionGestion {
     @Column(name = "fecha_compromiso")
     @Temporal(TemporalType.DATE)
     private Date fechaCompromiso;
+    
+    @Column(name = "is_active")
+    private boolean isActive;
 
     @OneToMany(mappedBy = "acuerdoPago", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Cuotas> cuotasList = new ArrayList<>();
@@ -149,6 +152,14 @@ public class AcuerdoPago extends ClasificacionGestion {
 
     public void setAsesor(AsesorCartera asesor) {
         this.asesor = asesor;
+    }
+
+    public boolean isIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(boolean isActive) {
+        this.isActive = isActive;
     }
 
 }
