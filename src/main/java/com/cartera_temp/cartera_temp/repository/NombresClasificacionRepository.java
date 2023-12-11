@@ -8,5 +8,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface NombresClasificacionRepository extends JpaRepository<NombresClasificacion, Long>{
-
+    
+    NombresClasificacion findByNombre(String nombre);
+    
 }
