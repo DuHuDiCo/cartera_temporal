@@ -2,6 +2,7 @@ package com.cartera_temp.cartera_temp.ServiceImpl;
 
 import GestionesDataDto.GestionesDataDto;
 import com.cartera_temp.cartera_temp.Dtos.AcuerdoPagoDto;
+import com.cartera_temp.cartera_temp.Dtos.CuotaDto;
 import com.cartera_temp.cartera_temp.Dtos.GestionResponse;
 import com.cartera_temp.cartera_temp.Dtos.GestionToSaveDto;
 import com.cartera_temp.cartera_temp.Dtos.GestionesDto;
@@ -142,8 +143,22 @@ public class GestionesServiceImpl implements GestionesService {
             acuerdoPago.setValorTotalAcuerdo(dto.getClasificacion().getAcuerdoPago().getValorTotalAcuerdo());
             acuerdoPago.setIsActive(true);
 
-            for (Cuotas cuotas : dto.getClasificacion().getAcuerdoPago().getCuotasList()) {
-                acuerdoPago.agregarCuota(cuotas);
+            for (CuotaDto cuotas : dto.getClasificacion().getAcuerdoPago().getCuotasList()) {
+                
+                Cuotas cuota = new Cuotas();
+                cuota.setAcuerdoPago(acuerdoPago);
+                cuota.setCapitalCuota(cuotas.getCapitalCuota());
+                cuota.setCumplio(cuotas.isCumplio());
+                try {
+                    cuota.setFechaVencimiento(Functions.stringToDate(cuotas.getFechaVencimiento()));
+                } catch (ParseException ex) {
+                    Logger.getLogger(GestionesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                cuota.setHonorarios(cuotas.getHonorarios());
+                cuota.setNumeroCuota(cuotas.getNumeroCuota());
+                cuota.setValorCuota(cuotas.getValorCuota());
+                acuerdoPago.agregarCuota(cuota);
+                
             }
 
             acuerdoPago = acuerdoPagoRepository.save(acuerdoPago);
