@@ -2,6 +2,7 @@ package com.cartera_temp.cartera_temp.ServiceImpl;
 
 import GestionesDataDto.GestionesDataDto;
 import com.cartera_temp.cartera_temp.Dtos.AcuerdoPagoDto;
+import com.cartera_temp.cartera_temp.Dtos.CuotasDto;
 import com.cartera_temp.cartera_temp.Dtos.GestionResponse;
 import com.cartera_temp.cartera_temp.Dtos.GestionToSaveDto;
 import com.cartera_temp.cartera_temp.Dtos.GestionesDto;
@@ -9,10 +10,11 @@ import com.cartera_temp.cartera_temp.Models.AcuerdoPago;
 import com.cartera_temp.cartera_temp.Models.AsesorCartera;
 
 import com.cartera_temp.cartera_temp.Models.ClasificacionGestion;
-import com.cartera_temp.cartera_temp.Models.ClasificacionTarea;
+
 import com.cartera_temp.cartera_temp.Models.CuentasPorCobrar;
 import com.cartera_temp.cartera_temp.Models.Cuotas;
 import com.cartera_temp.cartera_temp.Models.Gestiones;
+import com.cartera_temp.cartera_temp.Models.NombresClasificacion;
 import com.cartera_temp.cartera_temp.Models.Nota;
 import com.cartera_temp.cartera_temp.Models.Tarea;
 import com.cartera_temp.cartera_temp.ModelsClients.Usuario;
@@ -26,10 +28,10 @@ import com.cartera_temp.cartera_temp.repository.AcuerdoPagoRepository;
 import com.cartera_temp.cartera_temp.repository.BancoRepository;
 import com.cartera_temp.cartera_temp.repository.ClasificacionGestionRepository;
 
-import com.cartera_temp.cartera_temp.repository.ClasificacionTareaRepository;
 import com.cartera_temp.cartera_temp.repository.CuentasPorCobrarRepository;
 import com.cartera_temp.cartera_temp.repository.CuotaRepository;
 import com.cartera_temp.cartera_temp.repository.GestionesRepository;
+import com.cartera_temp.cartera_temp.repository.NombresClasificacionRepository;
 import com.cartera_temp.cartera_temp.repository.NotaRepository;
 import com.cartera_temp.cartera_temp.repository.SedeRepository;
 import com.cartera_temp.cartera_temp.repository.TareaRepository;
@@ -55,13 +57,14 @@ public class GestionesServiceImpl implements GestionesService {
     private final SedeRepository sedeRepository;
     private final BancoRepository bancoRepository;
     private final SaveFiles saveFiles;
-    private final ClasificacionTareaRepository clasificacionTareaRepository;
+
     private final AcuerdoPagoRepository acuerdoPagoRepository;
     private final ClasificacionGestionRepository clasificacionGestionRepository;
     private final NotaRepository notaRepository;
     private final TareaRepository tareaRepository;
+    private final NombresClasificacionRepository nombresClasificacionRepository;
 
-    public GestionesServiceImpl(GestionesRepository gestionesRepository, CuentasPorCobrarRepository cuentaCobrarRepository, UsuarioClientService usuarioClientService, AsesorCarteraService asesorCartera, FileService fileService, SedeRepository sedeRepository, BancoRepository bancoRepository, SaveFiles saveFiles, ClasificacionTareaRepository clasificacionTareaRepository, AcuerdoPagoRepository acuerdoPagoRepository, ClasificacionGestionRepository clasificacionGestionRepository, NotaRepository notaRepository, TareaRepository tareaRepository) {
+    public GestionesServiceImpl(GestionesRepository gestionesRepository, CuentasPorCobrarRepository cuentaCobrarRepository, UsuarioClientService usuarioClientService, AsesorCarteraService asesorCartera, FileService fileService, SedeRepository sedeRepository, BancoRepository bancoRepository, SaveFiles saveFiles, AcuerdoPagoRepository acuerdoPagoRepository, ClasificacionGestionRepository clasificacionGestionRepository, NotaRepository notaRepository, TareaRepository tareaRepository, NombresClasificacionRepository nombresClasificacionRepository) {
         this.gestionesRepository = gestionesRepository;
         this.cuentaCobrarRepository = cuentaCobrarRepository;
         this.usuarioClientService = usuarioClientService;
@@ -70,11 +73,11 @@ public class GestionesServiceImpl implements GestionesService {
         this.sedeRepository = sedeRepository;
         this.bancoRepository = bancoRepository;
         this.saveFiles = saveFiles;
-        this.clasificacionTareaRepository = clasificacionTareaRepository;
         this.acuerdoPagoRepository = acuerdoPagoRepository;
         this.clasificacionGestionRepository = clasificacionGestionRepository;
         this.notaRepository = notaRepository;
         this.tareaRepository = tareaRepository;
+        this.nombresClasificacionRepository = nombresClasificacionRepository;
     }
 
     @Override
@@ -115,8 +118,13 @@ public class GestionesServiceImpl implements GestionesService {
             Logger.getLogger(GestionesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+        NombresClasificacion clasificacion = nombresClasificacionRepository.findByNombreAndTipo(dto.getClasificacion().getNombreClasificacion(), dto.getClasificacion().getTipoClasificacion());
+        if (Objects.isNull(clasificacion)) {
+            return null;
+        }
+
         //ACUERDO DE PAGO
-        if (dto.getClasificacion().getTipoClasificacion().equals("Acuerdo de Pago")) {
+        if (clasificacion.getTipo().equals("Acuerdo de Pago".toUpperCase())) {
 
             AcuerdoPago acuerdoPago = new AcuerdoPago();
 
@@ -127,7 +135,11 @@ public class GestionesServiceImpl implements GestionesService {
             } catch (ParseException ex) {
                 Logger.getLogger(GestionesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
-            acuerdoPago.setFechaCompromiso(dto.getClasificacion().getAcuerdoPago().getFechaCompromiso());
+            try {
+                acuerdoPago.setFechaCompromiso(Functions.stringToDateAndFormat(dto.getClasificacion().getAcuerdoPago().getFechaCompromiso()));
+            } catch (ParseException ex) {
+                Logger.getLogger(GestionesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
             acuerdoPago.setTipoAcuerdo(dto.getClasificacion().getAcuerdoPago().getTipoAcuerdo());
             acuerdoPago.setClasificacion(dto.getClasificacion().getTipoClasificacion());
             acuerdoPago.setValorCuotaMensual(dto.getClasificacion().getAcuerdoPago().getValorCuotaMensual());
@@ -135,20 +147,39 @@ public class GestionesServiceImpl implements GestionesService {
             acuerdoPago.setValorInteresesMora(dto.getClasificacion().getAcuerdoPago().getValorInteresesMora());
             acuerdoPago.setValorTotalAcuerdo(dto.getClasificacion().getAcuerdoPago().getValorTotalAcuerdo());
             acuerdoPago.setIsActive(true);
-            
 
-            for (Cuotas cuotas : dto.getClasificacion().getAcuerdoPago().getCuotasList()) {
-                acuerdoPago.agregarCuota(cuotas);
+            for (CuotasDto cuotas : dto.getClasificacion().getAcuerdoPago().getCuotasList()) {
+                Cuotas couta = new Cuotas();
+                couta.setCapitalCuota(cuotas.getCapitalCuota());
+                couta.setCumplio(false);
+                try {
+                    couta.setFechaVencimiento(Functions.stringToDateAndFormat(cuotas.getFechaVencimiento()));
+                } catch (ParseException ex) {
+                    Logger.getLogger(GestionesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                couta.setHonorarios(cuotas.getHonorarios());
+                couta.setInteresCuota(cuotas.getInteresCuota());
+                couta.setNumeroCuota(cuotas.getNumeroCuota());
+                couta.setValorCuota(cuotas.getValorCuota());
+                
+                acuerdoPago.agregarCuota(couta);
             }
+
+            NombresClasificacion nombre = nombresClasificacionRepository.findFirstByNombre(clasificacion.getNombre());
+            if (Objects.isNull(nombre)) {
+                return null;
+            }
+
+            acuerdoPago.setNombresClasificacion(nombre);
 
             acuerdoPago = acuerdoPagoRepository.save(acuerdoPago);
 
             gestion.setClasificacion(acuerdoPago);
-           
+
         }
 
         //NOTA
-        if (dto.getClasificacion().getTipoClasificacion().equals("Nota")) {
+        if (clasificacion.getTipo().equals("Nota".toUpperCase())) {
 
             Nota nota = new Nota();
 
@@ -161,17 +192,22 @@ public class GestionesServiceImpl implements GestionesService {
 
             nota.setDetalleNota(dto.getClasificacion().getNota().getDetalle());
             nota.setClasificacion(dto.getClasificacion().getTipoClasificacion());
-                       
+
+            NombresClasificacion nombre = nombresClasificacionRepository.findFirstByNombre(clasificacion.getNombre());
+            if (Objects.isNull(nombre)) {
+                return null;
+            }
             
+            nota.setNombresClasificacion(nombre);
 
             nota = notaRepository.save(nota);
 
             gestion.setClasificacion(nota);
-         
+
         }
 
         //TAREA
-        if (dto.getClasificacion().getTipoClasificacion().equals("Tarea")) {
+        if (clasificacion.getTipo().equals("Tarea".toUpperCase())) {
 
             Tarea tarea = new Tarea();
 
@@ -183,19 +219,18 @@ public class GestionesServiceImpl implements GestionesService {
             } catch (ParseException ex) {
                 Logger.getLogger(GestionesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
-            ClasificacionTarea clasificacionTarea = clasificacionTareaRepository.findByClasificacionTarea(dto.getClasificacion().getTarea().getClasificacion());
-            if (Objects.isNull(clasificacionTarea)) {
+
+            tarea.setClasificacion(dto.getClasificacion().getTipoClasificacion());
+            
+             NombresClasificacion nombre  = nombresClasificacionRepository.findFirstByNombre(clasificacion.getNombre());
+            if(Objects.isNull(nombre)){
                 return null;
             }
-            tarea.setClasificacionTarea(clasificacionTarea);
+            tarea.setNombresClasificacion(nombre);
 
-           tarea.setClasificacion(dto.getClasificacion().getTipoClasificacion());
-
-       
             tarea = tareaRepository.save(tarea);
 
             gestion.setClasificacion(tarea);
-          
 
         }
 
@@ -233,7 +268,7 @@ public class GestionesServiceImpl implements GestionesService {
         if (Objects.isNull(gestion)) {
             return gesResList;
         }
-        
+
         for (Gestiones gestiones : gestion) {
             ModelMapper map = new ModelMapper();
             GestionResponse gesRes = map.map(gestiones, GestionResponse.class);
@@ -267,13 +302,6 @@ public class GestionesServiceImpl implements GestionesService {
             newGestion.setAsesorCartera(cuenta.getAsesor());
             newGestion.setNumeroObligacion(gestione.getNumeroObligacion());
             newGestion.setFechaGestion(gestione.getFechaGestion());
-
-            ClasificacionTarea clasi = clasificacionTareaRepository.findByClasificacionTarea(gestione.getClasificacion());
-            if (Objects.isNull(clasi)) {
-                clasi = new ClasificacionTarea();
-                clasi.setClasificacionTarea(gestione.getClasificacion().toUpperCase());
-                clasi = clasificacionTareaRepository.save(clasi);
-            }
 
             Nota nota = new Nota();
             nota.setDetalleNota(gestione.getDetallesAdicionales());
@@ -317,10 +345,10 @@ public class GestionesServiceImpl implements GestionesService {
 
     @Override
     public void desactivateAcuerdoPago(Long idAcuerdoPago) {
-        
+
         AcuerdoPago ap = acuerdoPagoRepository.findById(idAcuerdoPago).orElse(null);
         ap.setIsActive(false);
-        
+
     }
 
 }

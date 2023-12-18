@@ -2,6 +2,7 @@ package com.cartera_temp.cartera_temp.Dtos;
 
 public class ClasificacionDtoTipo {
 
+    private String nombreClasificacion;
     private String tipoClasificacion;
     private TareaDto tarea;
     private NotaDto nota;
@@ -42,5 +43,14 @@ public class ClasificacionDtoTipo {
         this.acuerdoPago = acuerdoPago;
     }
 
+    public String getNombreClasificacion() {
+        return nombreClasificacion;
+    }
+
+    public void setNombreClasificacion(String nombreClasificacion) {
+        this.nombreClasificacion = nombreClasificacion;
+    }
+
+    
     
 }

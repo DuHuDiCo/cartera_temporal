@@ -36,8 +36,11 @@ public class Cuotas {
     @Column(name = "capital_cuota")
     private double capitalCuota;
     
-    @Column(name = "honorarios")
+    @Column(name = "honorarios" )
     private double honorarios;
+    
+    @Column(name = "interes_cuota")
+    private double interesCuota;
     
     @Column(name = "cumplio")
     private boolean cumplio;
@@ -113,5 +116,15 @@ public class Cuotas {
     public void setAcuerdoPago(AcuerdoPago acuerdoPago) {
         this.acuerdoPago = acuerdoPago;
     }
+
+    public double getInteresCuota() {
+        return interesCuota;
+    }
+
+    public void setInteresCuota(double interesCuota) {
+        this.interesCuota = interesCuota;
+    }
+
+    
     
 }

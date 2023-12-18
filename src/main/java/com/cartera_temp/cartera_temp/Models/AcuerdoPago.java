@@ -47,7 +47,7 @@ public class AcuerdoPago extends ClasificacionGestion {
     @Column(name = "fecha_compromiso")
     @Temporal(TemporalType.DATE)
     private Date fechaCompromiso;
-    
+
     @Column(name = "is_active")
     private boolean isActive;
 
@@ -58,6 +58,10 @@ public class AcuerdoPago extends ClasificacionGestion {
     @JoinColumn(name = "asesor_cartera_id", referencedColumnName = "id_asesor_cartera")
     private AsesorCartera asesor;
 
+    
+@ManyToOne
+    @JoinColumn(name = "tipo_clasificacion_id")
+    private NombresClasificacion nombresClasificacion;
     public AcuerdoPago() {
     }
 
@@ -65,6 +69,16 @@ public class AcuerdoPago extends ClasificacionGestion {
         cuotasList.add(cuota);
         cuota.setAcuerdoPago(this);
     }
+
+    public NombresClasificacion getNombresClasificacion() {
+        return nombresClasificacion;
+    }
+
+    public void setNombresClasificacion(NombresClasificacion nombresClasificacion) {
+        this.nombresClasificacion = nombresClasificacion;
+    }
+    
+    
 
     public Gestiones getGestiones() {
         return gestiones;

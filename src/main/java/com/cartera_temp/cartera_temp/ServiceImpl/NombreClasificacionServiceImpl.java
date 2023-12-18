@@ -20,22 +20,23 @@ public class NombreClasificacionServiceImpl implements NombreClasificacionServic
     @Override
     public NombresClasificacion guardarNombresClasificacion(NombreClasificacionDto dto) {
         
-        if(dto.getNombreClasificacion() == "" || dto.getNombreClasificacion() == null){
+      
+        
+        NombresClasificacion nc = nombresClasificacionRepository.findFirstByNombre(dto.getNombreClasificacion());
+        
+        if(Objects.nonNull(nc)){
             return null;
         }
         
-        NombresClasificacion nc = nombresClasificacionRepository.findByNombre(dto.getNombreClasificacion());
+        System.out.println(dto.getNombreClasificacion());
+        System.out.println(dto.getTipo());
+         nc = new NombresClasificacion();
         
-        if(!Objects.isNull(nc)){
-            return null;
-        }
+        nc.setNombre(dto.getNombreClasificacion());
+        nc.setTipo(dto.getTipo().toUpperCase());
+        nc = nombresClasificacionRepository.save(nc);
         
-        NombresClasificacion ncToSave = new NombresClasificacion();
-        
-        ncToSave.setNombre(dto.getNombreClasificacion());
-        ncToSave = nombresClasificacionRepository.save(ncToSave);
-        
-        return ncToSave;
+        return nc;
         
     }
 
@@ -46,7 +47,7 @@ public class NombreClasificacionServiceImpl implements NombreClasificacionServic
             return null;
         }
         
-        NombresClasificacion nc = nombresClasificacionRepository.findByNombre(nombre);
+        NombresClasificacion nc = nombresClasificacionRepository.findFirstByNombre(nombre);
         if(Objects.isNull(nc)){
             return null;
         }

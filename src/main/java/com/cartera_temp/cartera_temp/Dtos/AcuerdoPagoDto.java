@@ -13,8 +13,8 @@ public class AcuerdoPagoDto {
     private double valorTotalAcuerdo;
     private double valorInteresesMora;
     private double honoriarioAcuerdo;
-    private Date fechaCompromiso;
-    private List<Cuotas> cuotasList = new ArrayList<>();
+    private String fechaCompromiso;
+    private List<CuotasDto> cuotasList = new ArrayList<>();
     private String username;
 
     public AcuerdoPagoDto() {
@@ -68,21 +68,25 @@ public class AcuerdoPagoDto {
         this.honoriarioAcuerdo = honoriarioAcuerdo;
     }
 
-    public Date getFechaCompromiso() {
+    public String getFechaCompromiso() {
         return fechaCompromiso;
     }
 
-    public void setFechaCompromiso(Date fechaCompromiso) {
+    public void setFechaCompromiso(String fechaCompromiso) {
         this.fechaCompromiso = fechaCompromiso;
     }
 
-    public List<Cuotas> getCuotasList() {
+    public List<CuotasDto> getCuotasList() {
         return cuotasList;
     }
 
-    public void setCuotasList(List<Cuotas> cuotasList) {
+    public void setCuotasList(List<CuotasDto> cuotasList) {
         this.cuotasList = cuotasList;
     }
+
+   
+
+   
 
     public String getUsername() {
         return username;
