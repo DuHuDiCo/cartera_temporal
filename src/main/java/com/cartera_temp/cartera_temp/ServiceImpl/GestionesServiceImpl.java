@@ -1,9 +1,11 @@
 package com.cartera_temp.cartera_temp.ServiceImpl;
 
 import GestionesDataDto.GestionesDataDto;
+import com.cartera_temp.cartera_temp.Components.GenerarPdf;
 import com.cartera_temp.cartera_temp.Dtos.AcuerdoPagoDto;
 import com.cartera_temp.cartera_temp.Dtos.ClientesDto;
 import com.cartera_temp.cartera_temp.Dtos.CuotaDto;
+import com.cartera_temp.cartera_temp.Dtos.CuotasDto;
 import com.cartera_temp.cartera_temp.Dtos.GestionResponse;
 import com.cartera_temp.cartera_temp.Dtos.GestionToSaveDto;
 import com.cartera_temp.cartera_temp.Dtos.GestionesDto;
@@ -42,6 +44,7 @@ import com.cartera_temp.cartera_temp.repository.HistoricoAcuerdoPagoRepository;
 import com.cartera_temp.cartera_temp.repository.NotaRepository;
 import com.cartera_temp.cartera_temp.repository.SedeRepository;
 import com.cartera_temp.cartera_temp.repository.TareaRepository;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -76,8 +79,9 @@ public class GestionesServiceImpl implements GestionesService {
     private final HistoricoAcuerdoPagoRepository historicoAcuerdoPagoRepository;
     private final ClientesClient clientesClient;
     private final HttpServletRequest request;
+    private final GenerarPdf pdf;
 
-    public GestionesServiceImpl(GestionesRepository gestionesRepository, CuentasPorCobrarRepository cuentaCobrarRepository, UsuarioClientService usuarioClientService, AsesorCarteraService asesorCartera, FileService fileService, SedeRepository sedeRepository, BancoRepository bancoRepository, SaveFiles saveFiles, ClasificacionTareaRepository clasificacionTareaRepository, AcuerdoPagoRepository acuerdoPagoRepository, ClasificacionGestionRepository clasificacionGestionRepository, NotaRepository notaRepository, TareaRepository tareaRepository, CuotaRepository cuotaRepository, HistoricoAcuerdoPagoRepository historicoAcuerdoPagoRepository, ClientesClient clientesClient, HttpServletRequest request) {
+    public GestionesServiceImpl(GestionesRepository gestionesRepository, CuentasPorCobrarRepository cuentaCobrarRepository, UsuarioClientService usuarioClientService, AsesorCarteraService asesorCartera, FileService fileService, SedeRepository sedeRepository, BancoRepository bancoRepository, SaveFiles saveFiles, AcuerdoPagoRepository acuerdoPagoRepository, ClasificacionGestionRepository clasificacionGestionRepository, NotaRepository notaRepository, TareaRepository tareaRepository, NombresClasificacionRepository nombresClasificacionRepository, CuotaRepository cuotaRepository, HistoricoAcuerdoPagoRepository historicoAcuerdoPagoRepository, ClientesClient clientesClient, HttpServletRequest request, GenerarPdf pdf) {
         this.gestionesRepository = gestionesRepository;
         this.cuentaCobrarRepository = cuentaCobrarRepository;
         this.usuarioClientService = usuarioClientService;
@@ -95,7 +99,10 @@ public class GestionesServiceImpl implements GestionesService {
         this.historicoAcuerdoPagoRepository = historicoAcuerdoPagoRepository;
         this.clientesClient = clientesClient;
         this.request = request;
+        this.pdf = pdf;
     }
+
+    
 
     
 
@@ -446,6 +453,15 @@ public class GestionesServiceImpl implements GestionesService {
                 .concat("en%20contacto%20por%20este%20mismo%20medio,%20muchas%20gracias");
         
         link.setMessageToWpp("https://api.whatsapp.com/send?phone=".concat(telefono.get(0).getNumero()).concat(message));
+        try {
+            link.setBase64(pdf.generarReporteAcuerdoPagoToClient(cpc));
+        } catch (IOException ex) {
+            Logger.getLogger(GestionesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(GestionesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return link;
         
     }
 

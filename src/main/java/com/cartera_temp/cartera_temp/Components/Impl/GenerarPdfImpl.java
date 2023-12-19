@@ -3,13 +3,14 @@ package com.cartera_temp.cartera_temp.Components.Impl;
 import com.cartera_temp.cartera_temp.Components.GenerarPdf;
 import com.cartera_temp.cartera_temp.Models.AcuerdoPago;
 import com.cartera_temp.cartera_temp.Models.ClasificacionGestion;
-import com.cartera_temp.cartera_temp.Models.ClasificacionTarea;
 import com.cartera_temp.cartera_temp.Models.CuentasPorCobrar;
 import com.cartera_temp.cartera_temp.Models.Cuotas;
 import com.cartera_temp.cartera_temp.Models.Gestiones;
 import com.cartera_temp.cartera_temp.Utils.Functions;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
@@ -132,18 +133,37 @@ public class GenerarPdfImpl implements GenerarPdf {
 
                                 contens.addRect(initX, initY, cellWidth, -cellHeight);
                                 contens.beginText();
-                                contens.newLineAtOffset(initX - 35, initY - 10);
-
+                                contens.newLineAtOffset(initX + 20, initY - 10);
+                                contens.setFont(PDType1Font.TIMES_ROMAN, 12);
+                                String body = retornarBody(j, acuPago.getCuotasList().get(i - 1));
+                                contens.showText(body);
+                                contens.endText();
+                                initX += cellWidth;
                             }
 
                         }
 
                     }
-
+                    String base64 = convertPdfToBase64(doc);
+                    return base64;
                 }
             }
 
+        } catch(IOException e ){
+            e.printStackTrace();
+            return null; 
         }
+        
+    }
+    
+    private static String convertPdfToBase64(PDDocument document) throws IOException {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        document.save(byteArrayOutputStream);
+        document.close();
+
+        // Codificar en Base64
+        byte[] bytes = byteArrayOutputStream.toByteArray();
+        return Base64.getEncoder().encodeToString(bytes);
     }
 
     public static void nuevaLinea(String linea, int x, int y, PDPageContentStream contens, PDFont fuente, int tamañoFont) throws IOException {
@@ -183,22 +203,20 @@ public class GenerarPdfImpl implements GenerarPdf {
 
     public static String retornarBody(int num, Cuotas cuota) {
         String pal = null;
-        String f = null;
 
         switch (num) {
             case 1:
                 pal = Integer.toString(cuota.getNumeroCuota());
                 break;
-            
-            case 2:
-            {
+
+            case 2: {
                 try {
                     pal = Functions.dateToString(cuota.getFechaVencimiento());
                 } catch (ParseException ex) {
                     Logger.getLogger(GenerarPdfImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-                break;
+            break;
 
             case 3:
                 pal = Double.toString(cuota.getValorCuota());
@@ -212,7 +230,7 @@ public class GenerarPdfImpl implements GenerarPdf {
                 break;
 
             default:
-                pal = Double.toString(cuota.get);
+                pal = Double.toString(cuota.getInteresCuota());
         }
 
         return pal;
