@@ -15,6 +15,7 @@ import com.cartera_temp.cartera_temp.Models.CuentasPorCobrar;
 import com.cartera_temp.cartera_temp.Models.Cuotas;
 import com.cartera_temp.cartera_temp.Models.Gestiones;
 import com.cartera_temp.cartera_temp.Models.NombresClasificacion;
+import com.cartera_temp.cartera_temp.Models.HistoricoAcuerdosPago;
 import com.cartera_temp.cartera_temp.Models.Nota;
 import com.cartera_temp.cartera_temp.Models.Tarea;
 import com.cartera_temp.cartera_temp.ModelsClients.Usuario;
@@ -32,6 +33,7 @@ import com.cartera_temp.cartera_temp.repository.CuentasPorCobrarRepository;
 import com.cartera_temp.cartera_temp.repository.CuotaRepository;
 import com.cartera_temp.cartera_temp.repository.GestionesRepository;
 import com.cartera_temp.cartera_temp.repository.NombresClasificacionRepository;
+import com.cartera_temp.cartera_temp.repository.HistoricoAcuerdoPagoRepository;
 import com.cartera_temp.cartera_temp.repository.NotaRepository;
 import com.cartera_temp.cartera_temp.repository.SedeRepository;
 import com.cartera_temp.cartera_temp.repository.TareaRepository;
@@ -63,8 +65,10 @@ public class GestionesServiceImpl implements GestionesService {
     private final NotaRepository notaRepository;
     private final TareaRepository tareaRepository;
     private final NombresClasificacionRepository nombresClasificacionRepository;
+    private final CuotaRepository cuotaRepository;
+    private final HistoricoAcuerdoPagoRepository historicoAcuerdoPagoRepository;
 
-    public GestionesServiceImpl(GestionesRepository gestionesRepository, CuentasPorCobrarRepository cuentaCobrarRepository, UsuarioClientService usuarioClientService, AsesorCarteraService asesorCartera, FileService fileService, SedeRepository sedeRepository, BancoRepository bancoRepository, SaveFiles saveFiles, AcuerdoPagoRepository acuerdoPagoRepository, ClasificacionGestionRepository clasificacionGestionRepository, NotaRepository notaRepository, TareaRepository tareaRepository, NombresClasificacionRepository nombresClasificacionRepository) {
+    public GestionesServiceImpl(GestionesRepository gestionesRepository, CuentasPorCobrarRepository cuentaCobrarRepository, UsuarioClientService usuarioClientService, AsesorCarteraService asesorCartera, FileService fileService, SedeRepository sedeRepository, BancoRepository bancoRepository, SaveFiles saveFiles, AcuerdoPagoRepository acuerdoPagoRepository, ClasificacionGestionRepository clasificacionGestionRepository, NotaRepository notaRepository, TareaRepository tareaRepository, NombresClasificacionRepository nombresClasificacionRepository, CuotaRepository cuotaRepository, HistoricoAcuerdoPagoRepository historicoAcuerdoPagoRepository) {
         this.gestionesRepository = gestionesRepository;
         this.cuentaCobrarRepository = cuentaCobrarRepository;
         this.usuarioClientService = usuarioClientService;
@@ -78,6 +82,8 @@ public class GestionesServiceImpl implements GestionesService {
         this.notaRepository = notaRepository;
         this.tareaRepository = tareaRepository;
         this.nombresClasificacionRepository = nombresClasificacionRepository;
+        this.cuotaRepository = cuotaRepository;
+        this.historicoAcuerdoPagoRepository = historicoAcuerdoPagoRepository;
     }
 
     @Override
@@ -269,6 +275,7 @@ public class GestionesServiceImpl implements GestionesService {
             return gesResList;
         }
 
+
         for (Gestiones gestiones : gestion) {
             ModelMapper map = new ModelMapper();
             GestionResponse gesRes = map.map(gestiones, GestionResponse.class);
@@ -348,6 +355,42 @@ public class GestionesServiceImpl implements GestionesService {
 
         AcuerdoPago ap = acuerdoPagoRepository.findById(idAcuerdoPago).orElse(null);
         ap.setIsActive(false);
+
+        HistoricoAcuerdosPago hap = new HistoricoAcuerdosPago();
+
+        Usuario usuario = usuarioClientService.obtenerUsuarioById(ap.getAsesor().getUsuarioId());
+
+        CuentasPorCobrar cpc = cuentaCobrarRepository.findByNumeroObligacion(ap.getGestiones().getNumeroObligacion());
+
+        String mora_total = ap.getTipoAcuerdo();
+        String valorAcuerdo = Double.toString(ap.getValorTotalAcuerdo());
+        String intMora = Double.toString(ap.getValorInteresesMora());
+        String valorCuotaMes = Double.toString(ap.getValorCuotaMensual());
+        String fechaCorte = ap.getFechaAcuerdo().toString();
+        double valorTotalCuotasPagadas = 0;
+        String cuotasTosave = "Cliente: ".concat(cpc.getCliente().concat("\n Numero de Obligacion: ").concat(cpc.getNumeroObligacion())
+                                .concat("\n Asesor Cartera: ").concat(usuario.getNombres()).concat(usuario.getApellidos())
+                                .concat("\n Acuerdo pactuado por mora o total: ").concat(mora_total)
+                                .concat("\n Valor del acuerdo de pago: $").concat(String.valueOf(valorAcuerdo))
+                                .concat("\n Intereses por mora: $").concat(String.valueOf(intMora))
+                                .concat("\n Valor de la cuota mensual: $").concat(String.valueOf(valorCuotaMes))
+                                .concat("\n Fecha de corte del acuerdo de pago: ").concat(String.valueOf(fechaCorte)).concat("\n"));
+
+        for (Cuotas cuotas : ap.getCuotasList()) {
+            cuotasTosave =  cuotasTosave.concat(Integer.toString(cuotas.getNumeroCuota()).concat(" ").concat(Double.toString(cuotas.getValorCuota())).concat(" ").concat(Double.toString(cuotas.getCapitalCuota())).concat(" ").concat(cuotas.getFechaVencimiento().toString()).concat(" ").concat(Double.toString(cuotas.getHonorarios()))).concat("\n");
+            valorTotalCuotasPagadas = valorTotalCuotasPagadas + cuotas.getValorCuota();
+            cuotaRepository.delete(cuotas);
+        }
+        
+        hap.setAsesorCartera(usuario.getNombres().concat(usuario.getApellidos()));
+        hap.setFechaCreacionAcuerdo(ap.getFechaAcuerdo());
+        hap.setHistorico(cuotasTosave);
+        hap.setNumeroObligacion(cpc.getNumeroObligacion());
+        hap.setTotalCuotasPagadas(valorTotalCuotasPagadas);
+        
+        hap = historicoAcuerdoPagoRepository.save(hap);
+
+        ap = acuerdoPagoRepository.save(ap);
 
     }
 
