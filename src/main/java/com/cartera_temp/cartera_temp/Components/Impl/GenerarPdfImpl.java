@@ -67,7 +67,7 @@ public class GenerarPdfImpl implements GenerarPdf {
 
                 try (PDPageContentStream contens = new PDPageContentStream(doc, page)) {
                     //CREACION DEL TITULO
-                    nuevaLinea(titulo, 220, 750, contens, PDType1Font.HELVETICA_BOLD, 18);
+                    nuevaLinea(titulo, 160, 750, contens, PDType1Font.HELVETICA_BOLD, 18);
                     int con = 10;
 
                     //CREACION DE LAS VARIABLES SUBTITULOS ANTES DE LAS TABLAS
@@ -84,68 +84,25 @@ public class GenerarPdfImpl implements GenerarPdf {
                     nuevaLinea(fechaDoc, 70, 660, contens, PDType1Font.HELVETICA_BOLD, 12);
                     nuevaLinea(numeroObligacionDoc, 70, 640, contens, PDType1Font.HELVETICA_BOLD, 12);
 
-                    for (int i = 1; i <= acuPago.getCuotasList().size(); i++) {
-                        //RECORRIENDO LA LISTA DE LAS CUOTAS
-                        if (i == 1) {
-                            //CREACION DE CABECEROS
-                            for (int j = 1; j <= colCount; j++) {
-                                if (j == 1) {
-                                    //ESPECIFICACIONES PRIMER CABECERO
-                                    contens.addRect(initX, initY, 20, -cellHeight);
-                                    contens.beginText();
-                                    contens.newLineAtOffset(initX, initY - cellHeight + 10);
-                                    contens.setFont(PDType1Font.HELVETICA_BOLD, 12);
-
-                                    String cabecerosTabla = retornarCabeceros(j);
-                                    contens.showText(cabecerosTabla);
-                                    contens.endText();
-                                    initX += cellWidth;
-                                } else {
-
-                                    if (j == 2) {
-                                        //ESPECIFICACIONES SEGUNDO CABECERO
-                                        contens.addRect(initX, initY, cellWidth, -cellHeight);
-                                        contens.beginText();
-                                        contens.newLineAtOffset(initX - 35, initY - cellHeight + 10);
-                                        contens.setFont(PDType1Font.HELVETICA_BOLD, 12);
-
-                                        String cabecerosTabla = retornarCabeceros(j);
-                                        contens.showText(cabecerosTabla);
-                                        contens.endText();
-                                        initX += cellWidth;
-                                    } else {
-                                        //ESPECIFICACIONES PARA EL RESTO DE CABECEROS
-                                        contens.addRect(initX, initY, cellWidth, -cellHeight);
-                                        contens.beginText();
-                                        contens.newLineAtOffset(initX + 20, initY - cellHeight + 10);
-                                        contens.setFont(PDType1Font.HELVETICA_BOLD, 12);
-
-                                        String cabeceroTabla = retornarCabeceros(j);
-                                        contens.showText(cabeceroTabla);
-                                        contens.endText();
-                                        initX += cellWidth;
-                                    }
-                                }
-
-                            }
-                            initX = 20;
-                            initY = (height - 150) - (con += 10);
-                            //EMPEZAR A RECORRER LA TABLA PARA LOS DATOS
-                            for (int j = 1; j <= colCount; j++) {
-
-                                contens.addRect(initX, initY, cellWidth, -cellHeight);
-                                contens.beginText();
-                                contens.newLineAtOffset(initX + 20, initY - 10);
-                                contens.setFont(PDType1Font.TIMES_ROMAN, 12);
-                                String body = retornarBody(j, acuPago.getCuotasList().get(i - 1));
-                                contens.showText(body);
-                                contens.endText();
-                                initX += cellWidth;
-                            }
-
-                        }
-
-                    }
+                    String[] cabecerosList = {"°Cuotas", "F.Vencimiento","Valor cuota", "Capital", "Honorarios", "Intereses"};
+                    
+                    int inicioTablaX = 40;
+                    int inicioTablaY = 610;
+                    
+//                    for(int i = 0; i < acuPago.getCuotasList().size(); i++){
+//                        
+//                        for (int j = 0; j < cabecerosList.length; j++) {
+//                            
+//                            contens.addRect(inicioTablaX, inicioTablaY, cellWidth, cellHeight);
+//                            contens.stroke();
+//                            nuevaLinea(cabecerosList[0], inicioTablaX + 5, inicioTablaY -5, contens, PDType1Font.HELVETICA_BOLD, 14);
+//                            
+//                            inicioTablaX = inicioTablaX + cellWidth;
+//                        }
+//                        break;
+//                    }
+                    System.out.println(acuPago.getCuotasList().size() + "___________________________________________");
+                    
                     contens.close();
                     String base64 = convertPdfToBase64(doc);
                     return base64;
