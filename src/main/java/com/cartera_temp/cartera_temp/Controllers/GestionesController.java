@@ -69,7 +69,7 @@ public class GestionesController {
         gestionesService.desactivateAcuerdoPago(idAcuerdoPago);
     }
     
-    @PutMapping("linkAndReporteAcuerdoToClient")
+    @PutMapping("/linkAndReporteAcuerdoToClient")
     public ResponseEntity<LinkToClient> link (@RequestBody LinkDto dto){
         LinkToClient linkClient = gestionesService.sendLinkAndPdfToClient(dto);
         if(Objects.isNull(linkClient)){

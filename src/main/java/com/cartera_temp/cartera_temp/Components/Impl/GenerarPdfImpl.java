@@ -20,7 +20,9 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.springframework.stereotype.Component;
 
+@Component
 public class GenerarPdfImpl implements GenerarPdf {
 
     @Override
@@ -144,26 +146,28 @@ public class GenerarPdfImpl implements GenerarPdf {
                         }
 
                     }
+                    contens.close();
                     String base64 = convertPdfToBase64(doc);
                     return base64;
                 }
             }
 
-        } catch(IOException e ){
+        } catch (IOException e) {
             e.printStackTrace();
-            return null; 
+            return null;
         }
-        
-    }
-    
-    private static String convertPdfToBase64(PDDocument document) throws IOException {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        document.save(byteArrayOutputStream);
-        document.close();
 
-        // Codificar en Base64
-        byte[] bytes = byteArrayOutputStream.toByteArray();
-        return Base64.getEncoder().encodeToString(bytes);
+    }
+
+    private static String convertPdfToBase64(PDDocument document) throws IOException {
+        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
+            try (document) {
+                document.save(byteArrayOutputStream);
+            }
+            // Codificar en Base64
+            byte[] bytes = byteArrayOutputStream.toByteArray();
+            return Base64.getEncoder().encodeToString(bytes);
+        }
     }
 
     public static void nuevaLinea(String linea, int x, int y, PDPageContentStream contens, PDFont fuente, int tamañoFont) throws IOException {

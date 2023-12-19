@@ -430,26 +430,43 @@ public class GestionesServiceImpl implements GestionesService {
         
         String token = request.getAttribute("token").toString();
         
-        List<ClientesDto> client = clientesClient.buscarClientesByNumeroObligacion(cpc.getNumeroObligacion(), token);
+        List<ClientesDto> client = clientesClient.buscarClientesByNumeroObligacion(dto.getCedula(), token);
         if(client.isEmpty()){
             return null;
         }
+        System.out.println(client.size());
         
         Usuario usu = usuarioClientService.obtenerUsuarioById(cpc.getAsesor().getUsuarioId());
         if(Objects.isNull(usu)){
             return null;
         }
         
-        List<ClientesDto> clientToSend = client.stream().filter(c->c.getNumeroDocumento() == dto.getCedula()).collect(Collectors.toList());
+        ClientesDto clientToSend = new ClientesDto();
         
-        List<Telefono> telefono = clientToSend.get(0).getTelefonos().stream().filter(t ->t.isIsCurrent() == true).collect(Collectors.toList());
+        for (ClientesDto clientesDto : client) {
+            
+            if(clientesDto.getNumeroDocumento().equals(dto.getCedula()) == true){
+                clientToSend = clientesDto;
+                break;
+            }
+            else{
+                return null;
+            }
+           
+        }
+        
+        List<Telefono> telefono = clientToSend.getTelefonos().stream().filter(t ->t.isIsCurrent() == true).collect(Collectors.toList());
+      
         
         LinkToClient link = new LinkToClient();
         
-        String message = "Buen%20día%20señor/a%20".concat(clientToSend.get(0).getNombreTitular()).concat(",%20se%20comunica%20con%20GMJ%20hogar;%20por%20medio%20de%20este%20mensaje%20le%20notificamos")
-                .concat("%20que%20su%20acuerdo%20de%20pago%20ha%20sido%20efectuado%20exitosamente,%20a%20continuación%20enviaremos%20un%20pdf%20con%20la%20")
+        String nombreTitular = clientToSend.getNombreTitular().replaceAll(" ", "%20").toUpperCase();
+        String asesorCartera = usu.getNombres().replaceAll(" ", "%20").concat("%20").concat(usu.getApellidos().replaceAll(" ", "%20")).toUpperCase();
+        
+        String message = "&text=Buen%20día%20señor/a%20".concat(nombreTitular).concat(",%20se%20comunica%20con%20GMJ%20hogar;%20por%20medio%20de%20este%20mensaje%20le%20notificamos")
+                .concat("%20que%20su%20acuerdo%20de%20pago%20ha%20sido%20efectuado%20exitosamente,%20a%20continuación%20enviaremos%20un%20PDF%20con%20la%20")
                 .concat("información%20de%20su%20acuerdo%20de%20pago,%20este%20contiene%20las%20fechas%20de%20pago%20y%20los%20valores%20de%20las%20cuotas%20")
-                .concat("mensuales%20acordadas%20con%20nuestro%20asesor/a%20de%20cartera%20".concat(usu.getNombres()).concat(usu.getApellidos()).concat(",%20si%20tiene%20alguna%20duda%20por%20favor%20ponerse%20"))
+                .concat("mensuales%20acordadas%20con%20nuestro%20asesor/a%20de%20cartera%20".concat(asesorCartera).concat(",%20si%20tiene%20alguna%20duda%20por%20favor%20ponerse%20"))
                 .concat("en%20contacto%20por%20este%20mismo%20medio,%20muchas%20gracias");
         
         link.setMessageToWpp("https://api.whatsapp.com/send?phone=".concat(telefono.get(0).getNumero()).concat(message));
