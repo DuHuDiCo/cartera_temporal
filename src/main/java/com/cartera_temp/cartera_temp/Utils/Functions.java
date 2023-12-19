@@ -83,11 +83,8 @@ public class Functions {
     public static Date stringToDateAndFormat(String fecha) throws ParseException {
         try {
 
-            SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-            Date date = format.parse(fecha);
-
             SimpleDateFormat formatSalida = new SimpleDateFormat("yyyy-MM-dd");
-            String fechafor = formatSalida.format(date);
+            String fechafor = formatSalida.format(fecha);
 
             Date fechaOk = formatSalida.parse(fechafor);
 
@@ -127,15 +124,13 @@ public class Functions {
     }
 
     public static Date fechaDateToString(String fecha) throws ParseException {
-        
+
         SimpleDateFormat formatoInput = new SimpleDateFormat("dd/mm/yyyy HH:mm");
         Date fechaFor = formatoInput.parse(fecha);
-        
-        
-        
+
         SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         String date = formato.format(fechaFor);
-        
+
         Date fechaOk = formato.parse(date);
 
         return fechaOk;
