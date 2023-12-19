@@ -346,6 +346,12 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
         
         cpcRes.setAsesorCarteraResponse(asesorRes);
         
+        String token = httpServletRequest.getAttribute("token").toString();
+        
+        List<ClientesDto> clientesDto = clientesClient.buscarClientesByNumeroObligacion(cpc.getDocumentoCliente(), token);
+                
+        cpcRes.setClientes(clientesDto);
+        
         return cpcRes;
 
     }

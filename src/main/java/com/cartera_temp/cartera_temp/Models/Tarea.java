@@ -34,9 +34,9 @@ public class Tarea extends ClasificacionGestion {
     @JoinColumn(name = "asesor_cartera_id", referencedColumnName = "id_asesor_cartera")
     private AsesorCartera asesor;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "clasificacion_tarea_id", referencedColumnName = "id_clasificacion_tarea")
-    private ClasificacionTarea clasificacionTarea;
+    @ManyToOne
+    @JoinColumn(name = "tipo_clasificacion_id")
+    private NombresClasificacion nombresClasificacion;
 
     public Tarea() {
     }
@@ -44,6 +44,16 @@ public class Tarea extends ClasificacionGestion {
     public Gestiones getGestiones() {
         return gestiones;
     }
+
+    public NombresClasificacion getNombresClasificacion() {
+        return nombresClasificacion;
+    }
+
+    public void setNombresClasificacion(NombresClasificacion nombresClasificacion) {
+        this.nombresClasificacion = nombresClasificacion;
+    }
+    
+    
 
     public void setGestiones(Gestiones gestiones) {
         this.gestiones = gestiones;
@@ -81,12 +91,6 @@ public class Tarea extends ClasificacionGestion {
         this.asesor = asesor;
     }
 
-    public ClasificacionTarea getClasificacionTarea() {
-        return clasificacionTarea;
-    }
 
-    public void setClasificacionTarea(ClasificacionTarea clasificacionTarea) {
-        this.clasificacionTarea = clasificacionTarea;
-    }
 
 }
