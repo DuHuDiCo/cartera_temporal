@@ -27,7 +27,7 @@ public class CuentasPorCobrarResponse {
     private Sede sede;
     private Banco banco;
     private int diasVencidos;
-    private List<Gestiones> gestion;
+    private List<Gestiones> gestion = new ArrayList<>();
     private String edadVencimiento;
     private String condicionEspecial;
     private int numeroCreditos;
