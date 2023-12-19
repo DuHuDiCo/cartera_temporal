@@ -170,7 +170,7 @@ public class GenerarPdfImpl implements GenerarPdf {
                         }
                         if (i == acuPago.getCuotasList().size()) {
 
-                            for (int j = 0; j < 5; j++) {
+                            for (int j = 0; j < 6; j++) {
                                 inicioTablaX = 40;
                                 if (j == 0) {
                                     contens.addRect(inicioTablaX, inicioTablaY - cellHeight, 180, cellHeight);
@@ -193,11 +193,11 @@ public class GenerarPdfImpl implements GenerarPdf {
                                     cellWidth = 95;
                                     contens.addRect(inicioTablaX + 180 + 95 + 70, inicioTablaY - cellHeight, cellWidth, cellHeight);
                                     contens.stroke();
-                                    nuevaLinea(Double.toString(acuPago.getHonoriarioAcuerdo()), inicioTablaX + 180 + 100 + 75, inicioTablaY +3 -cellHeight, contens, PDType1Font.HELVETICA, 12);
+                                    nuevaLinea(Double.toString(acuPago.getHonorarioAcuerdo()), inicioTablaX + 180 + 100 + 75, inicioTablaY +3 -cellHeight, contens, PDType1Font.HELVETICA, 12);
                                 }
                                 if(j == 5){
                                     cellWidth = 95;
-                                    contens.addRect(inicioTablaX + 180 + 100 + 70 + 190, inicioTablaY - cellHeight, cellWidth, cellHeight);
+                                    contens.addRect(inicioTablaX + 180 + 100 + 70 + 90, inicioTablaY - cellHeight, cellWidth, cellHeight);
                                     contens.stroke();
                                     nuevaLinea(Double.toString(acuPago.getValorInteresesMora()), inicioTablaX + 180 + 100 + 75 + 100, inicioTablaY +3 -cellHeight, contens, PDType1Font.HELVETICA, 12);
                                 }
