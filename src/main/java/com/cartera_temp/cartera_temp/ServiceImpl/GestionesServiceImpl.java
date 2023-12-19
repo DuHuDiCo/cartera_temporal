@@ -149,7 +149,7 @@ public class GestionesServiceImpl implements GestionesService {
             acuerdoPago.setTipoAcuerdo(dto.getClasificacion().getAcuerdoPago().getTipoAcuerdo());
             acuerdoPago.setClasificacion(dto.getClasificacion().getTipoClasificacion());
             acuerdoPago.setValorCuotaMensual(dto.getClasificacion().getAcuerdoPago().getValorCuotaMensual());
-            acuerdoPago.setHonoriarioAcuerdo(dto.getClasificacion().getAcuerdoPago().getHonoriarioAcuerdo());
+            acuerdoPago.setHonorarioAcuerdo(dto.getClasificacion().getAcuerdoPago().getHonoriarioAcuerdo());
             acuerdoPago.setValorInteresesMora(dto.getClasificacion().getAcuerdoPago().getValorInteresesMora());
             acuerdoPago.setValorTotalAcuerdo(dto.getClasificacion().getAcuerdoPago().getValorTotalAcuerdo());
             acuerdoPago.setIsActive(true);

@@ -37,8 +37,8 @@ public class AcuerdoPago extends ClasificacionGestion {
     @Column(name = "valor_intereses_mora")
     private double valorInteresesMora;
 
-    @Column(name = "horario_acuerdo")
-    private double honoriarioAcuerdo;
+    @Column(name = "honario_acuerdo")
+    private double honorarioAcuerdo;
 
     @Column(name = "fecha_acuerdo")
     @Temporal(TemporalType.TIMESTAMP)
@@ -136,13 +136,15 @@ public class AcuerdoPago extends ClasificacionGestion {
         this.valorInteresesMora = valorInteresesMora;
     }
 
-    public double getHonoriarioAcuerdo() {
-        return honoriarioAcuerdo;
+    public double getHonorarioAcuerdo() {
+        return honorarioAcuerdo;
     }
 
-    public void setHonoriarioAcuerdo(double honoriarioAcuerdo) {
-        this.honoriarioAcuerdo = honoriarioAcuerdo;
+    public void setHonorarioAcuerdo(double honorarioAcuerdo) {
+        this.honorarioAcuerdo = honorarioAcuerdo;
     }
+
+    
 
     public Date getFechaAcuerdo() {
         return fechaAcuerdo;
