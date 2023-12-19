@@ -159,7 +159,7 @@ public class GestionesServiceImpl implements GestionesService {
                 couta.setCapitalCuota(cuotas.getCapitalCuota());
                 couta.setCumplio(false);
                 try {
-                    couta.setFechaVencimiento(Functions.stringToDateAndFormat(cuotas.getFechaVencimiento()));
+                    couta.setFechaVencimiento(Functions.stringToDate(cuotas.getFechaVencimiento()));
                 } catch (ParseException ex) {
                     Logger.getLogger(GestionesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -353,12 +353,15 @@ public class GestionesServiceImpl implements GestionesService {
     @Override
     public void desactivateAcuerdoPago(Long idAcuerdoPago) {
 
-        AcuerdoPago ap = acuerdoPagoRepository.findById(idAcuerdoPago).orElse(null);
-        ap.setIsActive(false);
+        ClasificacionGestion clasificacion = clasificacionGestionRepository.findById(idAcuerdoPago).orElse(null);
+        if(Objects.isNull(clasificacion)){
+            System.out.println("nulll");
+        }
+      
 
         HistoricoAcuerdosPago hap = new HistoricoAcuerdosPago();
 
-        Usuario usuario = usuarioClientService.obtenerUsuarioById(ap.getAsesor().getUsuarioId());
+        Usuario usuario = usuarioClientService.obtenerUsuarioById(clasificacion.);
 
         CuentasPorCobrar cpc = cuentaCobrarRepository.findByNumeroObligacion(ap.getGestiones().getNumeroObligacion());
 
