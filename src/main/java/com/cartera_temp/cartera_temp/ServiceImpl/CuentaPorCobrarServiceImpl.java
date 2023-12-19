@@ -264,9 +264,9 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
 
         for (CuentasPorCobrar cuentasPorCobrar : cpcList) {
 
-            CuentasPorCobrarResponse cuentasPorCobrarResponse = new CuentasPorCobrarResponse();
+            CuentasPorCobrarResponse cuentasPorCobrarResponse = map.map(cuentasPorCobrar, CuentasPorCobrarResponse.class);
 
-            List<ClientesDto> cliente = clientesClient.buscarClientesByNumeroObligacion(cuentasPorCobrar.getNumeroObligacion(), token);
+            List<ClientesDto> cliente = clientesClient.buscarClientesByNumeroObligacion(cuentasPorCobrar.getDocumentoCliente(), token);
             if (CollectionUtils.isEmpty(cliente)) {
                 return null;
             }
@@ -279,13 +279,15 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             }
 
             AsesorCarteraResponse asesor = new AsesorCarteraResponse();
-
             asesor.setUsuario(usu);
             asesor.setIdAsesorCartera(cuentasPorCobrar.getAsesor().getIdAsesorCartera());
 
             cuentasPorCobrarResponse.setAsesorCarteraResponse(asesor);
-
-            cuentasPorCobrarResponse = map.map(cuentasPorCobrar, CuentasPorCobrarResponse.class);
+            
+            cuentasPorCobrarResponse.setGestion(cuentasPorCobrar.getGestiones());
+            
+            
+            
             cpcResList.add(cuentasPorCobrarResponse);
 
         }
@@ -297,61 +299,61 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
     @Override
     public CuentasPorCobrarResponse updateCpcToCalculate(CuentaToCalculateDto dto) {
 
-        if(dto.getFechaVencimiento() == null || dto.getNumeroObligacion() == null || dto.getNumeroObligacion() == "" || dto.getUsername() == null || dto.getUsername() == "" || dto.getValorTotal() == 0){
+        if (dto.getFechaVencimiento() == null || dto.getNumeroObligacion() == null || dto.getNumeroObligacion() == "" || dto.getUsername() == null || dto.getUsername() == "" || dto.getValorTotal() == 0) {
             return null;
         }
-        
+
         CuentasPorCobrar cpc = cuentasPorCobrarRepository.findByNumeroObligacion(dto.getNumeroObligacion());
-        if(Objects.isNull(cpc)){
+        if (Objects.isNull(cpc)) {
             return null;
         }
-        
+
         Usuario usu = usuarioClient.getUserByUsername(dto.getUsername());
-        
-        if(Objects.isNull(usu)){
-            return  null;
-        }
-        
-        AsesorCartera asesor = asesorCarteraRepository.findByUsuarioId(usu.getIdUsuario());
-        if(Objects.isNull(asesor)){
+
+        if (Objects.isNull(usu)) {
             return null;
         }
-        
-        if(cpc.getAsesor() != asesor ){
+
+        AsesorCartera asesor = asesorCarteraRepository.findByUsuarioId(usu.getIdUsuario());
+        if (Objects.isNull(asesor)) {
+            return null;
+        }
+
+        if (cpc.getAsesor() != asesor) {
             cpc.setAsesor(asesor);
         }
-        
-        if(cpc.getTotalObligatoria() != dto.getValorTotal()){
+
+        if (cpc.getTotalObligatoria() != dto.getValorTotal()) {
             cpc.setTotalObligatoria(dto.getValorTotal());
         }
-        
-        if(cpc.getMoraObligatoria() != dto.getMoraObligatoria()){
+
+        if (cpc.getMoraObligatoria() != dto.getMoraObligatoria()) {
             cpc.setMoraObligatoria(dto.getMoraObligatoria());
         }
-        
-        if(cpc.getFechaVencimiento() != dto.getFechaVencimiento()){
+
+        if (cpc.getFechaVencimiento() != dto.getFechaVencimiento()) {
             cpc.setFechaVencimiento(dto.getFechaVencimiento());
         }
-        
-        cpc =cuentasPorCobrarRepository.save(cpc);
-        
+
+        cpc = cuentasPorCobrarRepository.save(cpc);
+
         ModelMapper map = new ModelMapper();
-        
+
         CuentasPorCobrarResponse cpcRes = map.map(cpc, CuentasPorCobrarResponse.class);
-        
+
         AsesorCarteraResponse asesorRes = new AsesorCarteraResponse();
-        
+
         asesorRes.setIdAsesorCartera(asesor.getIdAsesorCartera());
         asesorRes.setUsuario(usu);
-        
+
         cpcRes.setAsesorCarteraResponse(asesorRes);
-        
+
         String token = httpServletRequest.getAttribute("token").toString();
-        
+
         List<ClientesDto> clientesDto = clientesClient.buscarClientesByNumeroObligacion(cpc.getDocumentoCliente(), token);
-                
+
         cpcRes.setClientes(clientesDto);
-        
+
         return cpcRes;
 
     }

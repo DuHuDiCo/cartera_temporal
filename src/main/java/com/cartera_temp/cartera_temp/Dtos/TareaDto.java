@@ -6,7 +6,7 @@ public class TareaDto {
 
     private String detalleTarea;
     private Date fechaFinTarea;
-    private String clasificacion;
+  
 
     public TareaDto() {
     }
@@ -27,13 +27,7 @@ public class TareaDto {
         this.fechaFinTarea = fechaFinTarea;
     }
 
-    public String getClasificacion() {
-        return clasificacion;
-    }
-
-    public void setClasificacion(String clasificacion) {
-        this.clasificacion = clasificacion;
-    }
+   
     
     
     
