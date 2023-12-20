@@ -4,6 +4,8 @@ import GestionesDataDto.GestionesDataDto;
 import com.cartera_temp.cartera_temp.Dtos.GestionResponse;
 import com.cartera_temp.cartera_temp.Dtos.GestionToSaveDto;
 import com.cartera_temp.cartera_temp.Dtos.GestionesDto;
+import com.cartera_temp.cartera_temp.Dtos.LinkDto;
+import com.cartera_temp.cartera_temp.Dtos.LinkToClient;
 import com.cartera_temp.cartera_temp.Models.Gestiones;
 import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,6 +21,8 @@ public interface GestionesService {
     public List<Gestiones> guardarGestiones(List<GestionesDto> gestiones);
     
     public String sendLastDatoAdicional(String numeroObligacion);
+    
+    public LinkToClient sendLinkAndPdfToClient(LinkDto dto);
     
     public void desactivateAcuerdoPago(Long idAcuerdoPago);
     

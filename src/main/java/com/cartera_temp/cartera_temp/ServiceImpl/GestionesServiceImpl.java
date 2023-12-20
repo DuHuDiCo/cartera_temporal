@@ -1,11 +1,18 @@
 package com.cartera_temp.cartera_temp.ServiceImpl;
 
 import GestionesDataDto.GestionesDataDto;
+import com.cartera_temp.cartera_temp.Components.GenerarPdf;
 import com.cartera_temp.cartera_temp.Dtos.AcuerdoPagoDto;
+import com.cartera_temp.cartera_temp.Dtos.ClientesDto;
+import com.cartera_temp.cartera_temp.Dtos.CuotaDto;
 import com.cartera_temp.cartera_temp.Dtos.CuotasDto;
 import com.cartera_temp.cartera_temp.Dtos.GestionResponse;
 import com.cartera_temp.cartera_temp.Dtos.GestionToSaveDto;
 import com.cartera_temp.cartera_temp.Dtos.GestionesDto;
+import com.cartera_temp.cartera_temp.Dtos.LinkDto;
+import com.cartera_temp.cartera_temp.Dtos.LinkToClient;
+import com.cartera_temp.cartera_temp.Dtos.Telefono;
+import com.cartera_temp.cartera_temp.FeignClients.ClientesClient;
 import com.cartera_temp.cartera_temp.Models.AcuerdoPago;
 import com.cartera_temp.cartera_temp.Models.AsesorCartera;
 
@@ -37,12 +44,15 @@ import com.cartera_temp.cartera_temp.repository.HistoricoAcuerdoPagoRepository;
 import com.cartera_temp.cartera_temp.repository.NotaRepository;
 import com.cartera_temp.cartera_temp.repository.SedeRepository;
 import com.cartera_temp.cartera_temp.repository.TareaRepository;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -68,8 +78,11 @@ public class GestionesServiceImpl implements GestionesService {
     private final NombresClasificacionRepository nombresClasificacionRepository;
     private final CuotaRepository cuotaRepository;
     private final HistoricoAcuerdoPagoRepository historicoAcuerdoPagoRepository;
+    private final ClientesClient clientesClient;
+    private final HttpServletRequest request;
+    private final GenerarPdf pdf;
 
-    public GestionesServiceImpl(GestionesRepository gestionesRepository, CuentasPorCobrarRepository cuentaCobrarRepository, UsuarioClientService usuarioClientService, AsesorCarteraService asesorCartera, FileService fileService, SedeRepository sedeRepository, BancoRepository bancoRepository, SaveFiles saveFiles, AcuerdoPagoRepository acuerdoPagoRepository, ClasificacionGestionRepository clasificacionGestionRepository, NotaRepository notaRepository, TareaRepository tareaRepository, NombresClasificacionRepository nombresClasificacionRepository, CuotaRepository cuotaRepository, HistoricoAcuerdoPagoRepository historicoAcuerdoPagoRepository) {
+    public GestionesServiceImpl(GestionesRepository gestionesRepository, CuentasPorCobrarRepository cuentaCobrarRepository, UsuarioClientService usuarioClientService, AsesorCarteraService asesorCartera, FileService fileService, SedeRepository sedeRepository, BancoRepository bancoRepository, SaveFiles saveFiles, AcuerdoPagoRepository acuerdoPagoRepository, ClasificacionGestionRepository clasificacionGestionRepository, NotaRepository notaRepository, TareaRepository tareaRepository, NombresClasificacionRepository nombresClasificacionRepository, CuotaRepository cuotaRepository, HistoricoAcuerdoPagoRepository historicoAcuerdoPagoRepository, ClientesClient clientesClient, HttpServletRequest request, GenerarPdf pdf) {
         this.gestionesRepository = gestionesRepository;
         this.cuentaCobrarRepository = cuentaCobrarRepository;
         this.usuarioClientService = usuarioClientService;
@@ -85,7 +98,16 @@ public class GestionesServiceImpl implements GestionesService {
         this.nombresClasificacionRepository = nombresClasificacionRepository;
         this.cuotaRepository = cuotaRepository;
         this.historicoAcuerdoPagoRepository = historicoAcuerdoPagoRepository;
+        this.clientesClient = clientesClient;
+        this.request = request;
+        this.pdf = pdf;
     }
+
+    
+
+    
+
+    
 
     @Override
     public GestionResponse saveOneGestion(GestionToSaveDto dto) {
@@ -425,6 +447,72 @@ public class GestionesServiceImpl implements GestionesService {
             cuotaRepository.deleteById(cuota.getIdCuota());
         }
         acuerdo = acuerdoPagoRepository.save(acuerdo);
+    }
+
+    @Override
+    public LinkToClient sendLinkAndPdfToClient(LinkDto dto) {
+        
+        if(dto.getNumeroObligacion() == "" || dto.getNumeroObligacion() == null || dto.getCedula() == "" || dto.getCedula() == null){
+            return null;
+        }
+        
+        CuentasPorCobrar cpc = cuentaCobrarRepository.findByNumeroObligacion(dto.getNumeroObligacion());
+        if(Objects.isNull(cpc)){
+            return null;
+        }
+        
+        String token = request.getAttribute("token").toString();
+        
+        List<ClientesDto> client = clientesClient.buscarClientesByNumeroObligacion(dto.getCedula(), token);
+        if(client.isEmpty()){
+            return null;
+        }
+        System.out.println(client.size());
+        
+        Usuario usu = usuarioClientService.obtenerUsuarioById(cpc.getAsesor().getUsuarioId());
+        if(Objects.isNull(usu)){
+            return null;
+        }
+        
+        ClientesDto clientToSend = new ClientesDto();
+        
+        for (ClientesDto clientesDto : client) {
+            
+            if(clientesDto.getNumeroDocumento().equals(dto.getCedula()) == true){
+                clientToSend = clientesDto;
+                break;
+            }
+            else{
+                return null;
+            }
+           
+        }
+        
+        List<Telefono> telefono = clientToSend.getTelefonos().stream().filter(t ->t.isIsCurrent() == true).collect(Collectors.toList());
+      
+        
+        LinkToClient link = new LinkToClient();
+        
+        String nombreTitular = clientToSend.getNombreTitular().replaceAll(" ", "%20").toUpperCase();
+        String asesorCartera = usu.getNombres().replaceAll(" ", "%20").concat("%20").concat(usu.getApellidos().replaceAll(" ", "%20")).toUpperCase();
+        
+        String message = "&text=Buen%20día%20señor/a%20".concat(nombreTitular).concat(",%20se%20comunica%20con%20GMJ%20hogar;%20por%20medio%20de%20este%20mensaje%20le%20notificamos")
+                .concat("%20que%20su%20acuerdo%20de%20pago%20ha%20sido%20efectuado%20exitosamente,%20a%20continuación%20enviaremos%20un%20PDF%20con%20la%20")
+                .concat("información%20de%20su%20acuerdo%20de%20pago,%20este%20contiene%20las%20fechas%20de%20pago%20y%20los%20valores%20de%20las%20cuotas%20")
+                .concat("mensuales%20acordadas%20con%20nuestro%20asesor/a%20de%20cartera%20".concat(asesorCartera).concat(",%20si%20tiene%20alguna%20duda%20por%20favor%20ponerse%20"))
+                .concat("en%20contacto%20por%20este%20mismo%20medio,%20muchas%20gracias");
+        
+        link.setMessageToWpp("https://api.whatsapp.com/send?phone=".concat(telefono.get(0).getNumero()).concat(message));
+        try {
+            link.setBase64(pdf.generarReporteAcuerdoPagoToClient(cpc));
+        } catch (IOException ex) {
+            Logger.getLogger(GestionesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(GestionesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return link;
+        
     }
 
 }

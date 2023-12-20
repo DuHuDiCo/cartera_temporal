@@ -39,6 +39,22 @@ public class Functions {
         }
 
     }
+    
+    public static String dateToString(Date fecha) throws ParseException {
+        try {
+            SimpleDateFormat formatEntrada = new SimpleDateFormat("yyyy-MM-dd");
+            String fechaEntrada = formatEntrada.format(fecha);
+
+            Date fechaOk = formatEntrada.parse(fechaEntrada);
+
+            SimpleDateFormat formatSalida = new SimpleDateFormat("dd/MM/yyyy");
+            String fechaFormateada = formatSalida.format(fechaOk);
+
+            return fechaFormateada;
+        } catch (ParseException e) {
+            throw new DateFormatException("Error al formatear la fecha: " + e.getMessage(), e.getErrorOffset());
+        }
+    }
 
     public static String containsOnlyNumbers(String input) {
         String regex = "^[0-9]+$";
