@@ -45,6 +45,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
@@ -167,7 +168,7 @@ public class GestionesServiceImpl implements GestionesService {
                 couta.setInteresCuota(cuotas.getInteresCuota());
                 couta.setNumeroCuota(cuotas.getNumeroCuota());
                 couta.setValorCuota(cuotas.getValorCuota());
-                
+
                 acuerdoPago.agregarCuota(couta);
             }
 
@@ -203,7 +204,7 @@ public class GestionesServiceImpl implements GestionesService {
             if (Objects.isNull(nombre)) {
                 return null;
             }
-            
+
             nota.setNombresClasificacion(nombre);
 
             nota = notaRepository.save(nota);
@@ -227,9 +228,9 @@ public class GestionesServiceImpl implements GestionesService {
             }
 
             tarea.setClasificacion(dto.getClasificacion().getTipoClasificacion());
-            
-             NombresClasificacion nombre  = nombresClasificacionRepository.findFirstByNombre(clasificacion.getNombre());
-            if(Objects.isNull(nombre)){
+
+            NombresClasificacion nombre = nombresClasificacionRepository.findFirstByNombre(clasificacion.getNombre());
+            if (Objects.isNull(nombre)) {
                 return null;
             }
             tarea.setNombresClasificacion(nombre);
@@ -274,7 +275,6 @@ public class GestionesServiceImpl implements GestionesService {
         if (Objects.isNull(gestion)) {
             return gesResList;
         }
-
 
         for (Gestiones gestiones : gestion) {
             ModelMapper map = new ModelMapper();
@@ -351,50 +351,80 @@ public class GestionesServiceImpl implements GestionesService {
     }
 
     @Override
+    @Transactional
     public void desactivateAcuerdoPago(Long idAcuerdoPago) {
 
-        ClasificacionGestion clasificacion = clasificacionGestionRepository.findById(idAcuerdoPago).orElse(null);
-        if(Objects.isNull(clasificacion)){
+        Gestiones gestion = gestionesRepository.findById(idAcuerdoPago).orElse(null);
+        if (Objects.isNull(gestion)) {
             System.out.println("nulll");
+            return;
         }
-      
+
+        System.out.println(gestion.getClasificacionGestion().getIdClasificacionGestion() + "-------------");
+
+        AcuerdoPago acuerdo = new AcuerdoPago();
+        List<Cuotas> cuotas = new ArrayList<>(acuerdo.getCuotasList());
+        
+        System.out.println(cuotas.size()+"---------------");
+
+        if (gestion.getClasificacionGestion() instanceof AcuerdoPago) {
+            acuerdo = (AcuerdoPago) gestion.getClasificacionGestion();
+
+            System.out.println("---------------" + acuerdo.getIdClasificacionGestion());
+        } else {
+            return;
+        }
 
         HistoricoAcuerdosPago hap = new HistoricoAcuerdosPago();
 
-        Usuario usuario = usuarioClientService.obtenerUsuarioById(clasificacion.);
+        Usuario usuario = usuarioClientService.obtenerUsuarioById(acuerdo.getAsesor().getUsuarioId());
+        if (Objects.isNull(usuario)) {
+            System.out.println("null");
+        }
 
-        CuentasPorCobrar cpc = cuentaCobrarRepository.findByNumeroObligacion(ap.getGestiones().getNumeroObligacion());
+        CuentasPorCobrar cpc = cuentaCobrarRepository.findByNumeroObligacion(acuerdo.getGestiones().getNumeroObligacion());
 
-        String mora_total = ap.getTipoAcuerdo();
-        String valorAcuerdo = Double.toString(ap.getValorTotalAcuerdo());
-        String intMora = Double.toString(ap.getValorInteresesMora());
-        String valorCuotaMes = Double.toString(ap.getValorCuotaMensual());
-        String fechaCorte = ap.getFechaAcuerdo().toString();
+        String mora_total = acuerdo.getTipoAcuerdo();
+        String valorAcuerdo = Double.toString(acuerdo.getValorTotalAcuerdo());
+        String intMora = Double.toString(acuerdo.getValorInteresesMora());
+        String valorCuotaMes = Double.toString(acuerdo.getValorCuotaMensual());
+        String fechaCorte = acuerdo.getFechaAcuerdo().toString();
         double valorTotalCuotasPagadas = 0;
+        int totalCuotasPagadas = 0;
         String cuotasTosave = "Cliente: ".concat(cpc.getCliente().concat("\n Numero de Obligacion: ").concat(cpc.getNumeroObligacion())
-                                .concat("\n Asesor Cartera: ").concat(usuario.getNombres()).concat(usuario.getApellidos())
-                                .concat("\n Acuerdo pactuado por mora o total: ").concat(mora_total)
-                                .concat("\n Valor del acuerdo de pago: $").concat(String.valueOf(valorAcuerdo))
-                                .concat("\n Intereses por mora: $").concat(String.valueOf(intMora))
-                                .concat("\n Valor de la cuota mensual: $").concat(String.valueOf(valorCuotaMes))
-                                .concat("\n Fecha de corte del acuerdo de pago: ").concat(String.valueOf(fechaCorte)).concat("\n"));
+                .concat("\n Asesor Cartera: ").concat(usuario.getNombres()).concat(usuario.getApellidos())
+                .concat("\n Acuerdo pactuado por mora o total: ").concat(mora_total)
+                .concat("\n Valor del acuerdo de pago: $").concat(String.valueOf(valorAcuerdo))
+                .concat("\n Intereses por mora: $").concat(String.valueOf(intMora))
+                .concat("\n Valor de la cuota mensual: $").concat(String.valueOf(valorCuotaMes))
+                .concat("\n Fecha de corte del acuerdo de pago: ").concat(String.valueOf(fechaCorte)).concat("\n"));
 
-        for (Cuotas cuotas : ap.getCuotasList()) {
-            cuotasTosave =  cuotasTosave.concat(Integer.toString(cuotas.getNumeroCuota()).concat(" ").concat(Double.toString(cuotas.getValorCuota())).concat(" ").concat(Double.toString(cuotas.getCapitalCuota())).concat(" ").concat(cuotas.getFechaVencimiento().toString()).concat(" ").concat(Double.toString(cuotas.getHonorarios()))).concat("\n");
-            valorTotalCuotasPagadas = valorTotalCuotasPagadas + cuotas.getValorCuota();
-            cuotaRepository.delete(cuotas);
+        acuerdo.setIsActive(false);
+
+        for (Cuotas cuota : cuotas) {
+            cuotasTosave = cuotasTosave.concat(Integer.toString(cuota.getNumeroCuota()).concat(" ").concat(Double.toString(cuota.getValorCuota())).concat(" ").concat(Double.toString(cuota.getCapitalCuota())).concat(" ").concat(cuota.getFechaVencimiento().toString()).concat(" ").concat(Double.toString(cuota.getHonorarios()))).concat("\n");
+            valorTotalCuotasPagadas = valorTotalCuotasPagadas + cuota.getValorCuota();
+            if (cuota.isCumplio()) {
+                totalCuotasPagadas += 1;
+            }
+
         }
         
         hap.setAsesorCartera(usuario.getNombres().concat(usuario.getApellidos()));
-        hap.setFechaCreacionAcuerdo(ap.getFechaAcuerdo());
+        hap.setFechaCreacionAcuerdo(acuerdo.getFechaAcuerdo());
         hap.setHistorico(cuotasTosave);
         hap.setNumeroObligacion(cpc.getNumeroObligacion());
-        hap.setTotalCuotasPagadas(valorTotalCuotasPagadas);
-        
+        hap.setTotalValorCuotasPagadas(valorTotalCuotasPagadas);
+        hap.setTotalCuotasPagadas(totalCuotasPagadas);
+        hap.setTotalCuotasAcuerdo(cuotas.size());
+        hap.setValorTotalAcuerdo(acuerdo.getValorTotalAcuerdo());
+
         hap = historicoAcuerdoPagoRepository.save(hap);
-
-        ap = acuerdoPagoRepository.save(ap);
-
+        for (Cuotas cuota : cuotas) {
+            cuota.setAcuerdoPago(null);
+            cuotaRepository.deleteById(cuota.getIdCuota());
+        }
+        acuerdo = acuerdoPagoRepository.save(acuerdo);
     }
 
 }

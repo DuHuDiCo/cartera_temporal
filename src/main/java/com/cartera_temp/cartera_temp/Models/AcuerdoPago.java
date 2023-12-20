@@ -51,17 +51,17 @@ public class AcuerdoPago extends ClasificacionGestion {
     @Column(name = "is_active")
     private boolean isActive;
 
-    @OneToMany(mappedBy = "acuerdoPago", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "acuerdoPago", cascade = CascadeType.ALL)
     private List<Cuotas> cuotasList = new ArrayList<>();
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "asesor_cartera_id", referencedColumnName = "id_asesor_cartera")
     private AsesorCartera asesor;
 
-    
-@ManyToOne
+    @ManyToOne
     @JoinColumn(name = "tipo_clasificacion_id")
     private NombresClasificacion nombresClasificacion;
+
     public AcuerdoPago() {
     }
 
@@ -77,8 +77,6 @@ public class AcuerdoPago extends ClasificacionGestion {
     public void setNombresClasificacion(NombresClasificacion nombresClasificacion) {
         this.nombresClasificacion = nombresClasificacion;
     }
-    
-    
 
     public Gestiones getGestiones() {
         return gestiones;
@@ -143,8 +141,6 @@ public class AcuerdoPago extends ClasificacionGestion {
     public void setHonorarioAcuerdo(double honorarioAcuerdo) {
         this.honorarioAcuerdo = honorarioAcuerdo;
     }
-
-    
 
     public Date getFechaAcuerdo() {
         return fechaAcuerdo;
