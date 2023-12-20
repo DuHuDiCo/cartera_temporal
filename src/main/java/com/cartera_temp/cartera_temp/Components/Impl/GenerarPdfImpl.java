@@ -7,6 +7,7 @@ import com.cartera_temp.cartera_temp.Models.Gestiones;
 import com.cartera_temp.cartera_temp.Utils.Functions;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -15,11 +16,14 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import org.apache.pdfbox.io.IOUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -54,8 +58,16 @@ public class GenerarPdfImpl implements GenerarPdf {
                 doc.addPage(page);
                 int cellHeight = 20;
                 int cellWidth = 95;
+                int height = (int) page.getTrimBox().getHeight();//792
+                int width = (int) page.getTrimBox().getWidth();//612
 
+                ClassPathResource resource = new ClassPathResource("electrohogarOpa.png");
+                InputStream inputStream = resource.getInputStream();
+                PDImageXObject logoImage = PDImageXObject.createFromByteArray(doc, IOUtils.toByteArray(inputStream), "electrohogarOpa.png");
+                
                 try (PDPageContentStream contens = new PDPageContentStream(doc, page)) {
+                    
+                    contens.drawImage(logoImage, width / 2 - 150, height / 2 - 30, 300, 100);
                     //CREACION DEL TITULO
                     nuevaLinea(titulo, 160, 750, contens, PDType1Font.HELVETICA_BOLD, 18);
                     
