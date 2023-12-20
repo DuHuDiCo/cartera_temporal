@@ -3,6 +3,8 @@ package com.cartera_temp.cartera_temp.Controllers;
 import GestionesDataDto.GestionesDataDto;
 import com.cartera_temp.cartera_temp.Dtos.GestionResponse;
 import com.cartera_temp.cartera_temp.Dtos.GestionToSaveDto;
+import com.cartera_temp.cartera_temp.Dtos.LinkDto;
+import com.cartera_temp.cartera_temp.Dtos.LinkToClient;
 import com.cartera_temp.cartera_temp.Dtos.MessageResponse;
 import com.cartera_temp.cartera_temp.Models.AcuerdoPago;
 import com.cartera_temp.cartera_temp.Models.Gestiones;
@@ -65,6 +67,15 @@ public class GestionesController {
     @PutMapping("/desactivateAcuerdoPago/{id}")
     public void desactivateAcuerpoPago(@PathVariable("id")Long idAcuerdoPago){
         gestionesService.desactivateAcuerdoPago(idAcuerdoPago);
+    }
+    
+    @PutMapping("/linkAndReporteAcuerdoToClient")
+    public ResponseEntity<LinkToClient> link (@RequestBody LinkDto dto){
+        LinkToClient linkClient = gestionesService.sendLinkAndPdfToClient(dto);
+        if(Objects.isNull(linkClient)){
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(linkClient);
     }
     
 }
