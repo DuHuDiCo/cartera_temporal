@@ -2,9 +2,7 @@ package com.cartera_temp.cartera_temp.Components.Impl;
 
 import com.cartera_temp.cartera_temp.Components.GenerarPdf;
 import com.cartera_temp.cartera_temp.Models.AcuerdoPago;
-import com.cartera_temp.cartera_temp.Models.ClasificacionGestion;
 import com.cartera_temp.cartera_temp.Models.CuentasPorCobrar;
-import com.cartera_temp.cartera_temp.Models.Cuotas;
 import com.cartera_temp.cartera_temp.Models.Gestiones;
 import com.cartera_temp.cartera_temp.Utils.Functions;
 import java.io.ByteArrayOutputStream;
@@ -39,7 +37,12 @@ public class GenerarPdfImpl implements GenerarPdf {
         List<Gestiones> gestionList = gestion.stream().filter(g -> g.getClasificacion().getClasificacion().equals("ACUERDO DE PAGO") && g.getClasificacion() instanceof AcuerdoPago && ((AcuerdoPago) g.getClasificacion()).isIsActive() == true).collect(Collectors.toList());
 
         String titulo = "REPORTE ACUERDOS DE PAGO";
-        String fecha = Functions.fechaDateToStringSinHora();
+        String fecha = "";
+        try {
+            fecha = Functions.dateToString(gestionList.get(0).getFechaGestion());
+        } catch (ParseException ex) {
+            Logger.getLogger(GenerarPdfImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
         String sede = cpc.getSede().getSede();
         String nombreCliente = cpc.getCliente();
         String numeroDocumento = cpc.getDocumentoCliente();
@@ -49,37 +52,41 @@ public class GenerarPdfImpl implements GenerarPdf {
             try (PDDocument doc = new PDDocument()) {
                 PDPage page = new PDPage();
                 doc.addPage(page);
-                int height = (int) page.getTrimBox().getHeight();
-                int width = (int) page.getTrimBox().getWidth();
-                int initX = 20;
-                int initY = height - 150;
                 int cellHeight = 20;
                 int cellWidth = 95;
-                int colCount = 6;
 
                 try (PDPageContentStream contens = new PDPageContentStream(doc, page)) {
                     //CREACION DEL TITULO
                     nuevaLinea(titulo, 160, 750, contens, PDType1Font.HELVETICA_BOLD, 18);
-                    int con = 10;
-
+                    
                     //CREACION DE LAS VARIABLES SUBTITULOS ANTES DE LAS TABLAS
-                    String fechaDoc = "Fecha: ".concat(fecha).toUpperCase();
-                    String sedeDoc = "Sede: ".concat(sede).toUpperCase().toUpperCase();
-                    String nombreClienteDoc = "Nombre del cliente: ".concat(nombreCliente).toUpperCase();
-                    String numeroDocumentoDoc = "Documento del cliente: ".concat(numeroDocumento).toUpperCase();
-                    String numeroObligacionDoc = "Numero de la obligacion: ".concat(numeroObligacion).toUpperCase();
+                    String fechaDoc = "Fecha: ".toUpperCase();
+                    String sedeDoc = "Sede: ".toUpperCase();
+                    String nombreClienteDoc = "Nombre del cliente: ".toUpperCase();
+                    String numeroDocumentoDoc = "Documento del cliente: ".toUpperCase();
+                    String numeroObligacionDoc = "Numero de la obligacion: ".toUpperCase();
 
                     //CREACION DE SUBTITULOS
                     nuevaLinea(nombreClienteDoc, 70, 720, contens, PDType1Font.HELVETICA_BOLD, 12);
+                    nuevaLinea(nombreCliente, 210, 720, contens, PDType1Font.HELVETICA, 12);
+                    
                     nuevaLinea(numeroDocumentoDoc, 70, 700, contens, PDType1Font.HELVETICA_BOLD, 12);
+                    nuevaLinea(numeroDocumento, 238, 700, contens, PDType1Font.HELVETICA, 12);
+                    
                     nuevaLinea(sedeDoc, 70, 680, contens, PDType1Font.HELVETICA_BOLD, 12);
+                    nuevaLinea(sede, 110, 680, contens, PDType1Font.HELVETICA, 12);
+                    
                     nuevaLinea(fechaDoc, 70, 660, contens, PDType1Font.HELVETICA_BOLD, 12);
+                    nuevaLinea(fecha, 117, 660, contens, PDType1Font.HELVETICA, 12);
+                    
                     nuevaLinea(numeroObligacionDoc, 70, 640, contens, PDType1Font.HELVETICA_BOLD, 12);
+                    nuevaLinea(numeroObligacion, 247, 640, contens, PDType1Font.HELVETICA, 12);
+                    
 
-                    String[] cabecerosList = {"°Cuotas", "F.Vencimiento", "Valor cuota", "Capital", "Honorarios", "Intereses"};
+                    String[] cabecerosList = {"#Cuotas", "F.Vencimiento", "Valor cuota", "Capital", "Honorarios", "Intereses"};
 
                     int inicioTablaX = 40;
-                    int inicioTablaY = 610;
+                    int inicioTablaY = 590;
 
                     Gestiones ges = gestionList.get(0);
 
@@ -144,7 +151,7 @@ public class GenerarPdfImpl implements GenerarPdf {
                                     cellWidth = 70;
                                     contens.addRect(inicioTablaX, inicioTablaY, cellWidth, cellHeight);
                                     contens.stroke();
-                                    nuevaLinea(body.get(j), inicioTablaX + 5, inicioTablaY + 3, contens, PDType1Font.HELVETICA_BOLD, 14);
+                                    nuevaLinea(body.get(j), inicioTablaX + 5, inicioTablaY + 3, contens, PDType1Font.HELVETICA, 14);
 
                                     inicioTablaX = inicioTablaX + cellWidth;
                                 } else {
@@ -153,14 +160,14 @@ public class GenerarPdfImpl implements GenerarPdf {
                                         cellWidth = 110;
                                         contens.addRect(inicioTablaX, inicioTablaY, cellWidth, cellHeight);
                                         contens.stroke();
-                                        nuevaLinea(body.get(j), inicioTablaX + 5, inicioTablaY + 3, contens, PDType1Font.HELVETICA_BOLD, 14);
+                                        nuevaLinea(body.get(j), inicioTablaX + 5, inicioTablaY + 3, contens, PDType1Font.HELVETICA, 14);
 
                                         inicioTablaX = inicioTablaX + cellWidth;
                                     } else {
                                         cellWidth = 95;
                                         contens.addRect(inicioTablaX, inicioTablaY, cellWidth, cellHeight);
                                         contens.stroke();
-                                        nuevaLinea(body.get(j), inicioTablaX + 5, inicioTablaY + 3, contens, PDType1Font.HELVETICA_BOLD, 14);
+                                        nuevaLinea(body.get(j), inicioTablaX + 5, inicioTablaY + 3, contens, PDType1Font.HELVETICA, 14);
 
                                         inicioTablaX = inicioTablaX + cellWidth;
                                     }
@@ -175,31 +182,31 @@ public class GenerarPdfImpl implements GenerarPdf {
                                 if (j == 0) {
                                     contens.addRect(inicioTablaX, inicioTablaY - cellHeight, 180, cellHeight);
                                     contens.stroke();
-                                    nuevaLinea("Valores totales del acuerdo", inicioTablaX + 5, inicioTablaY +3 -cellHeight, contens, PDType1Font.HELVETICA_BOLD, 12);
+                                    nuevaLinea("Valores totales del acuerdo", inicioTablaX + 5, inicioTablaY +3 -cellHeight, contens, PDType1Font.HELVETICA_BOLD, 13);
                                 }
                                 if(j == 2){
                                     cellWidth = 95;
                                     contens.addRect(inicioTablaX + 180, inicioTablaY - cellHeight, cellWidth, cellHeight);
                                     contens.stroke();
-                                    nuevaLinea(Double.toString(acuPago.getValorTotalAcuerdo()), inicioTablaX + 185, inicioTablaY +3 -cellHeight, contens, PDType1Font.HELVETICA, 12);
+                                    nuevaLinea(Double.toString(acuPago.getValorTotalAcuerdo()), inicioTablaX + 185, inicioTablaY +3 -cellHeight, contens, PDType1Font.HELVETICA, 13);
                                 }
                                 if(j == 3){
                                     cellWidth = 70;
                                     contens.addRect(inicioTablaX + 180 + 95, inicioTablaY - cellHeight, cellWidth, cellHeight);
                                     contens.stroke();
-                                    nuevaLinea(Double.toString(totalCuotas), inicioTablaX + 180 + 100, inicioTablaY + 3 -cellHeight, contens, PDType1Font.HELVETICA, 12);
+                                    nuevaLinea(Double.toString(totalCuotas), inicioTablaX + 180 + 100, inicioTablaY + 3 -cellHeight, contens, PDType1Font.HELVETICA, 13);
                                 }
                                 if(j == 4){
                                     cellWidth = 95;
                                     contens.addRect(inicioTablaX + 180 + 95 + 70, inicioTablaY - cellHeight, cellWidth, cellHeight);
                                     contens.stroke();
-                                    nuevaLinea(Double.toString(acuPago.getHonorarioAcuerdo()), inicioTablaX + 180 + 100 + 75, inicioTablaY +3 -cellHeight, contens, PDType1Font.HELVETICA, 12);
+                                    nuevaLinea(Double.toString(acuPago.getHonorarioAcuerdo()), inicioTablaX + 180 + 100 + 70, inicioTablaY +3 -cellHeight, contens, PDType1Font.HELVETICA, 13);
                                 }
                                 if(j == 5){
                                     cellWidth = 95;
                                     contens.addRect(inicioTablaX + 180 + 100 + 70 + 90, inicioTablaY - cellHeight, cellWidth, cellHeight);
                                     contens.stroke();
-                                    nuevaLinea(Double.toString(acuPago.getValorInteresesMora()), inicioTablaX + 180 + 100 + 75 + 100, inicioTablaY +3 -cellHeight, contens, PDType1Font.HELVETICA, 12);
+                                    nuevaLinea(Double.toString(acuPago.getValorInteresesMora()), inicioTablaX + 180 + 100 + 75 + 90, inicioTablaY +3 -cellHeight, contens, PDType1Font.HELVETICA, 13);
                                 }
 
                             }
