@@ -34,7 +34,7 @@ public class Sede {
     private String nombreComercialSede;
     
     
-    @Column(name = "direccion_sede", length = 15)
+    @Column(name = "direccion_sede")
     @NotNull
     @NotBlank
     private String direccionSede;
