@@ -103,12 +103,6 @@ public class GestionesServiceImpl implements GestionesService {
         this.pdf = pdf;
     }
 
-    
-
-    
-
-    
-
     @Override
     public GestionResponse saveOneGestion(GestionToSaveDto dto) {
 
@@ -382,17 +376,15 @@ public class GestionesServiceImpl implements GestionesService {
             return;
         }
 
-        System.out.println(gestion.getClasificacionGestion().getIdClasificacionGestion() + "-------------");
+        
 
         AcuerdoPago acuerdo = new AcuerdoPago();
-        List<Cuotas> cuotas = new ArrayList<>(acuerdo.getCuotasList());
-        
-        System.out.println(cuotas.size()+"---------------");
 
+       List<Cuotas> cuotas = null;
         if (gestion.getClasificacionGestion() instanceof AcuerdoPago) {
             acuerdo = (AcuerdoPago) gestion.getClasificacionGestion();
-
-            System.out.println("---------------" + acuerdo.getIdClasificacionGestion());
+            cuotas =  new ArrayList<>(acuerdo.getCuotasList());
+           
         } else {
             return;
         }
@@ -425,13 +417,14 @@ public class GestionesServiceImpl implements GestionesService {
 
         for (Cuotas cuota : cuotas) {
             cuotasTosave = cuotasTosave.concat(Integer.toString(cuota.getNumeroCuota()).concat(" ").concat(Double.toString(cuota.getValorCuota())).concat(" ").concat(Double.toString(cuota.getCapitalCuota())).concat(" ").concat(cuota.getFechaVencimiento().toString()).concat(" ").concat(Double.toString(cuota.getHonorarios()))).concat("\n");
-            valorTotalCuotasPagadas = valorTotalCuotasPagadas + cuota.getValorCuota();
+            
             if (cuota.isCumplio()) {
+                valorTotalCuotasPagadas = valorTotalCuotasPagadas + cuota.getValorCuota();
                 totalCuotasPagadas += 1;
             }
 
         }
-        
+
         hap.setAsesorCartera(usuario.getNombres().concat(usuario.getApellidos()));
         hap.setFechaCreacionAcuerdo(acuerdo.getFechaAcuerdo());
         hap.setHistorico(cuotasTosave);
@@ -442,66 +435,64 @@ public class GestionesServiceImpl implements GestionesService {
         hap.setValorTotalAcuerdo(acuerdo.getValorTotalAcuerdo());
 
         hap = historicoAcuerdoPagoRepository.save(hap);
-        for (Cuotas cuota : cuotas) {
-            cuota.setAcuerdoPago(null);
-            cuotaRepository.deleteById(cuota.getIdCuota());
+
+        if(Objects.nonNull(acuerdo)){
+            acuerdo.getCuotasList().clear();
+            acuerdoPagoRepository.save(acuerdo);
         }
-        acuerdo = acuerdoPagoRepository.save(acuerdo);
     }
 
     @Override
     public LinkToClient sendLinkAndPdfToClient(LinkDto dto) {
-        
-        if(dto.getNumeroObligacion() == "" || dto.getNumeroObligacion() == null || dto.getCedula() == "" || dto.getCedula() == null){
+
+        if (dto.getNumeroObligacion() == "" || dto.getNumeroObligacion() == null || dto.getCedula() == "" || dto.getCedula() == null) {
             return null;
         }
-        
+
         CuentasPorCobrar cpc = cuentaCobrarRepository.findByNumeroObligacion(dto.getNumeroObligacion());
-        if(Objects.isNull(cpc)){
+        if (Objects.isNull(cpc)) {
             return null;
         }
-        
+
         String token = request.getAttribute("token").toString();
-        
+
         List<ClientesDto> client = clientesClient.buscarClientesByNumeroObligacion(dto.getCedula(), token);
-        if(client.isEmpty()){
+        if (client.isEmpty()) {
             return null;
         }
         System.out.println(client.size());
-        
+
         Usuario usu = usuarioClientService.obtenerUsuarioById(cpc.getAsesor().getUsuarioId());
-        if(Objects.isNull(usu)){
+        if (Objects.isNull(usu)) {
             return null;
         }
-        
+
         ClientesDto clientToSend = new ClientesDto();
-        
+
         for (ClientesDto clientesDto : client) {
-            
-            if(clientesDto.getNumeroDocumento().equals(dto.getCedula()) == true){
+
+            if (clientesDto.getNumeroDocumento().equals(dto.getCedula()) == true) {
                 clientToSend = clientesDto;
                 break;
-            }
-            else{
+            } else {
                 return null;
             }
-           
+
         }
-        
-        List<Telefono> telefono = clientToSend.getTelefonos().stream().filter(t ->t.isIsCurrent() == true).collect(Collectors.toList());
-      
-        
+
+        List<Telefono> telefono = clientToSend.getTelefonos().stream().filter(t -> t.isIsCurrent() == true).collect(Collectors.toList());
+
         LinkToClient link = new LinkToClient();
-        
+
         String nombreTitular = clientToSend.getNombreTitular().replaceAll(" ", "%20").toUpperCase();
         String asesorCartera = usu.getNombres().replaceAll(" ", "%20").concat("%20").concat(usu.getApellidos().replaceAll(" ", "%20")).toUpperCase();
-        
+
         String message = "&text=Buen%20día%20señor/a%20".concat(nombreTitular).concat(",%20se%20comunica%20con%20GMJ%20hogar;%20por%20medio%20de%20este%20mensaje%20le%20notificamos")
                 .concat("%20que%20su%20acuerdo%20de%20pago%20ha%20sido%20efectuado%20exitosamente,%20a%20continuación%20enviaremos%20un%20PDF%20con%20la%20")
                 .concat("información%20de%20su%20acuerdo%20de%20pago,%20este%20contiene%20las%20fechas%20de%20pago%20y%20los%20valores%20de%20las%20cuotas%20")
                 .concat("mensuales%20acordadas%20con%20nuestro%20asesor/a%20de%20cartera%20".concat(asesorCartera).concat(",%20si%20tiene%20alguna%20duda%20por%20favor%20ponerse%20"))
                 .concat("en%20contacto%20por%20este%20mismo%20medio,%20muchas%20gracias");
-        
+
         link.setMessageToWpp("https://api.whatsapp.com/send?phone=".concat(telefono.get(0).getNumero()).concat(message));
         try {
             link.setBase64(pdf.generarReporteAcuerdoPagoToClient(cpc));
@@ -510,9 +501,9 @@ public class GestionesServiceImpl implements GestionesService {
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(GestionesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         return link;
-        
+
     }
 
 }
