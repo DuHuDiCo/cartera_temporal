@@ -9,4 +9,6 @@ public interface GenerarPdf {
 
     public String generarReporteAcuerdoPagoToClient(CuentasPorCobrar cpc) throws IOException, ClassNotFoundException;
     
+    public String generarReportePagoCuotas(CuentasPorCobrar cpc)throws IOException, ClassNotFoundException;
+    
 }

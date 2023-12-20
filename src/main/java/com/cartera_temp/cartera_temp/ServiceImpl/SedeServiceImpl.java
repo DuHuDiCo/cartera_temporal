@@ -21,13 +21,16 @@ public class SedeServiceImpl implements SedeService{
     
     
     @Override
-    public Sede guardarSede( String sede) {
-        Sede findSede = sedeRepository.findBySede(sede);
+    public Sede guardarSede(Sede sede) {
+        Sede findSede = sedeRepository.findBySede(sede.getSede());
         if(Objects.nonNull(findSede)){
             return findSede;
         }
         findSede = new Sede();
-        findSede.setSede(sede);
+        findSede.setSede(sede.getSede());
+        findSede.setDireccionSede(sede.getDireccionSede());
+        findSede.setNombreComercialSede(sede.getNombreComercialSede());
+        findSede.setTelefonoSede(sede.getTelefonoSede());
         
         return sedeRepository.save(findSede);
     }

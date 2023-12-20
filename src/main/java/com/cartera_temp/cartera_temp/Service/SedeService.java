@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface SedeService {
 
-    public Sede guardarSede(String sede);
+    public Sede guardarSede(Sede sede);
 
     public List<Sede> listarSede();
 
