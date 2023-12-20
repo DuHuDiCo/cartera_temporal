@@ -27,10 +27,10 @@ public class SedeServiceImpl implements SedeService{
             return findSede;
         }
         findSede = new Sede();
-        findSede.setSede(sede.getSede());
-        findSede.setDireccionSede(sede.getDireccionSede());
-        findSede.setNombreComercialSede(sede.getNombreComercialSede());
-        findSede.setTelefonoSede(sede.getTelefonoSede());
+        findSede.setSede(sede.getSede().toUpperCase());
+        findSede.setDireccionSede(sede.getDireccionSede().toUpperCase());
+        findSede.setNombreComercialSede(sede.getNombreComercialSede().toUpperCase());
+        findSede.setTelefonoSede(sede.getTelefonoSede().toUpperCase());
         
         return sedeRepository.save(findSede);
     }
