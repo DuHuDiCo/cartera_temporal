@@ -22,6 +22,22 @@ public class Sede {
     @NotNull
     @NotBlank
     private String sede;
+    
+    @Column(name = "telefono_sede", length = 15)
+    @NotNull
+    @NotBlank
+    private String telefonoSede;
+    
+    @Column(name = "nombre_comercial_sede")
+    @NotNull
+    @NotBlank
+    private String nombreComercialSede;
+    
+    
+    @Column(name = "direccion_sede", length = 15)
+    @NotNull
+    @NotBlank
+    private String direccionSede;
 
     public Sede() {
     }
@@ -40,6 +56,30 @@ public class Sede {
 
     public void setSede(String sede) {
         this.sede = sede;
+    }
+
+    public String getTelefonoSede() {
+        return telefonoSede;
+    }
+
+    public void setTelefonoSede(String telefonoSede) {
+        this.telefonoSede = telefonoSede;
+    }
+
+    public String getNombreComercialSede() {
+        return nombreComercialSede;
+    }
+
+    public void setNombreComercialSede(String nombreComercialSede) {
+        this.nombreComercialSede = nombreComercialSede;
+    }
+
+    public String getDireccionSede() {
+        return direccionSede;
+    }
+
+    public void setDireccionSede(String direccionSede) {
+        this.direccionSede = direccionSede;
     }
     
     
