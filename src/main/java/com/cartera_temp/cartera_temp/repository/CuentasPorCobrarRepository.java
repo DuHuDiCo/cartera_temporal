@@ -19,6 +19,8 @@ public interface CuentasPorCobrarRepository extends JpaRepository<CuentasPorCobr
     
     CuentasPorCobrar findByNumeroObligacion(String obligacion);
     
+    CuentasPorCobrar findByDocumentoCliente(String cliente);
+    
     List<CuentasPorCobrar> findByNumeroObligacionContaining(String obligacion);
     
     @Query(value = "SELECT * FROM cuentas_por_cobrar LIMIT 1", nativeQuery = true)

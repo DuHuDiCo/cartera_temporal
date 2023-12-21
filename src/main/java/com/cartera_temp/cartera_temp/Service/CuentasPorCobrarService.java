@@ -25,5 +25,7 @@ public interface CuentasPorCobrarService {
     public CuentasPorCobrarResponse getCpcByNumeroObligacion(String numeroObligacion);
     
     public CuentasPorCobrarResponse updateCpcToCalculate(CuentaToCalculateDto dto);
+    
+    public List<CuentasPorCobrar> buscarCuentasByDatos(String dato);
 
 }
