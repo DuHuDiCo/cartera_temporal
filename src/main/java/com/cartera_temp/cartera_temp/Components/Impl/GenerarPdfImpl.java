@@ -240,22 +240,76 @@ public class GenerarPdfImpl implements GenerarPdf {
 
     @Override
     public String generarReportePagoCuotas(CuentasPorCobrar cpc) throws IOException, ClassNotFoundException {
-        
-        if(Objects.isNull(cpc)){
+
+        if (Objects.isNull(cpc)) {
             return null;
         }
+
+        String titulo = "RECIBO DE CAJA";
+
+        String sedeComercial = cpc.getSede().getNombreComercialSede().toUpperCase();
+        String direccionSede = cpc.getSede().getDireccionSede().toUpperCase();
+        String numeroSede = cpc.getSede().getTelefonoSede();
+        //YEIMAR DIJO QUE EL NIT ES IGUAL PARA TODOS(SI NO ES ASI LO ACABO A PALO)
+        String NIT = "NIT: 901056810-9 REGIMEN COMUN".toUpperCase();
+        String idPago = "# ".concat("Id del pago");
+        String cedulaDoc = "C.C".concat(cpc.getDocumentoCliente());
+        String fechaRecibo = "";
+        try {
+            fechaRecibo = "Fecha: ".concat(Functions.dateToString(Functions.obtenerFechaYhora()));
+        } catch (ParseException ex) {
+            Logger.getLogger(GenerarPdfImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        //DECLARACION DE VARIABLES PARA EL BODY DE LA TABLA
+        String clientePago = "Nombre de persona que paga";
+        String valorPago = "Que valor pago?";
+        String valorEnPalabras = "Cuatrocientos setenta mil".toUpperCase();
+        String detallePago = "Viene de la clase pago".toUpperCase();
+        String tiposPago = "Reemplazar esto por una lista de pagos";
+        String usuarioPago = "Quien recibe el pago?";
         
-        String sedeDoc = "";
-        
-        switch (cpc.getSede().getSede()) {
-            case "ITAGUI":
-                sedeDoc = "ElectroHogar Itagüi";
-                break;
-            case "BOYACA":
-                sedeDoc = "";
-                break;
-            default:
-                throw new AssertionError();
+        try{
+            try(PDDocument doc = new PDDocument()){
+                PDPage page = new PDPage();
+                doc.addPage(page);
+                int cellHeight = 90;
+                int cellWidth = 500;
+                int height = (int) page.getTrimBox().getHeight();
+                int width = (int) page.getTrimBox().getWidth();
+                
+                ClassPathResource resource = new ClassPathResource("electrohogarOpa.png");
+                InputStream inputStream = resource.getInputStream();
+                PDImageXObject logoImage = PDImageXObject.createFromByteArray(doc, IOUtils.toByteArray(inputStream), "electrohogarOpa.png");
+                
+                try(PDPageContentStream contens = new PDPageContentStream(doc, page)){
+                    
+                    contens.drawImage(logoImage, width / 2 - 150, height / 2 - 30, 300, 100);
+                    
+                    //TITULO
+                    nuevaLinea(titulo, 160, 740, contens, PDType1Font.HELVETICA_BOLD, 16);
+                    nuevaLinea(idPago, 160, 720, contens, PDType1Font.HELVETICA, 16);
+                    
+                    //PARTE SUPERIOR IZQUIERDA DEL DOCUMENTO
+                    nuevaLinea(sedeComercial, 50, 750, contens, PDType1Font.HELVETICA, 16);
+                    nuevaLinea(direccionSede, 50, 730, contens, PDType1Font.HELVETICA, 16);
+                    nuevaLinea(numeroSede, 50, 710, contens, PDType1Font.HELVETICA, 16);
+                    nuevaLinea(NIT, 50, 690, contens, PDType1Font.HELVETICA, 16);
+                    
+                    //PARTE SUPERIOR DERECHA DEL DOCUMENTO
+                    nuevaLinea(fechaRecibo, 220, 730, contens, PDType1Font.HELVETICA, 16);
+                    nuevaLinea(cedulaDoc, 190, 680, contens, PDType1Font.HELVETICA, 16);
+                 
+                    contens.close();
+                    String base64 = convertPdfToBase64(doc);
+                    return base64;
+                    
+                }
+                
+            }
+        }catch(IOException e){
+            e.printStackTrace();
+            return null;
         }
         
     }
