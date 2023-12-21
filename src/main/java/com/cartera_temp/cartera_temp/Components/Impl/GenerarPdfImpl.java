@@ -257,7 +257,7 @@ public class GenerarPdfImpl implements GenerarPdf {
             default:
                 throw new AssertionError();
         }
-        
+        return null;
     }
 
     private static String convertPdfToBase64(PDDocument document) throws IOException {
