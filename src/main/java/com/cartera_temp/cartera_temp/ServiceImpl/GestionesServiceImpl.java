@@ -55,6 +55,7 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
@@ -101,12 +102,6 @@ public class GestionesServiceImpl implements GestionesService {
         this.request = request;
         this.pdf = pdf;
     }
-
-    
-
-    
-
-    
 
     @Override
     public GestionResponse saveOneGestion(GestionToSaveDto dto) {
@@ -181,7 +176,7 @@ public class GestionesServiceImpl implements GestionesService {
                 couta.setCapitalCuota(cuotas.getCapitalCuota());
                 couta.setCumplio(false);
                 try {
-                    couta.setFechaVencimiento(Functions.stringToDateAndFormat(cuotas.getFechaVencimiento()));
+                    couta.setFechaVencimiento(Functions.stringToDate(cuotas.getFechaVencimiento()));
                 } catch (ParseException ex) {
                     Logger.getLogger(GestionesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -189,7 +184,7 @@ public class GestionesServiceImpl implements GestionesService {
                 couta.setInteresCuota(cuotas.getInteresCuota());
                 couta.setNumeroCuota(cuotas.getNumeroCuota());
                 couta.setValorCuota(cuotas.getValorCuota());
-                
+
                 acuerdoPago.agregarCuota(couta);
             }
 
@@ -225,7 +220,7 @@ public class GestionesServiceImpl implements GestionesService {
             if (Objects.isNull(nombre)) {
                 return null;
             }
-            
+
             nota.setNombresClasificacion(nombre);
 
             nota = notaRepository.save(nota);
@@ -249,9 +244,9 @@ public class GestionesServiceImpl implements GestionesService {
             }
 
             tarea.setClasificacion(dto.getClasificacion().getTipoClasificacion());
-            
-             NombresClasificacion nombre  = nombresClasificacionRepository.findFirstByNombre(clasificacion.getNombre());
-            if(Objects.isNull(nombre)){
+
+            NombresClasificacion nombre = nombresClasificacionRepository.findFirstByNombre(clasificacion.getNombre());
+            if (Objects.isNull(nombre)) {
                 return null;
             }
             tarea.setNombresClasificacion(nombre);
@@ -296,7 +291,6 @@ public class GestionesServiceImpl implements GestionesService {
         if (Objects.isNull(gestion)) {
             return gesResList;
         }
-
 
         for (Gestiones gestiones : gestion) {
             ModelMapper map = new ModelMapper();
@@ -373,102 +367,132 @@ public class GestionesServiceImpl implements GestionesService {
     }
 
     @Override
+    @Transactional
     public void desactivateAcuerdoPago(Long idAcuerdoPago) {
 
-        AcuerdoPago ap = acuerdoPagoRepository.findById(idAcuerdoPago).orElse(null);
-        ap.setIsActive(false);
+        Gestiones gestion = gestionesRepository.findById(idAcuerdoPago).orElse(null);
+        if (Objects.isNull(gestion)) {
+            System.out.println("nulll");
+            return;
+        }
+
+        
+
+        AcuerdoPago acuerdo = new AcuerdoPago();
+
+       List<Cuotas> cuotas = null;
+        if (gestion.getClasificacionGestion() instanceof AcuerdoPago) {
+            acuerdo = (AcuerdoPago) gestion.getClasificacionGestion();
+            cuotas =  new ArrayList<>(acuerdo.getCuotasList());
+           
+        } else {
+            return;
+        }
 
         HistoricoAcuerdosPago hap = new HistoricoAcuerdosPago();
 
-        Usuario usuario = usuarioClientService.obtenerUsuarioById(ap.getAsesor().getUsuarioId());
-
-        CuentasPorCobrar cpc = cuentaCobrarRepository.findByNumeroObligacion(ap.getGestiones().getNumeroObligacion());
-
-        String mora_total = ap.getTipoAcuerdo();
-        String valorAcuerdo = Double.toString(ap.getValorTotalAcuerdo());
-        String intMora = Double.toString(ap.getValorInteresesMora());
-        String valorCuotaMes = Double.toString(ap.getValorCuotaMensual());
-        String fechaCorte = ap.getFechaAcuerdo().toString();
-        double valorTotalCuotasPagadas = 0;
-        String cuotasTosave = "Cliente: ".concat(cpc.getCliente().concat("\n Numero de Obligacion: ").concat(cpc.getNumeroObligacion())
-                                .concat("\n Asesor Cartera: ").concat(usuario.getNombres()).concat(usuario.getApellidos())
-                                .concat("\n Acuerdo pactuado por mora o total: ").concat(mora_total)
-                                .concat("\n Valor del acuerdo de pago: $").concat(String.valueOf(valorAcuerdo))
-                                .concat("\n Intereses por mora: $").concat(String.valueOf(intMora))
-                                .concat("\n Valor de la cuota mensual: $").concat(String.valueOf(valorCuotaMes))
-                                .concat("\n Fecha de corte del acuerdo de pago: ").concat(String.valueOf(fechaCorte)).concat("\n"));
-
-        for (Cuotas cuotas : ap.getCuotasList()) {
-            cuotasTosave =  cuotasTosave.concat(Integer.toString(cuotas.getNumeroCuota()).concat(" ").concat(Double.toString(cuotas.getValorCuota())).concat(" ").concat(Double.toString(cuotas.getCapitalCuota())).concat(" ").concat(cuotas.getFechaVencimiento().toString()).concat(" ").concat(Double.toString(cuotas.getHonorarios()))).concat("\n");
-            valorTotalCuotasPagadas = valorTotalCuotasPagadas + cuotas.getValorCuota();
-            cuotaRepository.delete(cuotas);
+        Usuario usuario = usuarioClientService.obtenerUsuarioById(acuerdo.getAsesor().getUsuarioId());
+        if (Objects.isNull(usuario)) {
+            System.out.println("null");
         }
-        
+
+        CuentasPorCobrar cpc = cuentaCobrarRepository.findByNumeroObligacion(acuerdo.getGestiones().getNumeroObligacion());
+
+        String mora_total = acuerdo.getTipoAcuerdo();
+        String valorAcuerdo = Double.toString(acuerdo.getValorTotalAcuerdo());
+        String intMora = Double.toString(acuerdo.getValorInteresesMora());
+        String valorCuotaMes = Double.toString(acuerdo.getValorCuotaMensual());
+        String fechaCorte = acuerdo.getFechaAcuerdo().toString();
+        double valorTotalCuotasPagadas = 0;
+        int totalCuotasPagadas = 0;
+        String cuotasTosave = "Cliente: ".concat(cpc.getCliente().concat("\n Numero de Obligacion: ").concat(cpc.getNumeroObligacion())
+                .concat("\n Asesor Cartera: ").concat(usuario.getNombres()).concat(usuario.getApellidos())
+                .concat("\n Acuerdo pactuado por mora o total: ").concat(mora_total)
+                .concat("\n Valor del acuerdo de pago: $").concat(String.valueOf(valorAcuerdo))
+                .concat("\n Intereses por mora: $").concat(String.valueOf(intMora))
+                .concat("\n Valor de la cuota mensual: $").concat(String.valueOf(valorCuotaMes))
+                .concat("\n Fecha de corte del acuerdo de pago: ").concat(String.valueOf(fechaCorte)).concat("\n"));
+
+        acuerdo.setIsActive(false);
+
+        for (Cuotas cuota : cuotas) {
+            cuotasTosave = cuotasTosave.concat(Integer.toString(cuota.getNumeroCuota()).concat(" ").concat(Double.toString(cuota.getValorCuota())).concat(" ").concat(Double.toString(cuota.getCapitalCuota())).concat(" ").concat(cuota.getFechaVencimiento().toString()).concat(" ").concat(Double.toString(cuota.getHonorarios()))).concat("\n");
+            
+            if (cuota.isCumplio()) {
+                valorTotalCuotasPagadas = valorTotalCuotasPagadas + cuota.getValorCuota();
+                totalCuotasPagadas += 1;
+            }
+
+        }
+
         hap.setAsesorCartera(usuario.getNombres().concat(usuario.getApellidos()));
-        hap.setFechaCreacionAcuerdo(ap.getFechaAcuerdo());
+        hap.setFechaCreacionAcuerdo(acuerdo.getFechaAcuerdo());
         hap.setHistorico(cuotasTosave);
         hap.setNumeroObligacion(cpc.getNumeroObligacion());
-        hap.setTotalCuotasPagadas(valorTotalCuotasPagadas);
-        
+        hap.setTotalValorCuotasPagadas(valorTotalCuotasPagadas);
+        hap.setTotalCuotasPagadas(totalCuotasPagadas);
+        hap.setTotalCuotasAcuerdo(cuotas.size());
+        hap.setValorTotalAcuerdo(acuerdo.getValorTotalAcuerdo());
+
         hap = historicoAcuerdoPagoRepository.save(hap);
 
-        ap = acuerdoPagoRepository.save(ap);
-
+        if(Objects.nonNull(acuerdo)){
+            acuerdo.getCuotasList().clear();
+            acuerdoPagoRepository.save(acuerdo);
+        }
     }
 
     @Override
     public LinkToClient sendLinkAndPdfToClient(LinkDto dto) {
-        
-        if(dto.getNumeroObligacion() == "" || dto.getNumeroObligacion() == null || dto.getCedula() == "" || dto.getCedula() == null){
+
+        if (dto.getNumeroObligacion() == "" || dto.getNumeroObligacion() == null || dto.getCedula() == "" || dto.getCedula() == null) {
             return null;
         }
-        
+
         CuentasPorCobrar cpc = cuentaCobrarRepository.findByNumeroObligacion(dto.getNumeroObligacion());
-        if(Objects.isNull(cpc)){
+        if (Objects.isNull(cpc)) {
             return null;
         }
-        
+
         String token = request.getAttribute("token").toString();
-        
+
         List<ClientesDto> client = clientesClient.buscarClientesByNumeroObligacion(dto.getCedula(), token);
-        if(client.isEmpty()){
+        if (client.isEmpty()) {
             return null;
         }
         System.out.println(client.size());
-        
+
         Usuario usu = usuarioClientService.obtenerUsuarioById(cpc.getAsesor().getUsuarioId());
-        if(Objects.isNull(usu)){
+        if (Objects.isNull(usu)) {
             return null;
         }
-        
+
         ClientesDto clientToSend = new ClientesDto();
-        
+
         for (ClientesDto clientesDto : client) {
-            
-            if(clientesDto.getNumeroDocumento().equals(dto.getCedula()) == true){
+
+            if (clientesDto.getNumeroDocumento().equals(dto.getCedula()) == true) {
                 clientToSend = clientesDto;
                 break;
-            }
-            else{
+            } else {
                 return null;
             }
-           
+
         }
-        
-        List<Telefono> telefono = clientToSend.getTelefonos().stream().filter(t ->t.isIsCurrent() == true).collect(Collectors.toList());
-      
-        
+
+        List<Telefono> telefono = clientToSend.getTelefonos().stream().filter(t -> t.isIsCurrent() == true).collect(Collectors.toList());
+
         LinkToClient link = new LinkToClient();
-        
+
         String nombreTitular = clientToSend.getNombreTitular().replaceAll(" ", "%20").toUpperCase();
         String asesorCartera = usu.getNombres().replaceAll(" ", "%20").concat("%20").concat(usu.getApellidos().replaceAll(" ", "%20")).toUpperCase();
-        
+
         String message = "&text=Buen%20día%20señor/a%20".concat(nombreTitular).concat(",%20se%20comunica%20con%20GMJ%20hogar;%20por%20medio%20de%20este%20mensaje%20le%20notificamos")
                 .concat("%20que%20su%20acuerdo%20de%20pago%20ha%20sido%20efectuado%20exitosamente,%20a%20continuación%20enviaremos%20un%20PDF%20con%20la%20")
                 .concat("información%20de%20su%20acuerdo%20de%20pago,%20este%20contiene%20las%20fechas%20de%20pago%20y%20los%20valores%20de%20las%20cuotas%20")
                 .concat("mensuales%20acordadas%20con%20nuestro%20asesor/a%20de%20cartera%20".concat(asesorCartera).concat(",%20si%20tiene%20alguna%20duda%20por%20favor%20ponerse%20"))
                 .concat("en%20contacto%20por%20este%20mismo%20medio,%20muchas%20gracias");
-        
+
         link.setMessageToWpp("https://api.whatsapp.com/send?phone=".concat(telefono.get(0).getNumero()).concat(message));
         try {
             link.setBase64(pdf.generarReporteAcuerdoPagoToClient(cpc));
@@ -477,9 +501,9 @@ public class GestionesServiceImpl implements GestionesService {
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(GestionesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         return link;
-        
+
     }
 
 }

@@ -110,7 +110,9 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             Sede sede = sedeService.findSede(cuentaPorCobrar.getSede());
 
             if (Objects.isNull(sede)) {
-                sede = sedeService.guardarSede(cuentaPorCobrar.getSede());
+                sede = new Sede();
+                sede.setSede(cuentaPorCobrar.getSede());
+                sede = sedeService.guardarSede(sede);
                 System.out.println(sede.getSede());
             }
 
@@ -211,6 +213,9 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
         if (Objects.isNull(cpc)) {
             return null;
         }
+        
+        //calcular nuevos dias vencidos
+        
 
         CuentasPorCobrarResponse cpcRes = new CuentasPorCobrarResponse();
 

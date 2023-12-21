@@ -311,7 +311,7 @@ public class GenerarPdfImpl implements GenerarPdf {
             e.printStackTrace();
             return null;
         }
-        
+        return null;
     }
 
     private static String convertPdfToBase64(PDDocument document) throws IOException {

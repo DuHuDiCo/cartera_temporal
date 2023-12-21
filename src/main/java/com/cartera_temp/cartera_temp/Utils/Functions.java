@@ -84,9 +84,9 @@ public class Functions {
         try {
 
             SimpleDateFormat formatSalida = new SimpleDateFormat("yyyy-MM-dd");
-            String fechafor = formatSalida.format(fecha);
+            
 
-            Date fechaOk = formatSalida.parse(fechafor);
+            Date fechaOk = formatSalida.parse(fecha);
 
             return fechaOk;
         } catch (ParseException e) {
