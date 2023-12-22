@@ -1,5 +1,6 @@
 package com.cartera_temp.cartera_temp.Models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -11,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -88,8 +90,10 @@ public class CuentasPorCobrar {
     @Column(name = "dias_vencidos")
     private int diasVencidos;
 
-    @Column(name = "edad_vencimiento", length = 50)
-    private String edadVencimiento;
+    @ManyToOne
+    @JoinColumn(name = "tipo_vencimiento_id")
+    @JsonIgnore
+    private TiposVencimiento tiposVencimiento;
 
     @Column(name = "condicion_especial", length = 30)
     private String condicionEspecial;
@@ -256,14 +260,14 @@ public class CuentasPorCobrar {
         this.diasVencidos = diasVencidos;
     }
 
-    public String getEdadVencimiento() {
-        return edadVencimiento;
+    public TiposVencimiento getTiposVencimiento() {
+        return tiposVencimiento;
     }
 
-    public void setEdadVencimiento(String edadVencimiento) {
-        this.edadVencimiento = edadVencimiento;
+    public void setTiposVencimiento(TiposVencimiento tiposVencimiento) {
+        this.tiposVencimiento = tiposVencimiento;
     }
-
+    
     public String getCondicionEspecial() {
         return condicionEspecial;
     }
