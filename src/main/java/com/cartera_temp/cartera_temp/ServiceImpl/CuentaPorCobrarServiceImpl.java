@@ -266,6 +266,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
         List<CuentasPorCobrar> cpcList = cuentasPorCobrarRepository.findByNumeroObligacionContaining(numeroObligacion);
 
         if (CollectionUtils.isEmpty(cpcList)) {
+              System.out.println("------0");
             return null;
         }
 
@@ -282,6 +283,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
 
             List<ClientesDto> cliente = clientesClient.buscarClientesByNumeroObligacion(cuentasPorCobrar.getDocumentoCliente(), token);
             if (CollectionUtils.isEmpty(cliente)) {
+                System.out.println("------1");
                 return null;
             }
             cuentasPorCobrarResponse.setClientes(cliente);
@@ -385,11 +387,19 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
 
         List<ClientesDto> clientesFilter = clientes.stream().filter(c -> c.getNumeroDocumento().equals(dato) || c.getNombreTitular().equals(dato)).collect(Collectors.toList());
         
+        if(CollectionUtils.isEmpty(clientesFilter)){
+            clientesFilter = clientes;
+        }
+        
          System.out.println(clientesFilter.size());
         for (ClientesDto cliente : clientesFilter) {
-            CuentasPorCobrar cuenta = cuentasPorCobrarRepository.findByDocumentoCliente(cliente.getNit());
-            if (Objects.nonNull(cuenta)) {
-                cuentasCobrar.add(cuenta);
+            System.out.println("---"+cliente.getNit());
+            List<CuentasPorCobrar> cuenta = cuentasPorCobrarRepository.findByDocumentoCliente(cliente.getNit());
+            System.out.println(cuenta.size());
+            if (!CollectionUtils.isEmpty(cuenta)) {
+                for (CuentasPorCobrar cuentasPorCobrar : cuenta) {
+                    cuentasCobrar.add(cuentasPorCobrar);
+                }
             }
 
         }
