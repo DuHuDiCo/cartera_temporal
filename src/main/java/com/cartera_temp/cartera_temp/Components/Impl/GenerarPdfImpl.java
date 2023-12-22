@@ -287,7 +287,7 @@ public class GenerarPdfImpl implements GenerarPdf {
 
                 try (PDPageContentStream contens = new PDPageContentStream(doc, page)) {
 
-                    contens.drawImage(logoImage, width / 2 - 150, height / 2 - 30, 300, 100);
+                    contens.drawImage(logoImage, 270, 520, 250, 95);
 
                     //TITULO
                     nuevaLinea(titulo, 270, 740, contens, PDType1Font.HELVETICA_BOLD, 12);
