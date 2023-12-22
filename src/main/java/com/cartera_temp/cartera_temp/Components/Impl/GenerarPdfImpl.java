@@ -277,7 +277,7 @@ public class GenerarPdfImpl implements GenerarPdf {
                 PDPage page = new PDPage();
                 doc.addPage(page);
                 int cellHeight = 90;
-                int cellWidth = 500;
+                int cellWidth = 550;
                 int height = (int) page.getTrimBox().getHeight() / 2;//346
                 int width = (int) page.getTrimBox().getWidth();//612
 
@@ -287,7 +287,7 @@ public class GenerarPdfImpl implements GenerarPdf {
 
                 try (PDPageContentStream contens = new PDPageContentStream(doc, page)) {
 
-                    contens.drawImage(logoImage, 270, 520, 250, 95);
+                    contens.drawImage(logoImage, 200, 390, 200, 80);
 
                     //TITULO
                     nuevaLinea(titulo, 270, 740, contens, PDType1Font.HELVETICA_BOLD, 12);
@@ -303,7 +303,7 @@ public class GenerarPdfImpl implements GenerarPdf {
                     nuevaLinea(fechaRecibo, 440, 740, contens, PDType1Font.HELVETICA, 12);
                     nuevaLinea(cedulaDoc, 440, 715, contens, PDType1Font.HELVETICA, 12);
 
-                    int inicioTablaX = 50;
+                    int inicioTablaX = 30;
                     int inicioTablaY = 620;
 
                     for (int i = 0; i < 2; i++) {
@@ -325,8 +325,8 @@ public class GenerarPdfImpl implements GenerarPdf {
                             nuevaLinea(tiposPago, inicioTablaX + 5, inicioTablaY - 85, contens, PDType1Font.HELVETICA, 11);
                             nuevaLinea(tiposPago, inicioTablaX + 5, inicioTablaY - 105, contens, PDType1Font.HELVETICA, 11);
                             nuevaLinea(firma, inicioTablaX + 5, inicioTablaY - 125, contens, PDType1Font.HELVETICA, 11);
-                            nuevaLinea(saldo, inicioTablaX + 350, inicioTablaY - 105, contens, PDType1Font.HELVETICA, 11);
-                            nuevaLinea(usuarioPago, inicioTablaX + 340, inicioTablaY - 125, contens, PDType1Font.HELVETICA, 11);
+                            nuevaLinea(saldo, inicioTablaX + 380, inicioTablaY - 105, contens, PDType1Font.HELVETICA, 11);
+                            nuevaLinea(usuarioPago, inicioTablaX + 365, inicioTablaY - 125, contens, PDType1Font.HELVETICA, 11);
                             nuevaLinea(footer, 270, inicioTablaY - 137, contens, PDType1Font.HELVETICA, 8);
 
                         }
@@ -363,7 +363,7 @@ public class GenerarPdfImpl implements GenerarPdf {
         contens.setFont(font, tamañoFont);
         contens.newLineAtOffset(x, y);
 
-        int caracteresPorLinea = 65;
+        int caracteresPorLinea = 80;
         if (linea.length() > caracteresPorLinea) {
             for (int i = 0; i < linea.length(); i += caracteresPorLinea) {
                 int finIndice = Math.min(i + caracteresPorLinea, linea.length());
