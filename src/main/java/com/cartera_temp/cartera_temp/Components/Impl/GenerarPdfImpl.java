@@ -268,6 +268,8 @@ public class GenerarPdfImpl implements GenerarPdf {
         String detallePago = "Viene de la clase pagoaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa".toUpperCase();
         String tiposPago = "Reemplazar esto por una lista de pagos";
         String usuarioPago = "Quien recibe el pago?";
+        String saldo = "SALDO: 0";
+        String footer = "GMJ HOGAS S.A.S.";
         String firma = "Recibi conforme: __________________________";
 
         try {
@@ -323,6 +325,9 @@ public class GenerarPdfImpl implements GenerarPdf {
                             nuevaLinea(tiposPago, inicioTablaX + 5, inicioTablaY - 85, contens, PDType1Font.HELVETICA, 11);
                             nuevaLinea(tiposPago, inicioTablaX + 5, inicioTablaY - 105, contens, PDType1Font.HELVETICA, 11);
                             nuevaLinea(firma, inicioTablaX + 5, inicioTablaY - 125, contens, PDType1Font.HELVETICA, 11);
+                            nuevaLinea(saldo, inicioTablaX + 350, inicioTablaY - 105, contens, PDType1Font.HELVETICA, 11);
+                            nuevaLinea(usuarioPago, inicioTablaX + 340, inicioTablaY - 125, contens, PDType1Font.HELVETICA, 11);
+                            nuevaLinea(footer, 270, inicioTablaY - 137, contens, PDType1Font.HELVETICA, 8);
 
                         }
 
