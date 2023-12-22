@@ -4,9 +4,13 @@ import com.cartera_temp.cartera_temp.Exceptions.DateFormatException;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -149,4 +153,11 @@ public class Functions {
         return fechaString;
     }
 
+    public static int diferenciaFechas(Date fechaVencimiento){
+        Date now = new Date();
+        long diferenciaMili = now.getTime() - fechaVencimiento.getTime();
+        
+        long dias = TimeUnit.DAYS.convert(diferenciaMili, TimeUnit.MILLISECONDS);
+        return (int)dias;
+    }
 }

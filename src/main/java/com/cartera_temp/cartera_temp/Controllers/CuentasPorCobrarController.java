@@ -80,4 +80,10 @@ public class CuentasPorCobrarController {
         return ResponseEntity.ok(cpc);
     }
 
+    
+    @GetMapping("/cuentasByDato")
+    public ResponseEntity<List<CuentasPorCobrar>> cuentasCobrarByDato(@RequestParam(name = "dato") String dato){
+        List<CuentasPorCobrar> cuentas = cuentasPorCobrarService.buscarCuentasByDatos(dato);
+        return ResponseEntity.ok(cuentas);
+    }
 }

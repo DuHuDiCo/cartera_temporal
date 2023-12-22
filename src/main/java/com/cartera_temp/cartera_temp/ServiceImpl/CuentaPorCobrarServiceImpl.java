@@ -18,6 +18,7 @@ import com.cartera_temp.cartera_temp.Service.BancoService;
 import com.cartera_temp.cartera_temp.Service.CuentasPorCobrarService;
 import com.cartera_temp.cartera_temp.Service.FileService;
 import com.cartera_temp.cartera_temp.Service.SedeService;
+import com.cartera_temp.cartera_temp.Utils.Functions;
 import com.cartera_temp.cartera_temp.repository.AsesorCarteraRepository;
 import com.cartera_temp.cartera_temp.repository.BancoRepository;
 import com.cartera_temp.cartera_temp.repository.CuentasPorCobrarRepository;
@@ -25,8 +26,10 @@ import com.cartera_temp.cartera_temp.repository.SedeRepository;
 import java.net.http.HttpRequest;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 
 import org.modelmapper.ModelMapper;
@@ -163,7 +166,10 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
         List<CuentasPorCobrarResponse> cuentasResponse = new ArrayList<>();
 
         for (CuentasPorCobrar cuenta : cuentas.getContent()) {
+            //calcular nuevos dias vencidos
+            int diasVecidos = Functions.diferenciaFechas(cuenta.getFechaVencimiento());
             CuentasPorCobrarResponse c = modelMapper.map(cuenta, CuentasPorCobrarResponse.class);
+            c.setDiasVencidos(diasVecidos);
             AsesorCarteraResponse asesorResponse = new AsesorCarteraResponse();
             asesorResponse.setIdAsesorCartera(cuenta.getAsesor().getIdAsesorCartera());
             asesorResponse.setUsuario(usuario);
@@ -213,16 +219,16 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
         if (Objects.isNull(cpc)) {
             return null;
         }
-        
+
         //calcular nuevos dias vencidos
-        
+        int diasVecidos = Functions.diferenciaFechas(cpc.getFechaVencimiento());
 
         CuentasPorCobrarResponse cpcRes = new CuentasPorCobrarResponse();
 
         ModelMapper map = new ModelMapper();
 
         cpcRes = map.map(cpc, CuentasPorCobrarResponse.class);
-
+        cpcRes.setDiasVencidos(diasVecidos);
         List<ClientesDto> cliente = clientesClient.buscarClientesByNumeroObligacion(cpc.getDocumentoCliente(), token);
 
         if (CollectionUtils.isEmpty(cliente)) {
@@ -269,6 +275,9 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
 
         for (CuentasPorCobrar cuentasPorCobrar : cpcList) {
 
+            //calcular nuevos dias vencidos
+            int diasVecidos = Functions.diferenciaFechas(cuentasPorCobrar.getFechaVencimiento());
+
             CuentasPorCobrarResponse cuentasPorCobrarResponse = map.map(cuentasPorCobrar, CuentasPorCobrarResponse.class);
 
             List<ClientesDto> cliente = clientesClient.buscarClientesByNumeroObligacion(cuentasPorCobrar.getDocumentoCliente(), token);
@@ -276,7 +285,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
                 return null;
             }
             cuentasPorCobrarResponse.setClientes(cliente);
-
+            cuentasPorCobrarResponse.setDiasVencidos(diasVecidos);
             Usuario usu = usuarioClient.getUsuarioById(cuentasPorCobrar.getAsesor().getUsuarioId(), token);
 
             if (Objects.isNull(usu)) {
@@ -288,11 +297,9 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             asesor.setIdAsesorCartera(cuentasPorCobrar.getAsesor().getIdAsesorCartera());
 
             cuentasPorCobrarResponse.setAsesorCarteraResponse(asesor);
-            
+
             cuentasPorCobrarResponse.setGestion(cuentasPorCobrar.getGestiones());
-            
-            
-            
+
             cpcResList.add(cuentasPorCobrarResponse);
 
         }
@@ -361,6 +368,32 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
 
         return cpcRes;
 
+    }
+
+    @Override
+    public List<CuentasPorCobrar> buscarCuentasByDatos(String dato) {
+        String token = httpServletRequest.getAttribute("token").toString();
+
+        List<ClientesDto> clientes = clientesClient.buscarClientesByDatos(dato, token);
+        System.out.println(dato);
+        System.out.println(clientes.size());
+        if (CollectionUtils.isEmpty(clientes)) {
+            return new ArrayList<>();
+        }
+
+        List<CuentasPorCobrar> cuentasCobrar = new ArrayList<>();
+
+        List<ClientesDto> clientesFilter = clientes.stream().filter(c -> c.getNumeroDocumento().equals(dato) || c.getNombreTitular().equals(dato)).collect(Collectors.toList());
+        
+         System.out.println(clientesFilter.size());
+        for (ClientesDto cliente : clientesFilter) {
+            CuentasPorCobrar cuenta = cuentasPorCobrarRepository.findByDocumentoCliente(cliente.getNit());
+            if (Objects.nonNull(cuenta)) {
+                cuentasCobrar.add(cuenta);
+            }
+
+        }
+        return cuentasCobrar;
     }
 
 }
