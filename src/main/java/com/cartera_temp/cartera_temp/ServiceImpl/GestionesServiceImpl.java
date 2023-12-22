@@ -506,4 +506,22 @@ public class GestionesServiceImpl implements GestionesService {
 
     }
 
+    @Override
+    public String reciboPago(String numeroObligacion) {
+        
+        CuentasPorCobrar cpc = cuentaCobrarRepository.findByNumeroObligacion(numeroObligacion);
+        if(Objects.isNull(cpc)){
+            return null;
+        }
+        
+        try {
+            return pdf.generarReportePagoCuotas(cpc);
+        } catch (IOException ex) {
+            Logger.getLogger(GestionesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(GestionesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
 }

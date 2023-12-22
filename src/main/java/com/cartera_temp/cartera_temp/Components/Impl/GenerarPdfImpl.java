@@ -240,24 +240,110 @@ public class GenerarPdfImpl implements GenerarPdf {
 
     @Override
     public String generarReportePagoCuotas(CuentasPorCobrar cpc) throws IOException, ClassNotFoundException {
-        
-        if(Objects.isNull(cpc)){
+
+        if (Objects.isNull(cpc)) {
             return null;
         }
-        
-        String sedeDoc = "";
-        
-        switch (cpc.getSede().getSede()) {
-            case "ITAGUI":
-                sedeDoc = "ElectroHogar Itagüi";
-                break;
-            case "BOYACA":
-                sedeDoc = "";
-                break;
-            default:
-                throw new AssertionError();
+
+        String titulo = "RECIBO DE CAJA";
+
+        String sedeComercial = cpc.getSede().getNombreComercialSede().toUpperCase();
+        String direccionSede = cpc.getSede().getDireccionSede().toUpperCase();
+        String numeroSede = cpc.getSede().getTelefonoSede();
+        //YEIMAR DIJO QUE EL NIT ES IGUAL PARA TODOS(SI NO ES ASI LO ACABO A PALO)
+        String NIT = "NIT: 901056810-9 REGIMEN COMUN".toUpperCase();
+        String idPago = "# ".concat("Id del pago");
+        String cedulaDoc = "C.C: ".concat(cpc.getDocumentoCliente());
+        String fechaRecibo = "";
+        try {
+            fechaRecibo = "Fecha: ".concat(Functions.dateToString(Functions.obtenerFechaYhora()));
+        } catch (ParseException ex) {
+            Logger.getLogger(GenerarPdfImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return null;
+
+        //DECLARACION DE VARIABLES PARA EL BODY DE LA TABLA
+        String clientePago = "Nombre de persona que paga";
+        String valorPago = "Que valor pago?";
+        String valorEnPalabras = "Cuatrocientos setenta mil".toUpperCase();
+        String detallePago = "Viene de la clase pagoaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa".toUpperCase();
+        String tiposPago = "Reemplazar esto por una lista de pagos";
+        String usuarioPago = "Quien recibe el pago?";
+        String saldo = "SALDO: 0";
+        String footer = "GMJ HOGAS S.A.S.";
+        String firma = "Recibi conforme: __________________________";
+
+        try {
+            try (PDDocument doc = new PDDocument()) {
+                PDPage page = new PDPage();
+                doc.addPage(page);
+                int cellHeight = 90;
+                int cellWidth = 550;
+                int height = (int) page.getTrimBox().getHeight() / 2;//346
+                int width = (int) page.getTrimBox().getWidth();//612
+
+                ClassPathResource resource = new ClassPathResource("electrohogarOpa.png");
+                InputStream inputStream = resource.getInputStream();
+                PDImageXObject logoImage = PDImageXObject.createFromByteArray(doc, IOUtils.toByteArray(inputStream), "electrohogarOpa.png");
+
+                try (PDPageContentStream contens = new PDPageContentStream(doc, page)) {
+
+                    contens.drawImage(logoImage, 200, 390, 200, 80);
+
+                    //TITULO
+                    nuevaLinea(titulo, 270, 740, contens, PDType1Font.HELVETICA_BOLD, 12);
+                    nuevaLinea(idPago, 285, 725, contens, PDType1Font.HELVETICA, 12);
+
+                    //PARTE SUPERIOR IZQUIERDA DEL DOCUMENTO
+                    nuevaLinea(sedeComercial, 50, 750, contens, PDType1Font.HELVETICA, 12);
+                    nuevaLinea(direccionSede, 50, 735, contens, PDType1Font.HELVETICA, 12);
+                    nuevaLinea(numeroSede, 50, 720, contens, PDType1Font.HELVETICA, 12);
+                    nuevaLinea(NIT, 50, 705, contens, PDType1Font.HELVETICA, 12);
+
+                    //PARTE SUPERIOR DERECHA DEL DOCUMENTO
+                    nuevaLinea(fechaRecibo, 440, 740, contens, PDType1Font.HELVETICA, 12);
+                    nuevaLinea(cedulaDoc, 440, 715, contens, PDType1Font.HELVETICA, 12);
+
+                    int inicioTablaX = 30;
+                    int inicioTablaY = 620;
+
+                    for (int i = 0; i < 2; i++) {
+                        if (i == 0) {
+                            contens.addRect(inicioTablaX, inicioTablaY + 20, cellWidth, cellHeight - 40);
+                            contens.stroke();
+                            nuevaLinea("Hemos recibido de: ".concat(clientePago), inicioTablaX + 5, inicioTablaY + 55, contens, PDType1Font.HELVETICA, 11);
+                            nuevaLinea("La cantidad de: ".concat(valorPago), inicioTablaX + 5, inicioTablaY + 40, contens, PDType1Font.HELVETICA, 11);
+                            nuevaLinea(valorEnPalabras, inicioTablaX + 5, inicioTablaY + 25, contens, PDType1Font.HELVETICA, 11);
+                        }
+
+                        if (i == 1) {
+                            contens.addRect(inicioTablaX, inicioTablaY - cellHeight - 50, cellWidth, 160);
+                            contens.stroke();
+                            nuevaLinea("Por concepto de: ".concat(detallePago), inicioTablaX + 5, inicioTablaY + 5, contens, PDType1Font.HELVETICA, 11);
+                            nuevaLinea(tiposPago, inicioTablaX + 5, inicioTablaY - 25, contens, PDType1Font.HELVETICA, 11);
+                            nuevaLinea(tiposPago, inicioTablaX + 5, inicioTablaY - 45, contens, PDType1Font.HELVETICA, 11);
+                            nuevaLinea(tiposPago, inicioTablaX + 5, inicioTablaY - 65, contens, PDType1Font.HELVETICA, 11);
+                            nuevaLinea(tiposPago, inicioTablaX + 5, inicioTablaY - 85, contens, PDType1Font.HELVETICA, 11);
+                            nuevaLinea(tiposPago, inicioTablaX + 5, inicioTablaY - 105, contens, PDType1Font.HELVETICA, 11);
+                            nuevaLinea(firma, inicioTablaX + 5, inicioTablaY - 125, contens, PDType1Font.HELVETICA, 11);
+                            nuevaLinea(saldo, inicioTablaX + 380, inicioTablaY - 105, contens, PDType1Font.HELVETICA, 11);
+                            nuevaLinea(usuarioPago, inicioTablaX + 365, inicioTablaY - 125, contens, PDType1Font.HELVETICA, 11);
+                            nuevaLinea(footer, 270, inicioTablaY - 137, contens, PDType1Font.HELVETICA, 8);
+
+                        }
+
+                    }
+
+                    contens.close();
+                    String base64 = convertPdfToBase64(doc);
+                    return base64;
+
+                }
+
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     private static String convertPdfToBase64(PDDocument document) throws IOException {
@@ -277,7 +363,18 @@ public class GenerarPdfImpl implements GenerarPdf {
         contens.setFont(font, tamañoFont);
         contens.newLineAtOffset(x, y);
 
-        contens.showText(linea);
-        contens.endText();
+        int caracteresPorLinea = 80;
+        if (linea.length() > caracteresPorLinea) {
+            for (int i = 0; i < linea.length(); i += caracteresPorLinea) {
+                int finIndice = Math.min(i + caracteresPorLinea, linea.length());
+                String segmento = linea.substring(i, finIndice);
+                contens.showText(segmento);
+                contens.newLineAtOffset(0, -tamañoFont); // Salto de línea
+            }
+            contens.endText();
+        } else {
+            contens.showText(linea);
+            contens.endText();
+        }
     }
 }

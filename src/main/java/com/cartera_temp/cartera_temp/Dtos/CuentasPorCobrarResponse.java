@@ -3,6 +3,7 @@ package com.cartera_temp.cartera_temp.Dtos;
 import com.cartera_temp.cartera_temp.Models.Banco;
 import com.cartera_temp.cartera_temp.Models.Gestiones;
 import com.cartera_temp.cartera_temp.Models.Sede;
+import com.cartera_temp.cartera_temp.Models.TiposVencimiento;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -28,7 +29,7 @@ public class CuentasPorCobrarResponse {
     private Banco banco;
     private int diasVencidos;
     private List<Gestiones> gestion = new ArrayList<>();
-    private String edadVencimiento;
+    private TiposVencimiento tiposVencimiento;
     private String condicionEspecial;
     private int numeroCreditos;
     private String pagare;
@@ -187,14 +188,6 @@ public class CuentasPorCobrarResponse {
         this.diasVencidos = diasVencidos;
     }
 
-    public String getEdadVencimiento() {
-        return edadVencimiento;
-    }
-
-    public void setEdadVencimiento(String edadVencimiento) {
-        this.edadVencimiento = edadVencimiento;
-    }
-
     public String getCondicionEspecial() {
         return condicionEspecial;
     }
@@ -273,6 +266,14 @@ public class CuentasPorCobrarResponse {
 
     public void setGestion(List<Gestiones> gestion) {
         this.gestion = gestion;
+    }
+
+    public TiposVencimiento getTiposVencimiento() {
+        return tiposVencimiento;
+    }
+
+    public void setTiposVencimiento(TiposVencimiento tiposVencimiento) {
+        this.tiposVencimiento = tiposVencimiento;
     }
 
 }
