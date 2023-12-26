@@ -7,10 +7,9 @@ import java.util.List;
 import java.util.Objects;
 import org.springframework.stereotype.Service;
 
-
 @Service
-public class TiposVencimientoServiceImpl implements TiposVencimientoService{
-    
+public class TiposVencimientoServiceImpl implements TiposVencimientoService {
+
     private final TiposVencimientoRepository tiposVencimientoRepository;
 
     public TiposVencimientoServiceImpl(TiposVencimientoRepository tiposVencimientoRepository) {
@@ -19,24 +18,24 @@ public class TiposVencimientoServiceImpl implements TiposVencimientoService{
 
     @Override
     public TiposVencimiento guardarTipoVencimiento(TiposVencimiento tv) {
-        
-        if(tv.getTipoVencimiento() == null){
+
+        if (tv.getTipoVencimiento() == null) {
             return null;
         }
-        
+
         TiposVencimiento tvFind = tiposVencimientoRepository.findByTipoVencimiento(tv.getTipoVencimiento());
-        
-        if(!Objects.isNull(tvFind)){
+
+        if (!Objects.isNull(tvFind)) {
             return null;
         }
-        
+
         TiposVencimiento tvSave = new TiposVencimiento();
-        
+
         tvSave.setTipoVencimiento(tv.getTipoVencimiento().toUpperCase());
-        
+
         tvSave = tiposVencimientoRepository.save(tvSave);
         return tvSave;
-        
+
     }
 
     @Override
@@ -47,26 +46,26 @@ public class TiposVencimientoServiceImpl implements TiposVencimientoService{
 
     @Override
     public TiposVencimiento obtenerTipoVencimientoById(Long idTipoVencimiento) {
-        
-        if(idTipoVencimiento == null){
+
+        if (idTipoVencimiento == null) {
             return null;
         }
-        
+
         TiposVencimiento tv = tiposVencimientoRepository.findById(idTipoVencimiento).orElse(null);
-        if(Objects.isNull(tv)){
+        if (Objects.isNull(tv)) {
             return null;
         }
-        return tv;        
+        return tv;
     }
 
     @Override
     public TiposVencimiento obtenerTipoVencimientoByNombre(String tipoVencimiento) {
-        if(tipoVencimiento == null || tipoVencimiento == ""){
+        if (tipoVencimiento == null || tipoVencimiento == "") {
             return null;
         }
-        
+
         TiposVencimiento tv = tiposVencimientoRepository.findByTipoVencimiento(tipoVencimiento);
-        if(Objects.isNull(tv)){
+        if (Objects.isNull(tv)) {
             return null;
         }
         return tv;
@@ -74,19 +73,20 @@ public class TiposVencimientoServiceImpl implements TiposVencimientoService{
 
     @Override
     public TiposVencimiento actualizarTipoVencimiento(TiposVencimiento tv) {
-        
-        if(tv.getIdTipoVencimiento() == null || tv.getIdTipoVencimiento() == 0 || tv.getTipoVencimiento() == "" || tv.getTipoVencimiento() == null){
+
+        if (tv.getIdTipoVencimiento() == null || tv.getIdTipoVencimiento() == 0 || tv.getTipoVencimiento() == "" || tv.getTipoVencimiento() == null) {
             return null;
         }
-        
+
         TiposVencimiento tvUpdate = tiposVencimientoRepository.findById(tv.getIdTipoVencimiento()).orElse(null);
-        if(Objects.nonNull(tvUpdate)){
-            tvUpdate = tiposVencimientoRepository.save(tv);
+        if (Objects.nonNull(tvUpdate)) {
+            tvUpdate.setTipoVencimiento(tv.getTipoVencimiento().toUpperCase());
+
+            tvUpdate = tiposVencimientoRepository.save(tvUpdate);
             return tvUpdate;
         }
+
         return null;
     }
-    
-    
-    
+
 }
