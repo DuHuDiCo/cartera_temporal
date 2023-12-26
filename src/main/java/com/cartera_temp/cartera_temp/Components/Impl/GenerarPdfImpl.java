@@ -5,9 +5,11 @@ import com.cartera_temp.cartera_temp.Models.AcuerdoPago;
 import com.cartera_temp.cartera_temp.Models.CuentasPorCobrar;
 import com.cartera_temp.cartera_temp.Models.Gestiones;
 import com.cartera_temp.cartera_temp.Utils.Functions;
+import com.tenpisoft.n2w.MoneyConverters;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -263,8 +265,22 @@ public class GenerarPdfImpl implements GenerarPdf {
 
         //DECLARACION DE VARIABLES PARA EL BODY DE LA TABLA
         String clientePago = "Nombre de persona que paga";
-        String valorPago = "Que valor pago?";
-        String valorEnPalabras = "Cuatrocientos setenta mil".toUpperCase();
+        int valorPago = 1_550_500;
+        MoneyConverters converter1 = MoneyConverters.SPANISH_BANKING_MONEY_VALUE;
+        String valorEnPalabras = converter1.asWords(new BigDecimal(valorPago)).toUpperCase();
+       
+        String[] splitPalabras = valorEnPalabras.split(" ");
+        
+        if(splitPalabras[0].equals("UNO")|| splitPalabras[0].equals("uno")){
+            splitPalabras[0] = "UN";
+        }
+        
+        String valorDocumentoPalabras = "";
+        
+        for (String splitPalabra : splitPalabras) {
+            valorDocumentoPalabras = valorDocumentoPalabras.concat(" ").concat(splitPalabra);
+        }
+        
         String detallePago = "Viene de la clase pagoaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa".toUpperCase();
         String tiposPago = "Reemplazar esto por una lista de pagos";
         String usuarioPago = "Quien recibe el pago?";
@@ -287,22 +303,30 @@ public class GenerarPdfImpl implements GenerarPdf {
 
                 try (PDPageContentStream contens = new PDPageContentStream(doc, page)) {
 
-                    contens.drawImage(logoImage, 200, 390, 200, 80);
+                    contens.drawImage(logoImage, 200, 700, 200, 80);
 
                     //TITULO
-                    nuevaLinea(titulo, 270, 740, contens, PDType1Font.HELVETICA_BOLD, 12);
-                    nuevaLinea(idPago, 285, 725, contens, PDType1Font.HELVETICA, 12);
+//                    nuevaLinea(titulo, 270, 740, contens, PDType1Font.HELVETICA_BOLD, 12);
+//                    nuevaLinea(idPago, 285, 725, contens, PDType1Font.HELVETICA, 12);
+
+                    //TITULO PARTE SUPERIOR DERECHA NUEVO CAMBIO
+                    nuevaLinea(titulo, 50, 740, contens, PDType1Font.HELVETICA_BOLD, 12);
+                    nuevaLinea(idPago, 50, 725, contens, PDType1Font.HELVETICA, 12);
 
                     //PARTE SUPERIOR IZQUIERDA DEL DOCUMENTO
-                    nuevaLinea(sedeComercial, 50, 750, contens, PDType1Font.HELVETICA, 12);
-                    nuevaLinea(direccionSede, 50, 735, contens, PDType1Font.HELVETICA, 12);
-                    nuevaLinea(numeroSede, 50, 720, contens, PDType1Font.HELVETICA, 12);
-                    nuevaLinea(NIT, 50, 705, contens, PDType1Font.HELVETICA, 12);
+//                    nuevaLinea(sedeComercial, 50, 750, contens, PDType1Font.HELVETICA, 12);
+//                    nuevaLinea(direccionSede, 50, 735, contens, PDType1Font.HELVETICA, 12);
+//                    nuevaLinea(numeroSede, 50, 720, contens, PDType1Font.HELVETICA, 12);
+//                    nuevaLinea(NIT, 50, 705, contens, PDType1Font.HELVETICA, 12);
+                    //PARTE SUPERIOR DERECHA NUEVO CAMBIO
+                    nuevaLinea(sedeComercial, 400, 750, contens, PDType1Font.HELVETICA, 12);
+                    nuevaLinea(direccionSede, 400, 735, contens, PDType1Font.HELVETICA, 12);
+                    nuevaLinea(numeroSede, 400, 720, contens, PDType1Font.HELVETICA, 12);
+                    nuevaLinea(NIT, 400, 705, contens, PDType1Font.HELVETICA, 12);
 
                     //PARTE SUPERIOR DERECHA DEL DOCUMENTO
-                    nuevaLinea(fechaRecibo, 440, 740, contens, PDType1Font.HELVETICA, 12);
-                    nuevaLinea(cedulaDoc, 440, 715, contens, PDType1Font.HELVETICA, 12);
-
+//                    nuevaLinea(fechaRecibo, 440, 740, contens, PDType1Font.HELVETICA, 12);
+//                    nuevaLinea(cedulaDoc, 440, 715, contens, PDType1Font.HELVETICA, 12);
                     int inicioTablaX = 30;
                     int inicioTablaY = 620;
 
@@ -311,8 +335,12 @@ public class GenerarPdfImpl implements GenerarPdf {
                             contens.addRect(inicioTablaX, inicioTablaY + 20, cellWidth, cellHeight - 40);
                             contens.stroke();
                             nuevaLinea("Hemos recibido de: ".concat(clientePago), inicioTablaX + 5, inicioTablaY + 55, contens, PDType1Font.HELVETICA, 11);
-                            nuevaLinea("La cantidad de: ".concat(valorPago), inicioTablaX + 5, inicioTablaY + 40, contens, PDType1Font.HELVETICA, 11);
-                            nuevaLinea(valorEnPalabras, inicioTablaX + 5, inicioTablaY + 25, contens, PDType1Font.HELVETICA, 11);
+                            nuevaLinea("La cantidad de: ".concat(Integer.toString(valorPago)), inicioTablaX + 5, inicioTablaY + 40, contens, PDType1Font.HELVETICA, 11);
+                            nuevaLinea("Son: ".concat(valorDocumentoPalabras.trim()).toUpperCase(), inicioTablaX + 5, inicioTablaY + 25, contens, PDType1Font.HELVETICA, 9);
+
+                            //PARTE SUPERIOR DERECHA PRIMERA FILA DE LA TABLA NUEVO CAMBIO
+                            nuevaLinea(fechaRecibo, inicioTablaX + 400, inicioTablaY + 45, contens, PDType1Font.HELVETICA, 12);
+                            nuevaLinea(cedulaDoc, inicioTablaX + 400, inicioTablaY + 30, contens, PDType1Font.HELVETICA, 12);
                         }
 
                         if (i == 1) {
@@ -377,4 +405,5 @@ public class GenerarPdfImpl implements GenerarPdf {
             contens.endText();
         }
     }
+    
 }
