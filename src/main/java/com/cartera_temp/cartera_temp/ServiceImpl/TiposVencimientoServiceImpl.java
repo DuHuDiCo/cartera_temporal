@@ -20,7 +20,7 @@ public class TiposVencimientoServiceImpl implements TiposVencimientoService{
     @Override
     public TiposVencimiento guardarTipoVencimiento(TiposVencimiento tv) {
         
-        if(Objects.isNull(tv)){
+        if(tv.getTipoVencimiento() == null){
             return null;
         }
         
@@ -32,7 +32,7 @@ public class TiposVencimientoServiceImpl implements TiposVencimientoService{
         
         TiposVencimiento tvSave = new TiposVencimiento();
         
-        tvSave.setTipoVencimiento(tvFind.getTipoVencimiento().toUpperCase());
+        tvSave.setTipoVencimiento(tv.getTipoVencimiento().toUpperCase());
         
         tvSave = tiposVencimientoRepository.save(tvSave);
         return tvSave;
