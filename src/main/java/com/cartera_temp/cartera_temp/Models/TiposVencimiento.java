@@ -1,5 +1,6 @@
 package com.cartera_temp.cartera_temp.Models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -24,6 +25,7 @@ public class TiposVencimiento {
     private String tipoVencimiento;
     
     @OneToMany (mappedBy = "tiposVencimiento", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<CuentasPorCobrar> cuentasPorCobrar;
 
     public TiposVencimiento() {

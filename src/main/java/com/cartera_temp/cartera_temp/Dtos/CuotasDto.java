@@ -8,6 +8,7 @@ public class CuotasDto {
     private double capitalCuota;
     private double honorarios;
     private double interesCuota;
+    private PagosDto pagosDto;
     private boolean cumplio;
 
     public CuotasDto() {
@@ -67,6 +68,14 @@ public class CuotasDto {
 
     public void setCumplio(boolean cumplio) {
         this.cumplio = cumplio;
+    }
+
+    public PagosDto getPagosDto() {
+        return pagosDto;
+    }
+
+    public void setPagosDto(PagosDto pagosDto) {
+        this.pagosDto = pagosDto;
     }
     
     
