@@ -7,6 +7,7 @@ public class PagosDto {
     private double valorPago;
     private Date fechaPago;
     private double saldoCuota;
+    private String metodoPago;
     private String username;
 
     public PagosDto() {
@@ -42,6 +43,14 @@ public class PagosDto {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getMetodoPago() {
+        return metodoPago;
+    }
+
+    public void setMetodoPago(String metodoPago) {
+        this.metodoPago = metodoPago;
     }
     
     

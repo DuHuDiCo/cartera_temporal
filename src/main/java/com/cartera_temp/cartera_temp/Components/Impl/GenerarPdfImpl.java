@@ -264,7 +264,7 @@ public class GenerarPdfImpl implements GenerarPdf {
         }
 
         //DECLARACION DE VARIABLES PARA EL BODY DE LA TABLA
-        String clientePago = "Nombre de persona que paga";
+        String clientePago = cpc.getCliente();
         int valorPago = 1_550_500;
         MoneyConverters converter1 = MoneyConverters.SPANISH_BANKING_MONEY_VALUE;
         String valorEnPalabras = converter1.asWords(new BigDecimal(valorPago)).toUpperCase();
