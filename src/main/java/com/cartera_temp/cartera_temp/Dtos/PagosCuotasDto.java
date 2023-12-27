@@ -10,7 +10,9 @@ public class PagosCuotasDto {
     private double saldo;
     private List<CuotasDto> cuotasDto = new ArrayList<>();
     private double valorTotal;
+    private String metodoPago;
     private String detalle;
+    private String username;
 
     public PagosCuotasDto() {
     }
@@ -61,6 +63,22 @@ public class PagosCuotasDto {
 
     public void setDetalle(String detalle) {
         this.detalle = detalle;
+    }
+
+    public String getMetodoPago() {
+        return metodoPago;
+    }
+
+    public void setMetodoPago(String metodoPago) {
+        this.metodoPago = metodoPago;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
     
     

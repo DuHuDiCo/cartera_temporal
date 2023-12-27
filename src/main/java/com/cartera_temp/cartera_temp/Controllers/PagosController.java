@@ -1,6 +1,7 @@
 package com.cartera_temp.cartera_temp.Controllers;
 
 import com.cartera_temp.cartera_temp.Dtos.PagosCuotasDto;
+import com.cartera_temp.cartera_temp.Dtos.PagosCuotasResponse;
 import com.cartera_temp.cartera_temp.Models.AcuerdoPago;
 import com.cartera_temp.cartera_temp.Service.PagosService;
 import java.util.Objects;
@@ -23,8 +24,8 @@ public class PagosController {
     }
     
     @PostMapping("/guardarPago")
-    public ResponseEntity<AcuerdoPago> guardarPago (@RequestBody PagosCuotasDto dto){
-        AcuerdoPago acu = ps.guardarPago(dto);
+    public ResponseEntity<PagosCuotasResponse> guardarPago (@RequestBody PagosCuotasDto dto){
+        PagosCuotasResponse acu = ps.guardarPago(dto);
         if(Objects.isNull(acu)){
             return ResponseEntity.badRequest().build();
         }

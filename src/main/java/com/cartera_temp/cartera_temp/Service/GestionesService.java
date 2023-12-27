@@ -25,8 +25,6 @@ public interface GestionesService {
     
     public LinkToClient sendLinkAndPdfToClient(LinkDto dto);
     
-    public String reciboPago(String numeroObligacion);
-    
     public void desactivateAcuerdoPago(Long idAcuerdoPago);
     
 }

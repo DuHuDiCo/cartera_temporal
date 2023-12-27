@@ -78,14 +78,4 @@ public class GestionesController {
         }
         return ResponseEntity.ok(linkClient);
     }
-    
-    @GetMapping("/pdfReciboPago")
-    public ResponseEntity<String> pdf (@RequestParam String numeroObligacion){
-        String pdf = gestionesService.reciboPago(numeroObligacion);
-        if(pdf == ""){
-            ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.ok(pdf);
-    }
-    
 }

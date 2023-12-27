@@ -1,10 +1,14 @@
 package com.cartera_temp.cartera_temp.Components.Impl;
 
 import com.cartera_temp.cartera_temp.Components.GenerarPdf;
+import com.cartera_temp.cartera_temp.Dtos.PagosCuotasDto;
 import com.cartera_temp.cartera_temp.Models.AcuerdoPago;
 import com.cartera_temp.cartera_temp.Models.CuentasPorCobrar;
 import com.cartera_temp.cartera_temp.Models.Gestiones;
+import com.cartera_temp.cartera_temp.ModelsClients.Usuario;
+import com.cartera_temp.cartera_temp.Service.UsuarioClientService;
 import com.cartera_temp.cartera_temp.Utils.Functions;
+import com.cartera_temp.cartera_temp.repository.CuentasPorCobrarRepository;
 import com.tenpisoft.n2w.MoneyConverters;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -30,6 +34,15 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class GenerarPdfImpl implements GenerarPdf {
+    
+    private final CuentasPorCobrarRepository cpcR;
+    private final UsuarioClientService usuClient;
+
+    public GenerarPdfImpl(CuentasPorCobrarRepository cpcR, UsuarioClientService usuClient) {
+        this.cpcR = cpcR;
+        this.usuClient = usuClient;
+    }
+
 
     @Override
     public String generarReporteAcuerdoPagoToClient(CuentasPorCobrar cpc) throws IOException, ClassNotFoundException {
@@ -241,8 +254,10 @@ public class GenerarPdfImpl implements GenerarPdf {
     }
 
     @Override
-    public String generarReportePagoCuotas(CuentasPorCobrar cpc) throws IOException, ClassNotFoundException {
+    public String generarReportePagoCuotas(PagosCuotasDto dto) throws IOException, ClassNotFoundException {
 
+        CuentasPorCobrar cpc = cpcR.findByNumeroObligacion(dto.getNumeroObligacion());
+        
         if (Objects.isNull(cpc)) {
             return null;
         }
@@ -254,7 +269,7 @@ public class GenerarPdfImpl implements GenerarPdf {
         String numeroSede = cpc.getSede().getTelefonoSede();
         //YEIMAR DIJO QUE EL NIT ES IGUAL PARA TODOS(SI NO ES ASI LO ACABO A PALO)
         String NIT = "NIT: 901056810-9 REGIMEN COMUN".toUpperCase();
-        String idPago = "# ".concat("Id del pago");
+        String idPago = "# ".concat(dto.getNumeroRecibo());
         String cedulaDoc = "C.C: ".concat(cpc.getDocumentoCliente());
         String fechaRecibo = "";
         try {
@@ -265,7 +280,7 @@ public class GenerarPdfImpl implements GenerarPdf {
 
         //DECLARACION DE VARIABLES PARA EL BODY DE LA TABLA
         String clientePago = cpc.getCliente();
-        int valorPago = 1_550_500;
+        double valorPago = dto.getValorTotal();
         MoneyConverters converter1 = MoneyConverters.SPANISH_BANKING_MONEY_VALUE;
         String valorEnPalabras = converter1.asWords(new BigDecimal(valorPago)).toUpperCase();
        
@@ -281,10 +296,38 @@ public class GenerarPdfImpl implements GenerarPdf {
             valorDocumentoPalabras = valorDocumentoPalabras.concat(" ").concat(splitPalabra);
         }
         
-        String detallePago = "Viene de la clase pagoaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa".toUpperCase();
-        String tiposPago = "Reemplazar esto por una lista de pagos";
-        String usuarioPago = "Quien recibe el pago?";
-        String saldo = "SALDO: 0";
+        Usuario usu = usuClient.obtenerUsuario(dto.getUsername());
+        if(Objects.isNull(usu)){
+            return null;
+        }
+        
+        String tiposPago = dto.getMetodoPago();
+        
+        double pagoEfectivo = 0, pagoCheque = 0, pagoDebito = 0, pagoCredito = 0, adelantos = 0;
+        
+        switch (tiposPago) {
+            case "EFECTIVO":
+                pagoEfectivo = dto.getValorTotal();
+                break;
+            case "CHEQUE":
+                pagoCheque = dto.getValorTotal();
+                break;
+            case "T. DEBITO":
+                pagoDebito = dto.getValorTotal();
+                break;
+            case "T. CREDITO":
+                pagoCredito = dto.getValorTotal();
+                break;
+            case "ADELANTOS APLICADOS":
+                adelantos = dto.getValorTotal();
+                break;
+            default:
+                throw new AssertionError();
+        }
+        
+        String detallePago = dto.getDetalle().toUpperCase();
+        String usuarioPago = usu.getNombres().toUpperCase().concat(" ").concat(usu.getApellidos()).toUpperCase();
+        String saldo = "SALDO: ".concat(Double.toString(dto.getSaldo()));
         String footer = "GMJ HOGAS S.A.S.";
         String firma = "Recibi conforme: __________________________";
 
@@ -305,28 +348,18 @@ public class GenerarPdfImpl implements GenerarPdf {
 
                     contens.drawImage(logoImage, 200, 700, 200, 80);
 
-                    //TITULO
-//                    nuevaLinea(titulo, 270, 740, contens, PDType1Font.HELVETICA_BOLD, 12);
-//                    nuevaLinea(idPago, 285, 725, contens, PDType1Font.HELVETICA, 12);
-
                     //TITULO PARTE SUPERIOR DERECHA NUEVO CAMBIO
                     nuevaLinea(titulo, 50, 740, contens, PDType1Font.HELVETICA_BOLD, 12);
                     nuevaLinea(idPago, 50, 725, contens, PDType1Font.HELVETICA, 12);
-
-                    //PARTE SUPERIOR IZQUIERDA DEL DOCUMENTO
-//                    nuevaLinea(sedeComercial, 50, 750, contens, PDType1Font.HELVETICA, 12);
-//                    nuevaLinea(direccionSede, 50, 735, contens, PDType1Font.HELVETICA, 12);
-//                    nuevaLinea(numeroSede, 50, 720, contens, PDType1Font.HELVETICA, 12);
-//                    nuevaLinea(NIT, 50, 705, contens, PDType1Font.HELVETICA, 12);
+                    
+                    
                     //PARTE SUPERIOR DERECHA NUEVO CAMBIO
                     nuevaLinea(sedeComercial, 400, 750, contens, PDType1Font.HELVETICA, 12);
                     nuevaLinea(direccionSede, 400, 735, contens, PDType1Font.HELVETICA, 12);
                     nuevaLinea(numeroSede, 400, 720, contens, PDType1Font.HELVETICA, 12);
                     nuevaLinea(NIT, 400, 705, contens, PDType1Font.HELVETICA, 12);
-
-                    //PARTE SUPERIOR DERECHA DEL DOCUMENTO
-//                    nuevaLinea(fechaRecibo, 440, 740, contens, PDType1Font.HELVETICA, 12);
-//                    nuevaLinea(cedulaDoc, 440, 715, contens, PDType1Font.HELVETICA, 12);
+                    
+                    
                     int inicioTablaX = 30;
                     int inicioTablaY = 620;
 
@@ -335,7 +368,7 @@ public class GenerarPdfImpl implements GenerarPdf {
                             contens.addRect(inicioTablaX, inicioTablaY + 20, cellWidth, cellHeight - 40);
                             contens.stroke();
                             nuevaLinea("Hemos recibido de: ".concat(clientePago), inicioTablaX + 5, inicioTablaY + 55, contens, PDType1Font.HELVETICA, 11);
-                            nuevaLinea("La cantidad de: ".concat(Integer.toString(valorPago)), inicioTablaX + 5, inicioTablaY + 40, contens, PDType1Font.HELVETICA, 11);
+                            nuevaLinea("La cantidad de: ".concat(Double.toString(valorPago)), inicioTablaX + 5, inicioTablaY + 40, contens, PDType1Font.HELVETICA, 11);
                             nuevaLinea("Son: ".concat(valorDocumentoPalabras.trim()).toUpperCase(), inicioTablaX + 5, inicioTablaY + 25, contens, PDType1Font.HELVETICA, 9);
 
                             //PARTE SUPERIOR DERECHA PRIMERA FILA DE LA TABLA NUEVO CAMBIO
@@ -347,11 +380,18 @@ public class GenerarPdfImpl implements GenerarPdf {
                             contens.addRect(inicioTablaX, inicioTablaY - cellHeight - 50, cellWidth, 160);
                             contens.stroke();
                             nuevaLinea("Por concepto de: ".concat(detallePago), inicioTablaX + 5, inicioTablaY + 5, contens, PDType1Font.HELVETICA, 11);
-                            nuevaLinea(tiposPago, inicioTablaX + 5, inicioTablaY - 25, contens, PDType1Font.HELVETICA, 11);
-                            nuevaLinea(tiposPago, inicioTablaX + 5, inicioTablaY - 45, contens, PDType1Font.HELVETICA, 11);
-                            nuevaLinea(tiposPago, inicioTablaX + 5, inicioTablaY - 65, contens, PDType1Font.HELVETICA, 11);
-                            nuevaLinea(tiposPago, inicioTablaX + 5, inicioTablaY - 85, contens, PDType1Font.HELVETICA, 11);
-                            nuevaLinea(tiposPago, inicioTablaX + 5, inicioTablaY - 105, contens, PDType1Font.HELVETICA, 11);
+                            nuevaLinea("Total efectivo: ", inicioTablaX + 5, inicioTablaY - 25, contens, PDType1Font.HELVETICA, 11);
+                            nuevaLinea("Total cheque: ", inicioTablaX + 5, inicioTablaY - 45, contens, PDType1Font.HELVETICA, 11);
+                            nuevaLinea("Total tarjeta débito: ", inicioTablaX + 5, inicioTablaY - 65, contens, PDType1Font.HELVETICA, 11);
+                            nuevaLinea("Total tarjeta crédito: ", inicioTablaX + 5, inicioTablaY - 85, contens, PDType1Font.HELVETICA, 11);
+                            nuevaLinea("Adelantos aplicados: ", inicioTablaX + 5, inicioTablaY - 105, contens, PDType1Font.HELVETICA, 11);
+                            nuevaLinea(Double.toString(pagoEfectivo), inicioTablaX +  120, inicioTablaY - 25, contens, PDType1Font.HELVETICA, 11);
+                            nuevaLinea(Double.toString(pagoCheque), inicioTablaX +  120, inicioTablaY - 45, contens, PDType1Font.HELVETICA, 11);
+                            nuevaLinea(Double.toString(pagoDebito), inicioTablaX +  120, inicioTablaY - 65, contens, PDType1Font.HELVETICA, 11);
+                            nuevaLinea(Double.toString(pagoCredito), inicioTablaX +  120, inicioTablaY - 85, contens, PDType1Font.HELVETICA, 11);
+                            nuevaLinea(Double.toString(adelantos), inicioTablaX +  120, inicioTablaY - 105, contens, PDType1Font.HELVETICA, 11);
+                            
+                            
                             nuevaLinea(firma, inicioTablaX + 5, inicioTablaY - 125, contens, PDType1Font.HELVETICA, 11);
                             nuevaLinea(saldo, inicioTablaX + 380, inicioTablaY - 105, contens, PDType1Font.HELVETICA, 11);
                             nuevaLinea(usuarioPago, inicioTablaX + 365, inicioTablaY - 125, contens, PDType1Font.HELVETICA, 11);
