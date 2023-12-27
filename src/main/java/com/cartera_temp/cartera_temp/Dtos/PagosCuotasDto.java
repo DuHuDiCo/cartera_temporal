@@ -7,12 +7,17 @@ public class PagosCuotasDto {
 
     private String numeroObligacion;
     private String numeroRecibo;
-    private double saldo;
+    private int saldo;
     private List<CuotasDto> cuotasDto = new ArrayList<>();
-    private double valorTotal;
+    private int valorTotal;
+    private int capitalTotal;
+    private int acuerdoTotal;
+    private int honorariosTotal;
+    private int interesesTotal;
     private String metodoPago;
     private String detalle;
     private String username;
+    
 
     public PagosCuotasDto() {
     }
@@ -33,14 +38,6 @@ public class PagosCuotasDto {
         this.cuotasDto = cuotasDto;
     }
 
-    public double getValorTotal() {
-        return valorTotal;
-    }
-
-    public void setValorTotal(double valorTotal) {
-        this.valorTotal = valorTotal;
-    }
-
     public String getNumeroRecibo() {
         return numeroRecibo;
     }
@@ -48,15 +45,7 @@ public class PagosCuotasDto {
     public void setNumeroRecibo(String numeroRecibo) {
         this.numeroRecibo = numeroRecibo;
     }
-
-    public double getSaldo() {
-        return saldo;
-    }
-
-    public void setSaldo(double saldo) {
-        this.saldo = saldo;
-    }
-
+    
     public String getDetalle() {
         return detalle;
     }
@@ -79,6 +68,54 @@ public class PagosCuotasDto {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public int getSaldo() {
+        return saldo;
+    }
+
+    public void setSaldo(int saldo) {
+        this.saldo = saldo;
+    }
+
+    public int getValorTotal() {
+        return valorTotal;
+    }
+
+    public void setValorTotal(int valorTotal) {
+        this.valorTotal = valorTotal;
+    }
+
+    public int getCapitalTotal() {
+        return capitalTotal;
+    }
+
+    public void setCapitalTotal(int capitalTotal) {
+        this.capitalTotal = capitalTotal;
+    }
+
+    public int getAcuerdoTotal() {
+        return acuerdoTotal;
+    }
+
+    public void setAcuerdoTotal(int acuerdoTotal) {
+        this.acuerdoTotal = acuerdoTotal;
+    }
+
+    public int getHonorariosTotal() {
+        return honorariosTotal;
+    }
+
+    public void setHonorariosTotal(int honorariosTotal) {
+        this.honorariosTotal = honorariosTotal;
+    }
+
+    public int getInteresesTotal() {
+        return interesesTotal;
+    }
+
+    public void setInteresesTotal(int interesesTotal) {
+        this.interesesTotal = interesesTotal;
     }
     
     
