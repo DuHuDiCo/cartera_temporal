@@ -4,6 +4,7 @@ package com.cartera_temp.cartera_temp.Controllers;
 import com.cartera_temp.cartera_temp.Dtos.CuentaToCalculateDto;
 import com.cartera_temp.cartera_temp.Dtos.CuentasPorCobrarDto;
 import com.cartera_temp.cartera_temp.Dtos.CuentasPorCobrarResponse;
+import com.cartera_temp.cartera_temp.Dtos.FiltroDto;
 import com.cartera_temp.cartera_temp.Models.CuentasPorCobrar;
 import com.cartera_temp.cartera_temp.Service.CuentasPorCobrarService;
 import com.cartera_temp.cartera_temp.Service.FileService;
@@ -86,4 +87,11 @@ public class CuentasPorCobrarController {
         List<CuentasPorCobrar> cuentas = cuentasPorCobrarService.buscarCuentasByDatos(dato);
         return ResponseEntity.ok(cuentas);
     }
+    
+    @GetMapping("/filtrosCuentas")
+    public ResponseEntity<Page<CuentasPorCobrarResponse>> filtros(@RequestBody FiltroDto dto, @RequestParam(defaultValue = "0", name = "page") int page, @RequestParam(defaultValue = "10", name = "size") int size , @RequestParam(defaultValue = "fecha_creacion", name = "fechaCreacion") String  order){
+        Page<CuentasPorCobrarResponse> cpcRes = cuentasPorCobrarService.filtrosCpcs(dto, PageRequest.of(page, size));
+        return ResponseEntity.ok(cpcRes);
+    }
+    
 }

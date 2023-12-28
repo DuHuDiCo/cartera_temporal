@@ -5,6 +5,7 @@ import com.cartera_temp.cartera_temp.Dtos.ClientesDto;
 import com.cartera_temp.cartera_temp.Dtos.CuentaToCalculateDto;
 import com.cartera_temp.cartera_temp.Dtos.CuentasPorCobrarDto;
 import com.cartera_temp.cartera_temp.Dtos.CuentasPorCobrarResponse;
+import com.cartera_temp.cartera_temp.Dtos.FiltroDto;
 import com.cartera_temp.cartera_temp.FeignClients.ClientesClient;
 import com.cartera_temp.cartera_temp.FeignClients.usuario_client;
 import com.cartera_temp.cartera_temp.Models.AsesorCartera;
@@ -20,6 +21,7 @@ import com.cartera_temp.cartera_temp.Service.CuentasPorCobrarService;
 import com.cartera_temp.cartera_temp.Service.FileService;
 import com.cartera_temp.cartera_temp.Service.SedeService;
 import com.cartera_temp.cartera_temp.Service.TiposVencimientoService;
+import com.cartera_temp.cartera_temp.Utils.CuentaPorCobrarSpecification;
 import com.cartera_temp.cartera_temp.Utils.Functions;
 import com.cartera_temp.cartera_temp.repository.AsesorCarteraRepository;
 import com.cartera_temp.cartera_temp.repository.BancoRepository;
@@ -39,6 +41,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -78,8 +81,6 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
         this.tiposVencimientoService = tiposVencimientoService;
     }
 
-    
-
     @Override
     public List<CuentasPorCobrar> guardarCuentas(List<CuentasPorCobrarDto> cuentasPorCobrarDto) {
 
@@ -91,9 +92,9 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
                 cuentas = new CuentasPorCobrar();
 
             }
-            
+
             TiposVencimiento tv = tiposVencimientoService.obtenerTipoVencimientoByNombre(cuentaPorCobrar.getEdadVencimiento().toUpperCase());
-            if(Objects.isNull(tv)){
+            if (Objects.isNull(tv)) {
                 return null;
             }
 
@@ -120,7 +121,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             cuentas.setValorPagos(cuentaPorCobrar.getValorPagos());
             cuentas.setVendedor(cuentaPorCobrar.getVendedor());
             cuentas.setTotalObligatoria(cuentaPorCobrar.getTotalObligacion());
-            
+
             tv.agreegarCuentaCobrar(cuentas);
 
             Sede sede = sedeService.findSede(cuentaPorCobrar.getSede());
@@ -398,8 +399,8 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
         List<CuentasPorCobrar> cuentasCobrar = new ArrayList<>();
 
         List<ClientesDto> clientesFilter = clientes.stream().filter(c -> c.getNumeroDocumento().equals(dato) || c.getNombreTitular().equals(dato)).collect(Collectors.toList());
-        
-         System.out.println(clientesFilter.size());
+
+        System.out.println(clientesFilter.size());
         for (ClientesDto cliente : clientesFilter) {
             CuentasPorCobrar cuenta = cuentasPorCobrarRepository.findByDocumentoCliente(cliente.getNit());
             if (Objects.nonNull(cuenta)) {
@@ -408,6 +409,32 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
 
         }
         return cuentasCobrar;
+    }
+
+    @Override
+    public Page<CuentasPorCobrarResponse> filtrosCpcs(FiltroDto dto, Pageable pageable) {
+
+        Specification<CuentasPorCobrar> spec = CuentaPorCobrarSpecification.filtrarCuentas(dto);
+        Page<CuentasPorCobrar> cpc = cuentasPorCobrarRepository.findAll(spec, pageable);
+        List<CuentasPorCobrarResponse> cpcRes = new ArrayList<>();
+        ModelMapper map = new ModelMapper();
+        for (CuentasPorCobrar cuentasPorCobrar : cpc) {
+
+            CuentasPorCobrarResponse cpcResFor = map.map(cuentasPorCobrar, CuentasPorCobrarResponse.class);
+            AsesorCarteraResponse asesor = new AsesorCarteraResponse();
+            asesor.setIdAsesorCartera(cuentasPorCobrar.getAsesor().getIdAsesorCartera());
+            String token = httpServletRequest.getAttribute("token").toString();
+            Usuario usu = usuarioClient.getUsuarioById(asesor.getUsuario().getIdUsuario(), token);
+            asesor.setUsuario(usu);
+            cpcResFor.setAsesorCarteraResponse(asesor);
+            cpcRes.add(cpcResFor);
+
+        }
+
+        Page<CuentasPorCobrarResponse> cuentasPage = new PageImpl(cpcRes, pageable, cpc.getTotalElements());
+
+        return cuentasPage;
+
     }
 
 }
