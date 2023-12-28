@@ -35,6 +35,10 @@ public class Pagos {
 
     @Column(name = "saldo_cuota")
     private double saldoCuota;
+    
+    @ManyToOne
+    @JoinColumn(name = "recibo_id")
+    private ReciboPago reciboPago;
 
     public Pagos() {
     }
@@ -88,6 +92,15 @@ public class Pagos {
     public void setDetalle(String detalle) {
         this.detalle = detalle;
     }
+
+    public ReciboPago getReciboPago() {
+        return reciboPago;
+    }
+
+    public void setReciboPago(ReciboPago reciboPago) {
+        this.reciboPago = reciboPago;
+    }
+    
     
     
     
