@@ -7,7 +7,6 @@ public class PagosDto {
     private double valorPago;
     private Date fechaPago;
     private double saldoCuota;
-    private String username;
 
     public PagosDto() {
     }
@@ -35,15 +34,4 @@ public class PagosDto {
     public void setSaldoCuota(double saldoCuota) {
         this.saldoCuota = saldoCuota;
     }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-    
-    
-
 }

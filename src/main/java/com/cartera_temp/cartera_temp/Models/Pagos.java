@@ -27,6 +27,8 @@ public class Pagos {
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaPago;
 
+    @Column(name = "detalle")
+    private String detalle;
     
     @JoinColumn(name = "usuario_id")
     private Long usuarioId;
@@ -77,6 +79,14 @@ public class Pagos {
 
     public void setSaldoCuota(double saldoCuota) {
         this.saldoCuota = saldoCuota;
+    }
+
+    public String getDetalle() {
+        return detalle;
+    }
+
+    public void setDetalle(String detalle) {
+        this.detalle = detalle;
     }
     
     

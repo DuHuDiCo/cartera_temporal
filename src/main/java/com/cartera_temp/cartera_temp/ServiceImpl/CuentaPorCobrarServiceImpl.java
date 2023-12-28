@@ -183,6 +183,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             int diasVecidos = Functions.diferenciaFechas(cuenta.getFechaVencimiento());
             CuentasPorCobrarResponse c = modelMapper.map(cuenta, CuentasPorCobrarResponse.class);
             c.setDiasVencidos(diasVecidos);
+            c.setTiposVencimiento(cuenta.getTiposVencimiento());
             AsesorCarteraResponse asesorResponse = new AsesorCarteraResponse();
             asesorResponse.setIdAsesorCartera(cuenta.getAsesor().getIdAsesorCartera());
             asesorResponse.setUsuario(usuario);
