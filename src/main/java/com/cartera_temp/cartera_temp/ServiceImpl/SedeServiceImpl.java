@@ -50,4 +50,40 @@ public class SedeServiceImpl implements SedeService{
         return sed;
     }
 
+    @Override
+    public Sede actualizarSede(Sede sede) {
+        
+        if(sede.getDireccionSede() == null ||  sede.getDireccionSede() == "" || sede.getIdSede() == null || sede.getNombreComercialSede() == null || sede.getNombreComercialSede()== ""){
+            return null;
+        }
+        
+        Sede sedeToUpdate = sedeRepository.findById(sede.getIdSede()).orElse(null);
+        if(Objects.nonNull(sedeToUpdate)){
+            
+            sedeToUpdate.setSede(sede.getSede());
+            sedeToUpdate.setTelefonoSede(sede.getTelefonoSede());
+            sedeToUpdate.setNombreComercialSede(sede.getNombreComercialSede());
+            sedeToUpdate.setDireccionSede(sede.getDireccionSede());
+            
+            sedeToUpdate = sedeRepository.save(sedeToUpdate);
+            return sedeToUpdate;
+            
+        }
+        return null;
+    }
+
+    @Override
+    public Sede findById(Long idSede) {
+        
+        if(idSede == null ||  idSede == 0){
+            return null;
+        }
+        
+        Sede sede = sedeRepository.findById(idSede).orElse(null);
+        if(Objects.isNull(sede)){
+            return null;
+        }
+        return sede;
+    }
+
 }

@@ -88,7 +88,7 @@ public class CuentasPorCobrarController {
         return ResponseEntity.ok(cuentas);
     }
     
-    @GetMapping("/filtrosCuentas")
+    @PostMapping("/filtrosCuentas")
     public ResponseEntity<Page<CuentasPorCobrarResponse>> filtros(@RequestBody FiltroDto dto, @RequestParam(defaultValue = "0", name = "page") int page, @RequestParam(defaultValue = "10", name = "size") int size , @RequestParam(defaultValue = "fecha_creacion", name = "fechaCreacion") String  order){
         Page<CuentasPorCobrarResponse> cpcRes = cuentasPorCobrarService.filtrosCpcs(dto, PageRequest.of(page, size));
         return ResponseEntity.ok(cpcRes);

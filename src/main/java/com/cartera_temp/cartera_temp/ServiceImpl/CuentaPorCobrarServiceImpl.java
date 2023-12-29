@@ -414,7 +414,12 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
     @Override
     public Page<CuentasPorCobrarResponse> filtrosCpcs(FiltroDto dto, Pageable pageable) {
 
-        Specification<CuentasPorCobrar> spec = CuentaPorCobrarSpecification.filtrarCuentas(dto);
+        Usuario usuFiltro = usuarioClient.getUserByUsername(dto.getUsername());
+        if (Objects.isNull(usuFiltro)) {
+            return null;
+        }
+
+        Specification<CuentasPorCobrar> spec = CuentaPorCobrarSpecification.filtrarCuentas(dto, usuFiltro.getIdUsuario());
         Page<CuentasPorCobrar> cpc = cuentasPorCobrarRepository.findAll(spec, pageable);
         List<CuentasPorCobrarResponse> cpcRes = new ArrayList<>();
         ModelMapper map = new ModelMapper();
@@ -424,9 +429,12 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             AsesorCarteraResponse asesor = new AsesorCarteraResponse();
             asesor.setIdAsesorCartera(cuentasPorCobrar.getAsesor().getIdAsesorCartera());
             String token = httpServletRequest.getAttribute("token").toString();
-            Usuario usu = usuarioClient.getUsuarioById(asesor.getUsuario().getIdUsuario(), token);
+            Usuario usu = usuarioClient.getUsuarioById(cuentasPorCobrar.getAsesor().getUsuarioId(), token);
             asesor.setUsuario(usu);
             cpcResFor.setAsesorCarteraResponse(asesor);
+
+            List<ClientesDto> clientes = clientesClient.buscarClientesByNumeroObligacion(cuentasPorCobrar.getDocumentoCliente(), token);
+            cpcResFor.setClientes(clientes);
             cpcRes.add(cpcResFor);
 
         }

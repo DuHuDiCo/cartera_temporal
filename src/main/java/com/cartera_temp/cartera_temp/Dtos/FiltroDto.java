@@ -1,16 +1,19 @@
 package com.cartera_temp.cartera_temp.Dtos;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
 public class FiltroDto {
 
-    private String banco;
+    private List<String> banco = new ArrayList<>();
     private Integer diasVencidosInicio;
     private Integer diasVencidosFin;
-    private String edadVencimiento;
-    private String sede;
-    private String clasiJuridica;
+    private List<String> edadVencimiento = new ArrayList<>();
+    private List<String> sede = new ArrayList<>();
+    private String username;
+    private List<String> clasiJuridica = new ArrayList<>();
     private Double saldoCapitalInicio;
     private Double saldoCapitalFin;
     private Date fechaCpcInicio;
@@ -23,11 +26,11 @@ public class FiltroDto {
     public FiltroDto() {
     }
 
-    public String getBanco() {
+    public List<String> getBanco() {
         return banco;
     }
 
-    public void setBanco(String banco) {
+    public void setBanco(List<String> banco) {
         this.banco = banco;
     }
 
@@ -47,27 +50,35 @@ public class FiltroDto {
         this.diasVencidosFin = diasVencidosFin;
     }
 
-    public String getEdadVencimiento() {
+    public List<String> getEdadVencimiento() {
         return edadVencimiento;
     }
 
-    public void setEdadVencimiento(String edadVencimiento) {
+    public void setEdadVencimiento(List<String> edadVencimiento) {
         this.edadVencimiento = edadVencimiento;
     }
 
-    public String getSede() {
+    public List<String> getSede() {
         return sede;
     }
 
-    public void setSede(String sede) {
+    public void setSede(List<String> sede) {
         this.sede = sede;
     }
 
-    public String getClasiJuridica() {
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public List<String> getClasiJuridica() {
         return clasiJuridica;
     }
 
-    public void setClasiJuridica(String clasiJuridica) {
+    public void setClasiJuridica(List<String> clasiJuridica) {
         this.clasiJuridica = clasiJuridica;
     }
 
@@ -75,8 +86,16 @@ public class FiltroDto {
         return saldoCapitalInicio;
     }
 
-    public void setSaldoCapitalInicio(double saldoCapitalInicio) {
+    public void setSaldoCapitalInicio(Double saldoCapitalInicio) {
         this.saldoCapitalInicio = saldoCapitalInicio;
+    }
+
+    public Double getSaldoCapitalFin() {
+        return saldoCapitalFin;
+    }
+
+    public void setSaldoCapitalFin(Double saldoCapitalFin) {
+        this.saldoCapitalFin = saldoCapitalFin;
     }
 
     public Date getFechaCpcInicio() {
@@ -127,14 +146,6 @@ public class FiltroDto {
         this.fechaCompromisoFin = fechaCompromisoFin;
     }
 
-    public Double getSaldoCapitalFin() {
-        return saldoCapitalFin;
-    }
-
-    public void setSaldoCapitalFin(Double saldoCapitalFin) {
-        this.saldoCapitalFin = saldoCapitalFin;
-    }
-    
-    
+        
     
 }

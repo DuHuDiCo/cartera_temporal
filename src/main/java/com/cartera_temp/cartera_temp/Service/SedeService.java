@@ -10,4 +10,8 @@ public interface SedeService {
     public List<Sede> listarSede();
 
     public Sede findSede(String sede);
+    
+    public Sede findById(Long idSede);
+    
+    public Sede actualizarSede(Sede sede);
 }
