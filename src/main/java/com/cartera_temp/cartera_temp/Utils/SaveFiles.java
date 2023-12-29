@@ -1,11 +1,15 @@
 package com.cartera_temp.cartera_temp.Utils;
 
 import com.cartera_temp.cartera_temp.ServiceImpl.CustomMultipartFile;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -65,6 +69,17 @@ public class SaveFiles {
             return folderCuentaPath.resolve(nombreArchivo).toString();
         }
         return sedePath.resolve(nombreArchivo).toString();
+    }
+    
+     public String pdfToBase64(String ruta) throws FileNotFoundException, IOException {
+        File img = new File(ruta);
+        Base64 base64 = new Base64();
+        byte[] imageBytes = new byte[(int) img.length()];
+        InputStream inputStream = new FileInputStream(img);
+        inputStream.read(imageBytes);
+        String encodedFile = base64.encodeToString(imageBytes);
+        
+        return encodedFile;
     }
 
 }

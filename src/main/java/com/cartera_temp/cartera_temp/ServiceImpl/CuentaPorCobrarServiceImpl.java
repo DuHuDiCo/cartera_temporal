@@ -7,9 +7,11 @@ import com.cartera_temp.cartera_temp.Dtos.CuentasPorCobrarDto;
 import com.cartera_temp.cartera_temp.Dtos.CuentasPorCobrarResponse;
 import com.cartera_temp.cartera_temp.FeignClients.ClientesClient;
 import com.cartera_temp.cartera_temp.FeignClients.usuario_client;
+import com.cartera_temp.cartera_temp.Models.AcuerdoPago;
 import com.cartera_temp.cartera_temp.Models.AsesorCartera;
 import com.cartera_temp.cartera_temp.Models.Banco;
 import com.cartera_temp.cartera_temp.Models.CuentasPorCobrar;
+import com.cartera_temp.cartera_temp.Models.Cuotas;
 import com.cartera_temp.cartera_temp.Models.Gestiones;
 import com.cartera_temp.cartera_temp.Models.Sede;
 import com.cartera_temp.cartera_temp.Models.TiposVencimiento;
@@ -21,16 +23,20 @@ import com.cartera_temp.cartera_temp.Service.FileService;
 import com.cartera_temp.cartera_temp.Service.SedeService;
 import com.cartera_temp.cartera_temp.Service.TiposVencimientoService;
 import com.cartera_temp.cartera_temp.Utils.Functions;
+import com.cartera_temp.cartera_temp.Utils.SaveFiles;
 import com.cartera_temp.cartera_temp.repository.AsesorCarteraRepository;
 import com.cartera_temp.cartera_temp.repository.BancoRepository;
 import com.cartera_temp.cartera_temp.repository.CuentasPorCobrarRepository;
 import com.cartera_temp.cartera_temp.repository.SedeRepository;
+import java.io.IOException;
 import java.net.http.HttpRequest;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 
@@ -61,8 +67,9 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
     private final SedeRepository sedeRepository;
     private final AsesorCarteraRepository asesorCarteraRepository;
     private final TiposVencimientoService tiposVencimientoService;
+    private final SaveFiles saveFiles;
 
-    public CuentaPorCobrarServiceImpl(CuentasPorCobrarRepository cuentasPorCobrarRepository, SedeService sedeService, AsesorCarteraService asesorCarteraService, BancoService bancoService, usuario_client usuarioClient, ModelMapper modelMapper, ClientesClient clientesClient, FileService fileService, HttpServletRequest httpServletRequest, BancoRepository bancoRepository, SedeRepository sedeRepository, AsesorCarteraRepository asesorCarteraRepository, TiposVencimientoService tiposVencimientoService) {
+    public CuentaPorCobrarServiceImpl(CuentasPorCobrarRepository cuentasPorCobrarRepository, SedeService sedeService, AsesorCarteraService asesorCarteraService, BancoService bancoService, usuario_client usuarioClient, ModelMapper modelMapper, ClientesClient clientesClient, FileService fileService, HttpServletRequest httpServletRequest, BancoRepository bancoRepository, SedeRepository sedeRepository, AsesorCarteraRepository asesorCarteraRepository, TiposVencimientoService tiposVencimientoService, SaveFiles saveFiles) {
         this.cuentasPorCobrarRepository = cuentasPorCobrarRepository;
         this.sedeService = sedeService;
         this.asesorCarteraService = asesorCarteraService;
@@ -76,9 +83,8 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
         this.sedeRepository = sedeRepository;
         this.asesorCarteraRepository = asesorCarteraRepository;
         this.tiposVencimientoService = tiposVencimientoService;
+        this.saveFiles = saveFiles;
     }
-
-    
 
     @Override
     public List<CuentasPorCobrar> guardarCuentas(List<CuentasPorCobrarDto> cuentasPorCobrarDto) {
@@ -91,9 +97,9 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
                 cuentas = new CuentasPorCobrar();
 
             }
-            
+
             TiposVencimiento tv = tiposVencimientoService.obtenerTipoVencimientoByNombre(cuentaPorCobrar.getEdadVencimiento().toUpperCase());
-            if(Objects.isNull(tv)){
+            if (Objects.isNull(tv)) {
                 return null;
             }
 
@@ -120,7 +126,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             cuentas.setValorPagos(cuentaPorCobrar.getValorPagos());
             cuentas.setVendedor(cuentaPorCobrar.getVendedor());
             cuentas.setTotalObligatoria(cuentaPorCobrar.getTotalObligacion());
-            
+
             tv.agreegarCuentaCobrar(cuentas);
 
             Sede sede = sedeService.findSede(cuentaPorCobrar.getSede());
@@ -280,7 +286,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
         List<CuentasPorCobrar> cpcList = cuentasPorCobrarRepository.findByNumeroObligacionContaining(numeroObligacion);
 
         if (CollectionUtils.isEmpty(cpcList)) {
-              System.out.println("------0");
+            System.out.println("------0");
             return null;
         }
 
@@ -289,6 +295,28 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
         ModelMapper map = new ModelMapper();
 
         for (CuentasPorCobrar cuentasPorCobrar : cpcList) {
+
+            for (Gestiones gestiones : cuentasPorCobrar.getGestiones()) {
+                if (gestiones.getClasificacionGestion() instanceof AcuerdoPago) {
+                    AcuerdoPago acuerdo = (AcuerdoPago) gestiones.getClasificacionGestion();
+                    for (Cuotas cuotas : acuerdo.getCuotasList()) {
+                        if (Objects.nonNull(cuotas.getPagos())) {
+                            String ruta;
+                            try {
+                                ruta = saveFiles.pdfToBase64(cuotas.getPagos().getReciboPago().getRuta());
+                                if (Objects.nonNull(ruta)) {
+                                    cuotas.getPagos().getReciboPago().setRuta(ruta);
+                                    
+                                }
+                            } catch (IOException ex) {
+                                Logger.getLogger(CuentaPorCobrarServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+
+                    }
+                }
+
+            }
 
             //calcular nuevos dias vencidos
             int diasVecidos = Functions.diferenciaFechas(cuentasPorCobrar.getFechaVencimiento());
@@ -400,14 +428,14 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
         List<CuentasPorCobrar> cuentasCobrar = new ArrayList<>();
 
         List<ClientesDto> clientesFilter = clientes.stream().filter(c -> c.getNumeroDocumento().equals(dato) || c.getNombreTitular().equals(dato)).collect(Collectors.toList());
-        
-        if(CollectionUtils.isEmpty(clientesFilter)){
+
+        if (CollectionUtils.isEmpty(clientesFilter)) {
             clientesFilter = clientes;
         }
-        
-         System.out.println(clientesFilter.size());
+
+        System.out.println(clientesFilter.size());
         for (ClientesDto cliente : clientesFilter) {
-            System.out.println("---"+cliente.getNit());
+            System.out.println("---" + cliente.getNit());
             List<CuentasPorCobrar> cuenta = cuentasPorCobrarRepository.findByDocumentoCliente(cliente.getNit());
             System.out.println(cuenta.size());
             if (!CollectionUtils.isEmpty(cuenta)) {

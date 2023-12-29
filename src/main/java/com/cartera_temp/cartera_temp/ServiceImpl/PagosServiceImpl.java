@@ -88,17 +88,26 @@ public class PagosServiceImpl implements PagosService {
             return null;
         }
 
+        
+
         for (int i = 0; i < dto.getCuotasDto().size(); i++) {
 
-            if (Objects.nonNull(dto.getCuotasDto().get(i).getPagosDto())) {
+            CuotasDto cuotasDto = dto.getCuotasDto().get(i);
+            
+            if (Objects.nonNull(cuotasDto.getPagosDto())) {
                 Pagos pago = new Pagos();
-                pago.setFechaPago(dto.getCuotasDto().get(i).getPagosDto().getFechaPago());
-                pago.setSaldoCuota(dto.getCuotasDto().get(i).getPagosDto().getSaldoCuota());
-                pago.setValorPago(dto.getCuotasDto().get(i).getPagosDto().getValorPago());
+                pago.setFechaPago(cuotasDto.getPagosDto().getFechaPago());
+                pago.setSaldoCuota(cuotasDto.getPagosDto().getSaldoCuota());
+                pago.setValorPago(cuotasDto.getPagosDto().getValorPago());
                 pago.setUsuarioId(usu.getIdUsuario());
-                
-                Cuotas cuota =  acuPag.getCuotasList().get(i);
+                pago.setDetalle(dto.getDetalle());
+
+                Cuotas cuota = acuPag.getCuotasList().get(i);
                 cuota.setPagos(pago);
+                cuota.setCapitalCuota(cuotasDto.getCapitalCuota());
+                cuota.setHonorarios(cuotasDto.getHonorarios());
+                cuota.setInteresCuota(cuotasDto.getInteresCuota());
+                
 
             }
 
@@ -130,19 +139,22 @@ public class PagosServiceImpl implements PagosService {
             recibo.setNumeroRecibo(dto.getNumeroRecibo());
             recibo.setFechaRecibo(Functions.obtenerFechaYhora());
             recibo.setValorRecibo(dto.getValorTotal());
-            recibo.setRuta(ruta.concat(fileName));
+            recibo.setRuta(ruta);
             recibo.setUsuarioId(usu.getIdUsuario());
+            
+
+            recibo = reciboPagoRepository.save(recibo);
+            
+            
 
             for (Cuotas cuotas : acuPag.getCuotasList()) {
                 if (Objects.nonNull(cuotas.getPagos())) {
-                    recibo.agregarReciboPago(cuotas.getPagos());
+                    cuotas.getPagos().setReciboPago(recibo);
                 }
 
             }
 
             acuPag = apr.save(acuPag);
-
-            recibo = reciboPagoRepository.save(recibo);
 
             PagosCuotasResponse pgr = new PagosCuotasResponse();
             pgr.setBase64(base64);
