@@ -138,7 +138,6 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
                 sede = new Sede();
                 sede.setSede(cuentaPorCobrar.getSede());
                 sede = sedeService.guardarSede(sede);
-                System.out.println(sede.getSede());
             }
 
             cuentas.setSede(sede);
@@ -164,7 +163,6 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             }
             cuentas.setAsesor(asesor);
             cuentasSaved.add(cuentas);
-            System.out.println(cuentasSaved.size());
         }
         return cuentasPorCobrarRepository.saveAll(cuentasSaved);
 
@@ -197,6 +195,8 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             asesorResponse.setIdAsesorCartera(cuenta.getAsesor().getIdAsesorCartera());
             asesorResponse.setUsuario(usuario);
             c.setAsesorCarteraResponse(asesorResponse);
+            
+            c.setGestion(cuenta.getGestiones());
 
             List<ClientesDto> clientes = clientesClient.buscarClientesByNumeroObligacion(cuenta.getDocumentoCliente(), token);
             c.setClientes(clientes);
@@ -213,7 +213,6 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
     @Override
     public List<CuentasPorCobrar> processingData(MultipartFile file, String delimitante) {
         List<CuentasPorCobrarDto> cuentasDto = fileService.readFile(file, delimitante);
-        System.out.println(cuentasDto.size());
 
         CuentasPorCobrar cuentasClean = cuentasPorCobrarRepository.isEmpty();
         if (Objects.nonNull(cuentasClean)) {
@@ -289,7 +288,6 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
         List<CuentasPorCobrar> cpcList = cuentasPorCobrarRepository.findByNumeroObligacionContaining(numeroObligacion);
 
         if (CollectionUtils.isEmpty(cpcList)) {
-            System.out.println("------0");
             return null;
         }
 
@@ -328,7 +326,6 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
 
             List<ClientesDto> cliente = clientesClient.buscarClientesByNumeroObligacion(cuentasPorCobrar.getDocumentoCliente(), token);
             if (CollectionUtils.isEmpty(cliente)) {
-                System.out.println("------1");
                 return null;
             }
             cuentasPorCobrarResponse.setClientes(cliente);
@@ -422,8 +419,6 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
         String token = httpServletRequest.getAttribute("token").toString();
 
         List<ClientesDto> clientes = clientesClient.buscarClientesByDatos(dato, token);
-        System.out.println(dato);
-        System.out.println(clientes.size());
         if (CollectionUtils.isEmpty(clientes)) {
             return new ArrayList<>();
         }
@@ -436,13 +431,8 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
         if (CollectionUtils.isEmpty(clientesFilter)) {
             clientesFilter = clientes;
         }
-
-
-        System.out.println(clientesFilter.size());
         for (ClientesDto cliente : clientesFilter) {
-            System.out.println("---" + cliente.getNit());
             List<CuentasPorCobrar> cuenta = cuentasPorCobrarRepository.findByDocumentoCliente(cliente.getNit());
-            System.out.println(cuenta.size());
             if (!CollectionUtils.isEmpty(cuenta)) {
                 for (CuentasPorCobrar cuentasPorCobrar : cuenta) {
                     cuentasCobrar.add(cuentasPorCobrar);
@@ -476,6 +466,8 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             asesor.setUsuario(usu);
             cpcResFor.setAsesorCarteraResponse(asesor);
 
+            cpcResFor.setGestion(cuentasPorCobrar.getGestiones());
+            
             List<ClientesDto> clientes = clientesClient.buscarClientesByNumeroObligacion(cuentasPorCobrar.getDocumentoCliente(), token);
             cpcResFor.setClientes(clientes);
             cpcRes.add(cpcResFor);

@@ -68,6 +68,43 @@ public class GenerarPdfImpl implements GenerarPdf {
 
         try {
             try (PDDocument doc = new PDDocument()) {
+                PDPage letras = new PDPage();
+                doc.addPage(letras);
+                try (PDPageContentStream contens = new PDPageContentStream(doc, letras)) {
+
+                    String negrita = "\u001B[1m";
+
+                    String ciudadHeader = "Medellin";
+
+                    String tituloLetras = "Acuerdo de pago".toUpperCase();
+                    String nombreClienteLetras = cpc.getCliente().toUpperCase();
+                    String docClienteLetras = cpc.getDocumentoCliente();
+                    String primeroLetras = "PRIMERO".toUpperCase();
+                    String sedeLetras = cpc.getSede().getNombreComercialSede().toUpperCase();
+                    String gmj = "GMJ HOGAS SAS".toUpperCase();
+                    String nit = "NIT 901056810-9".toUpperCase();
+
+                    Gestiones gesLetras = gestionList.get(0);
+                    AcuerdoPago acuPagoLetras = new AcuerdoPago();
+
+                    if (gesLetras.getClasificacion() instanceof AcuerdoPago) {
+                        acuPagoLetras = (AcuerdoPago) gesLetras.getClasificacion();
+                    }
+
+                    String valorAcuerdoLetras = Double.toString(acuPagoLetras.getValorTotalAcuerdo());
+                    String valorCuotaAcuerdo = Double.toString(acuPagoLetras.getCuotasList().get(0).getValorCuota());
+                    String inquietud = "Cualquier inquietud puede comunicarse al 5205330 ext. 1009.";
+                    
+                    String mensajeLetras = "El deudor ".concat(nombreClienteLetras).concat(" con número de identificación "
+                            .concat(docClienteLetras).concat(", a través de este documento me comprometo a cumplir el siguiente compromiso:"));
+                    
+                    String mensajePrimero = primeroLetras.concat(": El deudor acepta y se compromete a pagar la deuda contraída en el almacén"
+                    .concat(sedeLetras).concat(" establecimiento comercial de ").concat(gmj).concat(" con ").concat(nit).concat(", la cual asciende a la cantidad de ")
+                    .concat(valorAcuerdoLetras).concat(" a la fecha en la que se genera el presente certificado."));
+                    
+                    nuevaLinea(mensajeLetras, 20, 750, contens, PDType1Font.HELVETICA, 12);
+
+                }
                 PDPage page = new PDPage();
                 doc.addPage(page);
                 int cellHeight = 20;
