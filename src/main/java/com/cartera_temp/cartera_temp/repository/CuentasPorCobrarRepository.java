@@ -22,7 +22,7 @@ public interface CuentasPorCobrarRepository extends JpaRepository<CuentasPorCobr
     
     CuentasPorCobrar findByNumeroObligacion(String obligacion);
     
-    CuentasPorCobrar findByDocumentoCliente(String cliente);
+    List<CuentasPorCobrar> findByDocumentoCliente(String cliente);
     
     List<CuentasPorCobrar> findByNumeroObligacionContaining(String obligacion);
     

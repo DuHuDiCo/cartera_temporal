@@ -16,6 +16,7 @@ public class PagosCuotasDto {
     private int interesesTotal;
     private String metodoPago;
     private String detalle;
+    private boolean cumpliendo;
     private String username;
     
 
@@ -116,6 +117,14 @@ public class PagosCuotasDto {
 
     public void setInteresesTotal(int interesesTotal) {
         this.interesesTotal = interesesTotal;
+    }
+
+    public boolean isCumpliendo() {
+        return cumpliendo;
+    }
+
+    public void setCumpliendo(boolean cumpliendo) {
+        this.cumpliendo = cumpliendo;
     }
     
     
