@@ -51,6 +51,9 @@ public class AcuerdoPago extends ClasificacionGestion {
     @Column(name = "is_active")
     private boolean isActive;
 
+    @Column(name = "is_cumpliendo")
+    private boolean isCumpliendo;
+
     @OneToMany(mappedBy = "acuerdoPago", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Cuotas> cuotasList = new ArrayList<>();
 
@@ -174,4 +177,14 @@ public class AcuerdoPago extends ClasificacionGestion {
         this.isActive = isActive;
     }
 
+    public boolean isIsCumpliendo() {
+        return isCumpliendo;
+    }
+
+    public void setIsCumpliendo(boolean isCumpliendo) {
+        this.isCumpliendo = isCumpliendo;
+    }
+
+    
+    
 }
