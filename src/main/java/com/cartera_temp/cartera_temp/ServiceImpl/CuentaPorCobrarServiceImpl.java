@@ -420,10 +420,11 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
         }
 
         Specification<CuentasPorCobrar> spec = CuentaPorCobrarSpecification.filtrarCuentas(dto, usuFiltro.getIdUsuario());
-        Page<CuentasPorCobrar> cpc = cuentasPorCobrarRepository.findAll(spec, pageable);
+            Page<CuentasPorCobrar> cpc = cuentasPorCobrarRepository.findAll(spec, pageable);
+//        List<CuentasPorCobrar> cpc = cuentasPorCobrarRepository.findAll(spec);
         List<CuentasPorCobrarResponse> cpcRes = new ArrayList<>();
         ModelMapper map = new ModelMapper();
-        for (CuentasPorCobrar cuentasPorCobrar : cpc) {
+        for (CuentasPorCobrar cuentasPorCobrar : cpc.getContent()) {
 
             CuentasPorCobrarResponse cpcResFor = map.map(cuentasPorCobrar, CuentasPorCobrarResponse.class);
             AsesorCarteraResponse asesor = new AsesorCarteraResponse();

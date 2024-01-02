@@ -13,6 +13,7 @@ public class FiltroDto {
     private List<String> edadVencimiento = new ArrayList<>();
     private List<String> sede = new ArrayList<>();
     private String username;
+    private boolean isActive;
     private List<String> clasiJuridica = new ArrayList<>();
     private Double saldoCapitalInicio;
     private Double saldoCapitalFin;
@@ -20,8 +21,8 @@ public class FiltroDto {
     private Date fechaCpcFin;
     private Date fechaGestionInicio;
     private Date fechaGestionFin;
-    private Date fechaCompromisoInicio;
-    private Date fechaCompromisoFin;
+    private String fechaCompromisoInicio;
+    private String fechaCompromisoFin;
 
     public FiltroDto() {
     }
@@ -128,24 +129,30 @@ public class FiltroDto {
 
     public void setFechaGestionFin(Date fechaGestionFin) {
         this.fechaGestionFin = fechaGestionFin;
-    }
+    }   
 
-    public Date getFechaCompromisoInicio() {
+    public String getFechaCompromisoInicio() {
         return fechaCompromisoInicio;
     }
 
-    public void setFechaCompromisoInicio(Date fechaCompromisoInicio) {
+    public void setFechaCompromisoInicio(String fechaCompromisoInicio) {
         this.fechaCompromisoInicio = fechaCompromisoInicio;
     }
 
-    public Date getFechaCompromisoFin() {
+    public String getFechaCompromisoFin() {
         return fechaCompromisoFin;
     }
 
-    public void setFechaCompromisoFin(Date fechaCompromisoFin) {
+    public void setFechaCompromisoFin(String fechaCompromisoFin) {
         this.fechaCompromisoFin = fechaCompromisoFin;
     }
 
-        
+    public boolean isIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(boolean isActive) {
+        this.isActive = isActive;
+    }
     
 }
