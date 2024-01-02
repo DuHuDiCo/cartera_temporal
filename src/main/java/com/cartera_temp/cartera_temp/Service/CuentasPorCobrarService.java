@@ -5,6 +5,7 @@ package com.cartera_temp.cartera_temp.Service;
 import com.cartera_temp.cartera_temp.Dtos.CuentaToCalculateDto;
 import com.cartera_temp.cartera_temp.Dtos.CuentasPorCobrarDto;
 import com.cartera_temp.cartera_temp.Dtos.CuentasPorCobrarResponse;
+import com.cartera_temp.cartera_temp.Dtos.FiltroDto;
 import com.cartera_temp.cartera_temp.Models.CuentasPorCobrar;
 import java.util.List;
 import org.springframework.data.domain.Page;
@@ -27,5 +28,7 @@ public interface CuentasPorCobrarService {
     public CuentasPorCobrarResponse updateCpcToCalculate(CuentaToCalculateDto dto);
     
     public List<CuentasPorCobrar> buscarCuentasByDatos(String dato);
+    
+    public Page<CuentasPorCobrarResponse> filtrosCpcs(FiltroDto dto, Pageable pageable);
 
 }

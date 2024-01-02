@@ -5,6 +5,7 @@ import com.cartera_temp.cartera_temp.Dtos.ClientesDto;
 import com.cartera_temp.cartera_temp.Dtos.CuentaToCalculateDto;
 import com.cartera_temp.cartera_temp.Dtos.CuentasPorCobrarDto;
 import com.cartera_temp.cartera_temp.Dtos.CuentasPorCobrarResponse;
+import com.cartera_temp.cartera_temp.Dtos.FiltroDto;
 import com.cartera_temp.cartera_temp.FeignClients.ClientesClient;
 import com.cartera_temp.cartera_temp.FeignClients.usuario_client;
 import com.cartera_temp.cartera_temp.Models.AcuerdoPago;
@@ -22,6 +23,7 @@ import com.cartera_temp.cartera_temp.Service.CuentasPorCobrarService;
 import com.cartera_temp.cartera_temp.Service.FileService;
 import com.cartera_temp.cartera_temp.Service.SedeService;
 import com.cartera_temp.cartera_temp.Service.TiposVencimientoService;
+import com.cartera_temp.cartera_temp.Utils.CuentaPorCobrarSpecification;
 import com.cartera_temp.cartera_temp.Utils.Functions;
 import com.cartera_temp.cartera_temp.Utils.SaveFiles;
 import com.cartera_temp.cartera_temp.repository.AsesorCarteraRepository;
@@ -45,6 +47,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -429,9 +432,11 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
 
         List<ClientesDto> clientesFilter = clientes.stream().filter(c -> c.getNumeroDocumento().equals(dato) || c.getNombreTitular().equals(dato)).collect(Collectors.toList());
 
+
         if (CollectionUtils.isEmpty(clientesFilter)) {
             clientesFilter = clientes;
         }
+
 
         System.out.println(clientesFilter.size());
         for (ClientesDto cliente : clientesFilter) {
@@ -446,6 +451,40 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
 
         }
         return cuentasCobrar;
+    }
+
+    @Override
+    public Page<CuentasPorCobrarResponse> filtrosCpcs(FiltroDto dto, Pageable pageable) {
+
+        Usuario usuFiltro = usuarioClient.getUserByUsername(dto.getUsername());
+        if (Objects.isNull(usuFiltro)) {
+            return null;
+        }
+
+        Specification<CuentasPorCobrar> spec = CuentaPorCobrarSpecification.filtrarCuentas(dto, usuFiltro.getIdUsuario());
+        Page<CuentasPorCobrar> cpc = cuentasPorCobrarRepository.findAll(spec, pageable);
+        List<CuentasPorCobrarResponse> cpcRes = new ArrayList<>();
+        ModelMapper map = new ModelMapper();
+        for (CuentasPorCobrar cuentasPorCobrar : cpc) {
+
+            CuentasPorCobrarResponse cpcResFor = map.map(cuentasPorCobrar, CuentasPorCobrarResponse.class);
+            AsesorCarteraResponse asesor = new AsesorCarteraResponse();
+            asesor.setIdAsesorCartera(cuentasPorCobrar.getAsesor().getIdAsesorCartera());
+            String token = httpServletRequest.getAttribute("token").toString();
+            Usuario usu = usuarioClient.getUsuarioById(cuentasPorCobrar.getAsesor().getUsuarioId(), token);
+            asesor.setUsuario(usu);
+            cpcResFor.setAsesorCarteraResponse(asesor);
+
+            List<ClientesDto> clientes = clientesClient.buscarClientesByNumeroObligacion(cuentasPorCobrar.getDocumentoCliente(), token);
+            cpcResFor.setClientes(clientes);
+            cpcRes.add(cpcResFor);
+
+        }
+
+        Page<CuentasPorCobrarResponse> cuentasPage = new PageImpl(cpcRes, pageable, cpc.getTotalElements());
+
+        return cuentasPage;
+
     }
 
 }
