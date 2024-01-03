@@ -7,6 +7,7 @@ import com.cartera_temp.cartera_temp.Dtos.LinkDto;
 import com.cartera_temp.cartera_temp.Dtos.LinkToClient;
 import com.cartera_temp.cartera_temp.Dtos.MessageResponse;
 import com.cartera_temp.cartera_temp.Models.AcuerdoPago;
+import com.cartera_temp.cartera_temp.Models.Cuotas;
 import com.cartera_temp.cartera_temp.Models.Gestiones;
 import com.cartera_temp.cartera_temp.Service.GestionesService;
 import java.util.List;
@@ -77,5 +78,14 @@ public class GestionesController {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(linkClient);
+    }
+    
+       @PutMapping("/cuotaPago")
+    public ResponseEntity<List<Cuotas> > enviarCuotaPagadaCartera(@RequestBody List<Long> ids){
+           List<Cuotas>  cuota = gestionesService.cuotaCumplio(ids);
+           if(Objects.isNull(cuota)){
+               return ResponseEntity.badRequest().build();
+           }
+           return ResponseEntity.ok(cuota);
     }
 }

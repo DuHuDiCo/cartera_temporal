@@ -56,6 +56,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
@@ -504,5 +505,17 @@ public class GestionesServiceImpl implements GestionesService {
 
         return link;
 
+    }
+
+    @Override
+    public List<Cuotas> cuotaCumplio(List<Long> idCuota) {
+       List<Cuotas> cuota = cuotaRepository.findAllById(idCuota);
+       if(CollectionUtils.isEmpty(cuota)){
+           return null;
+       }
+        for (Cuotas cuotas : cuota) {
+            cuotas.setCumplio(true);
+        }
+       return cuotaRepository.saveAll(cuota);
     }
 }
