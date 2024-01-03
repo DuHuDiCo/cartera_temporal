@@ -83,6 +83,22 @@ public class Functions {
         return date;
 
     }
+    
+    public static String formatearFecha(Date fecha) {
+        SimpleDateFormat formato = new SimpleDateFormat("dd MMMM 'de' yyyy");
+        return formato.format(fecha);
+    }
+    
+    public static String obtenerTextoFechaConvenio() {
+        try {
+            Date fecha = obtenerFechaYhora();
+            String fechaFormateada = formatearFecha(fecha);
+            return "El presente convenio se establece a los " + fechaFormateada + " en la ciudad de Medellín.";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ""; // Puedes ajustar esto según tus necesidades
+        }
+    }
 
     public static Date stringToDateAndFormat(String fecha) throws ParseException {
         try {
