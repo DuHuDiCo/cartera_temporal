@@ -304,6 +304,28 @@ public class GestionesServiceImpl implements GestionesService {
 
             gesRes.setAsesorCartera(usu.getNombres() + usu.getApellidos());
 
+            for (GestionResponse gestionResponse : gesResList) {
+                if (gestionResponse.getClasificacion() instanceof AcuerdoPago) {
+                    AcuerdoPago acuPago = (AcuerdoPago) gestionResponse.getClasificacion();
+                    for (Cuotas cuotas : acuPago.getCuotasList()) {
+                        if (Objects.nonNull(cuotas.getPagos())) {
+                            String ruta;
+                            try {
+                                ruta = saveFiles.pdfToBase64(cuotas.getPagos().getReciboPago().getRuta());
+                                if (Objects.nonNull(ruta)) {
+                                    cuotas.getPagos().getReciboPago().setRuta(ruta);
+
+                                }
+                            } catch (IOException ex) {
+                                Logger.getLogger(CuentaPorCobrarServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+
+                    }
+                }
+
+            }
+
             gesResList.add(gesRes);
         }
         return gesResList;
@@ -377,15 +399,13 @@ public class GestionesServiceImpl implements GestionesService {
             return;
         }
 
-        
-
         AcuerdoPago acuerdo = new AcuerdoPago();
 
-       List<Cuotas> cuotas = null;
+        List<Cuotas> cuotas = null;
         if (gestion.getClasificacionGestion() instanceof AcuerdoPago) {
             acuerdo = (AcuerdoPago) gestion.getClasificacionGestion();
-            cuotas =  new ArrayList<>(acuerdo.getCuotasList());
-           
+            cuotas = new ArrayList<>(acuerdo.getCuotasList());
+
         } else {
             return;
         }
@@ -418,7 +438,7 @@ public class GestionesServiceImpl implements GestionesService {
 
         for (Cuotas cuota : cuotas) {
             cuotasTosave = cuotasTosave.concat(Integer.toString(cuota.getNumeroCuota()).concat(" ").concat(Double.toString(cuota.getValorCuota())).concat(" ").concat(Double.toString(cuota.getCapitalCuota())).concat(" ").concat(cuota.getFechaVencimiento().toString()).concat(" ").concat(Double.toString(cuota.getHonorarios()))).concat("\n");
-            
+
             if (cuota.isCumplio()) {
                 valorTotalCuotasPagadas = valorTotalCuotasPagadas + cuota.getValorCuota();
                 totalCuotasPagadas += 1;
@@ -437,7 +457,7 @@ public class GestionesServiceImpl implements GestionesService {
 
         hap = historicoAcuerdoPagoRepository.save(hap);
 
-        if(Objects.nonNull(acuerdo)){
+        if (Objects.nonNull(acuerdo)) {
             acuerdo.getCuotasList().clear();
             acuerdoPagoRepository.save(acuerdo);
         }
@@ -509,13 +529,13 @@ public class GestionesServiceImpl implements GestionesService {
 
     @Override
     public List<Cuotas> cuotaCumplio(List<Long> idCuota) {
-       List<Cuotas> cuota = cuotaRepository.findAllById(idCuota);
-       if(CollectionUtils.isEmpty(cuota)){
-           return null;
-       }
+        List<Cuotas> cuota = cuotaRepository.findAllById(idCuota);
+        if (CollectionUtils.isEmpty(cuota)) {
+            return null;
+        }
         for (Cuotas cuotas : cuota) {
             cuotas.setCumplio(true);
         }
-       return cuotaRepository.saveAll(cuota);
+        return cuotaRepository.saveAll(cuota);
     }
 }

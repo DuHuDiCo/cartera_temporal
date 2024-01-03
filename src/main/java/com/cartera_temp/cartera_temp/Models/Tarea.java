@@ -37,6 +37,8 @@ public class Tarea extends ClasificacionGestion {
     @ManyToOne
     @JoinColumn(name = "tipo_clasificacion_id")
     private NombresClasificacion nombresClasificacion;
+    
+    private boolean  isActive;
 
     public Tarea() {
     }
@@ -91,6 +93,16 @@ public class Tarea extends ClasificacionGestion {
         this.asesor = asesor;
     }
 
+    public boolean isIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(boolean isActive) {
+        this.isActive = isActive;
+    }
+
+    
+    
 
 
 }
