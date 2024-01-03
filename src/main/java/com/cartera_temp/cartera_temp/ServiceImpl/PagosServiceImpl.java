@@ -102,12 +102,13 @@ public class PagosServiceImpl implements PagosService {
                 pago.setUsuarioId(usu.getIdUsuario());
                 pago.setDetalle(dto.getDetalle());
 
+                
                 Cuotas cuota = acuPag.getCuotasList().get(i);
                 cuota.setPagos(pago);
                 cuota.setCapitalCuota(cuotasDto.getCapitalCuota());
                 cuota.setHonorarios(cuotasDto.getHonorarios());
                 cuota.setInteresCuota(cuotasDto.getInteresCuota());
-                
+                cuota.setCumplio(true);
 
             }
 

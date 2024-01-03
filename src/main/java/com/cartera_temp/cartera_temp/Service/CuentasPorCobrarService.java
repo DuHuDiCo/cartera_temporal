@@ -27,7 +27,7 @@ public interface CuentasPorCobrarService {
     
     public CuentasPorCobrarResponse updateCpcToCalculate(CuentaToCalculateDto dto);
     
-    public List<CuentasPorCobrar> buscarCuentasByDatos(String dato);
+    public List<CuentasPorCobrarResponse> buscarCuentasByDatos(String dato);
     
     public Page<CuentasPorCobrarResponse> filtrosCpcs(FiltroDto dto, Pageable pageable);
 

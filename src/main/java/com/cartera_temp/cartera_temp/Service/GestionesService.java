@@ -7,6 +7,7 @@ import com.cartera_temp.cartera_temp.Dtos.GestionesDto;
 import com.cartera_temp.cartera_temp.Dtos.LinkDto;
 import com.cartera_temp.cartera_temp.Dtos.LinkToClient;
 import com.cartera_temp.cartera_temp.Models.CuentasPorCobrar;
+import com.cartera_temp.cartera_temp.Models.Cuotas;
 import com.cartera_temp.cartera_temp.Models.Gestiones;
 import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,5 +27,7 @@ public interface GestionesService {
     public LinkToClient sendLinkAndPdfToClient(LinkDto dto);
     
     public void desactivateAcuerdoPago(Long idAcuerdoPago);
+    
+    public List<Cuotas>  cuotaCumplio(List<Long> idCuota);
     
 }
