@@ -90,7 +90,6 @@ public class GenerarPdfImpl implements GenerarPdf {
                     String segundoLetras = "SEGUNDO".toUpperCase();
                     String terceraLetras = "TERCERA".toUpperCase();
                     String gmj = "GMJ HOGAS SAS".toUpperCase();
-                    String nit = "NIT 901056810-9".toUpperCase();
 
                     Gestiones gesLetras = gestionList.get(0);
                     AcuerdoPago acuPagoLetras = new AcuerdoPago();
@@ -103,41 +102,47 @@ public class GenerarPdfImpl implements GenerarPdf {
                     String valorCuotaAcuerdo = Double.toString(acuPagoLetras.getCuotasList().get(0).getValorCuota());
                     String inquietud = "Cualquier inquietud puede comunicarse al 5205330 ext. 1009.";
 
-                    String mensajeLetras1 = "El deudor ".concat(nombreClienteSplit).concat(" con número de identificación ".concat(docCliente).concat(","));
-                    String mensajeLetras2 = "a través de este documento me comprometo a cumplir el siguiente compromiso:";
+                    String mensajeLetras1 = "El deudor ".concat(nombreClienteSplit).concat(" con número de identificación ");
+                    String mensajeLetras2 = docCliente.concat(", a través de este documento me comprometo a cumplir el siguiente compromiso:");
 
                     String mensajePrimero1 = primeroLetras.concat(": El deudor acepta y se compromete a pagar la deuda contraída en el almacén");
-                    String mensajePrimero2 = (sede).concat(" establecimiento comercial de ").concat(gmj).concat(" con ").concat(nit).concat(", ");
-                    String mensajePrimero3 = "la cual asciende a la cantidad de $".concat(valorAcuerdoLetras).concat(" a la fecha en la que se genera el presente ");
-                    String mensajePrimero4 = "certificado.";
+                    String mensajePrimero2 = (sede).concat(" establecimiento comercial de ").concat(gmj).concat(" con ").concat("NIT  ");
+                    String mensajePrimero3 = "901056810-9, la cual asciende a la cantidad de $".concat(valorAcuerdoLetras).concat(" a la fecha en la que se genera el ");
+                    String mensajePrimero4 = "presente certificado.";
                     
-                    String mensajeSegundo1 = segundoLetras.concat(": De mutuo acuerdo se establece el siguiente plan de pagos donde el deudor se ");
+                    String mensajeSegundo1 = segundoLetras.concat(": De mutuo acuerdo se establece el siguiente plan de pagos donde el deudor se");
                     String mensajeSegundo2 = "compromete a realizar pagos mensuales por el valos de $".concat(valorCuotaAcuerdo);
                     
-                    String mensajeTercera = terceraLetras.concat(": Si el deudor incumple en algún pago o no cancela en su totalidad la deuda contraída "
-                            + "según el plazo estipulado, el acreedor puede iniciar inmediatamente las acciones legales que mejor considere pertinentes para cobrar "
-                            + "el monto establecido sumando valor de cobranza jurídica y los intereses correspondientes a la fecha en que se incumpla este acuerdo");
+                    String mensajeTercera1 = terceraLetras.concat(": Si el deudor incumple en algún pago o no cancela en su totalidad la");
+                    String mensajeTercera2 = "deuda contraída según el plazo estipulado, el acreedor puede iniciar inmediatamente las ";
+                    String mensajeTercera3 = "acciones legales que mejor considere pertinentes para cobrar el monto establecido ";
+                    String mensajeTercera4 = "sumando valor de cobranza jurídica y los intereses correspondientes a la fecha en que";
+                    String mensajeTercera5 = "se incumpla este acuerdo";
+                            
+                    nuevaLinea(ciudadHeader.concat(", ").concat(fechaFormatHeader), 25, 750, contens, PDType1Font.TIMES_ROMAN, 12);
+                    nuevaLinea(tituloLetras, 235, 730, contens, PDType1Font.TIMES_BOLD, 12);
                     
-                    nuevaLinea(ciudadHeader.concat(", ").concat(fechaFormatHeader), 25, 750, contens, PDType1Font.HELVETICA, 12);
-                    nuevaLinea(tituloLetras, 250, 730, contens, PDType1Font.HELVETICA_BOLD, 12);
                     
+                    nuevaLineaLetras(mensajeLetras1, 80, 700 - 20, contens, PDType1Font.TIMES_ROMAN, 12);
+                    nuevaLineaLetras(mensajeLetras2, 80, 685 - 20, contens, PDType1Font.TIMES_ROMAN, 12);
                     
-                    nuevaLineaLetras(mensajeLetras1, 25, 700, contens, PDType1Font.HELVETICA, 12);
-                    nuevaLineaLetras(mensajeLetras2, 25, 685, contens, PDType1Font.HELVETICA, 12);
+                    nuevaLineaLetras(mensajePrimero1, 80, 650 - 20, contens, PDType1Font.TIMES_ROMAN, 12);
+                    nuevaLineaLetras(mensajePrimero2, 80, 635 - 20, contens, PDType1Font.TIMES_ROMAN, 12);
+                    nuevaLineaLetras(mensajePrimero3, 80, 620 - 20, contens, PDType1Font.TIMES_ROMAN, 12);
+                    nuevaLineaLetras(mensajePrimero4, 80, 605 - 20, contens, PDType1Font.TIMES_ROMAN, 12);
                     
-                    nuevaLineaLetras(mensajePrimero1, 25, 650, contens, PDType1Font.HELVETICA, 12);
-                    nuevaLineaLetras(mensajePrimero2, 25, 635, contens, PDType1Font.HELVETICA, 12);
-                    nuevaLineaLetras(mensajePrimero3, 25, 620, contens, PDType1Font.HELVETICA, 12);
-                    nuevaLineaLetras(mensajePrimero4, 25, 605, contens, PDType1Font.HELVETICA, 12);
+                    nuevaLineaLetras(mensajeSegundo1,80, 570 - 20, contens, PDType1Font.TIMES_ROMAN, 12);
+                    nuevaLineaLetras(mensajeSegundo2,80, 555 - 20, contens, PDType1Font.TIMES_ROMAN, 12);
                     
-                    nuevaLineaLetras(mensajeSegundo1,25, 570, contens, PDType1Font.HELVETICA, 12);
-                    nuevaLineaLetras(mensajeSegundo2,25, 555, contens, PDType1Font.HELVETICA, 12);
+                    nuevaLineaLetras(mensajeTercera1,80, 520 - 20, contens, PDType1Font.TIMES_ROMAN, 12);
+                    nuevaLineaLetras(mensajeTercera2,80, 505 - 20, contens, PDType1Font.TIMES_ROMAN, 12);
+                    nuevaLineaLetras(mensajeTercera3,80, 490 - 20, contens, PDType1Font.TIMES_ROMAN, 12);
+                    nuevaLineaLetras(mensajeTercera4,80, 475 - 20, contens, PDType1Font.TIMES_ROMAN, 12);
+                    nuevaLineaLetras(mensajeTercera5,80, 450 - 20, contens, PDType1Font.TIMES_ROMAN, 12);
                     
-                    nuevaLineaLetras(mensajeTercera,25, 550, contens, PDType1Font.HELVETICA, 12);
+                    nuevaLineaLetras(fechaConvenio, 25, 420 - 20, contens, PDType1Font.TIMES_ROMAN, 12);
                     
-                    nuevaLineaLetras(fechaConvenio, 25, 480, contens, PDType1Font.HELVETICA, 12);
-                    
-                    nuevaLineaLetras(inquietud, 25, 460, contens, PDType1Font.HELVETICA_BOLD, 12);
+                    nuevaLineaLetras(inquietud, 25, 400 - 20, contens, PDType1Font.TIMES_BOLD, 12);
                     
                 }
                 PDPage page = new PDPage();
