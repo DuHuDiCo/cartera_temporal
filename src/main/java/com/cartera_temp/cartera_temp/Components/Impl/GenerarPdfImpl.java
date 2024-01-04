@@ -302,7 +302,7 @@ public class GenerarPdfImpl implements GenerarPdf {
 
         String tiposPago = dto.getMetodoPago();
 
-        int pagoEfectivo = 0, pagoCheque = 0, pagoDebito = 0, pagoCredito = 0, adelantos = 0;
+        int pagoEfectivo = 0, pagoCheque = 0, pagoDebito = 0, pagoCredito = 0, adelantos = 0,consignacion = 0;
         int saldoTotalAcuerdo = dto.getAcuerdoTotal();
         int saldoTotalCapital = dto.getCapitalTotal();
         int saldoTotalHonorarios = dto.getHonorariosTotal();
@@ -322,6 +322,9 @@ public class GenerarPdfImpl implements GenerarPdf {
                 pagoCredito = dto.getValorTotal();
                 break;
             case "ADELANTOS APLICADOS":
+                adelantos = dto.getValorTotal();
+                break;
+            case "CONSIGNACION":
                 adelantos = dto.getValorTotal();
                 break;
             default:
