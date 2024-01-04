@@ -325,7 +325,7 @@ public class GenerarPdfImpl implements GenerarPdf {
                 adelantos = dto.getValorTotal();
                 break;
             case "CONSIGNACION":
-                adelantos = dto.getValorTotal();
+                consignacion = dto.getValorTotal();
                 break;
             default:
                 throw new AssertionError();
@@ -385,15 +385,17 @@ public class GenerarPdfImpl implements GenerarPdf {
                             contens.stroke();
                             nuevaLinea("Por concepto de: ".concat(detallePago), inicioTablaX + 5, inicioTablaY + 5, contens, PDType1Font.HELVETICA, 11);
                             nuevaLinea("Total efectivo: ", inicioTablaX + 5, inicioTablaY - 25, contens, PDType1Font.HELVETICA, 11);
-                            nuevaLinea("Total cheque: ", inicioTablaX + 5, inicioTablaY - 45, contens, PDType1Font.HELVETICA, 11);
-                            nuevaLinea("Total tarjeta débito: ", inicioTablaX + 5, inicioTablaY - 65, contens, PDType1Font.HELVETICA, 11);
-                            nuevaLinea("Total tarjeta crédito: ", inicioTablaX + 5, inicioTablaY - 85, contens, PDType1Font.HELVETICA, 11);
-                            nuevaLinea("Adelantos aplicados: ", inicioTablaX + 5, inicioTablaY - 105, contens, PDType1Font.HELVETICA, 11);
+                            nuevaLinea("Total cheque: ", inicioTablaX + 5, inicioTablaY - 40, contens, PDType1Font.HELVETICA, 11);
+                            nuevaLinea("Total tarjeta débito: ", inicioTablaX + 5, inicioTablaY - 55, contens, PDType1Font.HELVETICA, 11);
+                            nuevaLinea("Total tarjeta crédito: ", inicioTablaX + 5, inicioTablaY - 70, contens, PDType1Font.HELVETICA, 11);
+                            nuevaLinea("Adelantos aplicados: ", inicioTablaX + 5, inicioTablaY - 85, contens, PDType1Font.HELVETICA, 11);
+                            nuevaLinea("Consignacion: ", inicioTablaX + 5, inicioTablaY - 100, contens, PDType1Font.HELVETICA, 11);
                             nuevaLinea("$".concat(formatNumber(pagoEfectivo)), inicioTablaX + 120, inicioTablaY - 25, contens, PDType1Font.HELVETICA, 11);
-                            nuevaLinea("$".concat(formatNumber(pagoCheque)), inicioTablaX + 120, inicioTablaY - 45, contens, PDType1Font.HELVETICA, 11);
-                            nuevaLinea("$".concat(formatNumber(pagoDebito)), inicioTablaX + 120, inicioTablaY - 65, contens, PDType1Font.HELVETICA, 11);
-                            nuevaLinea("$".concat(formatNumber(pagoCredito)), inicioTablaX + 120, inicioTablaY - 85, contens, PDType1Font.HELVETICA, 11);
-                            nuevaLinea("$".concat(formatNumber(adelantos)), inicioTablaX + 120, inicioTablaY - 105, contens, PDType1Font.HELVETICA, 11);
+                            nuevaLinea("$".concat(formatNumber(pagoCheque)), inicioTablaX + 120, inicioTablaY - 40, contens, PDType1Font.HELVETICA, 11);
+                            nuevaLinea("$".concat(formatNumber(pagoDebito)), inicioTablaX + 120, inicioTablaY - 55, contens, PDType1Font.HELVETICA, 11);
+                            nuevaLinea("$".concat(formatNumber(pagoCredito)), inicioTablaX + 120, inicioTablaY - 70, contens, PDType1Font.HELVETICA, 11);
+                            nuevaLinea("$".concat(formatNumber(adelantos)), inicioTablaX + 120, inicioTablaY - 85, contens, PDType1Font.HELVETICA, 11);
+                            nuevaLinea("$".concat(formatNumber(consignacion)), inicioTablaX + 120, inicioTablaY - 100, contens, PDType1Font.HELVETICA, 11);
 
                             nuevaLinea("Saldo acuerdo: ".concat("$").concat(formatNumber(saldoTotalAcuerdo)), inicioTablaX + 350, inicioTablaY - 30, contens, PDType1Font.HELVETICA, 11);
                             nuevaLinea("Saldo capital: ".concat("$").concat(formatNumber(saldoTotalCapital)), inicioTablaX + 350, inicioTablaY - 45, contens, PDType1Font.HELVETICA, 11);

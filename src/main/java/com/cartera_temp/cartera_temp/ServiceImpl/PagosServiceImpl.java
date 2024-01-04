@@ -88,13 +88,11 @@ public class PagosServiceImpl implements PagosService {
             return null;
         }
 
-        
-
         for (int i = 0; i < dto.getCuotasDto().size(); i++) {
 
             CuotasDto cuotasDto = dto.getCuotasDto().get(i);
-            
-            if (Objects.nonNull(cuotasDto.getPagosDto())) {
+
+            if (Objects.nonNull(cuotasDto.getPagosDto()) && Objects.isNull(acuPag.getCuotasList().get(i).getPagos())) {
                 Pagos pago = new Pagos();
                 pago.setFechaPago(cuotasDto.getPagosDto().getFechaPago());
                 pago.setSaldoCuota(cuotasDto.getPagosDto().getSaldoCuota());
@@ -102,13 +100,13 @@ public class PagosServiceImpl implements PagosService {
                 pago.setUsuarioId(usu.getIdUsuario());
                 pago.setDetalle(dto.getDetalle());
 
-                
-                Cuotas cuota = acuPag.getCuotasList().get(i);
-                cuota.setPagos(pago);
-                cuota.setCapitalCuota(cuotasDto.getCapitalCuota());
-                cuota.setHonorarios(cuotasDto.getHonorarios());
-                cuota.setInteresCuota(cuotasDto.getInteresCuota());
-                cuota.setCumplio(true);
+                pago = pagosRespositoty.save(pago);
+
+                acuPag.getCuotasList().get(i).setPagos(pago);
+                acuPag.getCuotasList().get(i).setCapitalCuota(cuotasDto.getCapitalCuota());
+                acuPag.getCuotasList().get(i).setHonorarios(cuotasDto.getHonorarios());
+                acuPag.getCuotasList().get(i).setInteresCuota(cuotasDto.getInteresCuota());
+                acuPag.getCuotasList().get(i).setCumplio(true);
 
             }
 
@@ -128,10 +126,11 @@ public class PagosServiceImpl implements PagosService {
             }
 
             String path = "J:\\Descargas";
-            String ruta = saveFiles.obtenerRuta(multipartFile.getOriginalFilename(), path, cpc.getSede().getSede());
+            String fileName = multipartFile.getOriginalFilename();
+            String ruta = saveFiles.obtenerRuta(fileName, path, cpc.getSede().getSede());
 
-            String fileName = saveFiles.saveFile(multipartFile.getBytes(), multipartFile.getOriginalFilename(), ruta);
-            if (Objects.isNull(fileName)) {
+            String save = saveFiles.saveFile(multipartFile.getBytes(), fileName, ruta);
+            if (Objects.isNull(save)) {
                 return null;
             }
 
@@ -142,11 +141,8 @@ public class PagosServiceImpl implements PagosService {
             recibo.setValorRecibo(dto.getValorTotal());
             recibo.setRuta(ruta);
             recibo.setUsuarioId(usu.getIdUsuario());
-            
 
             recibo = reciboPagoRepository.save(recibo);
-            
-            
 
             for (Cuotas cuotas : acuPag.getCuotasList()) {
                 if (Objects.nonNull(cuotas.getPagos())) {
