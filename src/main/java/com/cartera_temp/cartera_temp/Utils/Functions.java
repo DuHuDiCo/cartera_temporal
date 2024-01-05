@@ -1,6 +1,7 @@
 package com.cartera_temp.cartera_temp.Utils;
 
 import com.cartera_temp.cartera_temp.Exceptions.DateFormatException;
+import static com.cartera_temp.cartera_temp.Utils.Functions.fechaDateToStringSinHora;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -91,10 +92,19 @@ public class Functions {
     
     public static String obtenerTextoFechaConvenio() {
         try {
-            Date fecha = obtenerFechaYhora();
-            String fechaFormateada = formatearFecha(fecha);
-            return "El presente convenio se establece a los " + fechaFormateada + " en la ciudad de Medellín.";
+            return "El presente convenio se establece a los " + fechaFormatToLetrasAcuerdo() + " en la ciudad de Medellín.";
         } catch (Exception e) {
+            e.printStackTrace();
+            return ""; // Puedes ajustar esto según tus necesidades
+        }
+    }
+    
+    public static String fechaFormatToLetrasAcuerdo(){
+        try{
+            String[] fechaToFormat = fechaDateToStringSinHora().split("-");
+            String ToLetrasAcuerdo = fechaToFormat[2].concat(" días del mes ").concat(fechaToFormat[1]).concat(" del año").concat(fechaToFormat[0]);
+            return ToLetrasAcuerdo;
+        }catch (Exception e) {
             e.printStackTrace();
             return ""; // Puedes ajustar esto según tus necesidades
         }

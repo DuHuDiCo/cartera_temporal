@@ -79,14 +79,20 @@ public class GenerarPdfImpl implements GenerarPdf {
         String nombreClienteSplit = nombreClienteLetras[1];
         String docCliente = cpc.getDocumentoCliente();
         String numeroObligacion = cpc.getNumeroObligacion();
+        
+        
 
         try {
             try (PDDocument doc = new PDDocument()) {
                 PDPage letras = new PDPage();
                 doc.addPage(letras);
+                ClassPathResource resource = new ClassPathResource("electrohogarOpa.png");
+                InputStream inputStream = resource.getInputStream();
+                PDImageXObject logoImage = PDImageXObject.createFromByteArray(doc, IOUtils.toByteArray(inputStream), "electrohogarOpa.png");
                 try (PDPageContentStream contens = new PDPageContentStream(doc, letras)) {
+                    contens.drawImage(logoImage, 612 / 2 - 150, 680, 300, 100);
 
-                    String ciudadHeader = "Medellín";
+                    String ciudadHeader = "Medellín, ";
 
                     String fechaFormatHeader = "";
 
@@ -108,9 +114,12 @@ public class GenerarPdfImpl implements GenerarPdf {
                     Gestiones gesLetras = gestionList.get(0);
                     AcuerdoPago acuPagoLetras = new AcuerdoPago();
 
-                    if (gesLetras.getClasificacion() instanceof AcuerdoPago) {
+                    if (gesLetras.getClasificacion() instanceof AcuerdoPago) {      
                         acuPagoLetras = (AcuerdoPago) gesLetras.getClasificacion();
                     }
+                    
+                    nuevaLinea(ciudadHeader.concat(fechaFormatHeader),72, 660, contens, PDType1Font.HELVETICA, 12);
+                    nuevaLinea(tituloLetras,250, 640, contens, PDType1Font.HELVETICA_BOLD, 12);
 
                     String valorAcuerdoLetras = Double.toString(acuPagoLetras.getValorTotalAcuerdo());
                     String valorCuotaAcuerdo = Double.toString(acuPagoLetras.getCuotasList().get(0).getValorCuota());
@@ -127,14 +136,14 @@ public class GenerarPdfImpl implements GenerarPdf {
                     //String[] lineas = {mensajeLetras1, mensajePrimero1, mensajeSegundo1, mensajeTercera1, fechaConvenio, inquietud};
                     String variableConcat = nombreClienteLetras[1].concat(" ").concat(docCliente).concat(" ").concat(sede).concat(" ").concat(gmj)
                             .concat(" ").concat(nit).concat(" ").concat(valorAcuerdoLetras).concat(" ").concat(nit).concat(" ").concat(primeroLetras)
-                            .concat(" ").concat(segundoLetras).concat(" ").concat(terceraLetras);
+                            .concat(" ").concat(segundoLetras).concat(" ").concat(terceraLetras).concat(" ").concat(inquietud).concat(" ");
 
                     String[] variablesConcatSplit = variableConcat.split(" ");
 
                     String[] negritaNombreClienteSplit = nombreClienteSplit.split(" ");
 
                     float margin = 72;
-                    float yStart = letras.getMediaBox().getHeight() - margin;
+                    float yStart = letras.getMediaBox().getHeight() - margin - 120;
                     float width = letras.getMediaBox().getWidth() - (margin * 2);
                     float yPosition = yStart;
                     float spaceWidth = 2; // Espaciado entre palabras
@@ -212,21 +221,10 @@ public class GenerarPdfImpl implements GenerarPdf {
                             espacioLinea = espacioLinea - sizeSplit - 5;
                         }
                     }
-                    int con = 0;
-                    for (List<String> list : matriz) {
-
-                        for (String string : list) {
-                            System.out.println(string);
-                            System.out.println(con);
-                        }
-                        con++;
-
-                    }
 
                     var contador = 0;
                     for (List<String> list : matriz) {
                         int acumuladoEspacios = 0;
-                        System.out.println("Size lista matriz: " + list.size());
 
                         for (String string : list) {
                             if (palabraResaltada(string, variablesConcatSplit)) {
@@ -240,20 +238,14 @@ public class GenerarPdfImpl implements GenerarPdf {
                         }
 
                         for (String string : list) {
-                            System.out.println("palabra: " + string);
-
                             int diferencia = (int) width - acumuladoEspacios;
-                            System.out.println("diferencia" + diferencia);
-                            System.out.println("acumuladospacios" + acumuladoEspacios);
                             int aumentoEspacions = 0;
                             if (list.size() == 1) {
-                                System.out.println(list.size());
                                 aumentoEspacions = 0;
                             } else {
                                 if (diferencia == 0) {
                                     aumentoEspacions = 5;
                                 } else {
-                                    System.out.println(list.size());
                                     aumentoEspacions = diferencia / (list.size() - 1);
 
                                     switch (contador) {
@@ -286,7 +278,6 @@ public class GenerarPdfImpl implements GenerarPdf {
                             }
 
                             if (palabraResaltada(string, variablesConcatSplit)) {
-                                System.out.println("---------palabra entro:" + string);
 
                                 nuevaLinea(string, (int) margin, (int) yStart, contens, PDType1Font.HELVETICA_BOLD, 12);
 
@@ -332,13 +323,13 @@ public class GenerarPdfImpl implements GenerarPdf {
                 int height = (int) page.getTrimBox().getHeight();//792
                 int width = (int) page.getTrimBox().getWidth();//612
 
-                ClassPathResource resource = new ClassPathResource("electrohogarOpa.png");
-                InputStream inputStream = resource.getInputStream();
-                PDImageXObject logoImage = PDImageXObject.createFromByteArray(doc, IOUtils.toByteArray(inputStream), "electrohogarOpa.png");
+                ClassPathResource resourceAcu = new ClassPathResource("electrohogarOpa.png");
+                InputStream inputStreamAcu = resourceAcu.getInputStream();
+                PDImageXObject logoImageAcu = PDImageXObject.createFromByteArray(doc, IOUtils.toByteArray(inputStreamAcu), "electrohogarOpa.png");
 
                 try (PDPageContentStream contens = new PDPageContentStream(doc, page)) {
 
-                    contens.drawImage(logoImage, width / 2 - 150, height / 2 - 30, 300, 100);
+                    contens.drawImage(logoImageAcu, width / 2 - 150, height / 2 - 30, 300, 100);
                     //CREACION DEL TITULO
                     nuevaLinea(titulo, 160, 750, contens, PDType1Font.HELVETICA_BOLD, 18);
 
