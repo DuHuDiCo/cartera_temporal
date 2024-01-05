@@ -99,9 +99,9 @@ public class GenerarPdfImpl implements GenerarPdf {
                     String fechaConvenio = Functions.obtenerTextoFechaConvenio();
 
                     String tituloLetras = "Acuerdo de pago".toUpperCase();
-                    String primeroLetras = "PRIMERO".toUpperCase();
-                    String segundoLetras = "SEGUNDO".toUpperCase();
-                    String terceraLetras = "TERCERA".toUpperCase();
+                    String primeroLetras = "PRIMERO:".toUpperCase();
+                    String segundoLetras = "SEGUNDO:".toUpperCase();
+                    String terceraLetras = "TERCERA:".toUpperCase();
                     String gmj = "GMJ HOGAR SAS".toUpperCase();
                     String nit = "NIT 901056810-9";
 
@@ -118,11 +118,11 @@ public class GenerarPdfImpl implements GenerarPdf {
 
                     String mensajeLetras1 = "El deudor ".concat(nombreClienteSplit).concat(" con número de identificación ").concat(docCliente.concat(", a través de este documento me comprometo a cumplir el siguiente compromiso:"));
 
-                    String mensajePrimero1 = primeroLetras.concat(": El deudor acepta y se compromete a pagar la deuda contraída en el almacén ").concat((sede).concat(" establecimiento comercial de ").concat(gmj).concat(" con ").concat(nit)).concat(", la cual asciende a la cantidad de $".concat(valorAcuerdoLetras).concat(" a la fecha en la que se genera el presente certificado."));
+                    String mensajePrimero1 = primeroLetras.concat(" El deudor acepta y se compromete a pagar la deuda contraída en el almacén ").concat((sede).concat(" establecimiento comercial de ").concat(gmj).concat(" con ").concat(nit)).concat(", la cual asciende a la cantidad de $".concat(valorAcuerdoLetras).concat(" a la fecha en la que se genera el presente certificado."));
 
-                    String mensajeSegundo1 = segundoLetras.concat(": De mutuo acuerdo se establece el siguiente plan de pagos donde el deudor se compromete a realizar pagos mensuales por el valor de $".concat(valorCuotaAcuerdo));
+                    String mensajeSegundo1 = segundoLetras.concat(" De mutuo acuerdo se establece el siguiente plan de pagos donde el deudor se compromete a realizar pagos mensuales por el valor de $".concat(valorCuotaAcuerdo));
 
-                    String mensajeTercera1 = terceraLetras.concat(": Si el deudor incumple en algún pago o no cancela en su totalidad la deuda contraída según el plazo estipulado, el acreedor puede iniciar inmediatamente las acciones legales que mejor considere pertinentes para cobrar el monto establecido sumando valor de cobranza jurídica y los intereses correspondientes a la fecha en que se incumpla este acuerdo");
+                    String mensajeTercera1 = terceraLetras.concat(" Si el deudor incumple en algún pago o no cancela en su totalidad la deuda contraída según el plazo estipulado, el acreedor puede iniciar inmediatamente las acciones legales que mejor considere pertinentes para cobrar el monto establecido sumando valor de cobranza jurídica y los intereses correspondientes a la fecha en que se incumpla este acuerdo");
 
                     //String[] lineas = {mensajeLetras1, mensajePrimero1, mensajeSegundo1, mensajeTercera1, fechaConvenio, inquietud};
                     String variableConcat = nombreClienteLetras[1].concat(" ").concat(docCliente).concat(" ").concat(sede).concat(" ").concat(gmj)
@@ -135,7 +135,7 @@ public class GenerarPdfImpl implements GenerarPdf {
 
                     float margin = 72;
                     float yStart = letras.getMediaBox().getHeight() - margin;
-                    float width = letras.getMediaBox().getWidth() - 2 * margin;
+                    float width = letras.getMediaBox().getWidth() - (margin * 2);
                     float yPosition = yStart;
                     float spaceWidth = 2; // Espaciado entre palabras
 
@@ -181,17 +181,13 @@ public class GenerarPdfImpl implements GenerarPdf {
                                 tamanoParrafo += nuevaLinea.size();
                                 nuevaLinea = new ArrayList<>();
                                 sizeLineaToCharacter = sizeLineaToCharacter + sizeSplit;
-                                espacioLinea = 468;
+                                espacioLinea = width;
                                 espacioLinea = espacioLinea - sizeSplit - 5;
                                 nuevaLinea.add(string);
                             }
                         }
 
                         if (splitSplit.length > tamanoParrafo) {
-
-                            System.out.println("length splitSplit: " + splitSplit.length);
-                            System.out.println("tamañoParrafo: " + tamanoParrafo);
-                            System.out.println("Lista nueva linea: " + nuevaLinea);
 
                             float sizeSplit = 0.0f;
                             nuevaLinea = new ArrayList<>();
@@ -212,7 +208,7 @@ public class GenerarPdfImpl implements GenerarPdf {
                             tamanoParrafo += nuevaLinea.size();
                             nuevaLinea = new ArrayList<>();
                             sizeLineaToCharacter = sizeLineaToCharacter + sizeSplit;
-                            espacioLinea = 468;
+                            espacioLinea = width;
                             espacioLinea = espacioLinea - sizeSplit - 5;
                         }
                     }
@@ -227,61 +223,108 @@ public class GenerarPdfImpl implements GenerarPdf {
 
                     }
 
+                    var contador = 0;
                     for (List<String> list : matriz) {
-
+                        int acumuladoEspacios = 0;
                         System.out.println("Size lista matriz: " + list.size());
+
+                        for (String string : list) {
+                            if (palabraResaltada(string, variablesConcatSplit)) {
+                                var tamanioPalabraNegrita = (12 * PDType1Font.HELVETICA_BOLD.getStringWidth(string) / 1000);
+                                acumuladoEspacios += tamanioPalabraNegrita;
+                            } else {
+                                var tamanioPalabra = (12 * PDType1Font.HELVETICA.getStringWidth(string) / 1000);
+                                acumuladoEspacios += tamanioPalabra;
+                            }
+
+                        }
 
                         for (String string : list) {
                             System.out.println("palabra: " + string);
 
-                            float espacios = (5 * list.size()) - 5;
-                            float espacioCaracter = espacioLinea / ((list.size() - 1) + espacios);
-                            System.out.println("Espacio en linea impresion: " + espacioLinea);
-                            System.out.println("list size -1: " + (list.size() - 1));
-                            System.out.println("Espacios: " + espacios);
-                            System.out.println("espacio caracter: " + espacioCaracter);
-                            contens.setCharacterSpacing(espacioCaracter);
-
-                            if (string.equals(palabraResaltada(string, variablesConcatSplit))) {
-                                nuevaLinea(string, (int) margin, (int) yStart, contens, PDType1Font.HELVETICA_BOLD, 12);
-                                margin += (12 * PDType1Font.HELVETICA_BOLD.getStringWidth(string) / 1000) + 5;
+                            int diferencia = (int) width - acumuladoEspacios;
+                            System.out.println("diferencia" + diferencia);
+                            System.out.println("acumuladospacios" + acumuladoEspacios);
+                            int aumentoEspacions = 0;
+                            if (list.size() == 1) {
+                                System.out.println(list.size());
+                                aumentoEspacions = 0;
                             } else {
-                                nuevaLinea(string, (int) margin, (int) yStart, contens, PDType1Font.HELVETICA, 12);
-                                margin += (12 * PDType1Font.HELVETICA.getStringWidth(string) / 1000) + 5;
+                                if (diferencia == 0) {
+                                    aumentoEspacions = 5;
+                                } else {
+                                    System.out.println(list.size());
+                                    aumentoEspacions = diferencia / (list.size() - 1);
+
+                                    switch (contador) {
+                                        case 2:
+                                            aumentoEspacions = 5;
+                                            break;
+                                        case 6:
+                                            aumentoEspacions = 5;
+                                            break;
+                                        case 8:
+                                            aumentoEspacions = 5;
+                                            break;
+                                        case 13:
+                                            aumentoEspacions = 5;
+                                            break;
+                                        case 15:
+                                            aumentoEspacions = 5;
+
+                                            break;
+                                        case 16:
+                                            aumentoEspacions = 5;
+
+                                            break;
+                                        default:
+                                            aumentoEspacions = diferencia / (list.size() - 1);
+
+                                    }
+                                }
+
                             }
+
+                            if (palabraResaltada(string, variablesConcatSplit)) {
+                                System.out.println("---------palabra entro:" + string);
+
+                                nuevaLinea(string, (int) margin, (int) yStart, contens, PDType1Font.HELVETICA_BOLD, 12);
+
+                                margin += (12 * PDType1Font.HELVETICA_BOLD.getStringWidth(string) / 1000) + aumentoEspacions;
+                            } else {
+
+                                nuevaLinea(string, (int) margin, (int) yStart, contens, PDType1Font.HELVETICA, 12);
+                                margin += (12 * PDType1Font.HELVETICA.getStringWidth(string) / 1000) + aumentoEspacions;
+                            }
+
                         }
-                        yStart = yStart - 10;
+                        switch (contador) {
+                            case 2:
+                                yStart = yStart - 30;
+                                break;
+                            case 6:
+                                yStart = yStart - 30;
+                                break;
+                            case 8:
+                                yStart = yStart - 30;
+                                break;
+                            case 13:
+                                yStart = yStart - 30;
+                                break;
+                            case 15:
+                                yStart = yStart - 30;
+                                break;
+                            default:
+                                yStart = yStart - 15;
+
+                        }
+
                         margin = 72;
+                        contador++;
                     }
-//                    for (String linea : lineas) {
-//                        List<String> words = Arrays.asList(linea.split("\\s+"));
-//                        List<String> lines = new ArrayList<>();
-//                        StringBuilder currentLine = new StringBuilder(words.get(0));
-//
-//                        for (int i = 1; i < words.size(); i++) {
-//                            String word = words.get(i);
-//                            float currentWidth = PDType1Font.HELVETICA.getStringWidth(currentLine.toString()) / 1000 * 12;
-//                            float wordWidth = PDType1Font.HELVETICA.getStringWidth(word) / 1000 * 12;
-//
-//                            if (currentWidth + spaceWidth + wordWidth < width) {
-//                                currentLine.append(' ').append(word);
-//                            } else {
-//                                lines.add(currentLine.toString());
-//                                currentLine = new StringBuilder(word);
-//                            }
-//                        }
-//
-//                        lines.add(currentLine.toString());
-//
-//                        for (String line : lines) {
-//
-//                            
-//                            
-//                            
-//                        }
-//                        yPosition -= 12; // Agrega espacio entre párrafos
-//                    }
+
                 }
+
                 PDPage page = new PDPage();
                 doc.addPage(page);
                 int cellHeight = 20;
