@@ -433,11 +433,11 @@ public class GenerarPdfImpl implements GenerarPdf {
                             } catch (ParseException ex) {
                                 Logger.getLogger(GenerarPdfImpl.class.getName()).log(Level.SEVERE, null, ex);
                             }
-                            body.add(Double.toString(acuPago.getCuotasList().get(i - 1).getValorCuota()));
-                            body.add(Double.toString(acuPago.getCuotasList().get(i - 1).getCapitalCuota()));
+                            body.add(formatNumber((int)acuPago.getCuotasList().get(i - 1).getValorCuota()));
+                            body.add(formatNumber((int)acuPago.getCuotasList().get(i - 1).getCapitalCuota()));
                             totalCuotas = totalCuotas + acuPago.getCuotasList().get(i - 1).getCapitalCuota();
-                            body.add(Double.toString(acuPago.getCuotasList().get(i - 1).getHonorarios()));
-                            body.add(Double.toString(acuPago.getCuotasList().get(i - 1).getInteresCuota()));
+                            body.add(formatNumber((int)acuPago.getCuotasList().get(i - 1).getHonorarios()));
+                            body.add(formatNumber((int)acuPago.getCuotasList().get(i - 1).getInteresCuota()));
 
                             for (int j = 0; j < body.size(); j++) {
                                 if (j == 0 || j == 3) {
