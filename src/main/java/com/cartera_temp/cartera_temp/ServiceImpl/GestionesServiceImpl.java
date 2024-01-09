@@ -294,6 +294,21 @@ public class GestionesServiceImpl implements GestionesService {
         }
 
         for (Gestiones gestiones : gestion) {
+
+            if (gestiones.getClasificacionGestion() instanceof AcuerdoPago) {
+                AcuerdoPago acuerdo = (AcuerdoPago) gestiones.getClasificacionGestion();
+                for (Cuotas cuotas : acuerdo.getCuotasList()) {
+                    if (Objects.nonNull(cuotas.getPagos())) {
+                        try {
+                            String base64 = saveFiles.pdfToBase64(cuotas.getPagos().getReciboPago().getRuta());
+                            cuotas.getPagos().getReciboPago().setRuta(base64);
+                        } catch (IOException ex) {
+                            Logger.getLogger(GestionesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                }
+            }
+
             ModelMapper map = new ModelMapper();
             GestionResponse gesRes = map.map(gestiones, GestionResponse.class);
 
@@ -303,28 +318,6 @@ public class GestionesServiceImpl implements GestionesService {
             }
 
             gesRes.setAsesorCartera(usu.getNombres() + usu.getApellidos());
-
-            for (GestionResponse gestionResponse : gesResList) {
-                if (gestionResponse.getClasificacion() instanceof AcuerdoPago) {
-                    AcuerdoPago acuPago = (AcuerdoPago) gestionResponse.getClasificacion();
-                    for (Cuotas cuotas : acuPago.getCuotasList()) {
-                        if (Objects.nonNull(cuotas.getPagos())) {
-                            String ruta;
-                            try {
-                                ruta = saveFiles.pdfToBase64(cuotas.getPagos().getReciboPago().getRuta());
-                                if (Objects.nonNull(ruta)) {
-                                    cuotas.getPagos().getReciboPago().setRuta(ruta);
-
-                                }
-                            } catch (IOException ex) {
-                                Logger.getLogger(CuentaPorCobrarServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                        }
-
-                    }
-                }
-
-            }
 
             gesResList.add(gesRes);
         }
