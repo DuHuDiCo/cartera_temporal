@@ -155,7 +155,7 @@ public class GenerarPdfImpl implements GenerarPdf {
 
                     //String[] lineas = {mensajeLetras1, mensajePrimero1, mensajeSegundo1, mensajeTercera1, fechaConvenio, inquietud};
                     String variableConcat = nombreClienteLetras[1].concat(" ").concat(docCliente).concat(" ").concat(sede).concat(" ").concat(gmj)
-                            .concat(" ").concat(" ").concat("$".concat(valorAcuerdoLetras)).concat(" ").concat(nit).concat(" ").concat(primeroLetras)
+                            .concat(" ").concat(" ").concat(valorAcuerdoLetras).concat(" ").concat(nit).concat(" ").concat(primeroLetras)
                             .concat(" ").concat(segundoLetras).concat(" ").concat(terceraLetras).concat(" ").concat(inquietud);
 
                     String[] variablesConcatSplit = variableConcat.split(" ");
@@ -389,7 +389,7 @@ public class GenerarPdfImpl implements GenerarPdf {
                         acuPago = (AcuerdoPago) ges.getClasificacion();
                     }
 
-                    Double totalCuotas = 0.0;
+                    double totalCuotas = 0.0;
 
                     for (int i = 0; i < acuPago.getCuotasList().size() + 1; i++) {
                         if (i == 0) {
@@ -481,25 +481,25 @@ public class GenerarPdfImpl implements GenerarPdf {
                                     cellWidth = 95;
                                     contens.addRect(inicioTablaX + 180, inicioTablaY - cellHeight, cellWidth, cellHeight);
                                     contens.stroke();
-                                    nuevaLinea(Double.toString(acuPago.getValorTotalAcuerdo()), inicioTablaX + 185, inicioTablaY + 3 - cellHeight, contens, PDType1Font.HELVETICA, 13);
+                                    nuevaLinea(formatNumber((int)acuPago.getValorTotalAcuerdo()), inicioTablaX + 185, inicioTablaY + 3 - cellHeight, contens, PDType1Font.HELVETICA, 13);
                                 }
                                 if (j == 3) {
                                     cellWidth = 70;
                                     contens.addRect(inicioTablaX + 180 + 95, inicioTablaY - cellHeight, cellWidth, cellHeight);
                                     contens.stroke();
-                                    nuevaLinea(Double.toString(totalCuotas), inicioTablaX + 180 + 100, inicioTablaY + 3 - cellHeight, contens, PDType1Font.HELVETICA, 13);
+                                    nuevaLinea(formatNumber((int)totalCuotas), inicioTablaX + 180 + 100, inicioTablaY + 3 - cellHeight, contens, PDType1Font.HELVETICA, 13);
                                 }
                                 if (j == 4) {
                                     cellWidth = 95;
                                     contens.addRect(inicioTablaX + 180 + 95 + 70, inicioTablaY - cellHeight, cellWidth, cellHeight);
                                     contens.stroke();
-                                    nuevaLinea(Double.toString(acuPago.getHonorarioAcuerdo()), inicioTablaX + 180 + 100 + 70, inicioTablaY + 3 - cellHeight, contens, PDType1Font.HELVETICA, 13);
+                                    nuevaLinea(formatNumber((int)acuPago.getHonorarioAcuerdo()), inicioTablaX + 180 + 100 + 70, inicioTablaY + 3 - cellHeight, contens, PDType1Font.HELVETICA, 13);
                                 }
                                 if (j == 5) {
                                     cellWidth = 95;
                                     contens.addRect(inicioTablaX + 180 + 100 + 70 + 90, inicioTablaY - cellHeight, cellWidth, cellHeight);
                                     contens.stroke();
-                                    nuevaLinea(Double.toString(acuPago.getValorInteresesMora()), inicioTablaX + 180 + 100 + 75 + 90, inicioTablaY + 3 - cellHeight, contens, PDType1Font.HELVETICA, 13);
+                                    nuevaLinea(formatNumber((int)acuPago.getValorInteresesMora()), inicioTablaX + 180 + 100 + 75 + 90, inicioTablaY + 3 - cellHeight, contens, PDType1Font.HELVETICA, 13);
                                 }
 
                             }
