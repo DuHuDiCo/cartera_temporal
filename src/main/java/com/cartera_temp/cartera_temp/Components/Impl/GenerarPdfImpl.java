@@ -154,10 +154,9 @@ public class GenerarPdfImpl implements GenerarPdf {
                     String[] negritaFecha = Functions.fechaDateToStringSinHora().split("-");
 
                     //String[] lineas = {mensajeLetras1, mensajePrimero1, mensajeSegundo1, mensajeTercera1, fechaConvenio, inquietud};
-                    String variableConcat = nombreClienteLetras[1].concat(" ").concat(docCliente.trim().concat(",")).concat(" ").concat(sede).concat(" ").concat(gmj)
-                            .concat(" ").concat(nit.concat(",")).concat(" ").concat("$".concat(valorAcuerdoLetras)).concat(" ").concat(nit).concat(" ").concat(primeroLetras)
-                            .concat(" ").concat(segundoLetras).concat(" ").concat(terceraLetras).concat(" ").concat(inquietud).concat(" ").concat(negritaFecha[0])
-                            .concat(" ").concat(negritaFecha[1]).concat(" ").concat(negritaFecha[2]);
+                    String variableConcat = nombreClienteLetras[1].concat(" ").concat(docCliente).concat(" ").concat(sede).concat(" ").concat(gmj)
+                            .concat(" ").concat(" ").concat("$".concat(valorAcuerdoLetras)).concat(" ").concat(nit).concat(" ").concat(primeroLetras)
+                            .concat(" ").concat(segundoLetras).concat(" ").concat(terceraLetras).concat(" ").concat(inquietud);
 
                     String[] variablesConcatSplit = variableConcat.split(" ");
 
