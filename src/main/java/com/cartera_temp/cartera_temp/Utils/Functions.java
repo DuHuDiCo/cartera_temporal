@@ -102,7 +102,7 @@ public class Functions {
     public static String fechaFormatToLetrasAcuerdo(){
         try{
             String[] fechaToFormat = fechaDateToStringSinHora().split("-");
-            String ToLetrasAcuerdo = fechaToFormat[2].concat(" días del mes ").concat(fechaToFormat[1]).concat(" del año").concat(fechaToFormat[0]);
+            String ToLetrasAcuerdo = fechaToFormat[2].concat(" días del mes ").concat(fechaToFormat[1]).concat(" del año ").concat(fechaToFormat[0]);
             return ToLetrasAcuerdo;
         }catch (Exception e) {
             e.printStackTrace();
