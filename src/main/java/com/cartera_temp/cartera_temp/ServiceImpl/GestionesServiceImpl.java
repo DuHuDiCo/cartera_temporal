@@ -496,7 +496,7 @@ public class GestionesServiceImpl implements GestionesService {
 
         link.setMessageToWpp("https://api.whatsapp.com/send?phone=".concat("+").concat(telefono.get(0).getIndicativo()).concat(" ").concat(telefono.get(0).getNumero()).concat(message));
         try {
-            link.setBase64(pdf.generarReporteAcuerdoPagoToClient(cpc));
+            link.setBase64(pdf.generarReporteAcuerdoPagoToClient(cpc, dto.getUsername()));
         } catch (IOException ex) {
             Logger.getLogger(GestionesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {

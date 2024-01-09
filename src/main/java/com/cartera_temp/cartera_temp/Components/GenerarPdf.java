@@ -6,7 +6,7 @@ import java.io.IOException;
 
 public interface GenerarPdf {
 
-    public String generarReporteAcuerdoPagoToClient(CuentasPorCobrar cpc) throws IOException, ClassNotFoundException;
+    public String generarReporteAcuerdoPagoToClient(CuentasPorCobrar cpc, String username) throws IOException, ClassNotFoundException;
     
     public String generarReportePagoCuotas(PagosCuotasDto dto)throws IOException, ClassNotFoundException;
     

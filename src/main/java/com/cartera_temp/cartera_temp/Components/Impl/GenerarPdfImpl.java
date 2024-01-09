@@ -57,7 +57,7 @@ public class GenerarPdfImpl implements GenerarPdf {
     }
 
     @Override
-    public String generarReporteAcuerdoPagoToClient(CuentasPorCobrar cpc) throws IOException, ClassNotFoundException {
+    public String generarReporteAcuerdoPagoToClient(CuentasPorCobrar cpc, String username) throws IOException, ClassNotFoundException {
 
         if (Objects.isNull(cpc)) {
             return null;
@@ -87,11 +87,28 @@ public class GenerarPdfImpl implements GenerarPdf {
                 PDPage letras = new PDPage();
                 doc.addPage(letras);
                 ClassPathResource resource = new ClassPathResource("electrohogarOpa.png");
+                ClassPathResource resourceFY = new ClassPathResource("FIRMA_YEIMAR.png");
+                
+                
+                
+                ClassPathResource resourceFC = new ClassPathResource("FIRMA_CAROLINA.png");
                 InputStream inputStream = resource.getInputStream();
+                InputStream inputStreamFY = resourceFY.getInputStream();
+                InputStream inputStreamFC = resourceFC.getInputStream();
                 PDImageXObject logoImage = PDImageXObject.createFromByteArray(doc, IOUtils.toByteArray(inputStream), "electrohogarOpa.png");
+                PDImageXObject firmaYeimar = PDImageXObject.createFromByteArray(doc, IOUtils.toByteArray(inputStreamFY), "FIRMA_YEIMAR.png");
+                PDImageXObject firmaCarolina = PDImageXObject.createFromByteArray(doc, IOUtils.toByteArray(inputStreamFC), "FIRMA_CAROLINA.png");
+
                 try (PDPageContentStream contens = new PDPageContentStream(doc, letras)) {
                     contens.drawImage(logoImage, 612 / 2 - 150, 680, 300, 100);
-
+                    contens.drawImage(firmaYeimar, 80, 100, 200, 100);
+                    contens.drawImage(firmaCarolina, 320, 100, 200, 100);
+                    nuevaLinea("Yeimar Fernando Sanchez Gomez", 83, 93, contens, PDType1Font.HELVETICA, 12);
+                    nuevaLinea("Jefe de Cartera GMJHogar S.A.S", 83, 82, contens, PDType1Font.HELVETICA_BOLD, 12);
+                    
+                    nuevaLinea("Carolina Jaramillo Toro", 323, 93, contens, PDType1Font.HELVETICA, 12);
+                    nuevaLinea("Analista de Cartera GMJHogar S.A.S", 323, 82, contens, PDType1Font.HELVETICA_BOLD, 12);
+                    
                     String ciudadHeader = "Medellín, ";
 
                     String fechaFormatHeader = "";
@@ -114,12 +131,12 @@ public class GenerarPdfImpl implements GenerarPdf {
                     Gestiones gesLetras = gestionList.get(0);
                     AcuerdoPago acuPagoLetras = new AcuerdoPago();
 
-                    if (gesLetras.getClasificacion() instanceof AcuerdoPago) {      
+                    if (gesLetras.getClasificacion() instanceof AcuerdoPago) {
                         acuPagoLetras = (AcuerdoPago) gesLetras.getClasificacion();
                     }
-                    
-                    nuevaLinea(ciudadHeader.concat(fechaFormatHeader),72, 660, contens, PDType1Font.HELVETICA, 12);
-                    nuevaLinea(tituloLetras,250, 640, contens, PDType1Font.HELVETICA_BOLD, 12);
+
+                    nuevaLinea(ciudadHeader.concat(fechaFormatHeader), 72, 660, contens, PDType1Font.HELVETICA, 12);
+                    nuevaLinea(tituloLetras, 250, 640, contens, PDType1Font.HELVETICA_BOLD, 12);
 
                     String valorAcuerdoLetras = Double.toString(acuPagoLetras.getValorTotalAcuerdo());
                     String valorCuotaAcuerdo = Double.toString(acuPagoLetras.getCuotasList().get(0).getValorCuota());
@@ -250,23 +267,23 @@ public class GenerarPdfImpl implements GenerarPdf {
 
                                     switch (contador) {
                                         case 2:
-                                            aumentoEspacions = 5;
+                                            aumentoEspacions = 10;
                                             break;
                                         case 6:
-                                            aumentoEspacions = 5;
+                                            aumentoEspacions = 10;
                                             break;
                                         case 8:
-                                            aumentoEspacions = 5;
+                                            aumentoEspacions = 10;
                                             break;
                                         case 13:
-                                            aumentoEspacions = 5;
+                                            aumentoEspacions = 10;
                                             break;
                                         case 15:
-                                            aumentoEspacions = 5;
+                                            aumentoEspacions = 10;
 
                                             break;
                                         case 16:
-                                            aumentoEspacions = 5;
+                                            aumentoEspacions = 10;
 
                                             break;
                                         default:
