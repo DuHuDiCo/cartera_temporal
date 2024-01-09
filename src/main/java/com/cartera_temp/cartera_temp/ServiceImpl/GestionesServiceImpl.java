@@ -287,7 +287,7 @@ public class GestionesServiceImpl implements GestionesService {
             return null;
         }
 
-        List<Gestiones> gestion = gestionesRepository.findByNumeroObligacion(numeroObligacion);
+        List<Gestiones> gestion = gestionesRepository.findByNumeroObligacionOrderByFechaGestionDesc(numeroObligacion);
         List<GestionResponse> gesResList = new ArrayList<>();
         if (Objects.isNull(gestion)) {
             return gesResList;
@@ -317,7 +317,7 @@ public class GestionesServiceImpl implements GestionesService {
                 return gesResList;
             }
 
-            gesRes.setAsesorCartera(usu.getNombres() + usu.getApellidos());
+            gesRes.setAsesorCartera(usu.getNombres().concat(" ".concat(usu.getApellidos())));
 
             gesResList.add(gesRes);
         }
@@ -507,7 +507,7 @@ public class GestionesServiceImpl implements GestionesService {
                 .concat("mensuales%20acordadas%20con%20nuestro%20asesor/a%20de%20cartera%20".concat(asesorCartera).concat(",%20si%20tiene%20alguna%20duda%20por%20favor%20ponerse%20"))
                 .concat("en%20contacto%20por%20este%20mismo%20medio,%20muchas%20gracias");
 
-        link.setMessageToWpp("https://api.whatsapp.com/send?phone=".concat(telefono.get(0).getNumero()).concat(message));
+        link.setMessageToWpp("https://api.whatsapp.com/send?phone=".concat("+").concat(telefono.get(0).getIndicativo()).concat(" ").concat(telefono.get(0).getNumero()).concat(message));
         try {
             link.setBase64(pdf.generarReporteAcuerdoPagoToClient(cpc));
         } catch (IOException ex) {
