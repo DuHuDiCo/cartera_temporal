@@ -202,6 +202,28 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
 
             List<ClientesDto> clientes = clientesClient.buscarClientesByNumeroObligacion(cuenta.getDocumentoCliente(), token);
             c.setClientes(clientes);
+            
+            if(cuenta.getGestiones().size()>0){
+                for (Gestiones gestione : cuenta.getGestiones()) {
+                if(gestione.getClasificacionGestion() instanceof AcuerdoPago){
+                    AcuerdoPago acuPago = (AcuerdoPago) gestione.getClasificacionGestion();
+                    for (Cuotas cuotas : acuPago.getCuotasList()) {
+                        if(Objects.nonNull(cuotas.getPagos())){
+                            String base = null;
+                            try {
+                                base = saveFiles.pdfToBase64(cuotas.getPagos().getReciboPago().getRuta());
+                            } catch (IOException ex) {
+                                Logger.getLogger(CuentaPorCobrarServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            cuotas.getPagos().getReciboPago().setRuta(base);
+                        }
+                    }
+                    
+                }
+            }
+            }
+            
+            
 
             cuentasResponse.add(c);
         }
@@ -446,16 +468,14 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
                     AsesorCarteraResponse asesor = new AsesorCarteraResponse();
                     asesor.setIdAsesorCartera(cuentasPorCobrar.getAsesor().getIdAsesorCartera());
 
-                    Usuario usu = usuarioClient.getUsuarioById(asesor.getIdAsesorCartera(), token);
+                    Usuario usu = usuarioClient.getUsuarioById(cuentasPorCobrar.getAsesor().getUsuarioId(), token);
 
                     if (Objects.isNull(usu)) {
                         return null;
                     }
+                    asesor.setUsuario(usu);
 
-                    AsesorCartera asesorCar = asesorCarteraRepository.findByUsuarioId(usu.getIdUsuario());
-                    if (Objects.isNull(asesorCar)) {
-                        return null;
-                    }
+                    cuentasPorCobrarResponse.setGestion(cuentasPorCobrar.getGestiones());
 
                     cuentasPorCobrarResponse.setAsesorCarteraResponse(asesor);
                     cuentasCobrar.add(cuentasPorCobrarResponse);
@@ -463,7 +483,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             }
 
         }
-        System.out.println(cuentasCobrar.size());
+        
         return cuentasCobrar;
     }
 

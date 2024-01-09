@@ -36,7 +36,7 @@ public class SaveFiles {
 
     public String saveFile(byte[] bytes, String name, String ruta) throws FileNotFoundException, IOException {
 
-        Path path = Paths.get(ruta.concat(name));
+        Path path = Paths.get(ruta);
         Files.write(path, bytes);
         return name;
 
