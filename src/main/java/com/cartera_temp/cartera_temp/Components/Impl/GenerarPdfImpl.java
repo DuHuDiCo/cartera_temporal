@@ -149,11 +149,14 @@ public class GenerarPdfImpl implements GenerarPdf {
                     String mensajeSegundo1 = segundoLetras.concat(" De mutuo acuerdo se establece el siguiente plan de pagos donde el deudor se compromete a realizar pagos mensuales por el valor de $".concat(valorCuotaAcuerdo));
 
                     String mensajeTercera1 = terceraLetras.concat(" Si el deudor incumple en algún pago o no cancela en su totalidad la deuda contraída según el plazo estipulado, el acreedor puede iniciar inmediatamente las acciones legales que mejor considere pertinentes para cobrar el monto establecido sumando valor de cobranza jurídica y los intereses correspondientes a la fecha en que se incumpla este acuerdo");
+                    
+                    String[] negritaFecha = Functions.fechaFormatToLetrasAcuerdo().split("-");
 
                     //String[] lineas = {mensajeLetras1, mensajePrimero1, mensajeSegundo1, mensajeTercera1, fechaConvenio, inquietud};
-                    String variableConcat = nombreClienteLetras[1].concat(" ").concat(docCliente).concat(" ").concat(sede).concat(" ").concat(gmj)
-                            .concat(" ").concat(nit).concat(" ").concat(valorAcuerdoLetras).concat(" ").concat(nit).concat(" ").concat(primeroLetras)
-                            .concat(" ").concat(segundoLetras).concat(" ").concat(terceraLetras).concat(" ").concat(inquietud).concat(" ");
+                    String variableConcat = nombreClienteLetras[1].concat(" ").concat(docCliente.trim().concat(",")).concat(" ").concat(sede).concat(" ").concat(gmj)
+                            .concat(" ").concat(nit.concat(",")).concat(" ").concat("$".concat(valorAcuerdoLetras)).concat(" ").concat(nit).concat(" ").concat(primeroLetras)
+                            .concat(" ").concat(segundoLetras).concat(" ").concat(terceraLetras).concat(" ").concat(inquietud).concat(" ").concat(negritaFecha[0])
+                            .concat(" ").concat(negritaFecha[1]).concat(" ").concat(negritaFecha[2]);
 
                     String[] variablesConcatSplit = variableConcat.split(" ");
 
@@ -430,11 +433,11 @@ public class GenerarPdfImpl implements GenerarPdf {
                             } catch (ParseException ex) {
                                 Logger.getLogger(GenerarPdfImpl.class.getName()).log(Level.SEVERE, null, ex);
                             }
-                            body.add(Double.toString(acuPago.getCuotasList().get(i - 1).getValorCuota()));
-                            body.add(Double.toString(acuPago.getCuotasList().get(i - 1).getCapitalCuota()));
+                            body.add(formatNumber((int)acuPago.getCuotasList().get(i - 1).getValorCuota()));
+                            body.add(formatNumber((int)acuPago.getCuotasList().get(i - 1).getCapitalCuota()));
                             totalCuotas = totalCuotas + acuPago.getCuotasList().get(i - 1).getCapitalCuota();
-                            body.add(Double.toString(acuPago.getCuotasList().get(i - 1).getHonorarios()));
-                            body.add(Double.toString(acuPago.getCuotasList().get(i - 1).getInteresCuota()));
+                            body.add(formatNumber((int)acuPago.getCuotasList().get(i - 1).getHonorarios()));
+                            body.add(formatNumber((int)acuPago.getCuotasList().get(i - 1).getInteresCuota()));
 
                             for (int j = 0; j < body.size(); j++) {
                                 if (j == 0 || j == 3) {
