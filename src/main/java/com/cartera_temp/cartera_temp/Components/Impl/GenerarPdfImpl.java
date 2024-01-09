@@ -8,6 +8,7 @@ import com.cartera_temp.cartera_temp.Models.Gestiones;
 import com.cartera_temp.cartera_temp.ModelsClients.Usuario;
 import com.cartera_temp.cartera_temp.Service.UsuarioClientService;
 import com.cartera_temp.cartera_temp.Utils.Functions;
+import static com.cartera_temp.cartera_temp.Utils.Functions.fechaDateToStringSinHora;
 import com.cartera_temp.cartera_temp.repository.CuentasPorCobrarRepository;
 import com.tenpisoft.n2w.MoneyConverters;
 import java.io.ByteArrayOutputStream;
@@ -150,7 +151,7 @@ public class GenerarPdfImpl implements GenerarPdf {
 
                     String mensajeTercera1 = terceraLetras.concat(" Si el deudor incumple en algún pago o no cancela en su totalidad la deuda contraída según el plazo estipulado, el acreedor puede iniciar inmediatamente las acciones legales que mejor considere pertinentes para cobrar el monto establecido sumando valor de cobranza jurídica y los intereses correspondientes a la fecha en que se incumpla este acuerdo");
                     
-                    String[] negritaFecha = Functions.fechaFormatToLetrasAcuerdo().split("-");
+                    String[] negritaFecha = Functions.fechaDateToStringSinHora().split("-");
 
                     //String[] lineas = {mensajeLetras1, mensajePrimero1, mensajeSegundo1, mensajeTercera1, fechaConvenio, inquietud};
                     String variableConcat = nombreClienteLetras[1].concat(" ").concat(docCliente.trim().concat(",")).concat(" ").concat(sede).concat(" ").concat(gmj)
