@@ -4,6 +4,7 @@ public class LinkDto {
 
     private String numeroObligacion;
     private String cedula;
+    private String username;
 
     public LinkDto() {
     }
@@ -22,6 +23,14 @@ public class LinkDto {
 
     public void setCedula(String cedula) {
         this.cedula = cedula;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
     
     

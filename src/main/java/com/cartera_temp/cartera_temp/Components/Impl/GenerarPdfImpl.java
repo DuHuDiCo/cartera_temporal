@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
@@ -26,6 +27,7 @@ import org.apache.pdfbox.io.IOUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
@@ -43,8 +45,19 @@ public class GenerarPdfImpl implements GenerarPdf {
         this.usuClient = usuClient;
     }
 
+    public static boolean palabraResaltada(String palabra, String[] palabrasResaltadas) {
+
+        for (String palabrasResaltada : palabrasResaltadas) {
+
+            if (palabra.equalsIgnoreCase(palabrasResaltada)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
-    public String generarReporteAcuerdoPagoToClient(CuentasPorCobrar cpc) throws IOException, ClassNotFoundException {
+    public String generarReporteAcuerdoPagoToClient(CuentasPorCobrar cpc, String username) throws IOException, ClassNotFoundException {
 
         if (Objects.isNull(cpc)) {
             return null;
@@ -66,30 +79,54 @@ public class GenerarPdfImpl implements GenerarPdf {
         String nombreClienteSplit = nombreClienteLetras[1];
         String docCliente = cpc.getDocumentoCliente();
         String numeroObligacion = cpc.getNumeroObligacion();
+        
+        
 
         try {
             try (PDDocument doc = new PDDocument()) {
                 PDPage letras = new PDPage();
                 doc.addPage(letras);
-                try (PDPageContentStream contens = new PDPageContentStream(doc, letras)) {
+                ClassPathResource resource = new ClassPathResource("electrohogarOpa.png");
+                ClassPathResource resourceFY = new ClassPathResource("FIRMA_YEIMAR.png");
+                
+                
+                
+                ClassPathResource resourceFC = new ClassPathResource("FIRMA_CAROLINA.png");
+                InputStream inputStream = resource.getInputStream();
+                InputStream inputStreamFY = resourceFY.getInputStream();
+                InputStream inputStreamFC = resourceFC.getInputStream();
+                PDImageXObject logoImage = PDImageXObject.createFromByteArray(doc, IOUtils.toByteArray(inputStream), "electrohogarOpa.png");
+                PDImageXObject firmaYeimar = PDImageXObject.createFromByteArray(doc, IOUtils.toByteArray(inputStreamFY), "FIRMA_YEIMAR.png");
+                PDImageXObject firmaCarolina = PDImageXObject.createFromByteArray(doc, IOUtils.toByteArray(inputStreamFC), "FIRMA_CAROLINA.png");
 
-                    String ciudadHeader = "Medellín";
+                try (PDPageContentStream contens = new PDPageContentStream(doc, letras)) {
+                    contens.drawImage(logoImage, 612 / 2 - 150, 680, 300, 100);
+                    contens.drawImage(firmaYeimar, 80, 100, 200, 100);
+                    contens.drawImage(firmaCarolina, 320, 100, 200, 100);
+                    nuevaLinea("Yeimar Fernando Sanchez Gomez", 83, 93, contens, PDType1Font.HELVETICA, 12);
+                    nuevaLinea("Jefe de Cartera GMJHogar S.A.S", 83, 82, contens, PDType1Font.HELVETICA_BOLD, 12);
+                    
+                    nuevaLinea("Carolina Jaramillo Toro", 323, 93, contens, PDType1Font.HELVETICA, 12);
+                    nuevaLinea("Analista de Cartera GMJHogar S.A.S", 323, 82, contens, PDType1Font.HELVETICA_BOLD, 12);
+                    
+                    String ciudadHeader = "Medellín, ";
 
                     String fechaFormatHeader = "";
-                    
+
                     try {
                         fechaFormatHeader = Functions.formatearFecha(Functions.obtenerFechaYhora());
                     } catch (ParseException ex) {
                         Logger.getLogger(GenerarPdfImpl.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    
+
                     String fechaConvenio = Functions.obtenerTextoFechaConvenio();
 
                     String tituloLetras = "Acuerdo de pago".toUpperCase();
-                    String primeroLetras = "PRIMERO".toUpperCase();
-                    String segundoLetras = "SEGUNDO".toUpperCase();
-                    String terceraLetras = "TERCERA".toUpperCase();
-                    String gmj = "GMJ HOGAS SAS".toUpperCase();
+                    String primeroLetras = "PRIMERO:".toUpperCase();
+                    String segundoLetras = "SEGUNDO:".toUpperCase();
+                    String terceraLetras = "TERCERA:".toUpperCase();
+                    String gmj = "GMJ HOGAR SAS".toUpperCase();
+                    String nit = "NIT 901056810-9";
 
                     Gestiones gesLetras = gestionList.get(0);
                     AcuerdoPago acuPagoLetras = new AcuerdoPago();
@@ -98,53 +135,204 @@ public class GenerarPdfImpl implements GenerarPdf {
                         acuPagoLetras = (AcuerdoPago) gesLetras.getClasificacion();
                     }
 
+                    nuevaLinea(ciudadHeader.concat(fechaFormatHeader), 72, 660, contens, PDType1Font.HELVETICA, 12);
+                    nuevaLinea(tituloLetras, 250, 640, contens, PDType1Font.HELVETICA_BOLD, 12);
+
                     String valorAcuerdoLetras = Double.toString(acuPagoLetras.getValorTotalAcuerdo());
                     String valorCuotaAcuerdo = Double.toString(acuPagoLetras.getCuotasList().get(0).getValorCuota());
                     String inquietud = "Cualquier inquietud puede comunicarse al 5205330 ext. 1009.";
 
-                    String mensajeLetras1 = "El deudor ".concat(nombreClienteSplit).concat(" con número de identificación ");
-                    String mensajeLetras2 = docCliente.concat(", a través de este documento me comprometo a cumplir el siguiente compromiso:");
+                    String mensajeLetras1 = "El deudor ".concat(nombreClienteSplit).concat(" con número de identificación ").concat(docCliente.concat(", a través de este documento me comprometo a cumplir el siguiente compromiso:"));
 
-                    String mensajePrimero1 = primeroLetras.concat(": El deudor acepta y se compromete a pagar la deuda contraída en el almacén");
-                    String mensajePrimero2 = (sede).concat(" establecimiento comercial de ").concat(gmj).concat(" con ").concat("NIT  ");
-                    String mensajePrimero3 = "901056810-9, la cual asciende a la cantidad de $".concat(valorAcuerdoLetras).concat(" a la fecha en la que se genera el ");
-                    String mensajePrimero4 = "presente certificado.";
-                    
-                    String mensajeSegundo1 = segundoLetras.concat(": De mutuo acuerdo se establece el siguiente plan de pagos donde el deudor se");
-                    String mensajeSegundo2 = "compromete a realizar pagos mensuales por el valos de $".concat(valorCuotaAcuerdo);
-                    
-                    String mensajeTercera1 = terceraLetras.concat(": Si el deudor incumple en algún pago o no cancela en su totalidad la");
-                    String mensajeTercera2 = "deuda contraída según el plazo estipulado, el acreedor puede iniciar inmediatamente las ";
-                    String mensajeTercera3 = "acciones legales que mejor considere pertinentes para cobrar el monto establecido ";
-                    String mensajeTercera4 = "sumando valor de cobranza jurídica y los intereses correspondientes a la fecha en que";
-                    String mensajeTercera5 = "se incumpla este acuerdo";
-                            
-                    nuevaLinea(ciudadHeader.concat(", ").concat(fechaFormatHeader), 25, 750, contens, PDType1Font.TIMES_ROMAN, 12);
-                    nuevaLinea(tituloLetras, 235, 730, contens, PDType1Font.TIMES_BOLD, 12);
-                    
-                    
-                    nuevaLineaLetras(mensajeLetras1, 80, 700 - 20, contens, PDType1Font.TIMES_ROMAN, 12);
-                    nuevaLineaLetras(mensajeLetras2, 80, 685 - 20, contens, PDType1Font.TIMES_ROMAN, 12);
-                    
-                    nuevaLineaLetras(mensajePrimero1, 80, 650 - 20, contens, PDType1Font.TIMES_ROMAN, 12);
-                    nuevaLineaLetras(mensajePrimero2, 80, 635 - 20, contens, PDType1Font.TIMES_ROMAN, 12);
-                    nuevaLineaLetras(mensajePrimero3, 80, 620 - 20, contens, PDType1Font.TIMES_ROMAN, 12);
-                    nuevaLineaLetras(mensajePrimero4, 80, 605 - 20, contens, PDType1Font.TIMES_ROMAN, 12);
-                    
-                    nuevaLineaLetras(mensajeSegundo1,80, 570 - 20, contens, PDType1Font.TIMES_ROMAN, 12);
-                    nuevaLineaLetras(mensajeSegundo2,80, 555 - 20, contens, PDType1Font.TIMES_ROMAN, 12);
-                    
-                    nuevaLineaLetras(mensajeTercera1,80, 520 - 20, contens, PDType1Font.TIMES_ROMAN, 12);
-                    nuevaLineaLetras(mensajeTercera2,80, 505 - 20, contens, PDType1Font.TIMES_ROMAN, 12);
-                    nuevaLineaLetras(mensajeTercera3,80, 490 - 20, contens, PDType1Font.TIMES_ROMAN, 12);
-                    nuevaLineaLetras(mensajeTercera4,80, 475 - 20, contens, PDType1Font.TIMES_ROMAN, 12);
-                    nuevaLineaLetras(mensajeTercera5,80, 450 - 20, contens, PDType1Font.TIMES_ROMAN, 12);
-                    
-                    nuevaLineaLetras(fechaConvenio, 25, 420 - 20, contens, PDType1Font.TIMES_ROMAN, 12);
-                    
-                    nuevaLineaLetras(inquietud, 25, 400 - 20, contens, PDType1Font.TIMES_BOLD, 12);
-                    
+                    String mensajePrimero1 = primeroLetras.concat(" El deudor acepta y se compromete a pagar la deuda contraída en el almacén ").concat((sede).concat(" establecimiento comercial de ").concat(gmj).concat(" con ").concat(nit)).concat(", la cual asciende a la cantidad de $".concat(valorAcuerdoLetras).concat(" a la fecha en la que se genera el presente certificado."));
+
+                    String mensajeSegundo1 = segundoLetras.concat(" De mutuo acuerdo se establece el siguiente plan de pagos donde el deudor se compromete a realizar pagos mensuales por el valor de $".concat(valorCuotaAcuerdo));
+
+                    String mensajeTercera1 = terceraLetras.concat(" Si el deudor incumple en algún pago o no cancela en su totalidad la deuda contraída según el plazo estipulado, el acreedor puede iniciar inmediatamente las acciones legales que mejor considere pertinentes para cobrar el monto establecido sumando valor de cobranza jurídica y los intereses correspondientes a la fecha en que se incumpla este acuerdo");
+
+                    //String[] lineas = {mensajeLetras1, mensajePrimero1, mensajeSegundo1, mensajeTercera1, fechaConvenio, inquietud};
+                    String variableConcat = nombreClienteLetras[1].concat(" ").concat(docCliente).concat(" ").concat(sede).concat(" ").concat(gmj)
+                            .concat(" ").concat(nit).concat(" ").concat(valorAcuerdoLetras).concat(" ").concat(nit).concat(" ").concat(primeroLetras)
+                            .concat(" ").concat(segundoLetras).concat(" ").concat(terceraLetras).concat(" ").concat(inquietud).concat(" ");
+
+                    String[] variablesConcatSplit = variableConcat.split(" ");
+
+                    String[] negritaNombreClienteSplit = nombreClienteSplit.split(" ");
+
+                    float margin = 72;
+                    float yStart = letras.getMediaBox().getHeight() - margin - 120;
+                    float width = letras.getMediaBox().getWidth() - (margin * 2);
+                    float yPosition = yStart;
+                    float spaceWidth = 2; // Espaciado entre palabras
+
+                    String delimitante = ";";
+
+                    String mensajesConcat = mensajeLetras1.concat(delimitante).concat(mensajePrimero1).concat(delimitante).concat(mensajeSegundo1)
+                            .concat(delimitante).concat(mensajeTercera1).concat(delimitante).concat(fechaConvenio).concat(delimitante).concat(inquietud);
+
+                    String[] lineaSplit = mensajesConcat.split(delimitante);
+
+                    List<List<String>> matriz = new ArrayList<>();
+
+                    float espacioLinea = 0;
+
+                    List<String> otroRenglon = new ArrayList<>();
+
+                    for (String split : lineaSplit) {
+
+                        List<String> nuevaLinea = null;
+
+                        espacioLinea = 468;
+
+                        float sizeLineaToCharacter = 0.0f;
+                        String[] splitSplit = split.split(" ");
+                        nuevaLinea = new ArrayList<>();
+                        int tamanoParrafo = 0;
+                        for (String string : splitSplit) {
+                            float sizeSplit = 0.0f;
+                            if (palabraResaltada(split, variablesConcatSplit)) {
+                                contens.setFont(PDType1Font.HELVETICA_BOLD, 12);
+                                sizeSplit = 12 * PDType1Font.HELVETICA_BOLD.getStringWidth(string) / 1000;
+                            } else {
+                                contens.setFont(PDType1Font.HELVETICA, 12);
+                                sizeSplit = 12 * PDType1Font.HELVETICA.getStringWidth(string) / 1000;
+                            }
+
+                            if (espacioLinea > sizeSplit) {
+                                sizeLineaToCharacter = sizeLineaToCharacter + sizeSplit;
+                                espacioLinea = espacioLinea - sizeSplit - 5;
+                                nuevaLinea.add(string);
+                            } else {
+                                matriz.add(nuevaLinea);
+                                tamanoParrafo += nuevaLinea.size();
+                                nuevaLinea = new ArrayList<>();
+                                sizeLineaToCharacter = sizeLineaToCharacter + sizeSplit;
+                                espacioLinea = width;
+                                espacioLinea = espacioLinea - sizeSplit - 5;
+                                nuevaLinea.add(string);
+                            }
+                        }
+
+                        if (splitSplit.length > tamanoParrafo) {
+
+                            float sizeSplit = 0.0f;
+                            nuevaLinea = new ArrayList<>();
+                            for (int i = tamanoParrafo; i < splitSplit.length; i++) {
+
+                                String string = splitSplit[i];
+
+                                if (palabraResaltada(split, variablesConcatSplit)) {
+                                    contens.setFont(PDType1Font.HELVETICA_BOLD, 12);
+                                    sizeSplit = 12 * PDType1Font.HELVETICA_BOLD.getStringWidth(string) / 1000;
+                                } else {
+                                    contens.setFont(PDType1Font.HELVETICA, 12);
+                                    sizeSplit = 12 * PDType1Font.HELVETICA.getStringWidth(string) / 1000;
+                                }
+                                nuevaLinea.add(string);
+                            }
+                            matriz.add(nuevaLinea);
+                            tamanoParrafo += nuevaLinea.size();
+                            nuevaLinea = new ArrayList<>();
+                            sizeLineaToCharacter = sizeLineaToCharacter + sizeSplit;
+                            espacioLinea = width;
+                            espacioLinea = espacioLinea - sizeSplit - 5;
+                        }
+                    }
+
+                    var contador = 0;
+                    for (List<String> list : matriz) {
+                        int acumuladoEspacios = 0;
+
+                        for (String string : list) {
+                            if (palabraResaltada(string, variablesConcatSplit)) {
+                                var tamanioPalabraNegrita = (12 * PDType1Font.HELVETICA_BOLD.getStringWidth(string) / 1000);
+                                acumuladoEspacios += tamanioPalabraNegrita;
+                            } else {
+                                var tamanioPalabra = (12 * PDType1Font.HELVETICA.getStringWidth(string) / 1000);
+                                acumuladoEspacios += tamanioPalabra;
+                            }
+
+                        }
+
+                        for (String string : list) {
+                            int diferencia = (int) width - acumuladoEspacios;
+                            int aumentoEspacions = 0;
+                            if (list.size() == 1) {
+                                aumentoEspacions = 0;
+                            } else {
+                                if (diferencia == 0) {
+                                    aumentoEspacions = 5;
+                                } else {
+                                    aumentoEspacions = diferencia / (list.size() - 1);
+
+                                    switch (contador) {
+                                        case 2:
+                                            aumentoEspacions = 10;
+                                            break;
+                                        case 6:
+                                            aumentoEspacions = 10;
+                                            break;
+                                        case 8:
+                                            aumentoEspacions = 10;
+                                            break;
+                                        case 13:
+                                            aumentoEspacions = 10;
+                                            break;
+                                        case 15:
+                                            aumentoEspacions = 10;
+
+                                            break;
+                                        case 16:
+                                            aumentoEspacions = 10;
+
+                                            break;
+                                        default:
+                                            aumentoEspacions = diferencia / (list.size() - 1);
+
+                                    }
+                                }
+
+                            }
+
+                            if (palabraResaltada(string, variablesConcatSplit)) {
+
+                                nuevaLinea(string, (int) margin, (int) yStart, contens, PDType1Font.HELVETICA_BOLD, 12);
+
+                                margin += (12 * PDType1Font.HELVETICA_BOLD.getStringWidth(string) / 1000) + aumentoEspacions;
+                            } else {
+
+                                nuevaLinea(string, (int) margin, (int) yStart, contens, PDType1Font.HELVETICA, 12);
+                                margin += (12 * PDType1Font.HELVETICA.getStringWidth(string) / 1000) + aumentoEspacions;
+                            }
+
+                        }
+                        switch (contador) {
+                            case 2:
+                                yStart = yStart - 30;
+                                break;
+                            case 6:
+                                yStart = yStart - 30;
+                                break;
+                            case 8:
+                                yStart = yStart - 30;
+                                break;
+                            case 13:
+                                yStart = yStart - 30;
+                                break;
+                            case 15:
+                                yStart = yStart - 30;
+                                break;
+                            default:
+                                yStart = yStart - 15;
+
+                        }
+
+                        margin = 72;
+                        contador++;
+                    }
+
                 }
+
                 PDPage page = new PDPage();
                 doc.addPage(page);
                 int cellHeight = 20;
@@ -152,13 +340,13 @@ public class GenerarPdfImpl implements GenerarPdf {
                 int height = (int) page.getTrimBox().getHeight();//792
                 int width = (int) page.getTrimBox().getWidth();//612
 
-                ClassPathResource resource = new ClassPathResource("electrohogarOpa.png");
-                InputStream inputStream = resource.getInputStream();
-                PDImageXObject logoImage = PDImageXObject.createFromByteArray(doc, IOUtils.toByteArray(inputStream), "electrohogarOpa.png");
+                ClassPathResource resourceAcu = new ClassPathResource("electrohogarOpa.png");
+                InputStream inputStreamAcu = resourceAcu.getInputStream();
+                PDImageXObject logoImageAcu = PDImageXObject.createFromByteArray(doc, IOUtils.toByteArray(inputStreamAcu), "electrohogarOpa.png");
 
                 try (PDPageContentStream contens = new PDPageContentStream(doc, page)) {
 
-                    contens.drawImage(logoImage, width / 2 - 150, height / 2 - 30, 300, 100);
+                    contens.drawImage(logoImageAcu, width / 2 - 150, height / 2 - 30, 300, 100);
                     //CREACION DEL TITULO
                     nuevaLinea(titulo, 160, 750, contens, PDType1Font.HELVETICA_BOLD, 18);
 
