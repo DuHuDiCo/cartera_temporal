@@ -107,7 +107,7 @@ public class GestionesServiceImpl implements GestionesService {
     @Override
     public GestionResponse saveOneGestion(GestionToSaveDto dto) {
 
-        if (dto.getNumeroObligacion() == null || dto.getNumeroObligacion().equals("") || dto.getClasificacion() == null || dto.getClasificacion().equals("") || dto.getGestion().equals("") || dto.getGestion() == null) {
+        if (dto.getNumeroObligacion() == null || dto.getNumeroObligacion().equals("") || dto.getClasificacion() == null || dto.getClasificacion().equals("")) {
             return null;
         }
 
@@ -134,7 +134,6 @@ public class GestionesServiceImpl implements GestionesService {
 
         gestion.setCuentasPorCobrar(cpc);
         gestion.setDetallesAdicionales(dto.getDetallesAdicionales());
-        gestion.setDetallesGestion(dto.getGestion());
 
         try {
             gestion.setFechaGestion(Functions.obtenerFechaYhora());
