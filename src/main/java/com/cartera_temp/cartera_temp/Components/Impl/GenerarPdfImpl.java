@@ -267,20 +267,20 @@ public class GenerarPdfImpl implements GenerarPdf {
                                                 aumentoEspacions = 10;
                                                 break;
                                             case 6:
-                                                aumentoEspacions = 10;
+                                                aumentoEspacions = 5;
                                                 break;
                                             case 8:
                                                 aumentoEspacions = 10;
                                                 break;
                                             case 13:
-                                                aumentoEspacions = 10;
+                                                aumentoEspacions = 5;
                                                 break;
                                             case 15:
-                                                aumentoEspacions = 10;
+                                                aumentoEspacions = 5;
 
                                                 break;
                                             case 16:
-                                                aumentoEspacions = 10;
+                                                aumentoEspacions = 5;
 
                                                 break;
                                             default:
@@ -330,25 +330,48 @@ public class GenerarPdfImpl implements GenerarPdf {
                             }
 
                         }
-                        switch (contador) {
-                            case 2:
-                                yStart = yStart - 30;
-                                break;
-                            case 6:
-                                yStart = yStart - 30;
-                                break;
-                            case 8:
-                                yStart = yStart - 30;
-                                break;
-                            case 13:
-                                yStart = yStart - 30;
-                                break;
-                            case 15:
-                                yStart = yStart - 30;
-                                break;
-                            default:
-                                yStart = yStart - 15;
+                        if (nombreClienteLetras.length >= 4) {
+                            switch (contador) {
+                                case 2:
+                                    yStart = yStart - 30;
+                                    break;
+                                case 6:
+                                    yStart = yStart - 30;
+                                    break;
+                                case 8:
+                                    yStart = yStart - 30;
+                                    break;
+                                case 13:
+                                    yStart = yStart - 30;
+                                    break;
+                                case 15:
+                                    yStart = yStart - 30;
+                                    break;
+                                default:
+                                    yStart = yStart - 15;
 
+                            }
+                        } else {
+                            switch (contador) {
+                                case 1:
+                                    yStart = yStart - 30;
+                                    break;
+                                case 5:
+                                    yStart = yStart - 30;
+                                    break;
+                                case 7:
+                                    yStart = yStart - 30;
+                                    break;
+                                case 12:
+                                    yStart = yStart - 30;
+                                    break;
+                                case 14:
+                                    yStart = yStart - 30;
+                                    break;
+                                default:
+                                    yStart = yStart - 15;
+
+                            }
                         }
 
                         margin = 72;
