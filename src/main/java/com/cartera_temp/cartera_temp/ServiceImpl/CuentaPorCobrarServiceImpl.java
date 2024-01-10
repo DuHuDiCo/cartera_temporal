@@ -11,6 +11,7 @@ import com.cartera_temp.cartera_temp.FeignClients.usuario_client;
 import com.cartera_temp.cartera_temp.Models.AcuerdoPago;
 import com.cartera_temp.cartera_temp.Models.AsesorCartera;
 import com.cartera_temp.cartera_temp.Models.Banco;
+import com.cartera_temp.cartera_temp.Models.ClasificacionJuridica;
 import com.cartera_temp.cartera_temp.Models.CuentasPorCobrar;
 import com.cartera_temp.cartera_temp.Models.Cuotas;
 import com.cartera_temp.cartera_temp.Models.Gestiones;
@@ -19,6 +20,7 @@ import com.cartera_temp.cartera_temp.Models.TiposVencimiento;
 import com.cartera_temp.cartera_temp.ModelsClients.Usuario;
 import com.cartera_temp.cartera_temp.Service.AsesorCarteraService;
 import com.cartera_temp.cartera_temp.Service.BancoService;
+import com.cartera_temp.cartera_temp.Service.ClasificacionJuridicaService;
 import com.cartera_temp.cartera_temp.Service.CuentasPorCobrarService;
 import com.cartera_temp.cartera_temp.Service.FileService;
 import com.cartera_temp.cartera_temp.Service.SedeService;
@@ -71,8 +73,9 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
     private final AsesorCarteraRepository asesorCarteraRepository;
     private final TiposVencimientoService tiposVencimientoService;
     private final SaveFiles saveFiles;
+    private final ClasificacionJuridicaService clasificacionJuridicaService;
 
-    public CuentaPorCobrarServiceImpl(CuentasPorCobrarRepository cuentasPorCobrarRepository, SedeService sedeService, AsesorCarteraService asesorCarteraService, BancoService bancoService, usuario_client usuarioClient, ModelMapper modelMapper, ClientesClient clientesClient, FileService fileService, HttpServletRequest httpServletRequest, BancoRepository bancoRepository, SedeRepository sedeRepository, AsesorCarteraRepository asesorCarteraRepository, TiposVencimientoService tiposVencimientoService, SaveFiles saveFiles) {
+    public CuentaPorCobrarServiceImpl(CuentasPorCobrarRepository cuentasPorCobrarRepository, SedeService sedeService, AsesorCarteraService asesorCarteraService, BancoService bancoService, usuario_client usuarioClient, ModelMapper modelMapper, ClientesClient clientesClient, FileService fileService, HttpServletRequest httpServletRequest, BancoRepository bancoRepository, SedeRepository sedeRepository, AsesorCarteraRepository asesorCarteraRepository, TiposVencimientoService tiposVencimientoService, SaveFiles saveFiles, ClasificacionJuridicaService clasificacionJuridicaService) {
         this.cuentasPorCobrarRepository = cuentasPorCobrarRepository;
         this.sedeService = sedeService;
         this.asesorCarteraService = asesorCarteraService;
@@ -87,7 +90,10 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
         this.asesorCarteraRepository = asesorCarteraRepository;
         this.tiposVencimientoService = tiposVencimientoService;
         this.saveFiles = saveFiles;
+        this.clasificacionJuridicaService = clasificacionJuridicaService;
     }
+
+    
 
     @Override
     public List<CuentasPorCobrar> guardarCuentas(List<CuentasPorCobrarDto> cuentasPorCobrarDto) {
@@ -105,10 +111,15 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             if (Objects.isNull(tv)) {
                 return null;
             }
+            
+            ClasificacionJuridica cj = clasificacionJuridicaService.getClasificacionByNombre(cuentaPorCobrar.getClasificacionJuridica().toUpperCase());
+            if(Objects.isNull(cj)){
+                return null;
+            }
 
             cuentas.setNumeroObligacion(cuentaPorCobrar.getNumeroObligacion());
             cuentas.setClasificacion(cuentaPorCobrar.getClasificacion());
-            cuentas.setClasificacionJuridica(cuentaPorCobrar.getClasificacionJuridica());
+            cuentas.setClasificacionJuridica(cj);
             cuentas.setCliente(cuentaPorCobrar.getCliente());
             cuentas.setCondicionEspecial(cuentaPorCobrar.getCondicionEspecial());
             cuentas.setCuotas(cuentaPorCobrar.getNumeroCuotas());
@@ -131,6 +142,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             cuentas.setTotalObligatoria(cuentaPorCobrar.getTotalObligacion());
 
             tv.agreegarCuentaCobrar(cuentas);
+            cj.agregarCuentaCobrar(cuentas);
 
             Sede sede = sedeService.findSede(cuentaPorCobrar.getSede());
 

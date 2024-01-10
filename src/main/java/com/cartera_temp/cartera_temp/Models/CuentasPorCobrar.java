@@ -66,9 +66,6 @@ public class CuentasPorCobrar {
     @Column(name = "vendedor", length = 200)
     private String vendedor;
 
-    @Column(name = "clasificacionJuridaca", length = 100)
-    private String clasificacionJuridica;
-
     @Column(name = "detalle")
     private String detalle;
 
@@ -95,6 +92,11 @@ public class CuentasPorCobrar {
     @JsonIgnore
     private TiposVencimiento tiposVencimiento;
 
+    @ManyToOne
+    @JoinColumn(name = "clasificacion_juridica_id")
+    @JsonIgnore
+    private ClasificacionJuridica clasificacionJuridica;
+    
     @Column(name = "condicion_especial", length = 30)
     private String condicionEspecial;
 
@@ -316,11 +318,11 @@ public class CuentasPorCobrar {
         this.cuotas = cuotas;
     }
 
-    public String getClasificacionJuridica() {
+    public ClasificacionJuridica getClasificacionJuridica() {
         return clasificacionJuridica;
     }
 
-    public void setClasificacionJuridica(String clasificacionJuridica) {
+    public void setClasificacionJuridica(ClasificacionJuridica clasificacionJuridica) {
         this.clasificacionJuridica = clasificacionJuridica;
     }
 
