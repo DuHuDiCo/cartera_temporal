@@ -79,8 +79,6 @@ public class GenerarPdfImpl implements GenerarPdf {
         String nombreClienteSplit = nombreClienteLetras[1];
         String docCliente = cpc.getDocumentoCliente();
         String numeroObligacion = cpc.getNumeroObligacion();
-        
-        
 
         try {
             try (PDDocument doc = new PDDocument()) {
@@ -88,9 +86,7 @@ public class GenerarPdfImpl implements GenerarPdf {
                 doc.addPage(letras);
                 ClassPathResource resource = new ClassPathResource("electrohogarOpa.png");
                 ClassPathResource resourceFY = new ClassPathResource("FIRMA_YEIMAR.png");
-                
-                
-                
+
                 ClassPathResource resourceFC = new ClassPathResource("FIRMA_CAROLINA.png");
                 InputStream inputStream = resource.getInputStream();
                 InputStream inputStreamFY = resourceFY.getInputStream();
@@ -105,10 +101,10 @@ public class GenerarPdfImpl implements GenerarPdf {
                     contens.drawImage(firmaCarolina, 320, 100, 200, 100);
                     nuevaLinea("Yeimar Fernando Sanchez Gomez", 83, 93, contens, PDType1Font.HELVETICA, 12);
                     nuevaLinea("Jefe de Cartera GMJHogar S.A.S", 83, 82, contens, PDType1Font.HELVETICA_BOLD, 12);
-                    
+
                     nuevaLinea("Carolina Jaramillo Toro", 323, 93, contens, PDType1Font.HELVETICA, 12);
                     nuevaLinea("Analista de Cartera GMJHogar S.A.S", 323, 82, contens, PDType1Font.HELVETICA_BOLD, 12);
-                    
+
                     String ciudadHeader = "Medellín, ";
 
                     String fechaFormatHeader = "";
@@ -190,7 +186,7 @@ public class GenerarPdfImpl implements GenerarPdf {
                         int tamanoParrafo = 0;
                         for (String string : splitSplit) {
                             float sizeSplit = 0.0f;
-                            if (palabraResaltada(split, variablesConcatSplit)) {
+                            if (palabraResaltada(string, variablesConcatSplit)) {
                                 contens.setFont(PDType1Font.HELVETICA_BOLD, 12);
                                 sizeSplit = 12 * PDType1Font.HELVETICA_BOLD.getStringWidth(string) / 1000;
                             } else {
@@ -265,30 +261,58 @@ public class GenerarPdfImpl implements GenerarPdf {
                                 } else {
                                     aumentoEspacions = diferencia / (list.size() - 1);
 
-                                    switch (contador) {
-                                        case 2:
-                                            aumentoEspacions = 10;
-                                            break;
-                                        case 6:
-                                            aumentoEspacions = 10;
-                                            break;
-                                        case 8:
-                                            aumentoEspacions = 10;
-                                            break;
-                                        case 13:
-                                            aumentoEspacions = 10;
-                                            break;
-                                        case 15:
-                                            aumentoEspacions = 10;
+                                    if (nombreClienteLetras.length >= 4) {
+                                        switch (contador) {
+                                            case 2:
+                                                aumentoEspacions = 10;
+                                                break;
+                                            case 6:
+                                                aumentoEspacions = 10;
+                                                break;
+                                            case 8:
+                                                aumentoEspacions = 10;
+                                                break;
+                                            case 13:
+                                                aumentoEspacions = 10;
+                                                break;
+                                            case 15:
+                                                aumentoEspacions = 10;
 
-                                            break;
-                                        case 16:
-                                            aumentoEspacions = 10;
+                                                break;
+                                            case 16:
+                                                aumentoEspacions = 10;
 
-                                            break;
-                                        default:
-                                            aumentoEspacions = diferencia / (list.size() - 1);
+                                                break;
+                                            default:
+                                                aumentoEspacions = diferencia / (list.size() - 1);
 
+                                        }
+                                    } else {
+                                        switch (contador) {
+                                            case 1:
+                                                aumentoEspacions = 10;
+                                                break;
+                                            case 5:
+                                                aumentoEspacions = 10;
+                                                break;
+                                            case 7:
+                                                aumentoEspacions = 10;
+                                                break;
+                                            case 12:
+                                                aumentoEspacions = 10;
+                                                break;
+                                            case 14:
+                                                aumentoEspacions = 10;
+
+                                                break;
+                                            case 15:
+                                                aumentoEspacions = 10;
+
+                                                break;
+                                            default:
+                                                aumentoEspacions = diferencia / (list.size() - 1);
+
+                                        }
                                     }
                                 }
 
@@ -567,7 +591,7 @@ public class GenerarPdfImpl implements GenerarPdf {
 
         String tiposPago = dto.getMetodoPago();
 
-        int pagoEfectivo = 0, pagoCheque = 0, pagoDebito = 0, pagoCredito = 0, adelantos = 0,consignacion = 0;
+        int pagoEfectivo = 0, pagoCheque = 0, pagoDebito = 0, pagoCredito = 0, adelantos = 0, consignacion = 0;
         int saldoTotalAcuerdo = dto.getAcuerdoTotal();
         int saldoTotalCapital = dto.getCapitalTotal();
         int saldoTotalHonorarios = dto.getHonorariosTotal();
