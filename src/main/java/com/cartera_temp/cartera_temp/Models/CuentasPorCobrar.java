@@ -97,8 +97,10 @@ public class CuentasPorCobrar {
     @JsonIgnore
     private ClasificacionJuridica clasificacionJuridica;
     
-    @Column(name = "condicion_especial", length = 30)
-    private String condicionEspecial;
+    @ManyToOne
+    @JoinColumn(name = "clasificacion_juridica_id")
+    @JsonIgnore
+    private CondicionEspecial condicionEspecial;
 
     @Column(name = "numero_creditos")
     private int numeroCreditos;
@@ -269,12 +271,12 @@ public class CuentasPorCobrar {
     public void setTiposVencimiento(TiposVencimiento tiposVencimiento) {
         this.tiposVencimiento = tiposVencimiento;
     }
-    
-    public String getCondicionEspecial() {
+
+    public CondicionEspecial getCondicionEspecial() {
         return condicionEspecial;
     }
 
-    public void setCondicionEspecial(String condicionEspecial) {
+    public void setCondicionEspecial(CondicionEspecial condicionEspecial) {
         this.condicionEspecial = condicionEspecial;
     }
 
