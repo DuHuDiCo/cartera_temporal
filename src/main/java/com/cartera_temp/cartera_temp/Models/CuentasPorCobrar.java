@@ -98,7 +98,7 @@ public class CuentasPorCobrar {
     private ClasificacionJuridica clasificacionJuridica;
     
     @ManyToOne
-    @JoinColumn(name = "clasificacion_juridica_id")
+    @JoinColumn(name = "condicion_especial_id")
     @JsonIgnore
     private CondicionEspecial condicionEspecial;
 
