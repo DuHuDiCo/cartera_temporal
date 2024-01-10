@@ -134,8 +134,8 @@ public class GenerarPdfImpl implements GenerarPdf {
                     nuevaLinea(ciudadHeader.concat(fechaFormatHeader), 72, 660, contens, PDType1Font.HELVETICA, 12);
                     nuevaLinea(tituloLetras, 250, 640, contens, PDType1Font.HELVETICA_BOLD, 12);
 
-                    String valorAcuerdoLetras = Double.toString(acuPagoLetras.getValorTotalAcuerdo());
-                    String valorCuotaAcuerdo = Double.toString(acuPagoLetras.getCuotasList().get(0).getValorCuota());
+                    String valorAcuerdoLetras = formatNumber((int)acuPagoLetras.getValorTotalAcuerdo());
+                    String valorCuotaAcuerdo = formatNumber((int)acuPagoLetras.getCuotasList().get(0).getValorCuota());
                     String inquietud = "Cualquier inquietud puede comunicarse al 5205330 ext. 1009.";
 
                     String mensajeLetras1 = "El deudor ".concat(nombreClienteSplit).concat(" con número de identificación ").concat(docCliente.concat(", a través de este documento me comprometo a cumplir el siguiente compromiso:"));
@@ -436,7 +436,7 @@ public class GenerarPdfImpl implements GenerarPdf {
                         acuPago = (AcuerdoPago) ges.getClasificacion();
                     }
 
-                    Double totalCuotas = 0.0;
+                    double totalCuotas = 0.0;
 
                     for (int i = 0; i < acuPago.getCuotasList().size() + 1; i++) {
                         if (i == 0) {
@@ -480,11 +480,11 @@ public class GenerarPdfImpl implements GenerarPdf {
                             } catch (ParseException ex) {
                                 Logger.getLogger(GenerarPdfImpl.class.getName()).log(Level.SEVERE, null, ex);
                             }
-                            body.add(Double.toString(acuPago.getCuotasList().get(i - 1).getValorCuota()));
-                            body.add(Double.toString(acuPago.getCuotasList().get(i - 1).getCapitalCuota()));
+                            body.add(formatNumber((int)acuPago.getCuotasList().get(i - 1).getValorCuota()));
+                            body.add(formatNumber((int)acuPago.getCuotasList().get(i - 1).getCapitalCuota()));
                             totalCuotas = totalCuotas + acuPago.getCuotasList().get(i - 1).getCapitalCuota();
-                            body.add(Double.toString(acuPago.getCuotasList().get(i - 1).getHonorarios()));
-                            body.add(Double.toString(acuPago.getCuotasList().get(i - 1).getInteresCuota()));
+                            body.add(formatNumber((int)acuPago.getCuotasList().get(i - 1).getHonorarios()));
+                            body.add(formatNumber((int)acuPago.getCuotasList().get(i - 1).getInteresCuota()));
 
                             for (int j = 0; j < body.size(); j++) {
                                 if (j == 0 || j == 3) {
@@ -528,25 +528,25 @@ public class GenerarPdfImpl implements GenerarPdf {
                                     cellWidth = 95;
                                     contens.addRect(inicioTablaX + 180, inicioTablaY - cellHeight, cellWidth, cellHeight);
                                     contens.stroke();
-                                    nuevaLinea(Double.toString(acuPago.getValorTotalAcuerdo()), inicioTablaX + 185, inicioTablaY + 3 - cellHeight, contens, PDType1Font.HELVETICA, 13);
+                                    nuevaLinea(formatNumber((int)acuPago.getValorTotalAcuerdo()), inicioTablaX + 185, inicioTablaY + 3 - cellHeight, contens, PDType1Font.HELVETICA, 13);
                                 }
                                 if (j == 3) {
                                     cellWidth = 70;
                                     contens.addRect(inicioTablaX + 180 + 95, inicioTablaY - cellHeight, cellWidth, cellHeight);
                                     contens.stroke();
-                                    nuevaLinea(Double.toString(totalCuotas), inicioTablaX + 180 + 100, inicioTablaY + 3 - cellHeight, contens, PDType1Font.HELVETICA, 13);
+                                    nuevaLinea(formatNumber((int)totalCuotas), inicioTablaX + 180 + 100, inicioTablaY + 3 - cellHeight, contens, PDType1Font.HELVETICA, 13);
                                 }
                                 if (j == 4) {
                                     cellWidth = 95;
                                     contens.addRect(inicioTablaX + 180 + 95 + 70, inicioTablaY - cellHeight, cellWidth, cellHeight);
                                     contens.stroke();
-                                    nuevaLinea(Double.toString(acuPago.getHonorarioAcuerdo()), inicioTablaX + 180 + 100 + 70, inicioTablaY + 3 - cellHeight, contens, PDType1Font.HELVETICA, 13);
+                                    nuevaLinea(formatNumber((int)acuPago.getHonorarioAcuerdo()), inicioTablaX + 180 + 100 + 70, inicioTablaY + 3 - cellHeight, contens, PDType1Font.HELVETICA, 13);
                                 }
                                 if (j == 5) {
                                     cellWidth = 95;
                                     contens.addRect(inicioTablaX + 180 + 100 + 70 + 90, inicioTablaY - cellHeight, cellWidth, cellHeight);
                                     contens.stroke();
-                                    nuevaLinea(Double.toString(acuPago.getValorInteresesMora()), inicioTablaX + 180 + 100 + 75 + 90, inicioTablaY + 3 - cellHeight, contens, PDType1Font.HELVETICA, 13);
+                                    nuevaLinea(formatNumber((int)acuPago.getValorInteresesMora()), inicioTablaX + 180 + 100 + 75 + 90, inicioTablaY + 3 - cellHeight, contens, PDType1Font.HELVETICA, 13);
                                 }
 
                             }
