@@ -260,8 +260,10 @@ public class GenerarPdfImpl implements GenerarPdf {
                                     aumentoEspacions = 5;
                                 } else {
                                     aumentoEspacions = diferencia / (list.size() - 1);
-
-                                    if (nombreClienteLetras.length >= 4) {
+                                    
+                                    String[] nombreSplit = nombreClienteSplit.split(" ");
+                                    
+                                    if (nombreSplit.length >= 4) {
                                         switch (contador) {
                                             case 2:
                                                 aumentoEspacions = 10;
@@ -330,7 +332,8 @@ public class GenerarPdfImpl implements GenerarPdf {
                             }
 
                         }
-                        if (nombreClienteLetras.length >= 4) {
+                        String[] nombreSplit = nombreClienteSplit.split(" ");
+                        if (nombreSplit.length >= 4) {
                             switch (contador) {
                                 case 2:
                                     yStart = yStart - 30;
