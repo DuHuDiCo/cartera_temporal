@@ -44,10 +44,10 @@ public class FirmasServiceImpl implements FirmasService {
 
         MultipartFile firma = save.convertirFile(rutaRecursos);
 
-        String nombreFirmaBd = "firma-".concat(dto.getUsername().concat(".png"));
+        String nombreFirmaBd = "firma-".toUpperCase().concat(dto.getUsername().toUpperCase().concat(".png").toUpperCase());
         
         try {
-            String firmaSave = save.saveFile(firma.getBytes(), nombreFirmaBd, rutaRecursos);
+            String firmaSave = save.saveFile(firma.getBytes(), nombreFirmaBd.toUpperCase(), rutaRecursos);
         } catch (IOException ex) {
             Logger.getLogger(FirmasServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }

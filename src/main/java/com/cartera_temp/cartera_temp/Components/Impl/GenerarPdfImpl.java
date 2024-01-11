@@ -4,8 +4,10 @@ import com.cartera_temp.cartera_temp.Components.GenerarPdf;
 import com.cartera_temp.cartera_temp.Dtos.PagosCuotasDto;
 import com.cartera_temp.cartera_temp.Models.AcuerdoPago;
 import com.cartera_temp.cartera_temp.Models.CuentasPorCobrar;
+import com.cartera_temp.cartera_temp.Models.Firmas;
 import com.cartera_temp.cartera_temp.Models.Gestiones;
 import com.cartera_temp.cartera_temp.ModelsClients.Usuario;
+import com.cartera_temp.cartera_temp.Service.FirmasService;
 import com.cartera_temp.cartera_temp.Service.UsuarioClientService;
 import com.cartera_temp.cartera_temp.Utils.Functions;
 import com.cartera_temp.cartera_temp.repository.CuentasPorCobrarRepository;
@@ -39,10 +41,12 @@ public class GenerarPdfImpl implements GenerarPdf {
 
     private final CuentasPorCobrarRepository cpcR;
     private final UsuarioClientService usuClient;
+    private final FirmasService firmasService;
 
-    public GenerarPdfImpl(CuentasPorCobrarRepository cpcR, UsuarioClientService usuClient) {
+    public GenerarPdfImpl(CuentasPorCobrarRepository cpcR, UsuarioClientService usuClient, FirmasService firmasService) {
         this.cpcR = cpcR;
         this.usuClient = usuClient;
+        this.firmasService = firmasService;
     }
 
     public static boolean palabraResaltada(String palabra, String[] palabrasResaltadas) {
@@ -62,6 +66,10 @@ public class GenerarPdfImpl implements GenerarPdf {
         if (Objects.isNull(cpc)) {
             return null;
         }
+        
+        if(username == null ||  username == ""){
+            return null;
+        }
 
         List<Gestiones> gestion = cpc.getGestiones();
 
@@ -79,6 +87,14 @@ public class GenerarPdfImpl implements GenerarPdf {
         String nombreClienteSplit = nombreClienteLetras[1];
         String docCliente = cpc.getDocumentoCliente();
         String numeroObligacion = cpc.getNumeroObligacion();
+        Usuario usu = usuClient.obtenerUsuario(username);
+        if(Objects.isNull(usu)){
+            return null;
+        }
+        Firmas firma = firmasService.findFirmaByUsername(username);
+        if(Objects.isNull(firma)){
+            return null;
+        }
 
         try {
             try (PDDocument doc = new PDDocument()) {
@@ -87,22 +103,22 @@ public class GenerarPdfImpl implements GenerarPdf {
                 ClassPathResource resource = new ClassPathResource("electrohogarOpa.png");
                 ClassPathResource resourceFY = new ClassPathResource("FIRMA_YEIMAR.png");
 
-                ClassPathResource resourceFC = new ClassPathResource("FIRMA_CAROLINA.png");
+                ClassPathResource resourceFC = new ClassPathResource(firma.getNombreArchivo());
                 InputStream inputStream = resource.getInputStream();
                 InputStream inputStreamFY = resourceFY.getInputStream();
                 InputStream inputStreamFC = resourceFC.getInputStream();
                 PDImageXObject logoImage = PDImageXObject.createFromByteArray(doc, IOUtils.toByteArray(inputStream), "electrohogarOpa.png");
                 PDImageXObject firmaYeimar = PDImageXObject.createFromByteArray(doc, IOUtils.toByteArray(inputStreamFY), "FIRMA_YEIMAR.png");
-                PDImageXObject firmaCarolina = PDImageXObject.createFromByteArray(doc, IOUtils.toByteArray(inputStreamFC), "FIRMA_CAROLINA.png");
+                PDImageXObject firmaAsesorCartera = PDImageXObject.createFromByteArray(doc, IOUtils.toByteArray(inputStreamFC), firma.getNombreArchivo());
 
                 try (PDPageContentStream contens = new PDPageContentStream(doc, letras)) {
                     contens.drawImage(logoImage, 612 / 2 - 150, 680, 300, 100);
                     contens.drawImage(firmaYeimar, 80, 100, 200, 100);
-                    contens.drawImage(firmaCarolina, 320, 100, 200, 100);
+                    contens.drawImage(firmaAsesorCartera, 320, 100, 200, 100);
                     nuevaLinea("Yeimar Fernando Sanchez Gomez", 83, 93, contens, PDType1Font.HELVETICA, 12);
                     nuevaLinea("Jefe de Cartera GMJHogar S.A.S", 83, 82, contens, PDType1Font.HELVETICA_BOLD, 12);
 
-                    nuevaLinea("Carolina Jaramillo Toro", 323, 93, contens, PDType1Font.HELVETICA, 12);
+                    nuevaLinea(usu.getNombres().concat(" ").concat(usu.getApellidos()), 323, 93, contens, PDType1Font.HELVETICA, 12);
                     nuevaLinea("Analista de Cartera GMJHogar S.A.S", 323, 82, contens, PDType1Font.HELVETICA_BOLD, 12);
 
                     String ciudadHeader = "Medellín, ";
