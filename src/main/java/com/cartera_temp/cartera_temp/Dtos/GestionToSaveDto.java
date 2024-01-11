@@ -12,6 +12,8 @@ public class GestionToSaveDto {
     private boolean contact;
     
     private String detallesAdicionales;
+    
+    private Long asignatedTo;
 
     public GestionToSaveDto() {
     }
@@ -47,5 +49,14 @@ public class GestionToSaveDto {
     public void setClasificacion(ClasificacionDtoTipo clasificacion) {
         this.clasificacion = clasificacion;
     }
+
+    public Long getAsignatedTo() {
+        return asignatedTo;
+    }
+
+    public void setAsignatedTo(Long asignatedTo) {
+        this.asignatedTo = asignatedTo;
+    }
+    
     
 }

@@ -29,6 +29,7 @@ public class ClasificacionGestion {
     private String clasificacion;
 
     @OneToOne(mappedBy = "clasificacionGestion", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private Gestiones gestion;
 
 

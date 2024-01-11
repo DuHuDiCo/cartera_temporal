@@ -24,11 +24,13 @@ import com.cartera_temp.cartera_temp.Models.Gestiones;
 import com.cartera_temp.cartera_temp.Models.NombresClasificacion;
 import com.cartera_temp.cartera_temp.Models.HistoricoAcuerdosPago;
 import com.cartera_temp.cartera_temp.Models.Nota;
+import com.cartera_temp.cartera_temp.Models.Notificaciones;
 import com.cartera_temp.cartera_temp.Models.Tarea;
 import com.cartera_temp.cartera_temp.ModelsClients.Usuario;
 import com.cartera_temp.cartera_temp.Service.AsesorCarteraService;
 import com.cartera_temp.cartera_temp.Service.FileService;
 import com.cartera_temp.cartera_temp.Service.GestionesService;
+import com.cartera_temp.cartera_temp.Service.NotificacionesService;
 import com.cartera_temp.cartera_temp.Service.UsuarioClientService;
 import com.cartera_temp.cartera_temp.Utils.Functions;
 import com.cartera_temp.cartera_temp.Utils.SaveFiles;
@@ -71,7 +73,7 @@ public class GestionesServiceImpl implements GestionesService {
     private final SedeRepository sedeRepository;
     private final BancoRepository bancoRepository;
     private final SaveFiles saveFiles;
-
+    private final NotificacionesService notificacionesService;
     private final AcuerdoPagoRepository acuerdoPagoRepository;
     private final ClasificacionGestionRepository clasificacionGestionRepository;
     private final NotaRepository notaRepository;
@@ -83,7 +85,7 @@ public class GestionesServiceImpl implements GestionesService {
     private final HttpServletRequest request;
     private final GenerarPdf pdf;
 
-    public GestionesServiceImpl(GestionesRepository gestionesRepository, CuentasPorCobrarRepository cuentaCobrarRepository, UsuarioClientService usuarioClientService, AsesorCarteraService asesorCartera, FileService fileService, SedeRepository sedeRepository, BancoRepository bancoRepository, SaveFiles saveFiles, AcuerdoPagoRepository acuerdoPagoRepository, ClasificacionGestionRepository clasificacionGestionRepository, NotaRepository notaRepository, TareaRepository tareaRepository, NombresClasificacionRepository nombresClasificacionRepository, CuotaRepository cuotaRepository, HistoricoAcuerdoPagoRepository historicoAcuerdoPagoRepository, ClientesClient clientesClient, HttpServletRequest request, GenerarPdf pdf) {
+    public GestionesServiceImpl(GestionesRepository gestionesRepository, CuentasPorCobrarRepository cuentaCobrarRepository, UsuarioClientService usuarioClientService, AsesorCarteraService asesorCartera, FileService fileService, SedeRepository sedeRepository, BancoRepository bancoRepository, SaveFiles saveFiles, NotificacionesService notificacionesService, AcuerdoPagoRepository acuerdoPagoRepository, ClasificacionGestionRepository clasificacionGestionRepository, NotaRepository notaRepository, TareaRepository tareaRepository, NombresClasificacionRepository nombresClasificacionRepository, CuotaRepository cuotaRepository, HistoricoAcuerdoPagoRepository historicoAcuerdoPagoRepository, ClientesClient clientesClient, HttpServletRequest request, GenerarPdf pdf) {
         this.gestionesRepository = gestionesRepository;
         this.cuentaCobrarRepository = cuentaCobrarRepository;
         this.usuarioClientService = usuarioClientService;
@@ -92,6 +94,7 @@ public class GestionesServiceImpl implements GestionesService {
         this.sedeRepository = sedeRepository;
         this.bancoRepository = bancoRepository;
         this.saveFiles = saveFiles;
+        this.notificacionesService = notificacionesService;
         this.acuerdoPagoRepository = acuerdoPagoRepository;
         this.clasificacionGestionRepository = clasificacionGestionRepository;
         this.notaRepository = notaRepository;
@@ -184,7 +187,7 @@ public class GestionesServiceImpl implements GestionesService {
                 couta.setInteresCuota(cuotas.getInteresCuota());
                 couta.setNumeroCuota(cuotas.getNumeroCuota());
                 couta.setValorCuota(cuotas.getValorCuota());
-
+                
                 acuerdoPago.agregarCuota(couta);
             }
 
@@ -195,7 +198,19 @@ public class GestionesServiceImpl implements GestionesService {
 
             acuerdoPago.setNombresClasificacion(nombre);
 
+            Notificaciones notificacion = new Notificaciones();
+            notificacion.setTipoGestion("TAREA");
+            try {
+                notificacion.setFechaCreacion(Functions.obtenerFechaYhora());
+            } catch (ParseException ex) {
+                Logger.getLogger(GestionesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            notificacion.setFechaFinalizacion(acuerdoPago.getFechaCompromiso());
+            
+            notificacion.setDesignatedTo(dto.getAsignatedTo());
+
             acuerdoPago = acuerdoPagoRepository.save(acuerdoPago);
+            notificacion = notificacionesService.crearNotificaciones(notificacion);
 
             gestion.setClasificacion(acuerdoPago);
 
@@ -244,6 +259,7 @@ public class GestionesServiceImpl implements GestionesService {
             }
 
             tarea.setClasificacion(dto.getClasificacion().getTipoClasificacion());
+            tarea.setDesignatedTo(dto.getAsignatedTo());
 
             NombresClasificacion nombre = nombresClasificacionRepository.findFirstByNombre(clasificacion.getNombre());
             if (Objects.isNull(nombre)) {
@@ -251,7 +267,17 @@ public class GestionesServiceImpl implements GestionesService {
             }
             tarea.setNombresClasificacion(nombre);
 
+            //guardar en tabla notificaciones
+            Notificaciones notificacion = new Notificaciones();
+            notificacion.setTipoGestion("TAREA");
+            notificacion.setFechaCreacion(tarea.getFechaTarea());
+            notificacion.setFechaFinalizacion(tarea.getFechaFinTarea());
+            
+            notificacion.setDesignatedTo(tarea.getDesignatedTo());
+
             tarea = tareaRepository.save(tarea);
+
+            notificacion = notificacionesService.crearNotificaciones(notificacion);
 
             gestion.setClasificacion(tarea);
 

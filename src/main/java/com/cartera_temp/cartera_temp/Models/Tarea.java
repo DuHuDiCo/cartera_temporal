@@ -33,6 +33,9 @@ public class Tarea extends ClasificacionGestion {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "asesor_cartera_id", referencedColumnName = "id_asesor_cartera")
     private AsesorCartera asesor;
+    
+    @Column(name = "designated_to")
+    private Long designatedTo;
 
     @ManyToOne
     @JoinColumn(name = "tipo_clasificacion_id")
@@ -101,7 +104,14 @@ public class Tarea extends ClasificacionGestion {
         this.isActive = isActive;
     }
 
-    
+    public Long getDesignatedTo() {
+        return designatedTo;
+    }
+
+    public void setDesignatedTo(Long designatedTo) {
+        this.designatedTo = designatedTo;
+    }
+
     
 
 
