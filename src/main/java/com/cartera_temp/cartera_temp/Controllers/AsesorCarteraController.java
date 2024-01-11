@@ -1,5 +1,6 @@
 package com.cartera_temp.cartera_temp.Controllers;
 
+import com.cartera_temp.cartera_temp.Dtos.AsesorCarteraResponse;
 import com.cartera_temp.cartera_temp.Models.AsesorCartera;
 import com.cartera_temp.cartera_temp.Service.AsesorCarteraService;
 import java.util.List;
@@ -24,8 +25,8 @@ public class AsesorCarteraController {
     }
     
     @GetMapping("/getAllAsesores")
-    public ResponseEntity<List<AsesorCartera>> getAllASesores(){
-        List<AsesorCartera> asesor = acs.listarAsesores();
+    public ResponseEntity<List<AsesorCarteraResponse>> getAllASesores(){
+        List<AsesorCarteraResponse> asesor = acs.listarAsesores();
         return ResponseEntity.ok(asesor );
     }
     

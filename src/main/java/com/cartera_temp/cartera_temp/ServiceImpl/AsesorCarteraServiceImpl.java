@@ -7,6 +7,7 @@ import com.cartera_temp.cartera_temp.Models.AsesorCartera;
 import com.cartera_temp.cartera_temp.ModelsClients.Usuario;
 import com.cartera_temp.cartera_temp.Service.AsesorCarteraService;
 import com.cartera_temp.cartera_temp.repository.AsesorCarteraRepository;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
@@ -39,16 +40,17 @@ public class AsesorCarteraServiceImpl implements AsesorCarteraService{
     }
 
     @Override
-    public List<AsesorCartera> listarAsesores() {
+    public List<AsesorCarteraResponse> listarAsesores() {
         List<AsesorCartera> asesor = asesorCarteraRepository.findAll();
-        AsesorCarteraResponse response = new AsesorCarteraResponse();
         String token = request.getAttribute("token").toString();
+        List<AsesorCarteraResponse> listRes = new ArrayList<>();
         for (AsesorCartera asesorCartera : asesor) {
-            
+            AsesorCarteraResponse response = new AsesorCarteraResponse();
             Usuario usu = usuClient.getUsuarioById(asesorCartera.getIdAsesorCartera(), token);
-            
+            response.setUsuario(usu);
+            listRes.add(response);
         }
-        return asesor;
+        return listRes;
     }
 
     @Override
