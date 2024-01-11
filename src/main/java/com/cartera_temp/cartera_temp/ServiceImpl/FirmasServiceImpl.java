@@ -10,7 +10,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,8 +22,8 @@ public class FirmasServiceImpl implements FirmasService {
     private final FirmasRespository fr;
     private final SaveFiles save;
 
-    @Value("${spring.resources.static-locations}")
-    private String rutaRecursos;
+
+    private final String rutaRecursos = "J:\\Duvan Humberto Diaz Contreras\\ElectroHogar\\GMJHOGAR_SOFTWARE\\cartera_microservice_temporal\\cartera_temporal\\src\\main\\resources";
 
     public FirmasServiceImpl(FirmasRespository fr, SaveFiles save) {
         this.fr = fr;

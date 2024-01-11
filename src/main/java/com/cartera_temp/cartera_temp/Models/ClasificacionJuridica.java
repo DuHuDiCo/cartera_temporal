@@ -24,7 +24,7 @@ public class ClasificacionJuridica {
     @Column(name = "clasificacion_juridica")
     private String clasificacionJuridica;
     
-    @OneToMany (mappedBy = "clasificacion_juridica", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany (mappedBy = "clasificacionJuridica", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<CuentasPorCobrar> cuentasPorCobrar;
 
