@@ -82,7 +82,7 @@ public class CondicionEspecialServiceImpl implements CondicionEspecialService{
         
         CondicionEspecial ceUpdate = condicionEspecialRepository.findById(ce.getIdCondicionEspecial()).orElse(null);
         if(Objects.nonNull(ceUpdate)){
-            ceUpdate.setCondicionEspecial(ce.getCondicionEspecial());
+            ceUpdate.setCondicionEspecial(ce.getCondicionEspecial().toUpperCase());
             ceUpdate = condicionEspecialRepository.save(ceUpdate);
             return ceUpdate;
         }

@@ -6,6 +6,7 @@ import com.cartera_temp.cartera_temp.Service.FirmasService;
 import java.util.List;
 import java.util.Objects;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/firmasController")
+@CrossOrigin (origins = "*", maxAge = 3600)
 public class FirmasController {
     
     private final FirmasService fs;
