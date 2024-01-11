@@ -19,11 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/condicionEspecial")
 @CrossOrigin(origins = "*", maxAge = 3600)
-public class CondicionEspecialServiceImpl {
+public class CondicionEspecialController {
     
     private final CondicionEspecialService ces;
 
-    public CondicionEspecialServiceImpl(CondicionEspecialService ces) {
+    public CondicionEspecialController(CondicionEspecialService ces) {
         this.ces = ces;
     }
     
