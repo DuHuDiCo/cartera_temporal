@@ -30,7 +30,7 @@ public class CondicionEspecialServiceImpl implements CondicionEspecialService{
         
         CondicionEspecial ceSave = new CondicionEspecial();
         
-        ceSave.setCondicionEspecial(ce.getCondicionEspecial());
+        ceSave.setCondicionEspecial(ce.getCondicionEspecial().toUpperCase());
         
         ceSave = condicionEspecialRepository.save(ceSave);
         return ceSave;
