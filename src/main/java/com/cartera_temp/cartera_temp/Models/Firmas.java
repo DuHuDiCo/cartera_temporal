@@ -19,10 +19,16 @@ public class Firmas {
     @Column(name = "id_firma")
     private Long idFirma;
     
-    @Column(name = "nombreArchivo")
+    @Column(name = "ruta")
     @NotBlank
     @NotNull
-    private String nombreArchivo;
+    private String ruta;
+    
+    
+    @Column(name = "filename")
+    @NotBlank
+    @NotNull
+    private String filename;
     
     @Column(name = "username")
     @NotBlank
@@ -40,13 +46,15 @@ public class Firmas {
         this.idFirma = idFirma;
     }
 
-    public String getNombreArchivo() {
-        return nombreArchivo;
+    public String getRuta() {
+        return ruta;
     }
 
-    public void setNombreArchivo(String nombreArchivo) {
-        this.nombreArchivo = nombreArchivo;
+    public void setRuta(String ruta) {
+        this.ruta = ruta;
     }
+
+ 
 
     public String getUsername() {
         return username;
@@ -54,6 +62,14 @@ public class Firmas {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
     }
     
     

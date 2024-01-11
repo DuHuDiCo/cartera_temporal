@@ -124,6 +124,10 @@ public class GestionesServiceImpl implements GestionesService {
             return null;
         }
 
+        Usuario usuDesignated = usuarioClientService.obtenerUsuario(dto.getUsername());
+        if (Objects.isNull(usuDesignated)) {
+            return null;
+        }
         AsesorCartera asesor = asesorCartera.findAsesor(usu.getIdUsuario());
         if (Objects.isNull(asesor)) {
             return null;
@@ -187,7 +191,7 @@ public class GestionesServiceImpl implements GestionesService {
                 couta.setInteresCuota(cuotas.getInteresCuota());
                 couta.setNumeroCuota(cuotas.getNumeroCuota());
                 couta.setValorCuota(cuotas.getValorCuota());
-                
+
                 acuerdoPago.agregarCuota(couta);
             }
 
@@ -199,15 +203,15 @@ public class GestionesServiceImpl implements GestionesService {
             acuerdoPago.setNombresClasificacion(nombre);
 
             Notificaciones notificacion = new Notificaciones();
-            notificacion.setTipoGestion("TAREA");
+            notificacion.setTipoGestion("ACUERDO DE PAGO");
             try {
                 notificacion.setFechaCreacion(Functions.obtenerFechaYhora());
             } catch (ParseException ex) {
                 Logger.getLogger(GestionesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
             notificacion.setFechaFinalizacion(acuerdoPago.getFechaCompromiso());
-            
-            notificacion.setDesignatedTo(dto.getAsignatedTo());
+            notificacion.setNumeroObligacion(cpc.getNumeroObligacion());
+            notificacion.setDesignatedTo(usuDesignated.getIdUsuario());
 
             acuerdoPago = acuerdoPagoRepository.save(acuerdoPago);
             notificacion = notificacionesService.crearNotificaciones(notificacion);
@@ -259,7 +263,7 @@ public class GestionesServiceImpl implements GestionesService {
             }
 
             tarea.setClasificacion(dto.getClasificacion().getTipoClasificacion());
-            tarea.setDesignatedTo(dto.getAsignatedTo());
+            tarea.setDesignatedTo(usuDesignated.getIdUsuario());
 
             NombresClasificacion nombre = nombresClasificacionRepository.findFirstByNombre(clasificacion.getNombre());
             if (Objects.isNull(nombre)) {
@@ -272,7 +276,7 @@ public class GestionesServiceImpl implements GestionesService {
             notificacion.setTipoGestion("TAREA");
             notificacion.setFechaCreacion(tarea.getFechaTarea());
             notificacion.setFechaFinalizacion(tarea.getFechaFinTarea());
-            
+            notificacion.setNumeroObligacion(cpc.getNumeroObligacion());
             notificacion.setDesignatedTo(tarea.getDesignatedTo());
 
             tarea = tareaRepository.save(tarea);

@@ -13,7 +13,7 @@ public class GestionToSaveDto {
     
     private String detallesAdicionales;
     
-    private Long asignatedTo;
+    private String username;
 
     public GestionToSaveDto() {
     }
@@ -50,13 +50,15 @@ public class GestionToSaveDto {
         this.clasificacion = clasificacion;
     }
 
-    public Long getAsignatedTo() {
-        return asignatedTo;
+    public String getUsername() {
+        return username;
     }
 
-    public void setAsignatedTo(Long asignatedTo) {
-        this.asignatedTo = asignatedTo;
+    public void setUsername(String username) {
+        this.username = username;
     }
+
+  
     
     
 }

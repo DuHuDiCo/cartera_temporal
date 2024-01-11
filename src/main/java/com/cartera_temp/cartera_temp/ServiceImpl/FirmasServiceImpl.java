@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import org.springframework.stereotype.Service;
@@ -22,12 +21,13 @@ public class FirmasServiceImpl implements FirmasService {
     private final FirmasRespository fr;
     private final SaveFiles save;
 
-
-    private final String rutaRecursos = "J:\\Duvan Humberto Diaz Contreras\\ElectroHogar\\GMJHOGAR_SOFTWARE\\cartera_microservice_temporal\\cartera_temporal\\src\\main\\resources";
+    @Value("${ruta.firmas}")
+    private String ruta;
 
     public FirmasServiceImpl(FirmasRespository fr, SaveFiles save) {
         this.fr = fr;
         this.save = save;
+
     }
 
     @Override
@@ -42,20 +42,27 @@ public class FirmasServiceImpl implements FirmasService {
             return null;
         }
 
-        MultipartFile firma = save.convertirFile(rutaRecursos);
-
-        String nombreFirmaBd = "firma-".toUpperCase().concat(dto.getUsername().toUpperCase().concat(".png").toUpperCase());
+        String[] data = dto.getBase64().split(",");
         
+        MultipartFile firma = new CustomMultipartFile(data[1], data[0]);
+        
+        
+        
+        String nombreFirmaBd = firma.getOriginalFilename();
+
+        String firmaSave = null;
         try {
-            String firmaSave = save.saveFile(firma.getBytes(), nombreFirmaBd.toUpperCase(), rutaRecursos);
+            firmaSave = save.saveFile(firma.getBytes(), nombreFirmaBd, ruta.concat("\\").concat(nombreFirmaBd));
+
         } catch (IOException ex) {
             Logger.getLogger(FirmasServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         Firmas fSave = new Firmas();
 
-        fSave.setNombreArchivo(nombreFirmaBd.toUpperCase());
+        fSave.setFilename(nombreFirmaBd);
         fSave.setUsername(dto.getUsername());
+        fSave.setRuta(ruta.concat("\\").concat(firmaSave));
         fSave = fr.save(fSave);
         return fSave;
 

@@ -75,5 +75,10 @@ public class CustomMultipartFile implements MultipartFile {
             fos.write(fileContent);
         }
     }
+    
+    
+    public String getExtension(){
+        return extension;
+    }
 
 }

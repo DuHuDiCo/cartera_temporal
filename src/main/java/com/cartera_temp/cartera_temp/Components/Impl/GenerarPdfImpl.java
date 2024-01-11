@@ -10,9 +10,12 @@ import com.cartera_temp.cartera_temp.ModelsClients.Usuario;
 import com.cartera_temp.cartera_temp.Service.FirmasService;
 import com.cartera_temp.cartera_temp.Service.UsuarioClientService;
 import com.cartera_temp.cartera_temp.Utils.Functions;
+import com.cartera_temp.cartera_temp.Utils.SaveFiles;
 import com.cartera_temp.cartera_temp.repository.CuentasPorCobrarRepository;
 import com.tenpisoft.n2w.MoneyConverters;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -42,11 +45,13 @@ public class GenerarPdfImpl implements GenerarPdf {
     private final CuentasPorCobrarRepository cpcR;
     private final UsuarioClientService usuClient;
     private final FirmasService firmasService;
+    private final SaveFiles saveFiles;
 
-    public GenerarPdfImpl(CuentasPorCobrarRepository cpcR, UsuarioClientService usuClient, FirmasService firmasService) {
+    public GenerarPdfImpl(CuentasPorCobrarRepository cpcR, UsuarioClientService usuClient, FirmasService firmasService, SaveFiles saveFiles) {
         this.cpcR = cpcR;
         this.usuClient = usuClient;
         this.firmasService = firmasService;
+        this.saveFiles = saveFiles;
     }
 
     public static boolean palabraResaltada(String palabra, String[] palabrasResaltadas) {
@@ -66,8 +71,8 @@ public class GenerarPdfImpl implements GenerarPdf {
         if (Objects.isNull(cpc)) {
             return null;
         }
-        
-        if(username == null ||  username == ""){
+
+        if (username == null || username == "") {
             return null;
         }
 
@@ -88,11 +93,11 @@ public class GenerarPdfImpl implements GenerarPdf {
         String docCliente = cpc.getDocumentoCliente();
         String numeroObligacion = cpc.getNumeroObligacion();
         Usuario usu = usuClient.obtenerUsuario(username);
-        if(Objects.isNull(usu)){
+        if (Objects.isNull(usu)) {
             return null;
         }
         Firmas firma = firmasService.findFirmaByUsername(username);
-        if(Objects.isNull(firma)){
+        if (Objects.isNull(firma)) {
             return null;
         }
 
@@ -103,13 +108,17 @@ public class GenerarPdfImpl implements GenerarPdf {
                 ClassPathResource resource = new ClassPathResource("electrohogarOpa.png");
                 ClassPathResource resourceFY = new ClassPathResource("FIRMA_YEIMAR.png");
 
-                ClassPathResource resourceFC = new ClassPathResource(firma.getNombreArchivo());
+            
                 InputStream inputStream = resource.getInputStream();
                 InputStream inputStreamFY = resourceFY.getInputStream();
-                InputStream inputStreamFC = resourceFC.getInputStream();
+                
+//                File file = new File(firma.getRuta());
+//                byte[] inputStreamFC =saveFiles.fileToByte(firma.getRuta());
+//                InputStream inputE = new FileInputStream(file);
+//                inputE.read(inputStreamFC);
                 PDImageXObject logoImage = PDImageXObject.createFromByteArray(doc, IOUtils.toByteArray(inputStream), "electrohogarOpa.png");
                 PDImageXObject firmaYeimar = PDImageXObject.createFromByteArray(doc, IOUtils.toByteArray(inputStreamFY), "FIRMA_YEIMAR.png");
-                PDImageXObject firmaAsesorCartera = PDImageXObject.createFromByteArray(doc, IOUtils.toByteArray(inputStreamFC), firma.getNombreArchivo());
+                PDImageXObject firmaAsesorCartera = PDImageXObject.createFromFile(firma.getRuta(), doc);
 
                 try (PDPageContentStream contens = new PDPageContentStream(doc, letras)) {
                     contens.drawImage(logoImage, 612 / 2 - 150, 680, 300, 100);
@@ -150,8 +159,8 @@ public class GenerarPdfImpl implements GenerarPdf {
                     nuevaLinea(ciudadHeader.concat(fechaFormatHeader), 72, 660, contens, PDType1Font.HELVETICA, 12);
                     nuevaLinea(tituloLetras, 250, 640, contens, PDType1Font.HELVETICA_BOLD, 12);
 
-                    String valorAcuerdoLetras = formatNumber((int)acuPagoLetras.getValorTotalAcuerdo());
-                    String valorCuotaAcuerdo = formatNumber((int)acuPagoLetras.getCuotasList().get(0).getValorCuota());
+                    String valorAcuerdoLetras = formatNumber((int) acuPagoLetras.getValorTotalAcuerdo());
+                    String valorCuotaAcuerdo = formatNumber((int) acuPagoLetras.getCuotasList().get(0).getValorCuota());
                     String inquietud = "Cualquier inquietud puede comunicarse al 5205330 ext. 1009.";
 
                     String mensajeLetras1 = "El deudor ".concat(nombreClienteSplit).concat(" con número de identificación ").concat(docCliente.concat(", a través de este documento me comprometo a cumplir el siguiente compromiso:"));
@@ -276,9 +285,9 @@ public class GenerarPdfImpl implements GenerarPdf {
                                     aumentoEspacions = 5;
                                 } else {
                                     aumentoEspacions = diferencia / (list.size() - 1);
-                                    
+
                                     String[] nombreSplit = nombreClienteSplit.split(" ");
-                                    
+
                                     if (nombreSplit.length >= 4) {
                                         switch (contador) {
                                             case 2:
@@ -496,11 +505,11 @@ public class GenerarPdfImpl implements GenerarPdf {
                             } catch (ParseException ex) {
                                 Logger.getLogger(GenerarPdfImpl.class.getName()).log(Level.SEVERE, null, ex);
                             }
-                            body.add(formatNumber((int)acuPago.getCuotasList().get(i - 1).getValorCuota()));
-                            body.add(formatNumber((int)acuPago.getCuotasList().get(i - 1).getCapitalCuota()));
+                            body.add(formatNumber((int) acuPago.getCuotasList().get(i - 1).getValorCuota()));
+                            body.add(formatNumber((int) acuPago.getCuotasList().get(i - 1).getCapitalCuota()));
                             totalCuotas = totalCuotas + acuPago.getCuotasList().get(i - 1).getCapitalCuota();
-                            body.add(formatNumber((int)acuPago.getCuotasList().get(i - 1).getHonorarios()));
-                            body.add(formatNumber((int)acuPago.getCuotasList().get(i - 1).getInteresCuota()));
+                            body.add(formatNumber((int) acuPago.getCuotasList().get(i - 1).getHonorarios()));
+                            body.add(formatNumber((int) acuPago.getCuotasList().get(i - 1).getInteresCuota()));
 
                             for (int j = 0; j < body.size(); j++) {
                                 if (j == 0 || j == 3) {
@@ -544,25 +553,25 @@ public class GenerarPdfImpl implements GenerarPdf {
                                     cellWidth = 95;
                                     contens.addRect(inicioTablaX + 180, inicioTablaY - cellHeight, cellWidth, cellHeight);
                                     contens.stroke();
-                                    nuevaLinea(formatNumber((int)acuPago.getValorTotalAcuerdo()), inicioTablaX + 185, inicioTablaY + 3 - cellHeight, contens, PDType1Font.HELVETICA, 13);
+                                    nuevaLinea(formatNumber((int) acuPago.getValorTotalAcuerdo()), inicioTablaX + 185, inicioTablaY + 3 - cellHeight, contens, PDType1Font.HELVETICA, 13);
                                 }
                                 if (j == 3) {
                                     cellWidth = 70;
                                     contens.addRect(inicioTablaX + 180 + 95, inicioTablaY - cellHeight, cellWidth, cellHeight);
                                     contens.stroke();
-                                    nuevaLinea(formatNumber((int)totalCuotas), inicioTablaX + 180 + 100, inicioTablaY + 3 - cellHeight, contens, PDType1Font.HELVETICA, 13);
+                                    nuevaLinea(formatNumber((int) totalCuotas), inicioTablaX + 180 + 100, inicioTablaY + 3 - cellHeight, contens, PDType1Font.HELVETICA, 13);
                                 }
                                 if (j == 4) {
                                     cellWidth = 95;
                                     contens.addRect(inicioTablaX + 180 + 95 + 70, inicioTablaY - cellHeight, cellWidth, cellHeight);
                                     contens.stroke();
-                                    nuevaLinea(formatNumber((int)acuPago.getHonorarioAcuerdo()), inicioTablaX + 180 + 100 + 70, inicioTablaY + 3 - cellHeight, contens, PDType1Font.HELVETICA, 13);
+                                    nuevaLinea(formatNumber((int) acuPago.getHonorarioAcuerdo()), inicioTablaX + 180 + 100 + 70, inicioTablaY + 3 - cellHeight, contens, PDType1Font.HELVETICA, 13);
                                 }
                                 if (j == 5) {
                                     cellWidth = 95;
                                     contens.addRect(inicioTablaX + 180 + 100 + 70 + 90, inicioTablaY - cellHeight, cellWidth, cellHeight);
                                     contens.stroke();
-                                    nuevaLinea(formatNumber((int)acuPago.getValorInteresesMora()), inicioTablaX + 180 + 100 + 75 + 90, inicioTablaY + 3 - cellHeight, contens, PDType1Font.HELVETICA, 13);
+                                    nuevaLinea(formatNumber((int) acuPago.getValorInteresesMora()), inicioTablaX + 180 + 100 + 75 + 90, inicioTablaY + 3 - cellHeight, contens, PDType1Font.HELVETICA, 13);
                                 }
 
                             }
