@@ -33,6 +33,9 @@ public class Notificaciones {
    @Column(name = "numero_obligacion", length = 50)
     private String numeroObligacion;
     
+   @Column(name = "cleinte", length = 150)
+    private String cliente;
+   
      @Column(name = "id_designated_to")
     private Long designatedTo;
 
@@ -87,7 +90,17 @@ public class Notificaciones {
     public void setNumeroObligacion(String numeroObligacion) {
         this.numeroObligacion = numeroObligacion;
     }
+
+    public String getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(String cliente) {
+        this.cliente = cliente;
+    }
      
+    
+    
      
 
 }

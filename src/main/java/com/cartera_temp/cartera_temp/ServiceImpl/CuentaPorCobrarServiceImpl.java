@@ -210,7 +210,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             int diasVecidos = Functions.diferenciaFechas(cuenta.getFechaVencimiento());
             CuentasPorCobrarResponse c = modelMapper.map(cuenta, CuentasPorCobrarResponse.class);
             if (diasVecidos < 0) {
-                c.setDiasVencidos(diasVecidos);
+                c.setDiasVencidos(0);
             } else {
                 c.setDiasVencidos(diasVecidos);
             }

@@ -212,7 +212,7 @@ public class GestionesServiceImpl implements GestionesService {
             notificacion.setFechaFinalizacion(acuerdoPago.getFechaCompromiso());
             notificacion.setNumeroObligacion(cpc.getNumeroObligacion());
             notificacion.setDesignatedTo(usuDesignated.getIdUsuario());
-
+            notificacion.setCliente(cpc.getCliente());
             acuerdoPago = acuerdoPagoRepository.save(acuerdoPago);
             notificacion = notificacionesService.crearNotificaciones(notificacion);
 
