@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -28,7 +30,7 @@ public class FirmasController {
     }
     
     @PostMapping("/saveFirma")
-    public ResponseEntity<Firmas> save (FirmasDto dto){
+    public ResponseEntity<Firmas> save (@RequestBody() FirmasDto dto){
         Firmas f = fs.guardarfirmas(dto);
         if(Objects.isNull(f)){
             return ResponseEntity.badRequest().build();
@@ -43,7 +45,7 @@ public class FirmasController {
     }
     
     @GetMapping("/obtenerFirmaByUsername")
-    public ResponseEntity<Firmas> findByUsername(String username){
+    public ResponseEntity<Firmas> findByUsername(@RequestParam(name = "username") String username){
         Firmas f = fs.findFirmaByUsername(username);
         if(Objects.isNull(f)){
             return ResponseEntity.badRequest().build();

@@ -30,7 +30,8 @@ public class Notificaciones {
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaFinalizacion;
     
-   
+   @Column(name = "numero_obligacion", length = 50)
+    private String numeroObligacion;
     
      @Column(name = "id_designated_to")
     private Long designatedTo;
@@ -77,6 +78,14 @@ public class Notificaciones {
 
     public void setDesignatedTo(Long designatedTo) {
         this.designatedTo = designatedTo;
+    }
+
+    public String getNumeroObligacion() {
+        return numeroObligacion;
+    }
+
+    public void setNumeroObligacion(String numeroObligacion) {
+        this.numeroObligacion = numeroObligacion;
     }
      
      

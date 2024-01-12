@@ -46,7 +46,8 @@ public class AsesorCarteraServiceImpl implements AsesorCarteraService{
         List<AsesorCarteraResponse> listRes = new ArrayList<>();
         for (AsesorCartera asesorCartera : asesor) {
             AsesorCarteraResponse response = new AsesorCarteraResponse();
-            Usuario usu = usuClient.getUsuarioById(asesorCartera.getIdAsesorCartera(), token);
+            response.setIdAsesorCartera(asesorCartera.getIdAsesorCartera());
+            Usuario usu = usuClient.getUsuarioById(asesorCartera.getUsuarioId(), token);
             response.setUsuario(usu);
             listRes.add(response);
         }
