@@ -91,7 +91,7 @@ public class GenerarPdfImpl implements GenerarPdf {
         String[] nombreClienteLetras = cpc.getCliente().toUpperCase().split("-");
         String nombreClienteSplit = nombreClienteLetras[1];
         String docCliente = cpc.getDocumentoCliente();
-        String numeroObligacion = cpc.getNumeroObligacion();
+        String pagare = cpc.getPagare();
         Usuario usu = usuClient.obtenerUsuario(username);
         if (Objects.isNull(usu)) {
             return null;
@@ -434,7 +434,7 @@ public class GenerarPdfImpl implements GenerarPdf {
                     String sedeDoc = "Sede: ".toUpperCase();
                     String nombreClienteDoc = "Nombre del cliente: ".toUpperCase();
                     String numeroDocumentoDoc = "Documento del cliente: ".toUpperCase();
-                    String numeroObligacionDoc = "Numero de la obligacion: ".toUpperCase();
+                    String numeroObligacionDoc = "Pagare: ".toUpperCase();
 
                     //CREACION DE SUBTITULOS
                     nuevaLinea(nombreClienteDoc, 70, 720, contens, PDType1Font.HELVETICA_BOLD, 12);
@@ -450,7 +450,7 @@ public class GenerarPdfImpl implements GenerarPdf {
                     nuevaLinea(fecha, 117, 660, contens, PDType1Font.HELVETICA, 12);
 
                     nuevaLinea(numeroObligacionDoc, 70, 640, contens, PDType1Font.HELVETICA_BOLD, 12);
-                    nuevaLinea(numeroObligacion, 247, 640, contens, PDType1Font.HELVETICA, 12);
+                    nuevaLinea(pagare, 247, 640, contens, PDType1Font.HELVETICA, 12);
 
                     String[] cabecerosList = {"#Cuotas", "F.Vencimiento", "Valor cuota", "Capital", "Honorarios", "Intereses"};
 
@@ -603,7 +603,7 @@ public class GenerarPdfImpl implements GenerarPdf {
         }
 
         //DECLARACION DE VARIABLES PARA EL BODY DE LA TABLA
-        String clientePago = cpc.getCliente();
+        String[] clientePago = cpc.getCliente().split("-");
         int valorPago = dto.getValorTotal();
         MoneyConverters converter1 = MoneyConverters.SPANISH_BANKING_MONEY_VALUE;
         String valorEnPalabras = converter1.asWords(new BigDecimal(valorPago)).toUpperCase();
@@ -696,7 +696,7 @@ public class GenerarPdfImpl implements GenerarPdf {
                         if (i == 0) {
                             contens.addRect(inicioTablaX, inicioTablaY + 20, cellWidth, cellHeight - 40);
                             contens.stroke();
-                            nuevaLinea("Hemos recibido de: ".concat(clientePago), inicioTablaX + 5, inicioTablaY + 55, contens, PDType1Font.HELVETICA, 11);
+                            nuevaLinea("Hemos recibido de: ".concat(clientePago[1]), inicioTablaX + 5, inicioTablaY + 55, contens, PDType1Font.HELVETICA, 11);
                             nuevaLinea("La cantidad de: ".concat("$").concat(formatNumber(valorPago)), inicioTablaX + 5, inicioTablaY + 40, contens, PDType1Font.HELVETICA, 11);
                             nuevaLinea("Son: ".concat(valorDocumentoPalabras.trim()).toUpperCase(), inicioTablaX + 5, inicioTablaY + 25, contens, PDType1Font.HELVETICA, 9);
 
