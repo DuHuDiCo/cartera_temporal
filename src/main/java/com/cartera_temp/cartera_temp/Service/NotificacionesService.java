@@ -9,7 +9,7 @@ public interface NotificacionesService {
 
     public Notificaciones crearNotificaciones(Notificaciones notificaciones);
     
-    public List<Notificaciones> listarNotificacionesByAsignated(Long idAsignated);
+    public List<Notificaciones> listarNotificacionesByAsignated(String username);
     
     
     

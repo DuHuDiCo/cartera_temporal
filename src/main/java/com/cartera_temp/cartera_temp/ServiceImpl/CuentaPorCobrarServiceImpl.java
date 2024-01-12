@@ -97,9 +97,6 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
         this.condicionEspecialRepository = condicionEspecialRepository;
     }
 
-    
-    
-
     @Override
     public List<CuentasPorCobrar> guardarCuentas(List<CuentasPorCobrarDto> cuentasPorCobrarDto) {
 
@@ -116,14 +113,14 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             if (Objects.isNull(tv)) {
                 return null;
             }
-            
+
             ClasificacionJuridica cj = clasificacionJuridicaService.getClasificacionByNombre(cuentaPorCobrar.getClasificacionJuridica().toUpperCase());
-            if(Objects.isNull(cj)){
+            if (Objects.isNull(cj)) {
                 return null;
             }
-            
+
             CondicionEspecial ce = condicionEspecialRepository.findByCondicionEspecial(cuentaPorCobrar.getCondicionEspecial().toUpperCase());
-            if(Objects.isNull(ce)){
+            if (Objects.isNull(ce)) {
                 return null;
             }
 
@@ -212,41 +209,44 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             //calcular nuevos dias vencidos
             int diasVecidos = Functions.diferenciaFechas(cuenta.getFechaVencimiento());
             CuentasPorCobrarResponse c = modelMapper.map(cuenta, CuentasPorCobrarResponse.class);
-            c.setDiasVencidos(diasVecidos);
+            if (diasVecidos < 0) {
+                c.setDiasVencidos(diasVecidos);
+            } else {
+                c.setDiasVencidos(diasVecidos);
+            }
+
             c.setTiposVencimiento(cuenta.getTiposVencimiento());
             AsesorCarteraResponse asesorResponse = new AsesorCarteraResponse();
             asesorResponse.setIdAsesorCartera(cuenta.getAsesor().getIdAsesorCartera());
             asesorResponse.setUsuario(usuario);
             c.setAsesorCarteraResponse(asesorResponse);
-            
+
             c.setGestion(cuenta.getGestiones());
 
             c.setGestion(cuenta.getGestiones());
 
             List<ClientesDto> clientes = clientesClient.buscarClientesByNumeroObligacion(cuenta.getDocumentoCliente(), token);
             c.setClientes(clientes);
-            
-            if(cuenta.getGestiones().size()>0){
+
+            if (cuenta.getGestiones().size() > 0) {
                 for (Gestiones gestione : cuenta.getGestiones()) {
-                if(gestione.getClasificacionGestion() instanceof AcuerdoPago){
-                    AcuerdoPago acuPago = (AcuerdoPago) gestione.getClasificacionGestion();
-                    for (Cuotas cuotas : acuPago.getCuotasList()) {
-                        if(Objects.nonNull(cuotas.getPagos())){
-                            String base = null;
-                            try {
-                                base = saveFiles.pdfToBase64(cuotas.getPagos().getReciboPago().getRuta());
-                            } catch (IOException ex) {
-                                Logger.getLogger(CuentaPorCobrarServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                    if (gestione.getClasificacionGestion() instanceof AcuerdoPago) {
+                        AcuerdoPago acuPago = (AcuerdoPago) gestione.getClasificacionGestion();
+                        for (Cuotas cuotas : acuPago.getCuotasList()) {
+                            if (Objects.nonNull(cuotas.getPagos())) {
+                                String base = null;
+                                try {
+                                    base = saveFiles.pdfToBase64(cuotas.getPagos().getReciboPago().getRuta());
+                                } catch (IOException ex) {
+                                    Logger.getLogger(CuentaPorCobrarServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                                cuotas.getPagos().getReciboPago().setRuta(base);
                             }
-                            cuotas.getPagos().getReciboPago().setRuta(base);
                         }
+
                     }
-                    
                 }
             }
-            }
-            
-            
 
             cuentasResponse.add(c);
         }
@@ -506,7 +506,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             }
 
         }
-        
+
         return cuentasCobrar;
     }
 
@@ -519,7 +519,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
         }
 
         Specification<CuentasPorCobrar> spec = CuentaPorCobrarSpecification.filtrarCuentas(dto, usuFiltro.getIdUsuario());
-            Page<CuentasPorCobrar> cpc = cuentasPorCobrarRepository.findAll(spec, pageable);
+        Page<CuentasPorCobrar> cpc = cuentasPorCobrarRepository.findAll(spec, pageable);
 //        List<CuentasPorCobrar> cpc = cuentasPorCobrarRepository.findAll(spec);
         List<CuentasPorCobrarResponse> cpcRes = new ArrayList<>();
         ModelMapper map = new ModelMapper();
@@ -537,7 +537,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             cpcResFor.setAsesorCarteraResponse(asesor);
 
             cpcResFor.setGestion(cuentasPorCobrar.getGestiones());
-            
+
             List<ClientesDto> clientes = clientesClient.buscarClientesByNumeroObligacion(cuentasPorCobrar.getDocumentoCliente(), token);
             cpcResFor.setClientes(clientes);
             cpcRes.add(cpcResFor);
