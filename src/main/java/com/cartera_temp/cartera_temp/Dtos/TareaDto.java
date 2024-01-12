@@ -5,7 +5,7 @@ import java.util.Date;
 public class TareaDto {
 
     private String detalleTarea;
-    private Date fechaFinTarea;
+    private String fechaFinTarea;
   
 
     public TareaDto() {
@@ -18,14 +18,16 @@ public class TareaDto {
     public void setDetalleTarea(String detalleTarea) {
         this.detalleTarea = detalleTarea;
     }
-    
-    public Date getFechaFinTarea() {
+
+    public String getFechaFinTarea() {
         return fechaFinTarea;
     }
 
-    public void setFechaFinTarea(Date fechaFinTarea) {
+    public void setFechaFinTarea(String fechaFinTarea) {
         this.fechaFinTarea = fechaFinTarea;
     }
+    
+    
 
    
     

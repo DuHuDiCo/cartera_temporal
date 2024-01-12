@@ -23,8 +23,8 @@ public class NotificacionesController {
     }
     
     @GetMapping("/")
-    public ResponseEntity<List<Notificaciones>> obtenerNotificacionesByAsignated(@RequestParam(name = "id") Long id){
-        List<Notificaciones> notificaciones = notificacionesService.listarNotificacionesByAsignated(id);
+    public ResponseEntity<List<Notificaciones>> obtenerNotificacionesByAsignated(@RequestParam(name = "username") String username){
+        List<Notificaciones> notificaciones = notificacionesService.listarNotificacionesByAsignated(username);
         return ResponseEntity.ok(notificaciones);
     }
 

@@ -255,7 +255,11 @@ public class GestionesServiceImpl implements GestionesService {
 
             tarea.setAsesor(asesor);
             tarea.setDetalleTarea(dto.getClasificacion().getTarea().getDetalleTarea());
-            tarea.setFechaFinTarea(dto.getClasificacion().getTarea().getFechaFinTarea());
+            try {
+                tarea.setFechaFinTarea(Functions.stringToDateAndFormat(dto.getClasificacion().getTarea().getFechaFinTarea()));
+            } catch (ParseException ex) {
+                Logger.getLogger(GestionesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
             try {
                 tarea.setFechaTarea(Functions.obtenerFechaYhora());
             } catch (ParseException ex) {
