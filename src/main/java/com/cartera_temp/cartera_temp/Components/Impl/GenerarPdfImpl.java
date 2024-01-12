@@ -320,16 +320,16 @@ public class GenerarPdfImpl implements GenerarPdf {
                                                     aumentoEspacions = 10;
                                                     break;
                                                 case 6:
-                                                    aumentoEspacions = 5;
+                                                    aumentoEspacions = 0;
                                                     break;
                                                 case 8:
-                                                    aumentoEspacions = 10;
+                                                    aumentoEspacions = 5;
                                                     break;
                                                 case 13:
                                                     aumentoEspacions = 5;
                                                     break;
                                                 case 15:
-                                                    aumentoEspacions = 5;
+                                                    aumentoEspacions = 0;
 
                                                     break;
                                                 case 16:
