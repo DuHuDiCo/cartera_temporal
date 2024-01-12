@@ -500,7 +500,7 @@ public class GenerarPdfImpl implements GenerarPdf {
                                 }
                                 if (j == 2) {
                                     cellWidth = 95;
-                                    contens.addRect(inicioTablaX + 180, inicioTablaY - cellHeight, cellWidth * 4 - 30, cellHeight);
+                                    contens.addRect(inicioTablaX + 180, inicioTablaY - cellHeight, cellWidth * 4, cellHeight);
                                     contens.stroke();
                                     nuevaLinea(formatNumber((int) acuPago.getValorTotalAcuerdo()), inicioTablaX + 185, inicioTablaY + 3 - cellHeight, contens, PDType1Font.HELVETICA, 13);
                                 }
