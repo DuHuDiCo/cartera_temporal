@@ -287,8 +287,7 @@ public class GenerarPdfImpl implements GenerarPdf {
                                     aumentoEspacions = diferencia / (list.size() - 1);
 
                                     String[] nombreSplit = nombreClienteSplit.split(" ");
-
-                                    if (nombreSplit.length >= 4) {
+                                    
                                         switch (contador) {
                                             case 2:
                                                 aumentoEspacions = 10;
@@ -312,37 +311,6 @@ public class GenerarPdfImpl implements GenerarPdf {
                                                 break;
                                             default:
                                                 aumentoEspacions = diferencia / (list.size() - 1);
-
-                                        }
-                                    } else {
-                                        
-                                        nombreClienteSplit
-                                        
-                                        switch (contador) {
-                                            case 1:
-                                                aumentoEspacions = 10;
-                                                break;
-                                            case 5:
-                                                aumentoEspacions = 10;
-                                                break;
-                                            case 7:
-                                                aumentoEspacions = 10;
-                                                break;
-                                            case 12:
-                                                aumentoEspacions = 10;
-                                                break;
-                                            case 14:
-                                                aumentoEspacions = 10;
-
-                                                break;
-                                            case 15:
-                                                aumentoEspacions = 10;
-
-                                                break;
-                                            default:
-                                                aumentoEspacions = diferencia / (list.size() - 1);
-
-                                        }
                                     }
                                 }
 
