@@ -303,6 +303,10 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
         if (CollectionUtils.isEmpty(cliente)) {
             return null;
         }
+        
+        cpcRes.setCondicionEspecial(cpc.getCondicionEspecial().getCondicionEspecial());
+        
+        cpcRes.setClasificacionJuridica(cpc.getClasificacionJuridica().getClasificacionJuridica());
 
         cpcRes.setClientes(cliente);
 
