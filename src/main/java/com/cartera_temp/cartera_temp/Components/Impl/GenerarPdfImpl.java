@@ -314,31 +314,60 @@ public class GenerarPdfImpl implements GenerarPdf {
 
                                         }
                                     } else {
-                                        switch (contador) {
-                                            case 1:
-                                                aumentoEspacions = 10;
-                                                break;
-                                            case 5:
-                                                aumentoEspacions = 10;
-                                                break;
-                                            case 7:
-                                                aumentoEspacions = 10;
-                                                break;
-                                            case 12:
-                                                aumentoEspacions = 10;
-                                                break;
-                                            case 14:
-                                                aumentoEspacions = 10;
+                                        if (nombreClienteSplit.replace(" ", "").length() < 26) {
+                                            switch (contador) {
+                                                case 2:
+                                                    aumentoEspacions = 10;
+                                                    break;
+                                                case 6:
+                                                    aumentoEspacions = 5;
+                                                    break;
+                                                case 8:
+                                                    aumentoEspacions = 10;
+                                                    break;
+                                                case 13:
+                                                    aumentoEspacions = 5;
+                                                    break;
+                                                case 15:
+                                                    aumentoEspacions = 5;
 
-                                                break;
-                                            case 15:
-                                                aumentoEspacions = 10;
+                                                    break;
+                                                case 16:
+                                                    aumentoEspacions = 5;
 
-                                                break;
-                                            default:
-                                                aumentoEspacions = diferencia / (list.size() - 1);
+                                                    break;
+                                                default:
+                                                    aumentoEspacions = diferencia / (list.size() - 1);
 
+                                            }
+                                        } else {
+                                            switch (contador) {
+                                                case 1:
+                                                    aumentoEspacions = 10;
+                                                    break;
+                                                case 5:
+                                                    aumentoEspacions = 10;
+                                                    break;
+                                                case 7:
+                                                    aumentoEspacions = 10;
+                                                    break;
+                                                case 12:
+                                                    aumentoEspacions = 10;
+                                                    break;
+                                                case 14:
+                                                    aumentoEspacions = 10;
+
+                                                    break;
+                                                case 15:
+                                                    aumentoEspacions = 10;
+
+                                                    break;
+                                                default:
+                                                    aumentoEspacions = diferencia / (list.size() - 1);
+
+                                            }
                                         }
+
                                     }
                                 }
 
@@ -379,7 +408,6 @@ public class GenerarPdfImpl implements GenerarPdf {
 
                             }
                         } else {
-
                             if (nombreClienteSplit.replace(" ", "").length() < 26) {
 
                                 switch (contador) {
