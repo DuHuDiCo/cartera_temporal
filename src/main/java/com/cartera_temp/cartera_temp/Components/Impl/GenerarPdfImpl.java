@@ -286,8 +286,7 @@ public class GenerarPdfImpl implements GenerarPdf {
                                     aumentoEspacions = diferencia / (list.size() - 1);
 
                                     String[] nombreSplit = nombreClienteSplit.split(" ");
-
-                                    if (nombreSplit.length >= 4) {
+                                    
                                         switch (contador) {
                                             case 2:
                                                 aumentoEspacions = 10;
@@ -386,7 +385,6 @@ public class GenerarPdfImpl implements GenerarPdf {
 
                         }
                         String[] nombreSplit = nombreClienteSplit.split(" ");
-                        if (nombreSplit.length >= 4) {
                             switch (contador) {
                                 case 2:
                                     yStart = yStart - 30;
@@ -606,7 +604,7 @@ public class GenerarPdfImpl implements GenerarPdf {
                                 }
                                 if (j == 2) {
                                     cellWidth = 95;
-                                    contens.addRect(inicioTablaX + 180, inicioTablaY - cellHeight, cellWidth * 4 - 30, cellHeight);
+                                    contens.addRect(inicioTablaX + 180, inicioTablaY - cellHeight, cellWidth * 4, cellHeight);
                                     contens.stroke();
                                     nuevaLinea(formatNumber((int) acuPago.getValorTotalAcuerdo()), inicioTablaX + 185, inicioTablaY + 3 - cellHeight, contens, PDType1Font.HELVETICA, 13);
                                 }
