@@ -116,7 +116,7 @@ public class GenerarPdfImpl implements GenerarPdf {
                     contens.drawImage(firmaYeimar, 80, 100, 200, 100);
                     contens.drawImage(firmaAsesorCartera, 320, 100, 200, 100);
                     nuevaLinea("Yeimar Fernando Sanchez Gomez", 83, 93, contens, PDType1Font.HELVETICA, 12);
-                    nuevaLinea("Jefe de Cartera GMJHogar S.A.S", 83, 82, contens, PDType1Font.HELVETICA_BOLD, 12);
+                    nuevaLinea("Jefe de Cartera GMJ Hogar S.A.S", 83, 82, contens, PDType1Font.HELVETICA_BOLD, 12);
 
                     nuevaLinea(usu.getNombres().concat(" ").concat(usu.getApellidos()), 323, 93, contens, PDType1Font.HELVETICA, 12);
                     nuevaLinea("Analista de Cartera GMJHogar S.A.S", 323, 82, contens, PDType1Font.HELVETICA_BOLD, 12);
@@ -538,33 +538,14 @@ public class GenerarPdfImpl implements GenerarPdf {
                                 if (j == 0) {
                                     contens.addRect(inicioTablaX, inicioTablaY - cellHeight, 180, cellHeight);
                                     contens.stroke();
-                                    nuevaLinea("Valores totales del acuerdo", inicioTablaX + 5, inicioTablaY + 3 - cellHeight, contens, PDType1Font.HELVETICA_BOLD, 13);
+                                    nuevaLinea("Valor total del acuerdo", inicioTablaX + 5, inicioTablaY + 3 - cellHeight, contens, PDType1Font.HELVETICA_BOLD, 13);
                                 }
                                 if (j == 2) {
                                     cellWidth = 95;
-                                    contens.addRect(inicioTablaX + 180, inicioTablaY - cellHeight, cellWidth, cellHeight);
+                                    contens.addRect(inicioTablaX + 180, inicioTablaY - cellHeight, cellWidth * 4, cellHeight);
                                     contens.stroke();
                                     nuevaLinea(formatNumber((int)acuPago.getValorTotalAcuerdo()), inicioTablaX + 185, inicioTablaY + 3 - cellHeight, contens, PDType1Font.HELVETICA, 13);
                                 }
-                                if (j == 3) {
-                                    cellWidth = 70;
-                                    contens.addRect(inicioTablaX + 180 + 95, inicioTablaY - cellHeight, cellWidth, cellHeight);
-                                    contens.stroke();
-                                    nuevaLinea(formatNumber((int)totalCuotas), inicioTablaX + 180 + 100, inicioTablaY + 3 - cellHeight, contens, PDType1Font.HELVETICA, 13);
-                                }
-                                if (j == 4) {
-                                    cellWidth = 95;
-                                    contens.addRect(inicioTablaX + 180 + 95 + 70, inicioTablaY - cellHeight, cellWidth, cellHeight);
-                                    contens.stroke();
-                                    nuevaLinea(formatNumber((int)acuPago.getHonorarioAcuerdo()), inicioTablaX + 180 + 100 + 70, inicioTablaY + 3 - cellHeight, contens, PDType1Font.HELVETICA, 13);
-                                }
-                                if (j == 5) {
-                                    cellWidth = 95;
-                                    contens.addRect(inicioTablaX + 180 + 100 + 70 + 90, inicioTablaY - cellHeight, cellWidth, cellHeight);
-                                    contens.stroke();
-                                    nuevaLinea(formatNumber((int)acuPago.getValorInteresesMora()), inicioTablaX + 180 + 100 + 75 + 90, inicioTablaY + 3 - cellHeight, contens, PDType1Font.HELVETICA, 13);
-                                }
-
                             }
 
                         }
@@ -592,7 +573,7 @@ public class GenerarPdfImpl implements GenerarPdf {
             return null;
         }
 
-        String titulo = "RECIBO DE CAJA";
+        String titulo = "ESTADO DE CUENTA";
 
         String sedeComercial = cpc.getSede().getNombreComercialSede().toUpperCase();
         String direccionSede = cpc.getSede().getDireccionSede().toUpperCase();
