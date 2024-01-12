@@ -315,6 +315,9 @@ public class GenerarPdfImpl implements GenerarPdf {
 
                                         }
                                     } else {
+                                        
+                                        nombreClienteSplit
+                                        
                                         switch (contador) {
                                             case 1:
                                                 aumentoEspacions = 10;
@@ -358,7 +361,6 @@ public class GenerarPdfImpl implements GenerarPdf {
 
                         }
                         String[] nombreSplit = nombreClienteSplit.split(" ");
-                        if (nombreSplit.length >= 4) {
                             switch (contador) {
                                 case 2:
                                     yStart = yStart - 30;
@@ -378,28 +380,7 @@ public class GenerarPdfImpl implements GenerarPdf {
                                 default:
                                     yStart = yStart - 15;
 
-                            }
-                        } else {
-                            switch (contador) {
-                                case 1:
-                                    yStart = yStart - 30;
-                                    break;
-                                case 5:
-                                    yStart = yStart - 30;
-                                    break;
-                                case 7:
-                                    yStart = yStart - 30;
-                                    break;
-                                case 12:
-                                    yStart = yStart - 30;
-                                    break;
-                                case 14:
-                                    yStart = yStart - 30;
-                                    break;
-                                default:
-                                    yStart = yStart - 15;
-
-                            }
+                            
                         }
 
                         margin = 72;
