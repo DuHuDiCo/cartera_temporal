@@ -108,10 +108,9 @@ public class GenerarPdfImpl implements GenerarPdf {
                 ClassPathResource resource = new ClassPathResource("electrohogarOpa.png");
                 ClassPathResource resourceFY = new ClassPathResource("FIRMA_YEIMAR.png");
 
-            
                 InputStream inputStream = resource.getInputStream();
                 InputStream inputStreamFY = resourceFY.getInputStream();
-                
+
 //                File file = new File(firma.getRuta());
 //                byte[] inputStreamFC =saveFiles.fileToByte(firma.getRuta());
 //                InputStream inputE = new FileInputStream(file);
@@ -287,7 +286,8 @@ public class GenerarPdfImpl implements GenerarPdf {
                                     aumentoEspacions = diferencia / (list.size() - 1);
 
                                     String[] nombreSplit = nombreClienteSplit.split(" ");
-                                    
+
+                                    if (nombreSplit.length >= 4) {
                                         switch (contador) {
                                             case 2:
                                                 aumentoEspacions = 10;
@@ -311,6 +311,63 @@ public class GenerarPdfImpl implements GenerarPdf {
                                                 break;
                                             default:
                                                 aumentoEspacions = diferencia / (list.size() - 1);
+
+                                        }
+                                    } else {
+                                        if (nombreClienteSplit.replace(" ", "").length() < 26) {
+                                            switch (contador) {
+                                                case 2:
+                                                    aumentoEspacions = 10;
+                                                    break;
+                                                case 6:
+                                                    aumentoEspacions = 0;
+                                                    break;
+                                                case 8:
+                                                    aumentoEspacions = 5;
+                                                    break;
+                                                case 13:
+                                                    aumentoEspacions = 5;
+                                                    break;
+                                                case 15:
+                                                    aumentoEspacions = 0;
+
+                                                    break;
+                                                case 16:
+                                                    aumentoEspacions = 5;
+
+                                                    break;
+                                                default:
+                                                    aumentoEspacions = diferencia / (list.size() - 1);
+
+                                            }
+                                        } else {
+                                            switch (contador) {
+                                                case 1:
+                                                    aumentoEspacions = 10;
+                                                    break;
+                                                case 5:
+                                                    aumentoEspacions = 10;
+                                                    break;
+                                                case 7:
+                                                    aumentoEspacions = 10;
+                                                    break;
+                                                case 12:
+                                                    aumentoEspacions = 10;
+                                                    break;
+                                                case 14:
+                                                    aumentoEspacions = 10;
+
+                                                    break;
+                                                case 15:
+                                                    aumentoEspacions = 10;
+
+                                                    break;
+                                                default:
+                                                    aumentoEspacions = diferencia / (list.size() - 1);
+
+                                            }
+                                        }
+
                                     }
                                 }
 
@@ -326,29 +383,27 @@ public class GenerarPdfImpl implements GenerarPdf {
                                 nuevaLinea(string, (int) margin, (int) yStart, contens, PDType1Font.HELVETICA, 12);
                                 margin += (12 * PDType1Font.HELVETICA.getStringWidth(string) / 1000) + aumentoEspacions;
                             }
-
                         }
                         String[] nombreSplit = nombreClienteSplit.split(" ");
-                            switch (contador) {
-                                case 2:
-                                    yStart = yStart - 30;
-                                    break;
-                                case 6:
-                                    yStart = yStart - 30;
-                                    break;
-                                case 8:
-                                    yStart = yStart - 30;
-                                    break;
-                                case 13:
-                                    yStart = yStart - 30;
-                                    break;
-                                case 15:
-                                    yStart = yStart - 30;
-                                    break;
-                                default:
-                                    yStart = yStart - 15;
+                        switch (contador) {
+                            case 2:
+                                yStart = yStart - 30;
+                                break;
+                            case 6:
+                                yStart = yStart - 30;
+                                break;
+                            case 8:
+                                yStart = yStart - 30;
+                                break;
+                            case 13:
+                                yStart = yStart - 30;
+                                break;
+                            case 15:
+                                yStart = yStart - 30;
+                                break;
+                            default:
+                                yStart = yStart - 15;
 
-                            
                         }
 
                         margin = 72;
