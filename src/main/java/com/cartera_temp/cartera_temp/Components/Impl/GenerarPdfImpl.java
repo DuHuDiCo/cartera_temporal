@@ -108,10 +108,9 @@ public class GenerarPdfImpl implements GenerarPdf {
                 ClassPathResource resource = new ClassPathResource("electrohogarOpa.png");
                 ClassPathResource resourceFY = new ClassPathResource("FIRMA_YEIMAR.png");
 
-            
                 InputStream inputStream = resource.getInputStream();
                 InputStream inputStreamFY = resourceFY.getInputStream();
-                
+
 //                File file = new File(firma.getRuta());
 //                byte[] inputStreamFC =saveFiles.fileToByte(firma.getRuta());
 //                InputStream inputE = new FileInputStream(file);
@@ -380,24 +379,52 @@ public class GenerarPdfImpl implements GenerarPdf {
 
                             }
                         } else {
-                            switch (contador) {
-                                case 1:
-                                    yStart = yStart - 30;
-                                    break;
-                                case 5:
-                                    yStart = yStart - 30;
-                                    break;
-                                case 7:
-                                    yStart = yStart - 30;
-                                    break;
-                                case 12:
-                                    yStart = yStart - 30;
-                                    break;
-                                case 14:
-                                    yStart = yStart - 30;
-                                    break;
-                                default:
-                                    yStart = yStart - 15;
+
+                            if (nombreClienteSplit.replace(" ", "").length() < 26) {
+
+                                switch (contador) {
+                                    case 2:
+                                        yStart = yStart - 30;
+                                        break;
+                                    case 6:
+                                        yStart = yStart - 30;
+                                        break;
+                                    case 8:
+                                        yStart = yStart - 30;
+                                        break;
+                                    case 13:
+                                        yStart = yStart - 30;
+                                        break;
+                                    case 15:
+                                        yStart = yStart - 30;
+                                        break;
+                                    default:
+                                        yStart = yStart - 15;
+
+                                }
+
+                            } else {
+
+                                switch (contador) {
+                                    case 1:
+                                        yStart = yStart - 30;
+                                        break;
+                                    case 5:
+                                        yStart = yStart - 30;
+                                        break;
+                                    case 7:
+                                        yStart = yStart - 30;
+                                        break;
+                                    case 12:
+                                        yStart = yStart - 30;
+                                        break;
+                                    case 14:
+                                        yStart = yStart - 30;
+                                        break;
+                                    default:
+                                        yStart = yStart - 15;
+
+                                }
 
                             }
                         }
