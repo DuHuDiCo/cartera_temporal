@@ -44,7 +44,7 @@ public class SaveFiles {
 
     public  String obtenerRuta(String nombreArchivo, String ruta, String sede) throws IOException {
 
-        Path reportesFolderPath = Paths.get(ruta.concat("\\").concat("RECIBOS"));
+        Path reportesFolderPath = Paths.get(ruta.concat("/").concat("RECIBOS"));
 
         if (!Files.exists(reportesFolderPath)) {
             //CREA DIRECTORIO PRINCIPAL "DOCUMENTACION"
