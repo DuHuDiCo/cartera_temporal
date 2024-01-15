@@ -88,7 +88,7 @@ public class CuentaPorCobrarSpecification {
                 predicates.add(criteriaBuilder.between(root.get("totalObligatoria"), filtro.getSaldoCapitalInicio(), filtro.getSaldoCapitalFin()));
             }
 
-            if (idUsuario != null || idUsuario != 0 || Objects.nonNull(idUsuario)) {
+            if ( idUsuario != 0L ) {
                 predicates.add(criteriaBuilder.equal(root.get("asesor").get("usuarioId"), idUsuario));
             }
 
