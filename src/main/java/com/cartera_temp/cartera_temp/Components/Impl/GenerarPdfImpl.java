@@ -454,7 +454,7 @@ public class GenerarPdfImpl implements GenerarPdf {
                     nuevaLinea(fecha, 117, 660, contens, PDType1Font.HELVETICA, 12);
 
                     nuevaLinea(numeroObligacionDoc, 70, 640, contens, PDType1Font.HELVETICA_BOLD, 12);
-                    nuevaLinea(pagare, 247, 640, contens, PDType1Font.HELVETICA, 12);
+                    nuevaLinea(pagare, 130, 640, contens, PDType1Font.HELVETICA, 12);
 
                     String[] cabecerosList = {"#Cuotas", "F.Vencimiento", "Valor cuota", "Capital", "Honorarios", "Intereses"};
 
@@ -736,7 +736,7 @@ public class GenerarPdfImpl implements GenerarPdf {
                             nuevaLinea("Saldo honorarios: ".concat("$").concat(formatNumber(saldoTotalHonorarios)), inicioTablaX + 350, inicioTablaY - 75, contens, PDType1Font.HELVETICA, 11);
 
                             nuevaLinea(firma, inicioTablaX + 5, inicioTablaY - 125, contens, PDType1Font.HELVETICA, 11);
-                            nuevaLinea(usuarioPago, inicioTablaX + 380, inicioTablaY - 125, contens, PDType1Font.HELVETICA, 11);
+                            nuevaLinea(usuarioPago, inicioTablaX + 330, inicioTablaY - 125, contens, PDType1Font.HELVETICA, 11);
                             nuevaLinea(footer, 270, inicioTablaY - 137, contens, PDType1Font.HELVETICA, 8);
 
                         }
