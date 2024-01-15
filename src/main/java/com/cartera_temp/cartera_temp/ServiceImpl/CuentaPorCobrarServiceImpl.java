@@ -519,11 +519,11 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
 
         Usuario usuFiltro = new Usuario();
         Specification<CuentasPorCobrar> spec = null;
-        if (Objects.nonNull(dto.getUsername())) {
+        if (!dto.getUsername().isBlank()) {
             usuFiltro = usuarioClient.getUserByUsername(dto.getUsername());
             spec = CuentaPorCobrarSpecification.filtrarCuentas(dto, usuFiltro.getIdUsuario());
         } else {
-             spec = CuentaPorCobrarSpecification.filtrarCuentas(dto, null);
+             spec = CuentaPorCobrarSpecification.filtrarCuentas(dto, 0L);
         }
 
         Page<CuentasPorCobrar> cpc = cuentasPorCobrarRepository.findAll(spec, pageable);
