@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -43,6 +44,9 @@ public class PagosServiceImpl implements PagosService {
     private final GenerarPdf generarPdf;
     private final SaveFiles saveFiles;
     private final ReciboPagoRepository reciboPagoRepository;
+    
+    @Value("${ruta.recibos}")
+    private String path;
 
     public PagosServiceImpl(PagosRespositoty pagosRespositoty, CuentasPorCobrarRepository cpcr, usuario_client usuClient, GestionesRepository gr, AcuerdoPagoRepository apr, GenerarPdf generarPdf, SaveFiles saveFiles, ReciboPagoRepository reciboPagoRepository) {
         this.pagosRespositoty = pagosRespositoty;
@@ -125,7 +129,7 @@ public class PagosServiceImpl implements PagosService {
                 return null;
             }
 
-            String path = "J:\\Descargas";
+            
             String fileName = multipartFile.getOriginalFilename();
             String ruta = saveFiles.obtenerRuta(fileName, path, cpc.getSede().getSede());
 
