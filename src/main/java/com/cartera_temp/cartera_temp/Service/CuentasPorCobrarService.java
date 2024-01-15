@@ -30,5 +30,7 @@ public interface CuentasPorCobrarService {
     public List<CuentasPorCobrarResponse> buscarCuentasByDatos(String dato);
     
     public Page<CuentasPorCobrarResponse> filtrosCpcs(FiltroDto dto, Pageable pageable);
+    
+    public Page<CuentasPorCobrarResponse> listarCuentasCobrar( Pageable pageable);
 
 }
