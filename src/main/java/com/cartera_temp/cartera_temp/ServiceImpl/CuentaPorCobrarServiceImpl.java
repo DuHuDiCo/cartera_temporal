@@ -517,9 +517,10 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
     @Override
     public Page<CuentasPorCobrarResponse> filtrosCpcs(FiltroDto dto, Pageable pageable) {
 
-        Usuario usuFiltro = usuarioClient.getUserByUsername(dto.getUsername());
-        if (Objects.isNull(usuFiltro)) {
-            return null;
+        Usuario usuFiltro = new Usuario();
+
+        if (Objects.nonNull(dto.getUsername())) {
+            usuFiltro = usuarioClient.getUserByUsername(dto.getUsername());
         }
 
         Specification<CuentasPorCobrar> spec = CuentaPorCobrarSpecification.filtrarCuentas(dto, usuFiltro.getIdUsuario());
@@ -559,8 +560,8 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
         Page<CuentasPorCobrar> pageCuentas = cuentasPorCobrarRepository.findAll(pageable);
 
         List<CuentasPorCobrarResponse> cuentasResponse = new ArrayList<>();
-        
-         String token = httpServletRequest.getAttribute("token").toString();
+
+        String token = httpServletRequest.getAttribute("token").toString();
 
         for (CuentasPorCobrar cuentasPorCobrar : pageCuentas.getContent()) {
             //calcular nuevos dias vencidos
@@ -576,10 +577,8 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             AsesorCarteraResponse asesorResponse = new AsesorCarteraResponse();
             asesorResponse.setIdAsesorCartera(cuentasPorCobrar.getAsesor().getIdAsesorCartera());
 
-           
-
             Usuario usuario = usuarioClient.getUsuarioById(cuentasPorCobrar.getAsesor().getUsuarioId(), token);
-            if(Objects.isNull(usuario)){
+            if (Objects.isNull(usuario)) {
                 return null;
             }
             asesorResponse.setUsuario(usuario);
@@ -615,8 +614,8 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             cuentasResponse.add(c);
 
         }
-         Page<CuentasPorCobrarResponse> cuentasPage = new PageImpl(cuentasResponse, pageable, pageCuentas.getTotalElements());
-         return cuentasPage;
+        Page<CuentasPorCobrarResponse> cuentasPage = new PageImpl(cuentasResponse, pageable, pageCuentas.getTotalElements());
+        return cuentasPage;
 
     }
 
