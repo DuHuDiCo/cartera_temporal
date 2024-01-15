@@ -11,6 +11,7 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,12 +21,13 @@ public class FirmasServiceImpl implements FirmasService {
     private final FirmasRespository fr;
     private final SaveFiles save;
 
-    @Value("${spring.resources.static-locations}")
-    private String rutaRecursos;
+    @Value("${ruta.firmas}")
+    private String ruta;
 
     public FirmasServiceImpl(FirmasRespository fr, SaveFiles save) {
         this.fr = fr;
         this.save = save;
+
     }
 
     @Override
@@ -40,20 +42,27 @@ public class FirmasServiceImpl implements FirmasService {
             return null;
         }
 
-        MultipartFile firma = save.convertirFile(rutaRecursos);
-
-        String nombreFirmaBd = "firma-".concat(dto.getUsername().concat(".png"));
+        String[] data = dto.getBase64().split(",");
         
+        MultipartFile firma = new CustomMultipartFile(data[1], data[0]);
+        
+        
+        
+        String nombreFirmaBd = firma.getOriginalFilename();
+
+        String firmaSave = null;
         try {
-            String firmaSave = save.saveFile(firma.getBytes(), nombreFirmaBd, rutaRecursos);
+            firmaSave = save.saveFile(firma.getBytes(), nombreFirmaBd, ruta.concat("\\").concat(nombreFirmaBd));
+
         } catch (IOException ex) {
             Logger.getLogger(FirmasServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         Firmas fSave = new Firmas();
 
-        fSave.setNombreArchivo(nombreFirmaBd.toUpperCase());
+        fSave.setFilename(nombreFirmaBd);
         fSave.setUsername(dto.getUsername());
+        fSave.setRuta(ruta.concat("\\").concat(firmaSave));
         fSave = fr.save(fSave);
         return fSave;
 

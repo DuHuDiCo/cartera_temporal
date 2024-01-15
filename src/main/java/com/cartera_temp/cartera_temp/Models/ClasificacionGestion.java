@@ -13,6 +13,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.List;
+import javax.persistence.OneToOne;
 
 @Entity
 @Table(name = "clasificacion_gestion")
@@ -27,7 +28,10 @@ public class ClasificacionGestion {
     @Column(name = "clasificacion")
     private String clasificacion;
 
-    
+    @OneToOne(mappedBy = "clasificacionGestion", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private Gestiones gestion;
+
 
     public ClasificacionGestion() {
     }
@@ -48,6 +52,14 @@ public class ClasificacionGestion {
 
     public void setClasificacion(String clasificacion) {
         this.clasificacion = clasificacion;
+    }
+
+    public Gestiones getGestion() {
+        return gestion;
+    }
+
+    public void setGestion(Gestiones gestion) {
+        this.gestion = gestion;
     }
 
     

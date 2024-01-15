@@ -1,5 +1,6 @@
 package com.cartera_temp.cartera_temp.Service;
 
+import com.cartera_temp.cartera_temp.Dtos.AsesorCarteraResponse;
 import com.cartera_temp.cartera_temp.Models.AsesorCartera;
 import java.util.List;
 
@@ -7,7 +8,7 @@ public interface AsesorCarteraService {
 
     public AsesorCartera guardarAsesor(Long asesor);
 
-    public List<AsesorCartera> listarAsesores();
+    public List<AsesorCarteraResponse> listarAsesores();
 
     public AsesorCartera findAsesor(Long asesor);
 }

@@ -45,7 +45,7 @@ public class Gestiones {
     
 
    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "clasificacion_id", referencedColumnName = "id_clasificacion_gestion")
+    @JoinColumn(name = "clasificacion_gestion_id")
     private ClasificacionGestion clasificacionGestion;
 
     @ManyToOne

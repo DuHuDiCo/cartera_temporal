@@ -9,11 +9,11 @@ public class GestionToSaveDto {
     
     private ClasificacionDtoTipo clasificacion;
     
-    private String gestion;
-    
     private boolean contact;
     
     private String detallesAdicionales;
+    
+    private String username;
 
     public GestionToSaveDto() {
     }
@@ -24,14 +24,6 @@ public class GestionToSaveDto {
 
     public void setNumeroObligacion(String numeroObligacion) {
         this.numeroObligacion = numeroObligacion;
-    }
-
-    public String getGestion() {
-        return gestion;
-    }
-
-    public void setGestion(String gestion) {
-        this.gestion = gestion;
     }
 
     public boolean isContact() {
@@ -57,5 +49,16 @@ public class GestionToSaveDto {
     public void setClasificacion(ClasificacionDtoTipo clasificacion) {
         this.clasificacion = clasificacion;
     }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+  
+    
     
 }
