@@ -52,7 +52,7 @@ public class FirmasServiceImpl implements FirmasService {
 
         String firmaSave = null;
         try {
-            firmaSave = save.saveFile(firma.getBytes(), nombreFirmaBd, ruta.concat("\\").concat(nombreFirmaBd));
+            firmaSave = save.saveFile(firma.getBytes(), nombreFirmaBd, ruta.concat("/").concat(nombreFirmaBd));
 
         } catch (IOException ex) {
             Logger.getLogger(FirmasServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -62,7 +62,7 @@ public class FirmasServiceImpl implements FirmasService {
 
         fSave.setFilename(nombreFirmaBd);
         fSave.setUsername(dto.getUsername());
-        fSave.setRuta(ruta.concat("\\").concat(firmaSave));
+        fSave.setRuta(ruta.concat("/").concat(firmaSave));
         fSave = fr.save(fSave);
         return fSave;
 
