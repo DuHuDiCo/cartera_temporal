@@ -9,6 +9,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.criteria.Join;
@@ -61,12 +62,12 @@ public class CuentaPorCobrarSpecification {
                 } catch (ParseException ex) {
                     Logger.getLogger(CuentaPorCobrarSpecification.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                
+
                 Join<CuentasPorCobrar, Gestiones> gestionJoin = root.join("gestiones", JoinType.INNER);
                 Join<Gestiones, ClasificacionGestion> clasificacionGestionJoin = gestionJoin.join("clasificacionGestion", JoinType.INNER);
-                
+
                 Join<Gestiones, AcuerdoPago> acuerdoPagoJoin = criteriaBuilder.treat(clasificacionGestionJoin, AcuerdoPago.class);
-                
+
                 predicates.add(criteriaBuilder.equal(clasificacionGestionJoin.get("clasificacion"), "ACUERDO DE PAGO"));
                 predicates.add(criteriaBuilder.isTrue(acuerdoPagoJoin.get("isActive")));
                 predicates.add(criteriaBuilder.between(acuerdoPagoJoin.get("fechaCompromiso"), fComInicio, fComFin));
@@ -75,7 +76,7 @@ public class CuentaPorCobrarSpecification {
             if (filtro.getFechaCpcInicio() != null && filtro.getFechaCpcFin() != null) {
 
                 predicates.add(criteriaBuilder.between(root.get("fechaCuentaCobrar"), filtro.getFechaCpcInicio(), filtro.getFechaCpcFin()));
-                
+
             }
 
             if (filtro.getFechaGestionInicio() != null && filtro.getFechaGestionFin() != null) {
@@ -87,7 +88,9 @@ public class CuentaPorCobrarSpecification {
                 predicates.add(criteriaBuilder.between(root.get("totalObligatoria"), filtro.getSaldoCapitalInicio(), filtro.getSaldoCapitalFin()));
             }
 
-            predicates.add(criteriaBuilder.equal(root.get("asesor").get("usuarioId"), idUsuario));
+            if (idUsuario != null || idUsuario != 0 || Objects.nonNull(idUsuario)) {
+                predicates.add(criteriaBuilder.equal(root.get("asesor").get("usuarioId"), idUsuario));
+            }
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
 

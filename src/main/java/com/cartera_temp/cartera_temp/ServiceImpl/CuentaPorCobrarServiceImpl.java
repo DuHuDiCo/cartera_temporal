@@ -303,9 +303,9 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
         if (CollectionUtils.isEmpty(cliente)) {
             return null;
         }
-        
+
         cpcRes.setCondicionEspecial(cpc.getCondicionEspecial().getCondicionEspecial());
-        
+
         cpcRes.setClasificacionJuridica(cpc.getClasificacionJuridica().getClasificacionJuridica());
 
         cpcRes.setClientes(cliente);
@@ -517,9 +517,10 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
     @Override
     public Page<CuentasPorCobrarResponse> filtrosCpcs(FiltroDto dto, Pageable pageable) {
 
-        Usuario usuFiltro = usuarioClient.getUserByUsername(dto.getUsername());
-        if (Objects.isNull(usuFiltro)) {
-            return null;
+        Usuario usuFiltro = new Usuario();
+
+        if (Objects.nonNull(dto.getUsername())) {
+            usuFiltro = usuarioClient.getUserByUsername(dto.getUsername());
         }
 
         Specification<CuentasPorCobrar> spec = CuentaPorCobrarSpecification.filtrarCuentas(dto, usuFiltro.getIdUsuario());
@@ -550,6 +551,70 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
 
         Page<CuentasPorCobrarResponse> cuentasPage = new PageImpl(cpcRes, pageable, cpc.getTotalElements());
 
+        return cuentasPage;
+
+    }
+
+    @Override
+    public Page<CuentasPorCobrarResponse> listarCuentasCobrar(Pageable pageable) {
+        Page<CuentasPorCobrar> pageCuentas = cuentasPorCobrarRepository.findAll(pageable);
+
+        List<CuentasPorCobrarResponse> cuentasResponse = new ArrayList<>();
+
+        String token = httpServletRequest.getAttribute("token").toString();
+
+        for (CuentasPorCobrar cuentasPorCobrar : pageCuentas.getContent()) {
+            //calcular nuevos dias vencidos
+            int diasVecidos = Functions.diferenciaFechas(cuentasPorCobrar.getFechaVencimiento());
+            CuentasPorCobrarResponse c = modelMapper.map(cuentasPorCobrar, CuentasPorCobrarResponse.class);
+            if (diasVecidos < 0) {
+                c.setDiasVencidos(0);
+            } else {
+                c.setDiasVencidos(diasVecidos);
+            }
+
+            c.setTiposVencimiento(cuentasPorCobrar.getTiposVencimiento());
+            AsesorCarteraResponse asesorResponse = new AsesorCarteraResponse();
+            asesorResponse.setIdAsesorCartera(cuentasPorCobrar.getAsesor().getIdAsesorCartera());
+
+            Usuario usuario = usuarioClient.getUsuarioById(cuentasPorCobrar.getAsesor().getUsuarioId(), token);
+            if (Objects.isNull(usuario)) {
+                return null;
+            }
+            asesorResponse.setUsuario(usuario);
+            c.setAsesorCarteraResponse(asesorResponse);
+
+            c.setGestion(cuentasPorCobrar.getGestiones());
+
+            c.setGestion(cuentasPorCobrar.getGestiones());
+
+            List<ClientesDto> clientes = clientesClient.buscarClientesByNumeroObligacion(cuentasPorCobrar.getDocumentoCliente(), token);
+            c.setClientes(clientes);
+
+            if (cuentasPorCobrar.getGestiones().size() > 0) {
+                for (Gestiones gestione : cuentasPorCobrar.getGestiones()) {
+                    if (gestione.getClasificacionGestion() instanceof AcuerdoPago) {
+                        AcuerdoPago acuPago = (AcuerdoPago) gestione.getClasificacionGestion();
+                        for (Cuotas cuotas : acuPago.getCuotasList()) {
+                            if (Objects.nonNull(cuotas.getPagos())) {
+                                String base = null;
+                                try {
+                                    base = saveFiles.pdfToBase64(cuotas.getPagos().getReciboPago().getRuta());
+                                } catch (IOException ex) {
+                                    Logger.getLogger(CuentaPorCobrarServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                                cuotas.getPagos().getReciboPago().setRuta(base);
+                            }
+                        }
+
+                    }
+                }
+            }
+
+            cuentasResponse.add(c);
+
+        }
+        Page<CuentasPorCobrarResponse> cuentasPage = new PageImpl(cuentasResponse, pageable, pageCuentas.getTotalElements());
         return cuentasPage;
 
     }
