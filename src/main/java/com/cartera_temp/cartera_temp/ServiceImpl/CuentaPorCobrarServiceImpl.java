@@ -532,10 +532,15 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
         ModelMapper map = new ModelMapper();
         for (CuentasPorCobrar cuentasPorCobrar : cpc.getContent()) {
 
-            CuentasPorCobrarResponse cpcResFor = map.map(cuentasPorCobrar, CuentasPorCobrarResponse.class);
+            
 
-            int diasVecidos = Functions.diferenciaFechas(cuentasPorCobrar.getFechaVencimiento());
-            cpcResFor.setDiasVencidos(diasVecidos);
+           int diasVecidos = Functions.diferenciaFechas(cuentasPorCobrar.getFechaVencimiento());
+            CuentasPorCobrarResponse cpcResFor = map.map(cuentasPorCobrar, CuentasPorCobrarResponse.class);
+            if (diasVecidos < 0) {
+                cpcResFor.setDiasVencidos(0);
+            } else {
+                cpcResFor.setDiasVencidos(diasVecidos);
+            }
             AsesorCarteraResponse asesor = new AsesorCarteraResponse();
             asesor.setIdAsesorCartera(cuentasPorCobrar.getAsesor().getIdAsesorCartera());
             String token = httpServletRequest.getAttribute("token").toString();
