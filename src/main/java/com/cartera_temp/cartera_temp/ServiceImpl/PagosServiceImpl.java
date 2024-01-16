@@ -121,6 +121,7 @@ public class PagosServiceImpl implements PagosService {
                 cuota.setCapitalCuota(cuotasDto.getCapitalCuota());
                 cuota.setHonorarios(cuotasDto.getHonorarios());
                 cuota.setInteresCuota(cuotasDto.getInteresCuota());
+                cuota.setPago(true);
                 
                 
                 Pagos pago = new Pagos();
