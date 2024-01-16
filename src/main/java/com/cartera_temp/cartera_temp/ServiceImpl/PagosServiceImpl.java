@@ -108,6 +108,7 @@ public class PagosServiceImpl implements PagosService {
             List<Pagos> pagos = new ArrayList<>();
 
             ReciboPago recibo = generarRecibo(dto, cpc.getSede().getSede(), usu.getIdUsuario(), base64);
+            recibo = reciboPagoRepository.save(recibo);
          
 
             for (CuotasDto cuotasDto : dto.getCuotasDto()) {
