@@ -46,10 +46,16 @@ public class Cuotas {
 
     @Column(name = "cumplio")
     private boolean cumplio;
+    
+    @Column(name = "pago")
+    private boolean pago;
+    
 
     @ManyToOne
     @JoinColumn(name = "pago_id")
     private Pagos pagos;
+    
+    
 
     @ManyToOne
     @JoinColumn(name = "acuerdo_pago_id")
@@ -139,4 +145,13 @@ public class Cuotas {
         this.pagos = pagos;
     }
 
+    public boolean isPago() {
+        return pago;
+    }
+
+    public void setPago(boolean pago) {
+        this.pago = pago;
+    }
+
+    
 }
