@@ -16,42 +16,41 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-
 @Entity
 @Table(name = "cuotas")
 public class Cuotas {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name ="id_cuota")
+    @Column(name = "id_cuota")
     private Long idCuota;
-    
+
     @Column(name = "numero_cuota")
     private int numeroCuota;
-    
+
     @Column(name = "fecha_vencimiento")
     @Temporal(TemporalType.DATE)
     private Date fechaVencimiento;
-    
+
     @Column(name = "valor_cuota")
     private double valorCuota;
-    
+
     @Column(name = "capital_cuota")
     private double capitalCuota;
-    
-    @Column(name = "honorarios" )
+
+    @Column(name = "honorarios")
     private double honorarios;
-    
+
     @Column(name = "interes_cuota")
     private double interesCuota;
-    
+
     @Column(name = "cumplio")
     private boolean cumplio;
-    
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "pago_id", referencedColumnName = "id_pago")
+
+    @ManyToOne
+    @JoinColumn(name = "pago_id")
     private Pagos pagos;
-    
+
     @ManyToOne
     @JoinColumn(name = "acuerdo_pago_id")
     @JsonIgnore
@@ -140,7 +139,4 @@ public class Cuotas {
         this.pagos = pagos;
     }
 
-    
-    
-    
 }

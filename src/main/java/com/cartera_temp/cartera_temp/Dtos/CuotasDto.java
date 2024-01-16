@@ -2,6 +2,7 @@ package com.cartera_temp.cartera_temp.Dtos;
 
 public class CuotasDto {
 
+    private Long idCuota;
     private int numeroCuota;
     private String fechaVencimiento;
     private double valorCuota;
@@ -76,6 +77,14 @@ public class CuotasDto {
 
     public void setPagosDto(PagosDto pagosDto) {
         this.pagosDto = pagosDto;
+    }
+
+    public Long getIdCuota() {
+        return idCuota;
+    }
+
+    public void setIdCuota(Long idCuota) {
+        this.idCuota = idCuota;
     }
     
     

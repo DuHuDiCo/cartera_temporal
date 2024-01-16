@@ -19,6 +19,7 @@ import com.cartera_temp.cartera_temp.Utils.Functions;
 import com.cartera_temp.cartera_temp.Utils.SaveFiles;
 import com.cartera_temp.cartera_temp.repository.AcuerdoPagoRepository;
 import com.cartera_temp.cartera_temp.repository.CuentasPorCobrarRepository;
+import com.cartera_temp.cartera_temp.repository.CuotaRepository;
 import com.cartera_temp.cartera_temp.repository.GestionesRepository;
 import com.cartera_temp.cartera_temp.repository.PagosRespositoty;
 import com.cartera_temp.cartera_temp.repository.ReciboPagoRepository;
@@ -44,11 +45,12 @@ public class PagosServiceImpl implements PagosService {
     private final GenerarPdf generarPdf;
     private final SaveFiles saveFiles;
     private final ReciboPagoRepository reciboPagoRepository;
-    
+    private final CuotaRepository cuotaRepository;
+
     @Value("${ruta.recibos}")
     private String path;
 
-    public PagosServiceImpl(PagosRespositoty pagosRespositoty, CuentasPorCobrarRepository cpcr, usuario_client usuClient, GestionesRepository gr, AcuerdoPagoRepository apr, GenerarPdf generarPdf, SaveFiles saveFiles, ReciboPagoRepository reciboPagoRepository) {
+    public PagosServiceImpl(PagosRespositoty pagosRespositoty, CuentasPorCobrarRepository cpcr, usuario_client usuClient, GestionesRepository gr, AcuerdoPagoRepository apr, GenerarPdf generarPdf, SaveFiles saveFiles, ReciboPagoRepository reciboPagoRepository, CuotaRepository cuotaRepository) {
         this.pagosRespositoty = pagosRespositoty;
         this.cpcr = cpcr;
         this.usuClient = usuClient;
@@ -57,7 +59,10 @@ public class PagosServiceImpl implements PagosService {
         this.generarPdf = generarPdf;
         this.saveFiles = saveFiles;
         this.reciboPagoRepository = reciboPagoRepository;
+        this.cuotaRepository = cuotaRepository;
     }
+
+   
 
     @Override
     public PagosCuotasResponse guardarPago(PagosCuotasDto dto) {
@@ -92,30 +97,6 @@ public class PagosServiceImpl implements PagosService {
             return null;
         }
 
-        for (int i = 0; i < dto.getCuotasDto().size(); i++) {
-
-            CuotasDto cuotasDto = dto.getCuotasDto().get(i);
-
-            if (Objects.nonNull(cuotasDto.getPagosDto()) && Objects.isNull(acuPag.getCuotasList().get(i).getPagos())) {
-                Pagos pago = new Pagos();
-                pago.setFechaPago(cuotasDto.getPagosDto().getFechaPago());
-                pago.setSaldoCuota(cuotasDto.getPagosDto().getSaldoCuota());
-                pago.setValorPago(cuotasDto.getPagosDto().getValorPago());
-                pago.setUsuarioId(usu.getIdUsuario());
-                pago.setDetalle(dto.getDetalle());
-
-                pago = pagosRespositoty.save(pago);
-
-                acuPag.getCuotasList().get(i).setPagos(pago);
-                acuPag.getCuotasList().get(i).setCapitalCuota(cuotasDto.getCapitalCuota());
-                acuPag.getCuotasList().get(i).setHonorarios(cuotasDto.getHonorarios());
-                acuPag.getCuotasList().get(i).setInteresCuota(cuotasDto.getInteresCuota());
-                acuPag.getCuotasList().get(i).setCumplio(true);
-
-            }
-
-        }
-
         acuPag.setIsCumpliendo(dto.isCumpliendo());
         try {
             String base64 = generarPdf.generarReportePagoCuotas(dto);
@@ -124,36 +105,35 @@ public class PagosServiceImpl implements PagosService {
                 return null;
             }
 
-            MultipartFile multipartFile = saveFiles.convertirFile(base64);
-            if (Objects.isNull(multipartFile)) {
-                return null;
-            }
+            List<Pagos> pagos = new ArrayList<>();
 
-            
-            String fileName = multipartFile.getOriginalFilename();
-            String ruta = saveFiles.obtenerRuta(fileName, path, cpc.getSede().getSede());
+            ReciboPago recibo = generarRecibo(dto, cpc.getSede().getSede(), usu.getIdUsuario(), base64);
+         
 
-            String save = saveFiles.saveFile(multipartFile.getBytes(), fileName, ruta);
-            if (Objects.isNull(save)) {
-                return null;
-            }
-
-            ReciboPago recibo = new ReciboPago();
-            recibo.setNombreArchivo(fileName);
-            recibo.setNumeroRecibo(dto.getNumeroRecibo());
-            recibo.setFechaRecibo(Functions.obtenerFechaYhora());
-            recibo.setValorRecibo(dto.getValorTotal());
-            recibo.setRuta(ruta);
-            recibo.setUsuarioId(usu.getIdUsuario());
-
-            recibo = reciboPagoRepository.save(recibo);
-
-            for (Cuotas cuotas : acuPag.getCuotasList()) {
-                if (Objects.nonNull(cuotas.getPagos())) {
-                    cuotas.getPagos().setReciboPago(recibo);
+            for (CuotasDto cuotasDto : dto.getCuotasDto()) {
+                
+                Cuotas cuota = cuotaRepository.findById(cuotasDto.getIdCuota()).orElse(null);
+                if(Objects.isNull(cuota)){
+                    return null;
                 }
-
+                
+                Pagos pago = new Pagos();
+                pago.setFechaPago(cuotasDto.getPagosDto().getFechaPago());
+                pago.setSaldoCuota(cuotasDto.getPagosDto().getSaldoCuota());
+                pago.setValorPago(cuotasDto.getPagosDto().getValorPago());
+                pago.setUsuarioId(usu.getIdUsuario());
+                pago.setDetalle(dto.getDetalle());
+                pago.setReciboPago(recibo);
+                
+                
+                recibo.agregarReciboPago(pago);
+                cuota.setPagos(pago);
+                pagos.add(pago);
+                
+                
             }
+
+            pagos = pagosRespositoty.saveAll(pagos);
 
             acuPag = apr.save(acuPag);
 
@@ -171,6 +151,33 @@ public class PagosServiceImpl implements PagosService {
         }
 
         return null;
+
+    }
+
+    private ReciboPago generarRecibo(PagosCuotasDto dto, String sede, Long idUsuario, String base64) throws IOException, ClassNotFoundException, ParseException {
+
+        MultipartFile multipartFile = saveFiles.convertirFile(base64);
+        if (Objects.isNull(multipartFile)) {
+            return null;
+        }
+
+        String fileName = multipartFile.getOriginalFilename();
+        String ruta = saveFiles.obtenerRuta(fileName, path, sede);
+
+        String save = saveFiles.saveFile(multipartFile.getBytes(), fileName, ruta);
+        if (Objects.isNull(save)) {
+            return null;
+        }
+
+        ReciboPago recibo = new ReciboPago();
+        recibo.setNombreArchivo(fileName);
+        recibo.setNumeroRecibo(dto.getNumeroRecibo());
+        recibo.setFechaRecibo(Functions.obtenerFechaYhora());
+        recibo.setValorRecibo(dto.getValorTotal());
+        recibo.setRuta(ruta);
+        recibo.setUsuarioId(idUsuario);
+
+        return recibo;
 
     }
 
