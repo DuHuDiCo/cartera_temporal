@@ -22,9 +22,15 @@ public class NotificacionesController {
         this.notificacionesService = notificacionesService;
     }
     
-    @GetMapping("/")
+    @GetMapping("/getAllNotificaciones")
     public ResponseEntity<List<Notificaciones>> obtenerNotificacionesByAsignated(@RequestParam(name = "username") String username){
-        List<Notificaciones> notificaciones = notificacionesService.listarNotificacionesByAsignated(username);
+        List<Notificaciones> notificaciones = notificacionesService.getNotificacionesAscendente(username);
+        return ResponseEntity.ok(notificaciones);
+    }
+    
+    @GetMapping("/getAllNotificacionesVencidas")
+    public ResponseEntity<List<Notificaciones>> obtenerNotificacionesVencidasByAsignated(@RequestParam(name = "username") String username){
+        List<Notificaciones> notificaciones = notificacionesService.getNotificacionesVencidasAscendente(username);
         return ResponseEntity.ok(notificaciones);
     }
 
