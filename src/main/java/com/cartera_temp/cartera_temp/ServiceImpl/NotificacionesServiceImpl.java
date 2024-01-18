@@ -43,7 +43,7 @@ public class NotificacionesServiceImpl implements NotificacionesService {
             return null;
         }
 
-        List<Notificaciones> notiFind = notificacionesRepository.findAllByIsActiveAndDesignatedToOrderByFechaCreacionAsc(user.getIdUsuario(), true);
+        List<Notificaciones> notiFind = notificacionesRepository.findAllByIsActiveAndDesignatedToOrderByFechaCreacionAsc(true, user.getIdUsuario());
         return notiFind;
 
     }
@@ -58,7 +58,7 @@ public class NotificacionesServiceImpl implements NotificacionesService {
 
         List<Notificaciones> notiFind = new ArrayList<>();
         try {
-            notiFind = notificacionesRepository.findAllByIsActiveAndDesignatedToAndFechaFinalizacionBefore(user.getIdUsuario(), Functions.obtenerFechaYhora(), true);
+            notiFind = notificacionesRepository.findAllByIsActiveAndDesignatedToAndFechaFinalizacionBefore(true, user.getIdUsuario(), Functions.obtenerFechaYhora());
         } catch (ParseException ex) {
             Logger.getLogger(NotificacionesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
