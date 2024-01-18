@@ -1,4 +1,3 @@
-
 package com.cartera_temp.cartera_temp.Models;
 
 import java.util.Date;
@@ -14,29 +13,32 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "notificaciones")
 public class Notificaciones {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idNotificaciones;
-    
+
     @Column(name = "tipo_gestion", length = 50)
     private String tipoGestion;
-    
+
     @Column(name = "fecha_creacion")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaCreacion;
-    
+
     @Column(name = "fecha_finalizacion")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaFinalizacion;
-    
-   @Column(name = "numero_obligacion", length = 50)
+
+    @Column(name = "numero_obligacion", length = 50)
     private String numeroObligacion;
-    
-   @Column(name = "cleinte", length = 150)
+
+    @Column(name = "cleinte", length = 150)
     private String cliente;
-   
-     @Column(name = "id_designated_to")
+    
+    @Column(name = "is_active")
+    private boolean isActive;
+
+    @Column(name = "id_designated_to")
     private Long designatedTo;
 
     public Notificaciones() {
@@ -74,7 +76,6 @@ public class Notificaciones {
         this.fechaFinalizacion = fechaFinalizacion;
     }
 
-
     public Long getDesignatedTo() {
         return designatedTo;
     }
@@ -98,9 +99,13 @@ public class Notificaciones {
     public void setCliente(String cliente) {
         this.cliente = cliente;
     }
-     
-    
-    
-     
+
+    public boolean isIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(boolean isActive) {
+        this.isActive = isActive;
+    }
 
 }

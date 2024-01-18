@@ -8,7 +8,10 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
+import java.util.Objects;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
@@ -32,6 +35,15 @@ public class NotificacionesController {
     public ResponseEntity<List<Notificaciones>> obtenerNotificacionesVencidasByAsignated(@RequestParam(name = "username") String username){
         List<Notificaciones> notificaciones = notificacionesService.getNotificacionesVencidasAscendente(username);
         return ResponseEntity.ok(notificaciones);
+    }
+    
+    @PutMapping("/desactivateNotification")
+    public ResponseEntity<HttpStatus> desactivateNotificaciones(@RequestParam(name = "idNotificion")Long id){
+        boolean bol = notificacionesService.desactivateNotificacion(id);
+        if(bol == false){
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok().build();
     }
 
 }

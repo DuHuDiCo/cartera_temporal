@@ -13,6 +13,6 @@ public interface NotificacionesService {
     
     public List<Notificaciones> getNotificacionesVencidasAscendente(String username);
     
-    
+    public boolean desactivateNotificacion(Long idNotificacion);
     
 }

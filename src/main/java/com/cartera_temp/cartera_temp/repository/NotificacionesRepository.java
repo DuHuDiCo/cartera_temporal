@@ -11,8 +11,8 @@ public interface NotificacionesRepository extends JpaRepository<Notificaciones, 
 
     List<Notificaciones> findByDesignatedToAndFechaFinalizacionBetween(Long id, Date fechaInicio, Date fechaFin);
 
-    List<Notificaciones> findAllByDesignatedToOrderByFechaCreacionAsc(Long id);
+    List<Notificaciones> findAllByDesignatedToOrderByFechaCreacionAscAndIsActive(Long id, boolean isActive);
 
-    List<Notificaciones> findAllByDesignatedToAndFechaFinalizacionBefore(Long id, Date fechaActual);
+    List<Notificaciones> findAllByDesignatedToAndFechaFinalizacionBeforeAndIsActive(Long id, Date fechaActual, boolean IsActive);
 
 }

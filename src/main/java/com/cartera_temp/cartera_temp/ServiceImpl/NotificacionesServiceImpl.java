@@ -29,38 +29,52 @@ public class NotificacionesServiceImpl implements NotificacionesService {
 
     @Override
     public Notificaciones crearNotificaciones(Notificaciones notificaciones) {
-        Notificaciones notificacionesSaved = notificacionesRepository.save(notificaciones);
+        Notificaciones notificacionesSaved = new Notificaciones();
+        notificacionesSaved.setIsActive(true);
+        notificacionesSaved = notificacionesRepository.save(notificaciones);
         return notificacionesSaved;
     }
-    
+
     @Override
     public List<Notificaciones> getNotificacionesAscendente(String username) {
-        
+
         Usuario user = usuarioClient.getUserByUsername(username);
         if (Objects.isNull(user)) {
             return null;
         }
-        
-        List<Notificaciones> notiFind = notificacionesRepository.findAllByDesignatedToOrderByFechaCreacionAsc(user.getIdUsuario());
+
+        List<Notificaciones> notiFind = notificacionesRepository.findAllByDesignatedToOrderByFechaCreacionAscAndIsActive(user.getIdUsuario(), true);
         return notiFind;
-        
+
     }
 
     @Override
     public List<Notificaciones> getNotificacionesVencidasAscendente(String username) {
-        
+
         Usuario user = usuarioClient.getUserByUsername(username);
         if (Objects.isNull(user)) {
             return null;
         }
-        
+
         List<Notificaciones> notiFind = new ArrayList<>();
         try {
-            notiFind = notificacionesRepository.findAllByDesignatedToAndFechaFinalizacionBefore(user.getIdUsuario(), Functions.obtenerFechaYhora());
+            notiFind = notificacionesRepository.findAllByDesignatedToAndFechaFinalizacionBeforeAndIsActive(user.getIdUsuario(), Functions.obtenerFechaYhora(), true);
         } catch (ParseException ex) {
             Logger.getLogger(NotificacionesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
         return notiFind;
-        
+
+    }
+
+    @Override
+    public boolean desactivateNotificacion(Long idNotificacion) {
+        Notificaciones noti = notificacionesRepository.findById(idNotificacion).orElse(null);
+        if(Objects.nonNull(noti)){
+            noti.setIsActive(true);
+            noti = notificacionesRepository.save(noti);
+            return true;
+        }else{
+            return false;
+        }
     }
 }
