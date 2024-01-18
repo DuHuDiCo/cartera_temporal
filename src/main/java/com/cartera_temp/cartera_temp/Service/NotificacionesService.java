@@ -9,7 +9,9 @@ public interface NotificacionesService {
 
     public Notificaciones crearNotificaciones(Notificaciones notificaciones);
     
-    public List<Notificaciones> listarNotificacionesByAsignated(String username);
+    public List<Notificaciones> getNotificacionesAscendente(String username);
+    
+    public List<Notificaciones> getNotificacionesVencidasAscendente(String username);
     
     
     
