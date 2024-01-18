@@ -36,7 +36,7 @@ public class CuentaPorCobrarSpecification {
             }
 
             if (filtro.getClasiJuridica() != null && !filtro.getClasiJuridica().isEmpty()) {
-                predicates.add(root.get("clasificacionJuridica").in(filtro.getClasiJuridica()));
+                predicates.add(root.get("clasificacionJuridica").get("clasificacionJuridica").in(filtro.getClasiJuridica()));
             }
 
             if (filtro.getDiasVencidosInicio() != null && filtro.getDiasVencidosFin() != null) {
