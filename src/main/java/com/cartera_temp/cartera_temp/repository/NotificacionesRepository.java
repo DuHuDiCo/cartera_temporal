@@ -13,7 +13,7 @@ public interface NotificacionesRepository extends JpaRepository<Notificaciones, 
 
     List<Notificaciones> findAllByIsActiveAndDesignatedToAndVerRealizadasOrderByFechaCreacionAsc(boolean isActive, String ver, Long id);
 
-    List<Notificaciones> findAllByIsActiveAndDesignatedToAndVerRealizadasAndFechaFinalizacionBefore(boolean IsActive, String ver, Long id, Date fechaActual);
+    List<Notificaciones> findAllByIsActiveAndDesignatedToAndVerRealizadasAndFechaFinalizacionBefore(boolean IsActive, Long id, String ver,  Date fechaActual);
     
     List<Notificaciones> findAllByIsActiveAndDesignatedToAndVerRealizadasOrderByFechaCreacionAsc(boolean IsActive, Long id, String ver);
 
