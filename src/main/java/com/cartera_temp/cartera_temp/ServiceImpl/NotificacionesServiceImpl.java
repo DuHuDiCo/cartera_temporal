@@ -43,7 +43,7 @@ public class NotificacionesServiceImpl implements NotificacionesService {
             return null;
         }
 
-        List<Notificaciones> notiFind = notificacionesRepository.findAllByIsActiveAndDesignatedToOrderByFechaCreacionAsc(true, user.getIdUsuario());
+        List<Notificaciones> notiFind = notificacionesRepository.findAllByIsActiveAndDesignatedToAndVerRealizadasOrderByFechaCreacionAsc(true, "VER", user.getIdUsuario());
         return notiFind;
 
     }
@@ -58,7 +58,7 @@ public class NotificacionesServiceImpl implements NotificacionesService {
 
         List<Notificaciones> notiFind = new ArrayList<>();
         try {
-            notiFind = notificacionesRepository.findAllByIsActiveAndDesignatedToAndFechaFinalizacionBefore(true, user.getIdUsuario(), Functions.obtenerFechaYhora());
+            notiFind = notificacionesRepository.findAllByIsActiveAndDesignatedToAndVerRealizadasAndFechaFinalizacionBefore(true, "VER", user.getIdUsuario(), Functions.obtenerFechaYhora());
         } catch (ParseException ex) {
             Logger.getLogger(NotificacionesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -76,5 +76,36 @@ public class NotificacionesServiceImpl implements NotificacionesService {
         }else{
             return false;
         }
+    }
+
+    @Override
+    public boolean hideNotificationChecked(Long idNotificacion) {
+        
+        Notificaciones noti = notificacionesRepository.findById(idNotificacion).orElse(null);
+        if(Objects.nonNull(noti)){
+            noti.setVerRealizadas("HIDE");
+            noti = notificacionesRepository.save(noti);
+            return true;
+        }else{
+            return false;
+        }
+        
+    }
+
+    @Override
+    public List<Notificaciones> getRealizadas(String username) {
+        
+        if(username == "" || username == null){
+            return null;
+        }
+        
+        Usuario usu = usuarioClient.getUserByUsername(username);
+        if(Objects.isNull(usu)){
+            return null;
+        }
+        
+        List<Notificaciones> noti = notificacionesRepository.findAllByDesignatedToAndVerRealizadasByFechaCreacionAsc(usu.getIdUsuario(), "VER");
+        return noti;
+        
     }
 }

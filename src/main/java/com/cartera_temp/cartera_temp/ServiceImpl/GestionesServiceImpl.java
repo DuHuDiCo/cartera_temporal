@@ -219,6 +219,7 @@ public class GestionesServiceImpl implements GestionesService {
             notificacion.setNumeroObligacion(cpc.getNumeroObligacion());
             notificacion.setDesignatedTo(usuDesignated.getIdUsuario());
             notificacion.setDesignatedBy(userNotifying.getIdUsuario());
+            notificacion.setVerRealizadas("VER");
             notificacion.setCliente(cpc.getCliente());
             acuerdoPago = acuerdoPagoRepository.save(acuerdoPago);
             notificacion = notificacionesService.crearNotificaciones(notificacion);
@@ -290,6 +291,8 @@ public class GestionesServiceImpl implements GestionesService {
             notificacion.setNumeroObligacion(cpc.getNumeroObligacion());
             notificacion.setDesignatedTo(tarea.getDesignatedTo());
             notificacion.setDesignatedBy(userNotifying.getIdUsuario());
+            notificacion.setVerRealizadas("VER");
+            notificacion.setCliente(cpc.getCliente());
 
             tarea = tareaRepository.save(tarea);
 

@@ -43,6 +43,9 @@ public class Notificaciones {
 
     @Column(name = "id_designated_to")
     private Long designatedTo;
+    
+    @Column(name = "ver_realizadas")
+    private String verRealizadas;
 
     public Notificaciones() {
     }
@@ -117,6 +120,14 @@ public class Notificaciones {
 
     public void setDesignatedBy(Long designatedBy) {
         this.designatedBy = designatedBy;
+    }
+
+    public String getVerRealizadas() {
+        return verRealizadas;
+    }
+
+    public void setVerRealizadas(String verRealizadas) {
+        this.verRealizadas = verRealizadas;
     }
 
 }

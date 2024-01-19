@@ -45,5 +45,20 @@ public class NotificacionesController {
         }
         return ResponseEntity.ok().build();
     }
+    
+    @PutMapping("/hideNotification")
+    public ResponseEntity<HttpStatus> hideNotificaciones(@RequestParam(name = "idNotificion")Long id){
+        boolean bol = notificacionesService.hideNotificationChecked(id);
+        if(bol == false){
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok().build();
+    }
+    
+    @GetMapping("/getAllNotificacionesRealizadas")
+    public ResponseEntity<List<Notificaciones>> obtenerNotificacionesRealizadasByAsignated(@RequestParam(name = "username") String username){
+        List<Notificaciones> notificaciones = notificacionesService.getRealizadas(username);
+        return ResponseEntity.ok(notificaciones);
+    }
 
 }

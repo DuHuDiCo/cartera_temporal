@@ -15,4 +15,8 @@ public interface NotificacionesService {
     
     public boolean desactivateNotificacion(Long idNotificacion);
     
+    public boolean hideNotificationChecked(Long idNotificacion);
+    
+    public List<Notificaciones> getRealizadas(String username);
+    
 }
