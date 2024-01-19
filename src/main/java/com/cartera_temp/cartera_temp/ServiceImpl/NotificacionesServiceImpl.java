@@ -70,7 +70,7 @@ public class NotificacionesServiceImpl implements NotificacionesService {
     public boolean desactivateNotificacion(Long idNotificacion) {
         Notificaciones noti = notificacionesRepository.findById(idNotificacion).orElse(null);
         if(Objects.nonNull(noti)){
-            noti.setIsActive(true);
+            noti.setIsActive(false);
             noti = notificacionesRepository.save(noti);
             return true;
         }else{
