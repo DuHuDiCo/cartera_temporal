@@ -58,7 +58,7 @@ public class NotificacionesServiceImpl implements NotificacionesService {
 
         List<Notificaciones> notiFind = new ArrayList<>();
         try {
-            notiFind = notificacionesRepository.findAllByIsActiveAndDesignatedToAndVerRealizadasAndFechaFinalizacionBefore(true, "VER", user.getIdUsuario(), Functions.obtenerFechaYhora());
+            notiFind = notificacionesRepository.findAllByIsActiveAndDesignatedToAndVerRealizadasAndFechaFinalizacionBefore(true, user.getIdUsuario(), "VER", Functions.obtenerFechaYhora());
         } catch (ParseException ex) {
             Logger.getLogger(NotificacionesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
