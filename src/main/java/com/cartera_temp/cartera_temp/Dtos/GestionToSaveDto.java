@@ -13,7 +13,9 @@ public class GestionToSaveDto {
     
     private String detallesAdicionales;
     
-    private String username;
+    private String usernameToSetNotificacion;
+    
+    private String userNotifying;
 
     public GestionToSaveDto() {
     }
@@ -50,15 +52,20 @@ public class GestionToSaveDto {
         this.clasificacion = clasificacion;
     }
 
-    public String getUsername() {
-        return username;
+    public String getUsernameToSetNotificacion() {
+        return usernameToSetNotificacion;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUsernameToSetNotificacion(String usernameToSetNotificacion) {
+        this.usernameToSetNotificacion = usernameToSetNotificacion;
     }
 
-  
-    
-    
+    public String getUserNotifying() {
+        return userNotifying;
+    }
+
+    public void setUserNotifying(String userNotifying) {
+        this.userNotifying = userNotifying;
+    }
+
 }

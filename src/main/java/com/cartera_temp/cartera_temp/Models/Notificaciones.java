@@ -37,6 +37,9 @@ public class Notificaciones {
     
     @Column(name = "is_active")
     private boolean isActive;
+    
+    @Column(name = "id_designated_by")
+    private Long designatedBy;
 
     @Column(name = "id_designated_to")
     private Long designatedTo;
@@ -106,6 +109,14 @@ public class Notificaciones {
 
     public void setIsActive(boolean isActive) {
         this.isActive = isActive;
+    }
+
+    public Long getDesignatedBy() {
+        return designatedBy;
+    }
+
+    public void setDesignatedBy(Long designatedBy) {
+        this.designatedBy = designatedBy;
     }
 
 }

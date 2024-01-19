@@ -124,10 +124,16 @@ public class GestionesServiceImpl implements GestionesService {
             return null;
         }
 
-        Usuario usuDesignated = usuarioClientService.obtenerUsuario(dto.getUsername());
+        Usuario usuDesignated = usuarioClientService.obtenerUsuario(dto.getUsernameToSetNotificacion());
         if (Objects.isNull(usuDesignated)) {
             return null;
         }
+        
+        Usuario userNotifying = usuarioClientService.obtenerUsuario(dto.getUserNotifying());
+        if(Objects.isNull(userNotifying)){
+            return null;
+        }
+        
         AsesorCartera asesor = asesorCartera.findAsesor(usu.getIdUsuario());
         if (Objects.isNull(asesor)) {
             return null;
@@ -212,6 +218,7 @@ public class GestionesServiceImpl implements GestionesService {
             notificacion.setFechaFinalizacion(acuerdoPago.getFechaCompromiso());
             notificacion.setNumeroObligacion(cpc.getNumeroObligacion());
             notificacion.setDesignatedTo(usuDesignated.getIdUsuario());
+            notificacion.setDesignatedBy(userNotifying.getIdUsuario());
             notificacion.setCliente(cpc.getCliente());
             acuerdoPago = acuerdoPagoRepository.save(acuerdoPago);
             notificacion = notificacionesService.crearNotificaciones(notificacion);
@@ -282,6 +289,7 @@ public class GestionesServiceImpl implements GestionesService {
             notificacion.setFechaFinalizacion(tarea.getFechaFinTarea());
             notificacion.setNumeroObligacion(cpc.getNumeroObligacion());
             notificacion.setDesignatedTo(tarea.getDesignatedTo());
+            notificacion.setDesignatedBy(userNotifying.getIdUsuario());
 
             tarea = tareaRepository.save(tarea);
 
