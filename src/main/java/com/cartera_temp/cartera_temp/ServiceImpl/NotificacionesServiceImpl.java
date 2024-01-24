@@ -29,10 +29,8 @@ public class NotificacionesServiceImpl implements NotificacionesService {
 
     @Override
     public Notificaciones crearNotificaciones(Notificaciones notificaciones) {
-        Notificaciones notificacionesSaved = new Notificaciones();
-        notificacionesSaved.setIsActive(true);
-        notificacionesSaved = notificacionesRepository.save(notificaciones);
-        return notificacionesSaved;
+        notificaciones = notificacionesRepository.save(notificaciones);
+        return notificaciones;
     }
 
     @Override

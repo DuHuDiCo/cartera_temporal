@@ -292,6 +292,7 @@ public class GestionesServiceImpl implements GestionesService {
             notificacion.setDesignatedTo(tarea.getDesignatedTo());
             notificacion.setDesignatedBy(userNotifying.getNombres().toUpperCase().concat(userNotifying.getApellidos().toUpperCase()));
             notificacion.setVerRealizadas("VER");
+            notificacion.setIsActive(true);
             notificacion.setCliente(cpc.getCliente());
 
             tarea = tareaRepository.save(tarea);
