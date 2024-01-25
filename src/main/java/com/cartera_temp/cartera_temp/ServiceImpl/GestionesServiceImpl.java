@@ -124,10 +124,16 @@ public class GestionesServiceImpl implements GestionesService {
             return null;
         }
 
-        Usuario usuDesignated = usuarioClientService.obtenerUsuario(dto.getUsername());
+        Usuario usuDesignated = usuarioClientService.obtenerUsuario(dto.getUsernameToSetNotificacion());
         if (Objects.isNull(usuDesignated)) {
             return null;
         }
+        
+        Usuario userNotifying = usuarioClientService.obtenerUsuario(dto.getUserNotifying());
+        if(Objects.isNull(userNotifying)){
+            return null;
+        }
+        
         AsesorCartera asesor = asesorCartera.findAsesor(usu.getIdUsuario());
         if (Objects.isNull(asesor)) {
             return null;
@@ -212,6 +218,8 @@ public class GestionesServiceImpl implements GestionesService {
             notificacion.setFechaFinalizacion(acuerdoPago.getFechaCompromiso());
             notificacion.setNumeroObligacion(cpc.getNumeroObligacion());
             notificacion.setDesignatedTo(usuDesignated.getIdUsuario());
+            notificacion.setDesignatedBy(userNotifying.getNombres().toUpperCase().concat(userNotifying.getApellidos().toUpperCase()));
+            notificacion.setVerRealizadas("VER");
             notificacion.setCliente(cpc.getCliente());
             acuerdoPago = acuerdoPagoRepository.save(acuerdoPago);
             notificacion = notificacionesService.crearNotificaciones(notificacion);
@@ -282,6 +290,10 @@ public class GestionesServiceImpl implements GestionesService {
             notificacion.setFechaFinalizacion(tarea.getFechaFinTarea());
             notificacion.setNumeroObligacion(cpc.getNumeroObligacion());
             notificacion.setDesignatedTo(tarea.getDesignatedTo());
+            notificacion.setDesignatedBy(userNotifying.getNombres().toUpperCase().concat(userNotifying.getApellidos().toUpperCase()));
+            notificacion.setVerRealizadas("VER");
+            notificacion.setIsActive(true);
+            notificacion.setCliente(cpc.getCliente());
 
             tarea = tareaRepository.save(tarea);
 
@@ -526,8 +538,16 @@ public class GestionesServiceImpl implements GestionesService {
             }
 
         }
-
+        
         List<Telefono> telefono = clientToSend.getTelefonos().stream().filter(t -> t.isIsCurrent() == true).collect(Collectors.toList());
+        
+        String telToMessage;
+        if(Objects.nonNull(dto.getNumeroAlterno())){
+            telToMessage = "57 ".concat(dto.getNumeroAlterno());
+        }else{
+            telToMessage = telefono.get(0).getIndicativo().concat(" ").concat(telefono.get(0).getNumero());
+        }
+        
 
         LinkToClient link = new LinkToClient();
 
@@ -540,7 +560,7 @@ public class GestionesServiceImpl implements GestionesService {
                 .concat("mensuales%20acordadas%20con%20nuestro%20asesor/a%20de%20cartera%20".concat(asesorCartera).concat(",%20si%20tiene%20alguna%20duda%20por%20favor%20ponerse%20"))
                 .concat("en%20contacto%20por%20este%20mismo%20medio,%20muchas%20gracias");
 
-        link.setMessageToWpp("https://api.whatsapp.com/send?phone=".concat("+").concat(telefono.get(0).getIndicativo()).concat(" ").concat(telefono.get(0).getNumero()).concat(message));
+        link.setMessageToWpp("https://api.whatsapp.com/send?phone=".concat("+").concat(telToMessage).concat(message));
         try {
             link.setBase64(pdf.generarReporteAcuerdoPagoToClient(cpc, dto.getUsername()));
         } catch (IOException ex) {

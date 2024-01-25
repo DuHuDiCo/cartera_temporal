@@ -3,6 +3,7 @@ package com.cartera_temp.cartera_temp.Dtos;
 public class LinkDto {
 
     private String numeroObligacion;
+    private String numeroAlterno;
     private String cedula;
     private String username;
 
@@ -31,6 +32,14 @@ public class LinkDto {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getNumeroAlterno() {
+        return numeroAlterno;
+    }
+
+    public void setNumeroAlterno(String numeroAlterno) {
+        this.numeroAlterno = numeroAlterno;
     }
     
     

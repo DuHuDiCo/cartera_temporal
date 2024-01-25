@@ -37,9 +37,15 @@ public class Notificaciones {
     
     @Column(name = "is_active")
     private boolean isActive;
+    
+    @Column(name = "id_designated_by")
+    private String designatedBy;
 
     @Column(name = "id_designated_to")
     private Long designatedTo;
+    
+    @Column(name = "ver_realizadas")
+    private String verRealizadas;
 
     public Notificaciones() {
     }
@@ -106,6 +112,21 @@ public class Notificaciones {
 
     public void setIsActive(boolean isActive) {
         this.isActive = isActive;
+    }
+
+    public String getDesignatedBy() {
+        return designatedBy;
+    }
+
+    public void setDesignatedBy(String designatedBy) {
+        this.designatedBy = designatedBy;
+    }
+    public String getVerRealizadas() {
+        return verRealizadas;
+    }
+
+    public void setVerRealizadas(String verRealizadas) {
+        this.verRealizadas = verRealizadas;
     }
 
 }
