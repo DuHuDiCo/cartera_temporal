@@ -372,6 +372,8 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
 
             //calcular nuevos dias vencidos
             int diasVecidos = Functions.diferenciaFechas(cuentasPorCobrar.getFechaVencimiento());
+            
+            
 
             CuentasPorCobrarResponse cuentasPorCobrarResponse = map.map(cuentasPorCobrar, CuentasPorCobrarResponse.class);
 
@@ -380,7 +382,13 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
                 return null;
             }
             cuentasPorCobrarResponse.setClientes(cliente);
-            cuentasPorCobrarResponse.setDiasVencidos(diasVecidos);
+            
+            if (diasVecidos < 0) {
+                cuentasPorCobrarResponse.setDiasVencidos(0);
+            } else {
+                cuentasPorCobrarResponse.setDiasVencidos(diasVecidos);
+            }
+            
             Usuario usu = usuarioClient.getUsuarioById(cuentasPorCobrar.getAsesor().getUsuarioId(), token);
 
             if (Objects.isNull(usu)) {
