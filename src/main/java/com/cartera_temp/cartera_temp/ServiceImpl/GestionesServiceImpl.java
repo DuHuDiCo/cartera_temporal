@@ -505,28 +505,34 @@ public class GestionesServiceImpl implements GestionesService {
     public LinkToClient sendLinkAndPdfToClient(LinkDto dto) {
 
         if (dto.getNumeroObligacion() == "" || dto.getNumeroObligacion() == null || dto.getCedula() == "" || dto.getCedula() == null) {
+            System.out.println("numero obligacion o cedula vacio");
+            System.out.println(dto.getNumeroObligacion());
+            System.out.println(dto.getCedula());
             return null;
         }
-        System.out.println("numero obligacion o cedula vacio");
+        
         CuentasPorCobrar cpc = cuentaCobrarRepository.findByNumeroObligacion(dto.getNumeroObligacion());
         if (Objects.isNull(cpc)) {
+            System.out.println("cp vacio");
             return null;
         }
-        System.out.println("cp vacio");
+        
         String token = request.getAttribute("token").toString();
 
         List<ClientesDto> client = clientesClient.buscarClientesByNumeroObligacion(dto.getCedula(), token);
         if (client.isEmpty()) {
+            System.out.println("clientes vacio");
             return null;
         }
-        System.out.println("clientes vacio");
+        
         System.out.println(client.size());
 
         Usuario usu = usuarioClientService.obtenerUsuarioById(cpc.getAsesor().getUsuarioId());
         if (Objects.isNull(usu)) {
+            System.out.println("usuario cedula vacio");
             return null;
         }
-        System.out.println("usuario cedula vacio");
+        
         ClientesDto clientToSend = new ClientesDto();
 
         for (ClientesDto clientesDto : client) {
