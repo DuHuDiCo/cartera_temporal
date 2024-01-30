@@ -128,12 +128,12 @@ public class GestionesServiceImpl implements GestionesService {
         if (Objects.isNull(usuDesignated)) {
             return null;
         }
-        
+
         Usuario userNotifying = usuarioClientService.obtenerUsuario(dto.getUserNotifying());
-        if(Objects.isNull(userNotifying)){
+        if (Objects.isNull(userNotifying)) {
             return null;
         }
-        
+
         AsesorCartera asesor = asesorCartera.findAsesor(usu.getIdUsuario());
         if (Objects.isNull(asesor)) {
             return null;
@@ -507,25 +507,26 @@ public class GestionesServiceImpl implements GestionesService {
         if (dto.getNumeroObligacion() == "" || dto.getNumeroObligacion() == null || dto.getCedula() == "" || dto.getCedula() == null) {
             return null;
         }
-
+        System.out.println("numero obligacion o cedula vacio");
         CuentasPorCobrar cpc = cuentaCobrarRepository.findByNumeroObligacion(dto.getNumeroObligacion());
         if (Objects.isNull(cpc)) {
             return null;
         }
-
+        System.out.println("cp vacio");
         String token = request.getAttribute("token").toString();
 
         List<ClientesDto> client = clientesClient.buscarClientesByNumeroObligacion(dto.getCedula(), token);
         if (client.isEmpty()) {
             return null;
         }
+        System.out.println("clientes vacio");
         System.out.println(client.size());
 
         Usuario usu = usuarioClientService.obtenerUsuarioById(cpc.getAsesor().getUsuarioId());
         if (Objects.isNull(usu)) {
             return null;
         }
-
+        System.out.println("usuario cedula vacio");
         ClientesDto clientToSend = new ClientesDto();
 
         for (ClientesDto clientesDto : client) {
@@ -533,21 +534,18 @@ public class GestionesServiceImpl implements GestionesService {
             if (clientesDto.getNumeroDocumento().equals(dto.getCedula()) == true) {
                 clientToSend = clientesDto;
                 break;
-            } else {
-                return null;
             }
-
+            System.out.println("numero docuomento y cedula diferentes");
         }
-        
+
         List<Telefono> telefono = clientToSend.getTelefonos().stream().filter(t -> t.isIsCurrent() == true).collect(Collectors.toList());
-        
+
         String telToMessage;
-        if(Objects.nonNull(dto.getNumeroAlterno())){
+        if (Objects.nonNull(dto.getNumeroAlterno())) {
             telToMessage = "57 ".concat(dto.getNumeroAlterno());
-        }else{
+        } else {
             telToMessage = telefono.get(0).getIndicativo().concat(" ").concat(telefono.get(0).getNumero());
         }
-        
 
         LinkToClient link = new LinkToClient();
 
@@ -564,8 +562,10 @@ public class GestionesServiceImpl implements GestionesService {
         try {
             link.setBase64(pdf.generarReporteAcuerdoPagoToClient(cpc, dto.getUsername()));
         } catch (IOException ex) {
+            System.out.println(ex);
             Logger.getLogger(GestionesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {
+            System.out.println(ex);
             Logger.getLogger(GestionesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
 
