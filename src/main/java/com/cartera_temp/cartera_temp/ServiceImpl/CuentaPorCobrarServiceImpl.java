@@ -372,8 +372,6 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
 
             //calcular nuevos dias vencidos
             int diasVecidos = Functions.diferenciaFechas(cuentasPorCobrar.getFechaVencimiento());
-            
-            
 
             CuentasPorCobrarResponse cuentasPorCobrarResponse = map.map(cuentasPorCobrar, CuentasPorCobrarResponse.class);
 
@@ -382,13 +380,13 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
                 return null;
             }
             cuentasPorCobrarResponse.setClientes(cliente);
-            
+
             if (diasVecidos < 0) {
                 cuentasPorCobrarResponse.setDiasVencidos(0);
             } else {
                 cuentasPorCobrarResponse.setDiasVencidos(diasVecidos);
             }
-            
+
             Usuario usu = usuarioClient.getUsuarioById(cuentasPorCobrar.getAsesor().getUsuarioId(), token);
 
             if (Objects.isNull(usu)) {
@@ -496,7 +494,11 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
 
                     CuentasPorCobrarResponse cuentasPorCobrarResponse = modelMapper.map(cuentasPorCobrar, CuentasPorCobrarResponse.class);
                     int diasVecidos = Functions.diferenciaFechas(cuentasPorCobrar.getFechaVencimiento());
-                    cuentasPorCobrarResponse.setDiasVencidos(diasVecidos);
+                    if (diasVecidos < 0) {
+                        cuentasPorCobrarResponse.setDiasVencidos(0);
+                    } else {
+                        cuentasPorCobrarResponse.setDiasVencidos(diasVecidos);
+                    }
                     cuentasPorCobrarResponse.setClientes(clientes);
                     cuentasPorCobrarResponse.setTiposVencimiento(cuentasPorCobrar.getTiposVencimiento());
 
@@ -531,7 +533,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             usuFiltro = usuarioClient.getUserByUsername(dto.getUsername());
             spec = CuentaPorCobrarSpecification.filtrarCuentas(dto, usuFiltro.getIdUsuario());
         } else {
-             spec = CuentaPorCobrarSpecification.filtrarCuentas(dto, 0L);
+            spec = CuentaPorCobrarSpecification.filtrarCuentas(dto, 0L);
         }
 
         Page<CuentasPorCobrar> cpc = cuentasPorCobrarRepository.findAll(spec, pageable);
@@ -540,9 +542,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
         ModelMapper map = new ModelMapper();
         for (CuentasPorCobrar cuentasPorCobrar : cpc.getContent()) {
 
-            
-
-           int diasVecidos = Functions.diferenciaFechas(cuentasPorCobrar.getFechaVencimiento());
+            int diasVecidos = Functions.diferenciaFechas(cuentasPorCobrar.getFechaVencimiento());
             CuentasPorCobrarResponse cpcResFor = map.map(cuentasPorCobrar, CuentasPorCobrarResponse.class);
             if (diasVecidos < 0) {
                 cpcResFor.setDiasVencidos(0);

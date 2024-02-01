@@ -74,6 +74,7 @@ public class GenerarPdfImpl implements GenerarPdf {
             return null;
         }
 
+        System.out.println("cpc is null");
         if (username == null || username == "") {
             return null;
         }
