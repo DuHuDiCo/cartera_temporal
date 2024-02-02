@@ -134,7 +134,7 @@ public class GestionesServiceImpl implements GestionesService {
             return null;
         }
 
-        AsesorCartera asesor = asesorCartera.findAsesor(usu.getIdUsuario());
+        AsesorCartera asesor = asesorCartera.findAsesor(userNotifying.getIdUsuario());
         if (Objects.isNull(asesor)) {
             return null;
         }
@@ -218,7 +218,8 @@ public class GestionesServiceImpl implements GestionesService {
             notificacion.setFechaFinalizacion(acuerdoPago.getFechaCompromiso());
             notificacion.setNumeroObligacion(cpc.getNumeroObligacion());
             notificacion.setDesignatedTo(usuDesignated.getIdUsuario());
-            notificacion.setDesignatedBy(userNotifying.getNombres().toUpperCase().concat(userNotifying.getApellidos().toUpperCase()));
+            notificacion.setIsActive(true);
+            notificacion.setDesignatedBy(userNotifying.getNombres().toUpperCase().concat(" ").concat(userNotifying.getApellidos().toUpperCase()));
             notificacion.setVerRealizadas("VER");
             notificacion.setCliente(cpc.getCliente());
             acuerdoPago = acuerdoPagoRepository.save(acuerdoPago);
