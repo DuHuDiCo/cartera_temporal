@@ -7,9 +7,11 @@ import com.cartera_temp.cartera_temp.Dtos.PagosCuotasDto;
 import com.cartera_temp.cartera_temp.Dtos.PagosCuotasResponse;
 import com.cartera_temp.cartera_temp.FeignClients.usuario_client;
 import com.cartera_temp.cartera_temp.Models.AcuerdoPago;
+import com.cartera_temp.cartera_temp.Models.AsesorCartera;
 import com.cartera_temp.cartera_temp.Models.CuentasPorCobrar;
 import com.cartera_temp.cartera_temp.Models.Cuotas;
 import com.cartera_temp.cartera_temp.Models.Gestiones;
+import com.cartera_temp.cartera_temp.Models.Nota;
 import com.cartera_temp.cartera_temp.Models.Pagos;
 import com.cartera_temp.cartera_temp.Models.ReciboPago;
 import com.cartera_temp.cartera_temp.ModelsClients.Usuario;
@@ -18,8 +20,10 @@ import com.cartera_temp.cartera_temp.Service.PagosService;
 import com.cartera_temp.cartera_temp.Utils.Functions;
 import com.cartera_temp.cartera_temp.Utils.SaveFiles;
 import com.cartera_temp.cartera_temp.repository.AcuerdoPagoRepository;
+import com.cartera_temp.cartera_temp.repository.AsesorCarteraRepository;
 import com.cartera_temp.cartera_temp.repository.CuentasPorCobrarRepository;
 import com.cartera_temp.cartera_temp.repository.GestionesRepository;
+import com.cartera_temp.cartera_temp.repository.NotaRepository;
 import com.cartera_temp.cartera_temp.repository.PagosRespositoty;
 import com.cartera_temp.cartera_temp.repository.ReciboPagoRepository;
 import java.io.IOException;
@@ -44,11 +48,13 @@ public class PagosServiceImpl implements PagosService {
     private final GenerarPdf generarPdf;
     private final SaveFiles saveFiles;
     private final ReciboPagoRepository reciboPagoRepository;
-    
+    private final AsesorCarteraRepository asesorCarteraRepository;
+    private final NotaRepository notaRepository;
+
     @Value("${ruta.recibos}")
     private String path;
 
-    public PagosServiceImpl(PagosRespositoty pagosRespositoty, CuentasPorCobrarRepository cpcr, usuario_client usuClient, GestionesRepository gr, AcuerdoPagoRepository apr, GenerarPdf generarPdf, SaveFiles saveFiles, ReciboPagoRepository reciboPagoRepository) {
+    public PagosServiceImpl(PagosRespositoty pagosRespositoty, CuentasPorCobrarRepository cpcr, usuario_client usuClient, GestionesRepository gr, AcuerdoPagoRepository apr, GenerarPdf generarPdf, SaveFiles saveFiles, ReciboPagoRepository reciboPagoRepository, AsesorCarteraRepository asesorCarteraRepository, NotaRepository notaRepository) {
         this.pagosRespositoty = pagosRespositoty;
         this.cpcr = cpcr;
         this.usuClient = usuClient;
@@ -57,7 +63,11 @@ public class PagosServiceImpl implements PagosService {
         this.generarPdf = generarPdf;
         this.saveFiles = saveFiles;
         this.reciboPagoRepository = reciboPagoRepository;
+        this.asesorCarteraRepository = asesorCarteraRepository;
+        this.notaRepository = notaRepository;
     }
+
+  
 
     @Override
     public PagosCuotasResponse guardarPago(PagosCuotasDto dto) {
@@ -129,7 +139,6 @@ public class PagosServiceImpl implements PagosService {
                 return null;
             }
 
-            
             String fileName = multipartFile.getOriginalFilename();
             String ruta = saveFiles.obtenerRuta(fileName, path, cpc.getSede().getSede());
 
@@ -157,6 +166,31 @@ public class PagosServiceImpl implements PagosService {
 
             acuPag = apr.save(acuPag);
 
+            AsesorCartera asesor = asesorCarteraRepository.findByUsuarioId(usu.getIdUsuario());
+            if (Objects.isNull(usu)) {
+                return null;
+            }
+
+            Gestiones gestion = new Gestiones();
+            gestion.setAsesorCartera(asesor);
+            gestion.setNumeroObligacion(cpc.getNumeroObligacion());
+
+            gestion.setCuentasPorCobrar(cpc);
+            
+
+            Nota nota = new Nota();
+            nota.setClasificacion("NOTA");
+            nota.setDetalleNota("ACUERDO DE PAGO CON ID:  ".concat(acuPag.getIdClasificacionGestion().toString()).concat(" ").concat(dto.getDetalle()) );
+            nota.setFechaNota(Functions.obtenerFechaYhora());
+            nota.setAsesor(asesor);
+            nota = notaRepository.save(nota);
+            
+            gestion.setClasificacion(nota);
+
+            cpc.getGestiones().add(gestion);
+            
+            cpc.setGestiones(gr.saveAll(cpc.getGestiones()));
+            
             PagosCuotasResponse pgr = new PagosCuotasResponse();
             pgr.setBase64(base64);
             pgr.setNombreArchivo(cpc.getCliente().concat(".pdf"));

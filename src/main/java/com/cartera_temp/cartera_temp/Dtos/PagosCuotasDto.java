@@ -18,6 +18,7 @@ public class PagosCuotasDto {
     private String detalle;
     private boolean cumpliendo;
     private String username;
+    private String nombreClasificacion;
     
 
     public PagosCuotasDto() {
@@ -125,6 +126,14 @@ public class PagosCuotasDto {
 
     public void setCumpliendo(boolean cumpliendo) {
         this.cumpliendo = cumpliendo;
+    }
+
+    public String getNombreClasificacion() {
+        return nombreClasificacion;
+    }
+
+    public void setNombreClasificacion(String nombreClasificacion) {
+        this.nombreClasificacion = nombreClasificacion;
     }
     
     
