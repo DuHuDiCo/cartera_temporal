@@ -36,6 +36,9 @@ public class Tarea extends ClasificacionGestion {
     
     @Column(name = "designated_to")
     private Long designatedTo;
+    
+    @Column(name = "is_parte_of_recaudo")
+    private boolean isParteOfRecaudo;
 
     @ManyToOne
     @JoinColumn(name = "tipo_clasificacion_id")
@@ -110,6 +113,14 @@ public class Tarea extends ClasificacionGestion {
 
     public void setDesignatedTo(Long designatedTo) {
         this.designatedTo = designatedTo;
+    }
+
+    public boolean isIsParteOfRecaudo() {
+        return isParteOfRecaudo;
+    }
+
+    public void setIsParteOfRecaudo(boolean isParteOfRecaudo) {
+        this.isParteOfRecaudo = isParteOfRecaudo;
     }
 
     

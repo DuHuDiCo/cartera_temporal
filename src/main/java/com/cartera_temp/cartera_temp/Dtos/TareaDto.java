@@ -6,6 +6,7 @@ public class TareaDto {
 
     private String detalleTarea;
     private String fechaFinTarea;
+    private boolean isPartOfRecaudo;
   
 
     public TareaDto() {
@@ -25,6 +26,14 @@ public class TareaDto {
 
     public void setFechaFinTarea(String fechaFinTarea) {
         this.fechaFinTarea = fechaFinTarea;
+    }
+
+    public boolean getIsPartOfRecaudo() {
+        return isPartOfRecaudo;
+    }
+
+    public void setIsPartOfRecaudo(boolean isPartOfRecaudo) {
+        this.isPartOfRecaudo = isPartOfRecaudo;
     }
     
     

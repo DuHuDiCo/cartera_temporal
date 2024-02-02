@@ -263,7 +263,9 @@ public class GestionesServiceImpl implements GestionesService {
             Tarea tarea = new Tarea();
 
             tarea.setAsesor(asesor);
+            tarea.setIsParteOfRecaudo(dto.getClasificacion().getTarea().getIsPartOfRecaudo());
             tarea.setDetalleTarea(dto.getClasificacion().getTarea().getDetalleTarea());
+            tarea.setIsActive(true);
             try {
                 tarea.setFechaFinTarea(Functions.stringToDateAndFormat(dto.getClasificacion().getTarea().getFechaFinTarea()));
             } catch (ParseException ex) {
