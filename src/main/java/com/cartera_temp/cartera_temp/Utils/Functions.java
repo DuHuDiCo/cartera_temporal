@@ -75,13 +75,24 @@ public class Functions {
     }
 
     public static Date obtenerFechaYhora() throws ParseException {
-        Date fecha = new Date(Calendar.getInstance().getTimeInMillis());
+        // Obtener la fecha y hora actual en milisegundos
+        long tiempoActual = System.currentTimeMillis();
+        
+        // Crear un objeto de fecha y hora usando el tiempo actual
+        Date fecha = new Date(tiempoActual);
 
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd  HH:mm:ss");
-        formatter.setTimeZone(TimeZone.getTimeZone("GMT-5"));
+        // Configurar el formato de la fecha y la zona horaria a GMT-5 (Bogotá)
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        formatter.setTimeZone(TimeZone.getTimeZone("America/Bogota"));
+        
+        // Formatear la fecha y la hora con la zona horaria de Bogotá
         String fechaTexto = formatter.format(fecha);
-        Date date = formatter.parse(fechaTexto);
-        return date;
+        
+        // Convertir el texto formateado nuevamente a un objeto de fecha y hora
+        Date fechaFormateada = formatter.parse(fechaTexto);
+        
+        // Devolver la fecha y hora formateada
+        return fechaFormateada;
 
     }
     
