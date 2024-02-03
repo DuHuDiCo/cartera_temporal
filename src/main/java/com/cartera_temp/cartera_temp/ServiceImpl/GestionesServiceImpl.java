@@ -599,6 +599,8 @@ public class GestionesServiceImpl implements GestionesService {
     @Override
     public AlertsGestiones alertasDeGestiones(String username) {
         Date fechaInicialMes = Functions.obtenerFechaInicalMes();
+        Date fechaInicialDia =Functions.obtenerFechaInicalDia();
+        
         
         Usuario usuario = usuarioClientService.obtenerUsuario(username);
         if(Objects.isNull(usuario)){
@@ -616,6 +618,9 @@ public class GestionesServiceImpl implements GestionesService {
         
         alerts.setAcuerdosDePagosRealizados(gestionesRepository.acuerdosPagoRealizados(fechaInicialMes, "ACUERDO DE PAGO", asesor.getIdAsesorCartera()));
         alerts.setAcuerdosDePagosActivos(gestionesRepository.acuerdoPagoActivos(fechaInicialMes, "ACUERDO DE PAGO", asesor.getIdAsesorCartera()));
+        alerts.setGestionesDia(gestionesRepository.countByFechaGestionGreaterThanEqualAndAsesorCartera(fechaInicialDia, asesor));
+        alerts.setAcuerdoPagoDia(gestionesRepository.acuerdosPagoRealizados(fechaInicialDia, "ACUERDO DE PAGO", asesor.getIdAsesorCartera()));
+        
         
         return alerts;
     }

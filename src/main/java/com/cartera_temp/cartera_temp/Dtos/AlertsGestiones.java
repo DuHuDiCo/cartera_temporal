@@ -9,6 +9,10 @@ public class AlertsGestiones {
     private int acuerdosDePagosRealizados;
     
     private int acuerdosDePagosActivos;
+    
+    private int gestionesDia;
+    
+    private int acuerdoPagoDia;
 
     public AlertsGestiones() {
     }
@@ -35,6 +39,22 @@ public class AlertsGestiones {
 
     public void setAcuerdosDePagosActivos(int acuerdosDePagosActivos) {
         this.acuerdosDePagosActivos = acuerdosDePagosActivos;
+    }
+
+    public int getGestionesDia() {
+        return gestionesDia;
+    }
+
+    public void setGestionesDia(int gestionesDia) {
+        this.gestionesDia = gestionesDia;
+    }
+
+    public int getAcuerdoPagoDia() {
+        return acuerdoPagoDia;
+    }
+
+    public void setAcuerdoPagoDia(int acuerdoPagoDia) {
+        this.acuerdoPagoDia = acuerdoPagoDia;
     }
     
     

@@ -217,4 +217,25 @@ public class Functions {
 
         return primerDiaDelMes;
     }
+    
+    public static Date obtenerFechaInicalDia() {
+
+        // Obtener la fecha actual
+        Date fechaActual = new Date();
+
+        // Crear un objeto Calendar y establecer la fecha actual
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(fechaActual);
+
+        // Establecer el día del mes en 1
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        // Obtener la fecha del primer día del mes actual
+        Date primerDiaDelMes = calendar.getTime();
+
+        return primerDiaDelMes;
+    }
 }
