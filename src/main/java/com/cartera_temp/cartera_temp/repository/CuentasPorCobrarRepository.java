@@ -31,5 +31,9 @@ public interface CuentasPorCobrarRepository extends JpaRepository<CuentasPorCobr
     
     @Query(value = "ALTER TABLE cuentas_por_cobrar AUTO_INCREMENT = 1", nativeQuery = true)
     void reinicarIds();
+    
+    @Query(value = " SELECT * FROM cuentas_por_cobrar JOIN gestiones ON gestiones.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar JOIN clasificacion_gestion ON gestiones.clasificacion_gestion_id = clasificacion_gestion.id_clasificacion_gestion JOIN acuerdo_pago ON acuerdo_pago.id_clasificacion_gestion = clasificacion_gestion.id_clasificacion_gestion WHERE acuerdo_pago.fecha_compromiso <= :fecha AND acuerdo_pago.is_active = true",
+            countQuery = "SELECT COUNT(*) FROM cuentas_por_cobrar JOIN gestiones ON gestiones.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar JOIN clasificacion_gestion ON gestiones.clasificacion_gestion_id = clasificacion_gestion.id_clasificacion_gestion JOIN acuerdo_pago ON acuerdo_pago.id_clasificacion_gestion = clasificacion_gestion.id_clasificacion_gestion WHERE acuerdo_pago.fecha_compromiso <= :fecha AND acuerdo_pago.is_active = true", nativeQuery = true)
+    Page<CuentasPorCobrar> obtenerCuentasByFechaCompromiso(@Param("fecha")Date fecha, Pageable pageable);
 
 }

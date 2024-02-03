@@ -526,17 +526,24 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
 
     @Override
     public Page<CuentasPorCobrarResponse> filtrosCpcs(FiltroDto dto, Pageable pageable) {
+        
+         Page<CuentasPorCobrar> cpc = null;
 
-        Usuario usuFiltro = new Usuario();
-        Specification<CuentasPorCobrar> spec = null;
-        if (!dto.getUsername().isBlank()) {
-            usuFiltro = usuarioClient.getUserByUsername(dto.getUsername());
-            spec = CuentaPorCobrarSpecification.filtrarCuentas(dto, usuFiltro.getIdUsuario());
-        } else {
-            spec = CuentaPorCobrarSpecification.filtrarCuentas(dto, 0L);
+        if (Objects.isNull(dto.getFechaCompromisoInicio())) {
+            Usuario usuFiltro = new Usuario();
+            Specification<CuentasPorCobrar> spec = null;
+            if (!dto.getUsername().isBlank()) {
+                usuFiltro = usuarioClient.getUserByUsername(dto.getUsername());
+                spec = CuentaPorCobrarSpecification.filtrarCuentas(dto, usuFiltro.getIdUsuario());
+            } else {
+                spec = CuentaPorCobrarSpecification.filtrarCuentas(dto, 0L);
+            }
+
+           cpc = cuentasPorCobrarRepository.findAll(spec, pageable);
+        }else{
+            cpc = cuentasPorCobrarRepository.obtenerCuentasByFechaCompromiso(dto.getFechaCpcInicio(), pageable);
         }
 
-        Page<CuentasPorCobrar> cpc = cuentasPorCobrarRepository.findAll(spec, pageable);
 //        List<CuentasPorCobrar> cpc = cuentasPorCobrarRepository.findAll(spec);
         List<CuentasPorCobrarResponse> cpcRes = new ArrayList<>();
         ModelMapper map = new ModelMapper();

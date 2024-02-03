@@ -47,36 +47,32 @@ public class CuentaPorCobrarSpecification {
                 predicates.add(root.get("tiposVencimiento").get("tipoVencimiento").in(filtro.getEdadVencimiento()));
             }
 
-            if (filtro.getFechaCompromisoInicio() != null && filtro.getFechaCompromisoFin() != null && filtro.getFechaCompromisoInicio() != "" && filtro.getFechaCompromisoFin() != "") {
-                Date fComInicio = null;
-//                Date fComFin = null;
-
-                try {
-                    fComInicio = Functions.stringToDateAndFormat(filtro.getFechaCompromisoInicio());
-                } catch (ParseException ex) {
-                    Logger.getLogger(CuentaPorCobrarSpecification.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
+//            if (filtro.getFechaCompromisoInicio() != null && filtro.getFechaCompromisoFin() != null && filtro.getFechaCompromisoInicio() != "" && filtro.getFechaCompromisoFin() != "") {
+//                Date fComInicio = null;
+////                Date fComFin = null;
+//
 //                try {
-//                    fComFin = Functions.stringToDateAndFormat(filtro.getFechaCompromisoFin());
+//                    fComInicio = Functions.stringToDateAndFormat(filtro.getFechaCompromisoInicio());
 //                } catch (ParseException ex) {
 //                    Logger.getLogger(CuentaPorCobrarSpecification.class.getName()).log(Level.SEVERE, null, ex);
 //                }
-//                Join<CuentasPorCobrar, Gestiones> gestionJoin = root.join("gestiones", JoinType.INNER);
-//                Join<Gestiones, ClasificacionGestion> clasificacionGestionJoin = gestionJoin.join("clasificacionGestion", JoinType.INNER);
 //
-//                Join<Gestiones, AcuerdoPago> acuerdoPagoJoin = criteriaBuilder.treat(clasificacionGestionJoin, AcuerdoPago.class);
+////                try {
+////                    fComFin = Functions.stringToDateAndFormat(filtro.getFechaCompromisoFin());
+////                } catch (ParseException ex) {
+////                    Logger.getLogger(CuentaPorCobrarSpecification.class.getName()).log(Level.SEVERE, null, ex);
+////                }
+////                Join<CuentasPorCobrar, Gestiones> gestionJoin = root.join("gestiones", JoinType.INNER);
+////                Join<Gestiones, ClasificacionGestion> clasificacionGestionJoin = gestionJoin.join("clasificacionGestion", JoinType.INNER);
+////
+////                Join<Gestiones, AcuerdoPago> acuerdoPagoJoin = criteriaBuilder.treat(clasificacionGestionJoin, AcuerdoPago.class);
+////
+////                predicates.add(criteriaBuilder.equal(clasificacionGestionJoin.get("clasificacion"), "ACUERDO DE PAGO"));
+////                predicates.add(criteriaBuilder.isTrue(acuerdoPagoJoin.get("isActive")));
+////                predicates.add(criteriaBuilder.lessThanOrEqualTo(acuerdoPagoJoin.get("fechaCompromiso"), fComInicio));
+// 
 //
-//                predicates.add(criteriaBuilder.equal(clasificacionGestionJoin.get("clasificacion"), "ACUERDO DE PAGO"));
-//                predicates.add(criteriaBuilder.isTrue(acuerdoPagoJoin.get("isActive")));
-//                predicates.add(criteriaBuilder.lessThanOrEqualTo(acuerdoPagoJoin.get("fechaCompromiso"), fComInicio));
-                Join<CuentasPorCobrar, Gestiones> gestionJoin = root.join("gestiones", JoinType.INNER);
-                Join<Gestiones, ClasificacionGestion> clasificacionGestionJoin = gestionJoin.join("clasificacionGestion", JoinType.INNER);
-                Join<ClasificacionGestion, AcuerdoPago> acuerdoPagoJoin = clasificacionGestionJoin.join("acuerdoPago", JoinType.INNER);
-                
-                predicates.add(criteriaBuilder.lessThanOrEqualTo(acuerdoPagoJoin.get("fechaCompromiso"), fComInicio));
-
-            }
+//            }
 
             if (filtro.getFechaCpcInicio() != null && filtro.getFechaCpcFin() != null) {
 
