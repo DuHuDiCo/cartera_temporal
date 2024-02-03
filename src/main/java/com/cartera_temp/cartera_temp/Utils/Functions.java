@@ -83,7 +83,7 @@ public class Functions {
 
         // Configurar el formato de la fecha y la zona horaria a GMT-5 (Bogotá)
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        formatter.setTimeZone(TimeZone.getTimeZone("America/Bogota"));
+        
         
         // Formatear la fecha y la hora con la zona horaria de Bogotá
         String fechaTexto = formatter.format(fecha);
