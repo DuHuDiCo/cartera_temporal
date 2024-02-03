@@ -36,6 +36,7 @@ import com.cartera_temp.cartera_temp.repository.CuentasPorCobrarRepository;
 import com.cartera_temp.cartera_temp.repository.SedeRepository;
 import java.io.IOException;
 import java.net.http.HttpRequest;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -541,7 +542,12 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
 
            cpc = cuentasPorCobrarRepository.findAll(spec, pageable);
         }else{
-            cpc = cuentasPorCobrarRepository.obtenerCuentasByFechaCompromiso(dto.getFechaCpcInicio(), pageable);
+            
+             try {
+                 cpc = cuentasPorCobrarRepository.obtenerCuentasByFechaCompromiso(Functions.stringToDateAndFormat(dto.getFechaCompromisoFin()), pageable);
+             } catch (ParseException ex) {
+                 Logger.getLogger(CuentaPorCobrarServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+             }
         }
 
 //        List<CuentasPorCobrar> cpc = cuentasPorCobrarRepository.findAll(spec);
