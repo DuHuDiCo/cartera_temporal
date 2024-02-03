@@ -543,8 +543,18 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
            cpc = cuentasPorCobrarRepository.findAll(spec, pageable);
         }else{
             
+             Usuario usuFiltro = usuarioClient.getUserByUsername(dto.getUsername());
+             if(Objects.isNull(usuFiltro)){
+                 return null;
+             }
+             
+             AsesorCartera asesor = asesorCarteraRepository.findByUsuarioId(usuFiltro.getIdUsuario());
+             if(Objects.isNull(asesor)){
+                 return null;
+             }
+            
              try {
-                 cpc = cuentasPorCobrarRepository.obtenerCuentasByFechaCompromiso(Functions.stringToDateAndFormat(dto.getFechaCompromisoInicio()), pageable);
+                 cpc = cuentasPorCobrarRepository.obtenerCuentasByFechaCompromiso(Functions.stringToDateAndFormat(dto.getFechaCompromisoInicio()), asesor.getIdAsesorCartera(),pageable);
              } catch (ParseException ex) {
                  Logger.getLogger(CuentaPorCobrarServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
              }
