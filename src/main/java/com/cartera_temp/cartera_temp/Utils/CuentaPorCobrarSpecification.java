@@ -70,7 +70,7 @@ public class CuentaPorCobrarSpecification {
 
                 predicates.add(criteriaBuilder.equal(clasificacionGestionJoin.get("clasificacion"), "ACUERDO DE PAGO"));
                 predicates.add(criteriaBuilder.isTrue(acuerdoPagoJoin.get("isActive")));
-                predicates.add(criteriaBuilder.between(acuerdoPagoJoin.get("fechaCompromiso"), fComInicio, fComFin));
+                predicates.add(criteriaBuilder.lessThan(acuerdoPagoJoin.get("fechaCompromiso"), fComInicio));
             }
 
             if (filtro.getFechaCpcInicio() != null && filtro.getFechaCpcFin() != null) {

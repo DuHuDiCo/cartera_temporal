@@ -11,6 +11,7 @@ import com.cartera_temp.cartera_temp.Models.AsesorCartera;
 import com.cartera_temp.cartera_temp.Models.CuentasPorCobrar;
 import com.cartera_temp.cartera_temp.Models.Cuotas;
 import com.cartera_temp.cartera_temp.Models.Gestiones;
+import com.cartera_temp.cartera_temp.Models.NombresClasificacion;
 import com.cartera_temp.cartera_temp.Models.Nota;
 import com.cartera_temp.cartera_temp.Models.Pagos;
 import com.cartera_temp.cartera_temp.Models.ReciboPago;
@@ -23,6 +24,7 @@ import com.cartera_temp.cartera_temp.repository.AcuerdoPagoRepository;
 import com.cartera_temp.cartera_temp.repository.AsesorCarteraRepository;
 import com.cartera_temp.cartera_temp.repository.CuentasPorCobrarRepository;
 import com.cartera_temp.cartera_temp.repository.GestionesRepository;
+import com.cartera_temp.cartera_temp.repository.NombresClasificacionRepository;
 import com.cartera_temp.cartera_temp.repository.NotaRepository;
 import com.cartera_temp.cartera_temp.repository.PagosRespositoty;
 import com.cartera_temp.cartera_temp.repository.ReciboPagoRepository;
@@ -50,11 +52,12 @@ public class PagosServiceImpl implements PagosService {
     private final ReciboPagoRepository reciboPagoRepository;
     private final AsesorCarteraRepository asesorCarteraRepository;
     private final NotaRepository notaRepository;
+    private final NombresClasificacionRepository nombresClasificacionRepository;
 
     @Value("${ruta.recibos}")
     private String path;
 
-    public PagosServiceImpl(PagosRespositoty pagosRespositoty, CuentasPorCobrarRepository cpcr, usuario_client usuClient, GestionesRepository gr, AcuerdoPagoRepository apr, GenerarPdf generarPdf, SaveFiles saveFiles, ReciboPagoRepository reciboPagoRepository, AsesorCarteraRepository asesorCarteraRepository, NotaRepository notaRepository) {
+    public PagosServiceImpl(PagosRespositoty pagosRespositoty, CuentasPorCobrarRepository cpcr, usuario_client usuClient, GestionesRepository gr, AcuerdoPagoRepository apr, GenerarPdf generarPdf, SaveFiles saveFiles, ReciboPagoRepository reciboPagoRepository, AsesorCarteraRepository asesorCarteraRepository, NotaRepository notaRepository, NombresClasificacionRepository nombresClasificacionRepository) {
         this.pagosRespositoty = pagosRespositoty;
         this.cpcr = cpcr;
         this.usuClient = usuClient;
@@ -65,8 +68,10 @@ public class PagosServiceImpl implements PagosService {
         this.reciboPagoRepository = reciboPagoRepository;
         this.asesorCarteraRepository = asesorCarteraRepository;
         this.notaRepository = notaRepository;
+        this.nombresClasificacionRepository = nombresClasificacionRepository;
     }
 
+    
   
 
     @Override
@@ -174,7 +179,7 @@ public class PagosServiceImpl implements PagosService {
             Gestiones gestion = new Gestiones();
             gestion.setAsesorCartera(asesor);
             gestion.setNumeroObligacion(cpc.getNumeroObligacion());
-
+            gestion.setFechaGestion(Functions.obtenerFechaYhora());
             gestion.setCuentasPorCobrar(cpc);
             
 
@@ -183,6 +188,12 @@ public class PagosServiceImpl implements PagosService {
             nota.setDetalleNota("ACUERDO DE PAGO CON ID:  ".concat(acuPag.getIdClasificacionGestion().toString()).concat(" ").concat(dto.getDetalle()) );
             nota.setFechaNota(Functions.obtenerFechaYhora());
             nota.setAsesor(asesor);
+            
+            NombresClasificacion nombre = nombresClasificacionRepository.findFirstByNombre(dto.getNombreClasificacion());
+            if (Objects.isNull(nombre)) {
+                return null;
+            }
+            
             nota = notaRepository.save(nota);
             
             gestion.setClasificacion(nota);
