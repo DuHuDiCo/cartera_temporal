@@ -1,6 +1,7 @@
 package com.cartera_temp.cartera_temp.Service;
 
 import GestionesDataDto.GestionesDataDto;
+import com.cartera_temp.cartera_temp.Dtos.AlertsGestiones;
 import com.cartera_temp.cartera_temp.Dtos.GestionResponse;
 import com.cartera_temp.cartera_temp.Dtos.GestionToSaveDto;
 import com.cartera_temp.cartera_temp.Dtos.GestionesDto;
@@ -29,5 +30,7 @@ public interface GestionesService {
     public void desactivateAcuerdoPago(Long idAcuerdoPago);
     
     public List<Cuotas>  cuotaCumplio(List<Long> idCuota);
+    
+    public AlertsGestiones alertasDeGestiones(String username);
     
 }

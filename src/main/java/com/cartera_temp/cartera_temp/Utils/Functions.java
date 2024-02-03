@@ -44,7 +44,7 @@ public class Functions {
         }
 
     }
-    
+
     public static String dateToString(Date fecha) throws ParseException {
         try {
             SimpleDateFormat formatEntrada = new SimpleDateFormat("yyyy-MM-dd");
@@ -77,30 +77,29 @@ public class Functions {
     public static Date obtenerFechaYhora() throws ParseException {
         // Obtener la fecha y hora actual en milisegundos
         long tiempoActual = System.currentTimeMillis();
-        
+
         // Crear un objeto de fecha y hora usando el tiempo actual
         Date fecha = new Date(tiempoActual);
 
         // Configurar el formato de la fecha y la zona horaria a GMT-5 (Bogotá)
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        
-        
+
         // Formatear la fecha y la hora con la zona horaria de Bogotá
         String fechaTexto = formatter.format(fecha);
-        
+
         // Convertir el texto formateado nuevamente a un objeto de fecha y hora
         Date fechaFormateada = formatter.parse(fechaTexto);
-        
+
         // Devolver la fecha y hora formateada
         return fechaFormateada;
 
     }
-    
+
     public static String formatearFecha(Date fecha) {
         SimpleDateFormat formato = new SimpleDateFormat("dd MMMM 'de' yyyy");
         return formato.format(fecha);
     }
-    
+
     public static String obtenerTextoFechaConvenio() {
         try {
             return "El presente convenio se establece a los " + fechaFormatToLetrasAcuerdo() + " en la ciudad de Medellín.";
@@ -109,13 +108,13 @@ public class Functions {
             return ""; // Puedes ajustar esto según tus necesidades
         }
     }
-    
-    public static String fechaFormatToLetrasAcuerdo(){
-        try{
+
+    public static String fechaFormatToLetrasAcuerdo() {
+        try {
             String[] fechaToFormat = fechaDateToStringSinHora().split("-");
             String ToLetrasAcuerdo = fechaToFormat[2].concat(" días del mes ").concat(fechaToFormat[1]).concat(" del año ").concat(fechaToFormat[0]);
             return ToLetrasAcuerdo;
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return ""; // Puedes ajustar esto según tus necesidades
         }
@@ -125,7 +124,6 @@ public class Functions {
         try {
 
             SimpleDateFormat formatSalida = new SimpleDateFormat("yyyy-MM-dd");
-            
 
             Date fechaOk = formatSalida.parse(fecha);
 
@@ -190,11 +188,29 @@ public class Functions {
         return fechaString;
     }
 
-    public static int diferenciaFechas(Date fechaVencimiento){
+    public static int diferenciaFechas(Date fechaVencimiento) {
         Date now = new Date();
         long diferenciaMili = now.getTime() - fechaVencimiento.getTime();
-        
+
         long dias = TimeUnit.DAYS.convert(diferenciaMili, TimeUnit.MILLISECONDS);
-        return (int)dias;
+        return (int) dias;
+    }
+
+    public static Date obtenerFechaInicalMes() {
+
+        // Obtener la fecha actual
+        Date fechaActual = new Date();
+
+        // Crear un objeto Calendar y establecer la fecha actual
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(fechaActual);
+
+        // Establecer el día del mes en 1
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+
+        // Obtener la fecha del primer día del mes actual
+        Date primerDiaDelMes = calendar.getTime();
+
+        return primerDiaDelMes;
     }
 }

@@ -1,6 +1,7 @@
 package com.cartera_temp.cartera_temp.Controllers;
 
 import GestionesDataDto.GestionesDataDto;
+import com.cartera_temp.cartera_temp.Dtos.AlertsGestiones;
 import com.cartera_temp.cartera_temp.Dtos.GestionResponse;
 import com.cartera_temp.cartera_temp.Dtos.GestionToSaveDto;
 import com.cartera_temp.cartera_temp.Dtos.LinkDto;
@@ -85,5 +86,14 @@ public class GestionesController {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(cuota);
+    }
+    
+    @GetMapping("/alerts")
+    public ResponseEntity<AlertsGestiones> alertsGestiones(@RequestParam("username") String username){
+        AlertsGestiones alerts = gestionesService.alertasDeGestiones(username);
+        if (Objects.isNull(alerts)) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(alerts);
     }
 }

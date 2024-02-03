@@ -3,6 +3,7 @@ package com.cartera_temp.cartera_temp.ServiceImpl;
 import GestionesDataDto.GestionesDataDto;
 import com.cartera_temp.cartera_temp.Components.GenerarPdf;
 import com.cartera_temp.cartera_temp.Dtos.AcuerdoPagoDto;
+import com.cartera_temp.cartera_temp.Dtos.AlertsGestiones;
 import com.cartera_temp.cartera_temp.Dtos.ClientesDto;
 import com.cartera_temp.cartera_temp.Dtos.CuotaDto;
 import com.cartera_temp.cartera_temp.Dtos.CuotasDto;
@@ -49,6 +50,7 @@ import com.cartera_temp.cartera_temp.repository.TareaRepository;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
@@ -592,5 +594,29 @@ public class GestionesServiceImpl implements GestionesService {
             cuotas.setCumplio(true);
         }
         return cuotaRepository.saveAll(cuota);
+    }
+
+    @Override
+    public AlertsGestiones alertasDeGestiones(String username) {
+        Date fechaInicialMes = Functions.obtenerFechaInicalMes();
+        
+        Usuario usuario = usuarioClientService.obtenerUsuario(username);
+        if(Objects.isNull(usuario)){
+            return null;
+        }
+        
+        AsesorCartera asesor = asesorCartera.findAsesor(usuario.getIdUsuario());
+        if(Objects.isNull(asesor)){
+            return null;
+        }
+         
+        AlertsGestiones alerts = new AlertsGestiones();
+        
+        alerts.setGestionesRealizadas(gestionesRepository.countByFechaGesionGreaterThanEqualAndAsesorCartera(fechaInicialMes, asesor));
+        
+        alerts.setAcuerdosDePagosRealizados(gestionesRepository.acuerdosPagoRealizados(fechaInicialMes, "ACUERDO DE PAGO", asesor.getIdAsesorCartera()));
+        alerts.setAcuerdosDePagosActivos(gestionesRepository.acuerdoPagoActivos(fechaInicialMes, "ACUERDO DE PAGO", asesor.getIdAsesorCartera()));
+        
+        return alerts;
     }
 }
