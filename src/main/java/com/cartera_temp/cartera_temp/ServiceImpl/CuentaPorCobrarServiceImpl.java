@@ -544,7 +544,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
         }else{
             
              try {
-                 cpc = cuentasPorCobrarRepository.obtenerCuentasByFechaCompromiso(Functions.stringToDateAndFormat(dto.getFechaCompromisoFin()), pageable);
+                 cpc = cuentasPorCobrarRepository.obtenerCuentasByFechaCompromiso(Functions.stringToDateAndFormat(dto.getFechaCompromisoInicio()), pageable);
              } catch (ParseException ex) {
                  Logger.getLogger(CuentaPorCobrarServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
              }
