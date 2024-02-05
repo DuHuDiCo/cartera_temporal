@@ -603,7 +603,7 @@ public class GestionesServiceImpl implements GestionesService {
         
         String[] fechaSplit = fechaHraSplit[0].split("-");
 
-        String fechaMes = fechaSplit[2].concat("-").concat(fechaSplit[1]).concat("-").concat("01");
+        String fechaMes = fechaSplit[0].concat("-").concat(fechaSplit[1]).concat("-").concat("01");
 
         Usuario usuario = usuarioClientService.obtenerUsuario(username);
         if (Objects.isNull(usuario)) {
