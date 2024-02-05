@@ -599,7 +599,9 @@ public class GestionesServiceImpl implements GestionesService {
     @Override
     public AlertsGestiones alertasDeGestiones(String username, String fecha) {
 
-        String[] fechaSplit = fecha.split("/");
+        String[] fechaHraSplit = fecha.split("T");
+        
+        String[] fechaSplit = fechaHraSplit[0].split("-");
 
         String fechaMes = fechaSplit[2].concat("-").concat(fechaSplit[1]).concat("-").concat("01");
 
