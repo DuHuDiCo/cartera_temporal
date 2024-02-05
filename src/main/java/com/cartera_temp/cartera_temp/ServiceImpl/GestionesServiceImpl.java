@@ -604,6 +604,8 @@ public class GestionesServiceImpl implements GestionesService {
         String[] fechaSplit = fechaHraSplit[0].split("-");
 
         String fechaMes = fechaSplit[0].concat("-").concat(fechaSplit[1]).concat("-").concat("01");
+        
+        String fechaDIa = fechaSplit[0].concat("-").concat(fechaSplit[1]).concat("-").concat(fechaSplit[2]);
 
         Usuario usuario = usuarioClientService.obtenerUsuario(username);
         if (Objects.isNull(usuario)) {
@@ -621,12 +623,14 @@ public class GestionesServiceImpl implements GestionesService {
             alerts.setGestionesRealizadas(gestionesRepository.gestionesByAsesor(Functions.stringToDateAndFormat(fechaMes), asesor.getIdAsesorCartera()));
             alerts.setAcuerdosDePagosRealizados(gestionesRepository.acuerdosPagoRealizados(Functions.stringToDateAndFormat(fechaMes), "ACUERDO DE PAGO", asesor.getIdAsesorCartera()));
             alerts.setAcuerdosDePagosActivos(gestionesRepository.acuerdoPagoActivos(Functions.stringToDateAndFormat(fechaMes), "ACUERDO DE PAGO", asesor.getIdAsesorCartera()));
-            alerts.setGestionesDia(gestionesRepository.gestionesByAsesor(Functions.stringToDateAndFormat(fecha), asesor.getIdAsesorCartera()));
-            alerts.setAcuerdoPagoDia(gestionesRepository.acuerdosPagoRealizados(Functions.stringToDateAndFormat(fecha), "ACUERDO DE PAGO", asesor.getIdAsesorCartera()));
+            alerts.setGestionesDia(gestionesRepository.gestionesByAsesor(Functions.stringToDateAndFormat(fechaDIa), asesor.getIdAsesorCartera()));
+            alerts.setAcuerdoPagoDia(gestionesRepository.acuerdosPagoRealizados(Functions.stringToDateAndFormat(fechaDIa), "ACUERDO DE PAGO", asesor.getIdAsesorCartera()));
         } catch (ParseException ex) {
             Logger.getLogger(GestionesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+        System.out.println(fechaMes);
+        System.out.println(fechaDia);
         return alerts;
     }
 }
