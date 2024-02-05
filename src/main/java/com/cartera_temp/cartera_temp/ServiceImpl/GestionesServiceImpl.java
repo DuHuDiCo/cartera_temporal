@@ -630,7 +630,7 @@ public class GestionesServiceImpl implements GestionesService {
         }
 
         System.out.println(fechaMes);
-        System.out.println(fechaDia);
+        System.out.println(fechaDIa);
         return alerts;
     }
 }
