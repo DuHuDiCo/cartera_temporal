@@ -614,11 +614,11 @@ public class GestionesServiceImpl implements GestionesService {
          
         AlertsGestiones alerts = new AlertsGestiones();
         
-        alerts.setGestionesRealizadas(gestionesRepository.countByFechaGestionGreaterThanEqualAndAsesorCartera(fechaInicialMes, asesor));
+        alerts.setGestionesRealizadas(gestionesRepository.gestionesByAsesor(fechaInicialMes, asesor.getIdAsesorCartera()));
         
         alerts.setAcuerdosDePagosRealizados(gestionesRepository.acuerdosPagoRealizados(fechaInicialMes, "ACUERDO DE PAGO", asesor.getIdAsesorCartera()));
         alerts.setAcuerdosDePagosActivos(gestionesRepository.acuerdoPagoActivos(fechaInicialMes, "ACUERDO DE PAGO", asesor.getIdAsesorCartera()));
-        alerts.setGestionesDia(gestionesRepository.countByFechaGestionGreaterThanEqualAndAsesorCartera(fechaInicialDia, asesor));
+        alerts.setGestionesDia(gestionesRepository.gestionesByAsesor(fechaInicialMes, asesor.getIdAsesorCartera()));
         alerts.setAcuerdoPagoDia(gestionesRepository.acuerdosPagoRealizados(fechaInicialDia, "ACUERDO DE PAGO", asesor.getIdAsesorCartera()));
         
         
