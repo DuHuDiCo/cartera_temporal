@@ -191,7 +191,13 @@ public class GestionesServiceImpl implements GestionesService {
                 couta.setCapitalCuota(cuotas.getCapitalCuota());
                 couta.setCumplio(false);
                 try {
-                    couta.setFechaVencimiento(Functions.stringToDate(cuotas.getFechaVencimiento()));
+
+                    if (Objects.isNull(cuotas.getFechaVencimiento())) {
+                        couta.setFechaVencimiento(cpc.getFechaVencimiento());
+                    } else {
+                        couta.setFechaVencimiento(Functions.stringToDate(cuotas.getFechaVencimiento()));
+                    }
+
                 } catch (ParseException ex) {
                     Logger.getLogger(GestionesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -600,11 +606,11 @@ public class GestionesServiceImpl implements GestionesService {
     public AlertsGestiones alertasDeGestiones(String username, String fecha) {
 
         String[] fechaHraSplit = fecha.split("T");
-        
+
         String[] fechaSplit = fechaHraSplit[0].split("-");
 
         String fechaMes = fechaSplit[0].concat("-").concat(fechaSplit[1]).concat("-").concat("01");
-        
+
         String fechaDIa = fechaSplit[0].concat("-").concat(fechaSplit[1]).concat("-").concat(fechaSplit[2]);
 
         Usuario usuario = usuarioClientService.obtenerUsuario(username);
