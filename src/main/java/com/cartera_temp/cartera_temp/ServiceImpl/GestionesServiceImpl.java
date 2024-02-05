@@ -515,13 +515,13 @@ public class GestionesServiceImpl implements GestionesService {
             System.out.println(dto.getCedula());
             return null;
         }
-        
+
         CuentasPorCobrar cpc = cuentaCobrarRepository.findByNumeroObligacion(dto.getNumeroObligacion());
         if (Objects.isNull(cpc)) {
             System.out.println("cp vacio");
             return null;
         }
-        
+
         String token = request.getAttribute("token").toString();
 
         List<ClientesDto> client = clientesClient.buscarClientesByNumeroObligacion(dto.getCedula(), token);
@@ -529,7 +529,7 @@ public class GestionesServiceImpl implements GestionesService {
             System.out.println("clientes vacio");
             return null;
         }
-        
+
         System.out.println(client.size());
 
         Usuario usu = usuarioClientService.obtenerUsuarioById(cpc.getAsesor().getUsuarioId());
@@ -537,7 +537,7 @@ public class GestionesServiceImpl implements GestionesService {
             System.out.println("usuario cedula vacio");
             return null;
         }
-        
+
         ClientesDto clientToSend = new ClientesDto();
 
         for (ClientesDto clientesDto : client) {
@@ -597,31 +597,34 @@ public class GestionesServiceImpl implements GestionesService {
     }
 
     @Override
-    public AlertsGestiones alertasDeGestiones(String username) {
-        Date fechaInicialMes = Functions.obtenerFechaInicalMes();
-        Date fechaInicialDia =Functions.obtenerFechaInicalDia();
-        
-        
+    public AlertsGestiones alertasDeGestiones(String username, String fecha) {
+
+        String[] fechaSplit = fecha.split("/");
+
+        String fechaMes = fechaSplit[2].concat("-").concat(fechaSplit[1]).concat("-").concat("01");
+
         Usuario usuario = usuarioClientService.obtenerUsuario(username);
-        if(Objects.isNull(usuario)){
+        if (Objects.isNull(usuario)) {
             return null;
         }
-        
+
         AsesorCartera asesor = asesorCartera.findAsesor(usuario.getIdUsuario());
-        if(Objects.isNull(asesor)){
+        if (Objects.isNull(asesor)) {
             return null;
         }
-         
+
         AlertsGestiones alerts = new AlertsGestiones();
-        
-        alerts.setGestionesRealizadas(gestionesRepository.gestionesByAsesor(fechaInicialMes, asesor.getIdAsesorCartera()));
-        
-        alerts.setAcuerdosDePagosRealizados(gestionesRepository.acuerdosPagoRealizados(fechaInicialMes, "ACUERDO DE PAGO", asesor.getIdAsesorCartera()));
-        alerts.setAcuerdosDePagosActivos(gestionesRepository.acuerdoPagoActivos(fechaInicialMes, "ACUERDO DE PAGO", asesor.getIdAsesorCartera()));
-        alerts.setGestionesDia(gestionesRepository.gestionesByAsesor(fechaInicialDia, asesor.getIdAsesorCartera()));
-        alerts.setAcuerdoPagoDia(gestionesRepository.acuerdosPagoRealizados(fechaInicialDia, "ACUERDO DE PAGO", asesor.getIdAsesorCartera()));
-        
-        
+
+        try {
+            alerts.setGestionesRealizadas(gestionesRepository.gestionesByAsesor(Functions.stringToDateAndFormat(fechaMes), asesor.getIdAsesorCartera()));
+            alerts.setAcuerdosDePagosRealizados(gestionesRepository.acuerdosPagoRealizados(Functions.stringToDateAndFormat(fechaMes), "ACUERDO DE PAGO", asesor.getIdAsesorCartera()));
+            alerts.setAcuerdosDePagosActivos(gestionesRepository.acuerdoPagoActivos(Functions.stringToDateAndFormat(fechaMes), "ACUERDO DE PAGO", asesor.getIdAsesorCartera()));
+            alerts.setGestionesDia(gestionesRepository.gestionesByAsesor(Functions.stringToDateAndFormat(fecha), asesor.getIdAsesorCartera()));
+            alerts.setAcuerdoPagoDia(gestionesRepository.acuerdosPagoRealizados(Functions.stringToDateAndFormat(fecha), "ACUERDO DE PAGO", asesor.getIdAsesorCartera()));
+        } catch (ParseException ex) {
+            Logger.getLogger(GestionesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
         return alerts;
     }
 }

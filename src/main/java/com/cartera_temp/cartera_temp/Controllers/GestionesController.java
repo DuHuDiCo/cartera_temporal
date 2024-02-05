@@ -89,8 +89,8 @@ public class GestionesController {
     }
     
     @GetMapping("/alerts")
-    public ResponseEntity<AlertsGestiones> alertsGestiones(@RequestParam("username") String username){
-        AlertsGestiones alerts = gestionesService.alertasDeGestiones(username);
+    public ResponseEntity<AlertsGestiones> alertsGestiones(@RequestParam("username") String username, @RequestParam("fecha") String fecha){
+        AlertsGestiones alerts = gestionesService.alertasDeGestiones(username,fecha);
         if (Objects.isNull(alerts)) {
             return ResponseEntity.badRequest().build();
         }

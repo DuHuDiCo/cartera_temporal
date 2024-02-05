@@ -31,6 +31,6 @@ public interface GestionesService {
     
     public List<Cuotas>  cuotaCumplio(List<Long> idCuota);
     
-    public AlertsGestiones alertasDeGestiones(String username);
+    public AlertsGestiones alertasDeGestiones(String username, String fecha);
     
 }
