@@ -17,7 +17,7 @@ public interface GestionesRepository extends JpaRepository<Gestiones, Long>{
     
     List<Gestiones> findByNumeroObligacionOrderByFechaGestionDesc(String obligacion);
     
-    @Query(value = "SELECT * FROM gestiones WHERE fecha_gestion >= :fecha and id_asesor = :id_asesor", nativeQuery = true)
+    @Query(value = "SELECT COUNT(*) FROM gestiones WHERE fecha_gestion >= :fecha and id_asesor = :id_asesor", nativeQuery = true)
     int gestionesByAsesor(@Param("fecha") Date fecha, @Param("id_asesor")long idAsesor);
     
     
