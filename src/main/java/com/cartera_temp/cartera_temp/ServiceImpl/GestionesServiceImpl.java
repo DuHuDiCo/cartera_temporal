@@ -305,13 +305,10 @@ public class GestionesServiceImpl implements GestionesService {
             notificacion.setVerRealizadas("VER");
             notificacion.setIsActive(true);
             notificacion.setCliente(cpc.getCliente());
-
             tarea = tareaRepository.save(tarea);
-
-            notificacion = notificacionesService.crearNotificaciones(notificacion);
-
             gestion.setClasificacion(tarea);
 
+            notificacion = notificacionesService.crearNotificaciones(notificacion);
         }
 
         gestion = gestionesRepository.save(gestion);

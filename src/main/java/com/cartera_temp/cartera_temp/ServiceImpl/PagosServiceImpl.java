@@ -193,7 +193,7 @@ public class PagosServiceImpl implements PagosService {
             if (Objects.isNull(nombre)) {
                 return null;
             }
-            
+            nota.setNombresClasificacion(nombre);
             nota = notaRepository.save(nota);
             
             gestion.setClasificacion(nota);
