@@ -71,10 +71,11 @@ public class GenerarPdfImpl implements GenerarPdf {
     public String generarReporteAcuerdoPagoToClient(CuentasPorCobrar cpc, String username) throws IOException, ClassNotFoundException {
 
         if (Objects.isNull(cpc)) {
+            System.out.println("cpc is null");
             return null;
         }
 
-        System.out.println("cpc is null");
+        
         if (username == null || username == "") {
             return null;
         }
@@ -83,7 +84,7 @@ public class GenerarPdfImpl implements GenerarPdf {
 
         List<Gestiones> gestionList = gestion.stream().filter(g -> g.getClasificacion().getClasificacion().equals("ACUERDO DE PAGO") && g.getClasificacion() instanceof AcuerdoPago && ((AcuerdoPago) g.getClasificacion()).isIsActive() == true).collect(Collectors.toList());
 
-        String titulo = "REPORTE ACUERDOS DE PAGO";
+        String titulo = "REPORTE ACUERDO DE PAGO";
         String fecha = "";
         try {
             fecha = Functions.dateToString(gestionList.get(0).getFechaGestion());
@@ -156,10 +157,12 @@ public class GenerarPdfImpl implements GenerarPdf {
 
                     if (gesLetras.getClasificacion() instanceof AcuerdoPago) {
                         acuPagoLetras = (AcuerdoPago) gesLetras.getClasificacion();
+                        
+                        tituloLetras = tituloLetras.concat(" POR ").concat(acuPagoLetras.getTipoAcuerdo());
                     }
 
                     nuevaLinea(ciudadHeader.concat(fechaFormatHeader), 72, 660, contens, PDType1Font.HELVETICA, 12);
-                    nuevaLinea(tituloLetras, 250, 640, contens, PDType1Font.HELVETICA_BOLD, 12);
+                    nuevaLinea(tituloLetras, 200, 640, contens, PDType1Font.HELVETICA_BOLD, 12);
 
                     String valorAcuerdoLetras = formatNumber((int) acuPagoLetras.getValorTotalAcuerdo());
                     String valorCuotaAcuerdo = formatNumber((int) acuPagoLetras.getCuotasList().get(0).getValorCuota());

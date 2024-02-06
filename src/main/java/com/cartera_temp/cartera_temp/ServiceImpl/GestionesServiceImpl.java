@@ -525,9 +525,23 @@ public class GestionesServiceImpl implements GestionesService {
             return null;
         }
 
+        String moraTotal = "";
+
+        for (Gestiones gestione : cpc.getGestiones()) {
+            if (gestione.getClasificacionGestion() instanceof AcuerdoPago) {
+                AcuerdoPago acuerdo = (AcuerdoPago) gestione.getClasificacionGestion();
+                if (acuerdo.isIsActive()) {
+                    moraTotal = acuerdo.getTipoAcuerdo();
+                    break;
+                }
+
+            }
+
+        }
+
         String token = request.getAttribute("token").toString();
 
-        List<ClientesDto> client = clientesClient.buscarClientesByNumeroObligacion(dto.getCedula(), token);
+        List<ClientesDto> client = clientesClient.buscarClientesByNumeroObligacion(cpc.getDocumentoCliente(), token);
         if (client.isEmpty()) {
             System.out.println("clientes vacio");
             return null;
@@ -567,7 +581,7 @@ public class GestionesServiceImpl implements GestionesService {
         String asesorCartera = usu.getNombres().replaceAll(" ", "%20").concat("%20").concat(usu.getApellidos().replaceAll(" ", "%20")).toUpperCase();
 
         String message = "&text=Buen%20día%20señor/a%20".concat(nombreTitular).concat(",%20se%20comunica%20con%20GMJ%20hogar;%20por%20medio%20de%20este%20mensaje%20le%20notificamos")
-                .concat("%20que%20su%20acuerdo%20de%20pago%20ha%20sido%20efectuado%20exitosamente,%20a%20continuación%20enviaremos%20un%20PDF%20con%20la%20")
+                .concat("%20que%20su%20acuerdo%20de%20pago%20").concat("por%20el/la%20").concat(moraTotal).concat("%20ha%20sido%20efectuado%20exitosamente,%20a%20continuación%20enviaremos%20un%20PDF%20con%20la%20")
                 .concat("información%20de%20su%20acuerdo%20de%20pago,%20este%20contiene%20las%20fechas%20de%20pago%20y%20los%20valores%20de%20las%20cuotas%20")
                 .concat("mensuales%20acordadas%20con%20nuestro%20asesor/a%20de%20cartera%20".concat(asesorCartera).concat(",%20si%20tiene%20alguna%20duda%20por%20favor%20ponerse%20"))
                 .concat("en%20contacto%20por%20este%20mismo%20medio,%20muchas%20gracias");
@@ -628,22 +642,20 @@ public class GestionesServiceImpl implements GestionesService {
             alerts.setAcuerdosDePagosActivos(gestionesRepository.acuerdoPagoActivos(Functions.stringToDateAndFormat(fechaMes), "ACUERDO DE PAGO", asesor.getIdAsesorCartera()));
             alerts.setGestionesDia(gestionesRepository.gestionesByAsesor(Functions.stringToDateAndFormat(fechaDIa), asesor.getIdAsesorCartera()));
             alerts.setAcuerdoPagoDia(gestionesRepository.acuerdosPagoRealizados(Functions.stringToDateAndFormat(fechaDIa), "ACUERDO DE PAGO", asesor.getIdAsesorCartera()));
-           alerts.setCuentasAsignadas(cuentaCobrarRepository.countByAsesor(asesor));
-           alerts.setCuentasSinGestion(contarCuentasSinGestion(cuentaCobrarRepository.findByAsesor(asesor)));
+            alerts.setCuentasAsignadas(cuentaCobrarRepository.countByAsesor(asesor));
+            alerts.setCuentasSinGestion(contarCuentasSinGestion(cuentaCobrarRepository.findByAsesor(asesor)));
         } catch (ParseException ex) {
             Logger.getLogger(GestionesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        System.out.println(fechaMes);
-        System.out.println(fechaDIa);
         return alerts;
     }
-    
-    private int contarCuentasSinGestion(List<CuentasPorCobrar> cuentas){
+
+    private int contarCuentasSinGestion(List<CuentasPorCobrar> cuentas) {
         int cuentasSinGestion = 0;
-        
+
         for (CuentasPorCobrar cuenta : cuentas) {
-            List<Gestiones> gestionesReali = cuenta.getGestiones().stream().filter(ges-> !Functions.validarFechaPertenece(ges.getFechaGestion())).collect(Collectors.toList());
+            List<Gestiones> gestionesReali = cuenta.getGestiones().stream().filter(ges -> !Functions.validarFechaPertenece(ges.getFechaGestion())).collect(Collectors.toList());
             cuentasSinGestion = cuentasSinGestion + gestionesReali.size();
         }
         return cuentasSinGestion;

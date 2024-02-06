@@ -10,6 +10,7 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -96,7 +97,7 @@ public class Functions {
     }
 
     public static String formatearFecha(Date fecha) {
-        SimpleDateFormat formato = new SimpleDateFormat("dd MMMM 'de' yyyy");
+        SimpleDateFormat formato = new SimpleDateFormat("dd MMMM 'de' yyyy", new Locale("es", "ES"));
         return formato.format(fecha);
     }
 

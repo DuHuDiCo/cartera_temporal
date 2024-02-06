@@ -23,6 +23,7 @@ public class FiltroDto {
     private Date fechaGestionFin;
     private String fechaCompromisoInicio;
     private String fechaCompromisoFin;
+    private List<String> clasificacionGestion = new ArrayList<>();
 
     public FiltroDto() {
     }
@@ -154,5 +155,15 @@ public class FiltroDto {
     public void setIsActive(boolean isActive) {
         this.isActive = isActive;
     }
+
+    public List<String> getClasificacionGestion() {
+        return clasificacionGestion;
+    }
+
+    public void setClasificacionGestion(List<String> clasificacionGestion) {
+        this.clasificacionGestion = clasificacionGestion;
+    }
+    
+    
     
 }
