@@ -628,6 +628,8 @@ public class GestionesServiceImpl implements GestionesService {
             alerts.setAcuerdosDePagosActivos(gestionesRepository.acuerdoPagoActivos(Functions.stringToDateAndFormat(fechaMes), "ACUERDO DE PAGO", asesor.getIdAsesorCartera()));
             alerts.setGestionesDia(gestionesRepository.gestionesByAsesor(Functions.stringToDateAndFormat(fechaDIa), asesor.getIdAsesorCartera()));
             alerts.setAcuerdoPagoDia(gestionesRepository.acuerdosPagoRealizados(Functions.stringToDateAndFormat(fechaDIa), "ACUERDO DE PAGO", asesor.getIdAsesorCartera()));
+           alerts.setCuentasAsignadas(cuentaCobrarRepository.countByAsesor(asesor));
+           alerts.setCuentasSinGestion(contarCuentasSinGestion(cuentaCobrarRepository.findByAsesor(asesor)));
         } catch (ParseException ex) {
             Logger.getLogger(GestionesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -635,5 +637,15 @@ public class GestionesServiceImpl implements GestionesService {
         System.out.println(fechaMes);
         System.out.println(fechaDIa);
         return alerts;
+    }
+    
+    private int contarCuentasSinGestion(List<CuentasPorCobrar> cuentas){
+        int cuentasSinGestion = 0;
+        
+        for (CuentasPorCobrar cuenta : cuentas) {
+            List<Gestiones> gestionesReali = cuenta.getGestiones().stream().filter(ges-> !Functions.validarFechaPertenece(ges.getFechaGestion())).collect(Collectors.toList());
+            cuentasSinGestion = cuentasSinGestion + gestionesReali.size();
+        }
+        return cuentasSinGestion;
     }
 }

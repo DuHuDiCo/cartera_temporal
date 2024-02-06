@@ -240,4 +240,22 @@ public class Functions {
         System.out.println(primerDiaDelMes);
         return primerDiaDelMes;
     }
+    
+    
+    public static boolean validarFechaPertenece(Date fecha){
+        
+        Date fechaActual = new Date();
+        
+        Calendar calActual = Calendar.getInstance();
+        Calendar calDada = Calendar.getInstance();
+        
+        calActual.setTime(fechaActual);
+        calDada.setTime(fecha);
+        
+        if(calDada.get(Calendar.MONTH) == calActual.get(Calendar.MONTH) && calDada.get(Calendar.YEAR) ==calActual.get(Calendar.YEAR)){
+            return true;
+        }
+        
+        return false;
+    }
 }

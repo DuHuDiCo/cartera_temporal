@@ -31,6 +31,7 @@ import com.cartera_temp.cartera_temp.repository.ReciboPagoRepository;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
@@ -169,6 +170,15 @@ public class PagosServiceImpl implements PagosService {
 
             }
 
+            Date fechaCompromisoActualizada = obtenerFechaCompromiso(acuPag.getCuotasList());
+            
+            if(fechaCompromisoActualizada != null){
+                acuPag.setFechaCompromiso(fechaCompromisoActualizada);
+            }
+            
+            
+            
+            
             acuPag = apr.save(acuPag);
 
             AsesorCartera asesor = asesorCarteraRepository.findByUsuarioId(usu.getIdUsuario());
@@ -219,4 +229,17 @@ public class PagosServiceImpl implements PagosService {
 
     }
 
+    
+    
+    private Date obtenerFechaCompromiso(List<Cuotas> cuotas){
+        Integer position = null;
+        
+        for (int i = 0; i < cuotas.size(); i++) {
+            if(cuotas.get(i).isCumplio() && cuotas.get(i).getCapitalCuota() == 0 && cuotas.get(i).getHonorarios() == 0 && cuotas.get(i).getInteresCuota() == 0){
+                position = i;
+            }
+        }
+        
+        return position== null ? null: cuotas.get(position).getFechaVencimiento();
+    }
 }

@@ -13,6 +13,10 @@ public class AlertsGestiones {
     private int gestionesDia;
     
     private int acuerdoPagoDia;
+    
+    private int cuentasAsignadas;
+    
+    private int cuentasSinGestion;
 
     public AlertsGestiones() {
     }
@@ -56,6 +60,24 @@ public class AlertsGestiones {
     public void setAcuerdoPagoDia(int acuerdoPagoDia) {
         this.acuerdoPagoDia = acuerdoPagoDia;
     }
+
+    public int getCuentasAsignadas() {
+        return cuentasAsignadas;
+    }
+
+    public void setCuentasAsignadas(int cuentasAsignadas) {
+        this.cuentasAsignadas = cuentasAsignadas;
+    }
+
+    public int getCuentasSinGestion() {
+        return cuentasSinGestion;
+    }
+
+    public void setCuentasSinGestion(int cuentasSinGestion) {
+        this.cuentasSinGestion = cuentasSinGestion;
+    }
+    
+    
     
     
 }

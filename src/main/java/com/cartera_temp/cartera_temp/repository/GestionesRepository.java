@@ -28,4 +28,7 @@ public interface GestionesRepository extends JpaRepository<Gestiones, Long>{
     @Query(value = "SELECT COUNT(*) FROM gestiones JOIN clasificacion_gestion ON gestiones.clasificacion_gestion_id = clasificacion_gestion.id_clasificacion_gestion JOIN acuerdo_pago ON acuerdo_pago.id_clasificacion_gestion = clasificacion_gestion.id_clasificacion_gestion WHERE gestiones.fecha_gestion >= :fecha AND gestiones.id_asesor = :id_asesor AND clasificacion_gestion.clasificacion = :clasificacion AND acuerdo_pago.is_active = true", nativeQuery = true)
     int acuerdoPagoActivos(@Param("fecha") Date fecha, @Param("clasificacion") String clasificacion, @Param("id_asesor")long idAsesor);
     
+    
+    List<Gestiones> findByAsesorCartera(AsesorCartera asesor);
+    
 }
