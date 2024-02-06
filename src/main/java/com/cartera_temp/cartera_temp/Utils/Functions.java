@@ -97,7 +97,7 @@ public class Functions {
     }
 
     public static String formatearFecha(Date fecha) {
-        SimpleDateFormat formato = new SimpleDateFormat("dd MMMM 'de' yyyy", new Locale("es", "ES"));
+        SimpleDateFormat formato = new SimpleDateFormat("dd MMMM 'de' yyyy");
         return formato.format(fecha);
     }
 

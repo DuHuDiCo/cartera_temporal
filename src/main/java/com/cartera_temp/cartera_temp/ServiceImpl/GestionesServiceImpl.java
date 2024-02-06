@@ -541,7 +541,7 @@ public class GestionesServiceImpl implements GestionesService {
 
         String token = request.getAttribute("token").toString();
 
-        List<ClientesDto> client = clientesClient.buscarClientesByNumeroObligacion(cpc.getDocumentoCliente(), token);
+        List<ClientesDto> client = clientesClient.buscarClientesByNumeroObligacion(dto.getCedula(), token);
         if (client.isEmpty()) {
             System.out.println("clientes vacio");
             return null;
