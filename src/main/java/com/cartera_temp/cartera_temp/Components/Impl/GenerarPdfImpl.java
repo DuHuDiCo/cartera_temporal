@@ -140,7 +140,7 @@ public class GenerarPdfImpl implements GenerarPdf {
                     try {
                         fechaFormatHeader = Functions.formatearFecha(Functions.obtenerFechaYhora());
                     } catch (ParseException ex) {
-                        Logger.getLogger(GenerarPdfImpl.class.getName()).log(Level.SEVERE, null, ex);
+                        System.out.println(ex);
                     }
 
                     String fechaConvenio = Functions.obtenerTextoFechaConvenio();
@@ -163,7 +163,7 @@ public class GenerarPdfImpl implements GenerarPdf {
 
 //                    tituloLetras = tituloLetras.concat(" POR ").concat(acuPagoLetras.getTipoAcuerdo());
                     nuevaLinea(ciudadHeader.concat(fechaFormatHeader), 72, 660, contens, PDType1Font.HELVETICA, 12);
-                    nuevaLinea(tituloLetras, 200, 640, contens, PDType1Font.HELVETICA_BOLD, 12);
+                    nuevaLinea(tituloLetras, 250, 640, contens, PDType1Font.HELVETICA_BOLD, 12);
 
                     String valorAcuerdoLetras = formatNumber((int) acuPagoLetras.getValorTotalAcuerdo());
                     String valorCuotaAcuerdo = formatNumber((int) acuPagoLetras.getCuotasList().get(0).getValorCuota());

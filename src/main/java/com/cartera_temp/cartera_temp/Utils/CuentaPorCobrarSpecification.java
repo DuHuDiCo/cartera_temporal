@@ -1,10 +1,15 @@
 package com.cartera_temp.cartera_temp.Utils;
 
+import GestionesDataDto.enums.TipoClasificacion;
+import com.cartera_temp.cartera_temp.Dtos.ClasificacionGestionFiltro;
 import com.cartera_temp.cartera_temp.Dtos.FiltroDto;
 import com.cartera_temp.cartera_temp.Models.AcuerdoPago;
 import com.cartera_temp.cartera_temp.Models.ClasificacionGestion;
 import com.cartera_temp.cartera_temp.Models.CuentasPorCobrar;
 import com.cartera_temp.cartera_temp.Models.Gestiones;
+import com.cartera_temp.cartera_temp.Models.NombresClasificacion;
+import com.cartera_temp.cartera_temp.Models.Nota;
+import com.cartera_temp.cartera_temp.Models.Tarea;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,6 +23,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Subquery;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.util.CollectionUtils;
 
 public class CuentaPorCobrarSpecification {
 
@@ -73,6 +79,40 @@ public class CuentaPorCobrarSpecification {
 // 
 //
 //            }
+
+
+            if(CollectionUtils.isEmpty(filtro.getClasificacionGestion()) && filtro.getClasificacionGestion() != null){
+                Join<CuentasPorCobrar, Gestiones> gestionJoin = root.join("gestiones", JoinType.INNER);
+                Join<Gestiones, ClasificacionGestion> clasificacionGestionJoin = gestionJoin.join("clasificacionGestion", JoinType.INNER);
+                
+                for (ClasificacionGestionFiltro clasificacionGestionFiltro : filtro.getClasificacionGestion()) {
+                    
+                    if(clasificacionGestionFiltro.getTipoClasificacion().equals(TipoClasificacion.ACUERDODEPAGO.getDato())){
+                        Join<Gestiones, AcuerdoPago> acuerdoPagoJoin = criteriaBuilder.treat(clasificacionGestionJoin, AcuerdoPago.class);
+                        Join<AcuerdoPago, NombresClasificacion> nombresClasificacionJoin = acuerdoPagoJoin.join("nombresClasificacion", JoinType.INNER);
+                        
+                        predicates.add(criteriaBuilder.equal(clasificacionGestionJoin.get("clasificacion"), "ACUERDO DE PAGO"));
+                        predicates.add(criteriaBuilder.isTrue(acuerdoPagoJoin.get("isActive")));
+                        predicates.add(nombresClasificacionJoin.get("nombresClasificacion").get("nombre").in(clasificacionGestionFiltro.getNombreClasificacion()));
+                    }
+                    
+                    if(clasificacionGestionFiltro.getTipoClasificacion().equals(TipoClasificacion.NOTA.getDato())){
+                        Join<Gestiones, Nota> notaJoin = criteriaBuilder.treat(clasificacionGestionJoin, Nota.class);
+                        Join<Nota, NombresClasificacion> nombresClasificacionJoin = notaJoin.join("nombresClasificacion", JoinType.INNER);
+                        
+                        predicates.add(criteriaBuilder.equal(clasificacionGestionJoin.get("clasificacion"), "NOTA"));
+                        predicates.add(nombresClasificacionJoin.get("nombresClasificacion").get("nombre").in(clasificacionGestionFiltro.getNombreClasificacion()));
+                    }
+                    
+                    if(clasificacionGestionFiltro.getTipoClasificacion().equals(TipoClasificacion.TAREA.getDato())){
+                         Join<Gestiones, Tarea> tareaJoin = criteriaBuilder.treat(clasificacionGestionJoin, Tarea.class);
+                         Join<Tarea, NombresClasificacion> nombresClasificacionJoin = tareaJoin.join("nombresClasificacion", JoinType.INNER);
+                         
+                         predicates.add(criteriaBuilder.isTrue(tareaJoin.get("isActive")));
+                         predicates.add(nombresClasificacionJoin.get("nombresClasificacion").get("nombre").in(clasificacionGestionFiltro.getNombreClasificacion()));
+                    }
+                }
+            }
 
             if (filtro.getFechaCpcInicio() != null && filtro.getFechaCpcFin() != null) {
 
