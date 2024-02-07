@@ -72,9 +72,6 @@ public class PagosServiceImpl implements PagosService {
         this.nombresClasificacionRepository = nombresClasificacionRepository;
     }
 
-    
-  
-
     @Override
     public PagosCuotasResponse guardarPago(PagosCuotasDto dto) {
 
@@ -171,47 +168,46 @@ public class PagosServiceImpl implements PagosService {
             }
 
             Date fechaCompromisoActualizada = obtenerFechaCompromiso(acuPag.getCuotasList());
-            
-            if(fechaCompromisoActualizada != null){
+
+            if (fechaCompromisoActualizada != null) {
                 acuPag.setFechaCompromiso(fechaCompromisoActualizada);
             }
-            
-            
-            
-            
+
             acuPag = apr.save(acuPag);
 
-            AsesorCartera asesor = asesorCarteraRepository.findByUsuarioId(usu.getIdUsuario());
-            if (Objects.isNull(usu)) {
-                return null;
+            if (Objects.nonNull(dto.getNombreClasificacion()) || dto.getNombreClasificacion() != "") {
+                AsesorCartera asesor = asesorCarteraRepository.findByUsuarioId(usu.getIdUsuario());
+                if (Objects.isNull(usu)) {
+                    return null;
+                }
+
+                Gestiones gestion = new Gestiones();
+                gestion.setAsesorCartera(asesor);
+                gestion.setNumeroObligacion(cpc.getNumeroObligacion());
+                gestion.setFechaGestion(Functions.obtenerFechaYhora());
+                gestion.setCuentasPorCobrar(cpc);
+
+                Nota nota = new Nota();
+                nota.setClasificacion("NOTA");
+                nota.setDetalleNota("ACUERDO DE PAGO CON ID:  ".concat(acuPag.getIdClasificacionGestion().toString()).concat(" ").concat(dto.getDetalle()));
+                nota.setFechaNota(Functions.obtenerFechaYhora());
+                nota.setAsesor(asesor);
+
+                NombresClasificacion nombre = nombresClasificacionRepository.findFirstByNombre(dto.getNombreClasificacion());
+                if (Objects.isNull(nombre)) {
+                    return null;
+                }
+                nota.setNombresClasificacion(nombre);
+                nota = notaRepository.save(nota);
+
+                gestion.setClasificacion(nota);
+
+                cpc.getGestiones().add(gestion);
+
+                cpc.setGestiones(gr.saveAll(cpc.getGestiones()));
+
             }
 
-            Gestiones gestion = new Gestiones();
-            gestion.setAsesorCartera(asesor);
-            gestion.setNumeroObligacion(cpc.getNumeroObligacion());
-            gestion.setFechaGestion(Functions.obtenerFechaYhora());
-            gestion.setCuentasPorCobrar(cpc);
-            
-
-            Nota nota = new Nota();
-            nota.setClasificacion("NOTA");
-            nota.setDetalleNota("ACUERDO DE PAGO CON ID:  ".concat(acuPag.getIdClasificacionGestion().toString()).concat(" ").concat(dto.getDetalle()) );
-            nota.setFechaNota(Functions.obtenerFechaYhora());
-            nota.setAsesor(asesor);
-            
-            NombresClasificacion nombre = nombresClasificacionRepository.findFirstByNombre(dto.getNombreClasificacion());
-            if (Objects.isNull(nombre)) {
-                return null;
-            }
-            nota.setNombresClasificacion(nombre);
-            nota = notaRepository.save(nota);
-            
-            gestion.setClasificacion(nota);
-
-            cpc.getGestiones().add(gestion);
-            
-            cpc.setGestiones(gr.saveAll(cpc.getGestiones()));
-            
             PagosCuotasResponse pgr = new PagosCuotasResponse();
             pgr.setBase64(base64);
             pgr.setNombreArchivo(cpc.getCliente().concat(".pdf"));
@@ -229,17 +225,15 @@ public class PagosServiceImpl implements PagosService {
 
     }
 
-    
-    
-    private Date obtenerFechaCompromiso(List<Cuotas> cuotas){
+    private Date obtenerFechaCompromiso(List<Cuotas> cuotas) {
         Integer position = null;
-        
+
         for (int i = 0; i < cuotas.size(); i++) {
-            if(cuotas.get(i).isCumplio() && cuotas.get(i).getCapitalCuota() == 0 && cuotas.get(i).getHonorarios() == 0 && cuotas.get(i).getInteresCuota() == 0){
+            if (cuotas.get(i).isCumplio() && cuotas.get(i).getCapitalCuota() == 0 && cuotas.get(i).getHonorarios() == 0 && cuotas.get(i).getInteresCuota() == 0) {
                 position = i;
             }
         }
-        
-        return position== null ? null: cuotas.get(position).getFechaVencimiento();
+
+        return position == null ? null : cuotas.get(position).getFechaVencimiento();
     }
 }
