@@ -655,8 +655,15 @@ public class GestionesServiceImpl implements GestionesService {
         int cuentasSinGestion = 0;
 
         for (CuentasPorCobrar cuenta : cuentas) {
-            List<Gestiones> gestionesReali = cuenta.getGestiones().stream().filter(ges -> !Functions.validarFechaPertenece(ges.getFechaGestion())).collect(Collectors.toList());
-            cuentasSinGestion = cuentasSinGestion + gestionesReali.size();
+            int gestionesRealizadas = 0;
+            for (Gestiones gestione : cuenta.getGestiones()) {
+                if(Functions.validarFechaPertenece(gestione.getFechaGestion())){
+                    gestionesRealizadas++;
+                }
+            }
+            if(gestionesRealizadas > 0){
+                cuentasSinGestion = cuentasSinGestion ++;
+            }
         }
         return cuentasSinGestion;
     }
