@@ -175,7 +175,7 @@ public class PagosServiceImpl implements PagosService {
 
             acuPag = apr.save(acuPag);
 
-            if (Objects.nonNull(dto.getNombreClasificacion()) || dto.getNombreClasificacion() != "") {
+            if (Objects.nonNull(dto.getNombreClasificacion())) {
                 AsesorCartera asesor = asesorCarteraRepository.findByUsuarioId(usu.getIdUsuario());
                 if (Objects.isNull(usu)) {
                     return null;
