@@ -195,7 +195,7 @@ public class GestionesServiceImpl implements GestionesService {
                     if (Objects.isNull(cuotas.getFechaVencimiento())) {
                         couta.setFechaVencimiento(cpc.getFechaVencimiento());
                     } else {
-                        couta.setFechaVencimiento(Functions.stringToDate(cuotas.getFechaVencimiento()));
+                        couta.setFechaVencimiento(Functions.stringToDateAndFormat(cuotas.getFechaVencimiento()));
                     }
 
                 } catch (ParseException ex) {
