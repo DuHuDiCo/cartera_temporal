@@ -67,7 +67,7 @@ public class CuentaPorCobrarSpecification {
                         
                         predicates.add(criteriaBuilder.equal(clasificacionGestionJoin.get("clasificacion"), TipoClasificacion.ACUERDODEPAGO.getDato()));
                         predicates.add(criteriaBuilder.isTrue(acuerdoPagoJoin.get("isActive")));
-                        predicates.add(nombresClasificacionJoin.get("nombresClasificacion").get("nombre").in(clasificacionGestionFiltro.getNombreClasificacion()));
+                        predicates.add(nombresClasificacionJoin.get("nombre").in(clasificacionGestionFiltro.getNombreClasificacion()));
                     }
                     
                     if(clasificacionGestionFiltro.getTipoClasificacion().equals(TipoClasificacion.NOTA.getDato())){
@@ -75,7 +75,7 @@ public class CuentaPorCobrarSpecification {
                         Join<Nota, NombresClasificacion> nombresClasificacionJoin = notaJoin.join("nombresClasificacion", JoinType.INNER);
                         
                         predicates.add(criteriaBuilder.equal(clasificacionGestionJoin.get("clasificacion"), TipoClasificacion.NOTA.getDato()));
-                        predicates.add(nombresClasificacionJoin.get("nombresClasificacion").get("nombre").in(clasificacionGestionFiltro.getNombreClasificacion()));
+                        predicates.add(nombresClasificacionJoin.get("nombre").in(clasificacionGestionFiltro.getNombreClasificacion()));
                     }
                     
                     if(clasificacionGestionFiltro.getTipoClasificacion().equals(TipoClasificacion.TAREA.getDato())){
@@ -84,7 +84,7 @@ public class CuentaPorCobrarSpecification {
                          
                          predicates.add(criteriaBuilder.equal(clasificacionGestionJoin.get("clasificacion"), TipoClasificacion.TAREA.getDato()));
                          predicates.add(criteriaBuilder.isTrue(tareaJoin.get("isActive")));
-                         predicates.add(nombresClasificacionJoin.get("nombresClasificacion").get("nombre").in(clasificacionGestionFiltro.getNombreClasificacion()));
+                         predicates.add(nombresClasificacionJoin.get("nombre").in(clasificacionGestionFiltro.getNombreClasificacion()));
                     }
                 }
             }
