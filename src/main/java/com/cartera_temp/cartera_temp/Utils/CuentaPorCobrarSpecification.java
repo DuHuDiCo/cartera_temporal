@@ -65,7 +65,7 @@ public class CuentaPorCobrarSpecification {
 //                        Join<AcuerdoPago, NombresClasificacion> nombresClasificacionJoin = clasificacionGestionJoin.join("nombreClasificacion");
 //                    }
                     
-                    if(clasificacionGestionJoin.getJavaType().equals(AcuerdoPago.class)){
+                    if(clasificacionGestionFiltro.getTipoClasificacion().equals(TipoClasificacion.ACUERDODEPAGO.getDato())){
                         Join<Gestiones, AcuerdoPago> acuerdoPagoJoin = criteriaBuilder.treat(clasificacionGestionJoin, AcuerdoPago.class);
                         Join<AcuerdoPago, NombresClasificacion> nombresClasificacionJoin = acuerdoPagoJoin.join("nombresClasificacion", JoinType.INNER);
                         
@@ -74,7 +74,7 @@ public class CuentaPorCobrarSpecification {
                         predicates.add(criteriaBuilder.equal(nombresClasificacionJoin.get("nombre"), clasificacionGestionFiltro.getNombreClasificacion()));
                     }
                     
-                    if(clasificacionGestionJoin.getJavaType().equals(Nota.class)){
+                    if(clasificacionGestionFiltro.getTipoClasificacion().equals(TipoClasificacion.NOTA.getDato())){
                         Join<Gestiones, Nota> notaJoin = criteriaBuilder.treat(clasificacionGestionJoin, Nota.class);
                         Join<Nota, NombresClasificacion> nombresClasificacionJoin = notaJoin.join("nombresClasificacion", JoinType.INNER);
                         
@@ -82,7 +82,7 @@ public class CuentaPorCobrarSpecification {
                        predicates.add(criteriaBuilder.equal(nombresClasificacionJoin.get("nombre"), clasificacionGestionFiltro.getNombreClasificacion()));
                     }
                     
-                    if(clasificacionGestionJoin.getJavaType().equals(Tarea.class)){
+                    if(clasificacionGestionFiltro.getTipoClasificacion().equals(TipoClasificacion.TAREA.getDato())){
                          Join<Gestiones, Tarea> tareaJoin = criteriaBuilder.treat(clasificacionGestionJoin, Tarea.class);
                          Join<Tarea, NombresClasificacion> nombresClasificacionJoin = tareaJoin.join("nombresClasificacion", JoinType.INNER);
                          
