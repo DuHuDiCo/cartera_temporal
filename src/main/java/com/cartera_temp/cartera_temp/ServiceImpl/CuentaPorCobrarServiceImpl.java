@@ -225,8 +225,10 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             c.setGestion(cuenta.getGestiones());
 
             c.setGestion(cuenta.getGestiones());
+            
+            String obligacion = cuenta.getDocumentoCliente().concat(cuenta.getSede().getSede()).concat(cuenta.getBanco().getBanco());
 
-            List<ClientesDto> clientes = clientesClient.buscarClientesByNumeroObligacion(cuenta.getDocumentoCliente(), token);
+            List<ClientesDto> clientes = clientesClient.buscarClientesByNumeroObligacion(obligacion, token);
             c.setClientes(clientes);
 
             if (cuenta.getGestiones().size() > 0) {
