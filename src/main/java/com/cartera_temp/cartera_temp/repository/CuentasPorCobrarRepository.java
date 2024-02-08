@@ -38,5 +38,9 @@ public interface CuentasPorCobrarRepository extends JpaRepository<CuentasPorCobr
 
     List<CuentasPorCobrar> findByAsesor(AsesorCartera asesor);
     
-    int countByAsesor(AsesorCartera asesor);
+    @Query(value = "SELECT COUNT(*) FROM cuentas_por_cobrar WHERE asesor_cartera_id = :idAsesor AND dias_vencidos > 0", nativeQuery = true)
+    int gestionesAsignadasByAsesorCount(@Param("idAsesor")Long idAsesor);
+    
+        @Query(value = "SELECT * FROM cuentas_por_cobrar WHERE asesor_cartera_id = :idAsesor AND dias_vencidos > 0", nativeQuery = true)
+    List<CuentasPorCobrar> gestionesAsignadasByAsesor(@Param("idAsesor")Long idAsesor);
 }

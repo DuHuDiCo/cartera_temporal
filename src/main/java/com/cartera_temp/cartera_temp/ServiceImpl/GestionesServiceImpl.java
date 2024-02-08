@@ -642,8 +642,8 @@ public class GestionesServiceImpl implements GestionesService {
             alerts.setAcuerdosDePagosActivos(gestionesRepository.acuerdoPagoActivos(Functions.stringToDateAndFormat(fechaMes), "ACUERDO DE PAGO", asesor.getIdAsesorCartera()));
             alerts.setGestionesDia(gestionesRepository.gestionesByAsesor(Functions.stringToDateAndFormat(fechaDIa), asesor.getIdAsesorCartera()));
             alerts.setAcuerdoPagoDia(gestionesRepository.acuerdosPagoRealizados(Functions.stringToDateAndFormat(fechaDIa), "ACUERDO DE PAGO", asesor.getIdAsesorCartera()));
-            alerts.setCuentasAsignadas(cuentaCobrarRepository.countByAsesor(asesor));
-            alerts.setCuentasSinGestion(contarCuentasSinGestion(cuentaCobrarRepository.findByAsesor(asesor)));
+            alerts.setCuentasAsignadas(cuentaCobrarRepository.gestionesAsignadasByAsesorCount(asesor.getIdAsesorCartera()));
+            alerts.setCuentasSinGestion(contarCuentasSinGestion(cuentaCobrarRepository.gestionesAsignadasByAsesor(asesor.getIdAsesorCartera())));
         } catch (ParseException ex) {
             Logger.getLogger(GestionesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }

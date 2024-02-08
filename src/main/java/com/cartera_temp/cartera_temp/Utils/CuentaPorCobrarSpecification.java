@@ -81,38 +81,38 @@ public class CuentaPorCobrarSpecification {
 //            }
 
 
-            if(CollectionUtils.isEmpty(filtro.getClasificacionGestion()) && filtro.getClasificacionGestion() != null){
-                Join<CuentasPorCobrar, Gestiones> gestionJoin = root.join("gestiones", JoinType.INNER);
-                Join<Gestiones, ClasificacionGestion> clasificacionGestionJoin = gestionJoin.join("clasificacionGestion", JoinType.INNER);
-                
-                for (ClasificacionGestionFiltro clasificacionGestionFiltro : filtro.getClasificacionGestion()) {
-                    
-                    if(clasificacionGestionFiltro.getTipoClasificacion().equals(TipoClasificacion.ACUERDODEPAGO.getDato())){
-                        Join<Gestiones, AcuerdoPago> acuerdoPagoJoin = criteriaBuilder.treat(clasificacionGestionJoin, AcuerdoPago.class);
-                        Join<AcuerdoPago, NombresClasificacion> nombresClasificacionJoin = acuerdoPagoJoin.join("nombresClasificacion", JoinType.INNER);
-                        
-                        predicates.add(criteriaBuilder.equal(clasificacionGestionJoin.get("clasificacion"), "ACUERDO DE PAGO"));
-                        predicates.add(criteriaBuilder.isTrue(acuerdoPagoJoin.get("isActive")));
-                        predicates.add(nombresClasificacionJoin.get("nombresClasificacion").get("nombre").in(clasificacionGestionFiltro.getNombreClasificacion()));
-                    }
-                    
-                    if(clasificacionGestionFiltro.getTipoClasificacion().equals(TipoClasificacion.NOTA.getDato())){
-                        Join<Gestiones, Nota> notaJoin = criteriaBuilder.treat(clasificacionGestionJoin, Nota.class);
-                        Join<Nota, NombresClasificacion> nombresClasificacionJoin = notaJoin.join("nombresClasificacion", JoinType.INNER);
-                        
-                        predicates.add(criteriaBuilder.equal(clasificacionGestionJoin.get("clasificacion"), "NOTA"));
-                        predicates.add(nombresClasificacionJoin.get("nombresClasificacion").get("nombre").in(clasificacionGestionFiltro.getNombreClasificacion()));
-                    }
-                    
-                    if(clasificacionGestionFiltro.getTipoClasificacion().equals(TipoClasificacion.TAREA.getDato())){
-                         Join<Gestiones, Tarea> tareaJoin = criteriaBuilder.treat(clasificacionGestionJoin, Tarea.class);
-                         Join<Tarea, NombresClasificacion> nombresClasificacionJoin = tareaJoin.join("nombresClasificacion", JoinType.INNER);
-                         
-                         predicates.add(criteriaBuilder.isTrue(tareaJoin.get("isActive")));
-                         predicates.add(nombresClasificacionJoin.get("nombresClasificacion").get("nombre").in(clasificacionGestionFiltro.getNombreClasificacion()));
-                    }
-                }
-            }
+//            if(!CollectionUtils.isEmpty(filtro.getClasificacionGestion()) && filtro.getClasificacionGestion() != null){
+//                Join<CuentasPorCobrar, Gestiones> gestionJoin = root.join("gestiones", JoinType.INNER);
+//                Join<Gestiones, ClasificacionGestion> clasificacionGestionJoin = gestionJoin.join("clasificacionGestion", JoinType.INNER);
+//                
+//                for (ClasificacionGestionFiltro clasificacionGestionFiltro : filtro.getClasificacionGestion()) {
+//                    
+//                    if(clasificacionGestionFiltro.getTipoClasificacion().equals(TipoClasificacion.ACUERDODEPAGO.getDato())){
+//                        Join<Gestiones, AcuerdoPago> acuerdoPagoJoin = criteriaBuilder.treat(clasificacionGestionJoin, AcuerdoPago.class);
+//                        Join<AcuerdoPago, NombresClasificacion> nombresClasificacionJoin = acuerdoPagoJoin.join("nombresClasificacion", JoinType.INNER);
+//                        
+//                        predicates.add(criteriaBuilder.equal(clasificacionGestionJoin.get("clasificacion"), "ACUERDO DE PAGO"));
+//                        predicates.add(criteriaBuilder.isTrue(acuerdoPagoJoin.get("isActive")));
+//                        predicates.add(nombresClasificacionJoin.get("nombresClasificacion").get("nombre").in(clasificacionGestionFiltro.getNombreClasificacion()));
+//                    }
+//                    
+//                    if(clasificacionGestionFiltro.getTipoClasificacion().equals(TipoClasificacion.NOTA.getDato())){
+//                        Join<Gestiones, Nota> notaJoin = criteriaBuilder.treat(clasificacionGestionJoin, Nota.class);
+//                        Join<Nota, NombresClasificacion> nombresClasificacionJoin = notaJoin.join("nombresClasificacion", JoinType.INNER);
+//                        
+//                        predicates.add(criteriaBuilder.equal(clasificacionGestionJoin.get("clasificacion"), "NOTA"));
+//                        predicates.add(nombresClasificacionJoin.get("nombresClasificacion").get("nombre").in(clasificacionGestionFiltro.getNombreClasificacion()));
+//                    }
+//                    
+//                    if(clasificacionGestionFiltro.getTipoClasificacion().equals(TipoClasificacion.TAREA.getDato())){
+//                         Join<Gestiones, Tarea> tareaJoin = criteriaBuilder.treat(clasificacionGestionJoin, Tarea.class);
+//                         Join<Tarea, NombresClasificacion> nombresClasificacionJoin = tareaJoin.join("nombresClasificacion", JoinType.INNER);
+//                         
+//                         predicates.add(criteriaBuilder.isTrue(tareaJoin.get("isActive")));
+//                         predicates.add(nombresClasificacionJoin.get("nombresClasificacion").get("nombre").in(clasificacionGestionFiltro.getNombreClasificacion()));
+//                    }
+//                }
+//            }
 
             if (filtro.getFechaCpcInicio() != null && filtro.getFechaCpcFin() != null) {
 
