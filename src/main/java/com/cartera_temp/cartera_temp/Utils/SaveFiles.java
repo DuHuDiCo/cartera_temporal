@@ -26,7 +26,7 @@ public class SaveFiles {
             dataUir = base64Array[0];
             data = base64Array[1];
         } else {
-            dataUir = "data:application/jpg;base64";
+            dataUir = "data:application/pdf;base64";
             data = base64Array[0];
         }
 
