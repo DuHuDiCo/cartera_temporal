@@ -158,12 +158,12 @@ public class GenerarPdfImpl implements GenerarPdf {
                     if (gesLetras.getClasificacion() instanceof AcuerdoPago) {
                         acuPagoLetras = (AcuerdoPago) gesLetras.getClasificacion();
                         
-                        
+                        tituloLetras = tituloLetras.concat(" POR ").concat(acuPagoLetras.getTipoAcuerdo());
                     }
 
 //                    tituloLetras = tituloLetras.concat(" POR ").concat(acuPagoLetras.getTipoAcuerdo());
                     nuevaLinea(ciudadHeader.concat(fechaFormatHeader), 72, 660, contens, PDType1Font.HELVETICA, 12);
-                    nuevaLinea(tituloLetras, 250, 640, contens, PDType1Font.HELVETICA_BOLD, 12);
+                    nuevaLinea(tituloLetras, 200, 640, contens, PDType1Font.HELVETICA_BOLD, 12);
 
                     String valorAcuerdoLetras = formatNumber((int) acuPagoLetras.getValorTotalAcuerdo());
                     String valorCuotaAcuerdo = formatNumber((int) acuPagoLetras.getCuotasList().get(0).getValorCuota());
