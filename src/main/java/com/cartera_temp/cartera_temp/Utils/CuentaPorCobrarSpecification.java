@@ -56,6 +56,7 @@ public class CuentaPorCobrarSpecification {
 
 
             if(!CollectionUtils.isEmpty(filtro.getClasificacionGestion()) && filtro.getClasificacionGestion() != null){
+                System.out.println(filtro.getClasificacionGestion());
                 Join<CuentasPorCobrar, Gestiones> gestionJoin = root.join("gestiones", JoinType.INNER);
                 Join<Gestiones, ClasificacionGestion> clasificacionGestionJoin = gestionJoin.join("clasificacionGestion", JoinType.INNER);
                 
