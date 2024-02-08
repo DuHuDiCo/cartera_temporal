@@ -301,7 +301,9 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
 
         cpcRes = map.map(cpc, CuentasPorCobrarResponse.class);
         cpcRes.setDiasVencidos(diasVecidos);
-        List<ClientesDto> cliente = clientesClient.buscarClientesByNumeroObligacion(cpc.getDocumentoCliente(), token);
+        
+        String obligacion = cpc.getDocumentoCliente().concat(cpc.getSede().getSede()).concat(cpc.getBanco().getBanco());
+        List<ClientesDto> cliente = clientesClient.buscarClientesByNumeroObligacion(obligacion, token);
 
         if (CollectionUtils.isEmpty(cliente)) {
             return null;
