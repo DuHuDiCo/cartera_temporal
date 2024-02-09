@@ -81,6 +81,7 @@ public class CuentaPorCobrarSpecification {
 
                     if (clasificacionGestionFiltro.getTipoClasificacion().equals(TipoClasificacion.TAREA.getDato())) {
                         System.out.println("TAREA");
+                        System.out.println(clasificacionGestionFiltro.getNombreClasificacion());
                         Join<Gestiones, Tarea> tareaJoin = criteriaBuilder.treat(clasificacionGestionJoin, Tarea.class);
                         Join<AcuerdoPago, NombresClasificacion> nombresClasificacionJoin = tareaJoin.join("nombresClasificacion");
 
