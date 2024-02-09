@@ -226,7 +226,7 @@ public class PagosServiceImpl implements PagosService {
     }
 
     private Date obtenerFechaCompromiso(List<Cuotas> cuotas) {
-        Integer position = null;
+        Integer position = 0;
 
         for (int i = 0; i < cuotas.size(); i++) {
             if (cuotas.get(i).isCumplio() && cuotas.get(i).getCapitalCuota() == 0 && cuotas.get(i).getHonorarios() == 0 && cuotas.get(i).getInteresCuota() == 0) {
@@ -234,6 +234,6 @@ public class PagosServiceImpl implements PagosService {
             }
         }
 
-        return position == null ? null : cuotas.get(position).getFechaVencimiento();
+        return cuotas.get(position).getFechaVencimiento();
     }
 }
