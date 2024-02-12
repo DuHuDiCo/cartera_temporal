@@ -21,4 +21,6 @@ public interface NotificacionesService {
     
     public Notificaciones getById(Long id);
     
+    public List<Notificaciones> findBySede(String sede);
+    
 }

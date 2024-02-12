@@ -111,4 +111,10 @@ public class NotificacionesServiceImpl implements NotificacionesService {
     public Notificaciones getById(Long id) {
         return notificacionesRepository.findById(id).orElse(null);
     }
+
+    @Override
+    public List<Notificaciones> findBySede(String sede) {
+        List<Notificaciones> notificacionesBySede = notificacionesRepository.findByNumeroObligacionContaining(sede);
+        return notificacionesBySede;
+    }
 }
