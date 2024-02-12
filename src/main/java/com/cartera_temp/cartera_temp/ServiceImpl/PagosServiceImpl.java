@@ -77,7 +77,6 @@ public class PagosServiceImpl implements PagosService {
         this.notificacionesRepository = notificacionesRepository;
     }
 
-    
     @Override
     public PagosCuotasResponse guardarPago(PagosCuotasDto dto) {
 
@@ -179,6 +178,10 @@ public class PagosServiceImpl implements PagosService {
                 acuPag.setFechaCompromiso(fechaCompromisoActualizada);
             }
 
+            if (acuPag.getCuotasList().get(acuPag.getCuotasList().size() - 1).getCapitalCuota() == 0) {
+                acuPag.setIsActive(false);
+            }
+
             acuPag = apr.save(acuPag);
 
             if (Objects.nonNull(dto.getNombreClasificacion())) {
@@ -213,19 +216,21 @@ public class PagosServiceImpl implements PagosService {
                 cpc.setGestiones(gr.saveAll(cpc.getGestiones()));
 
             }
-            
+
             List<Notificaciones> notificaciones = notificacionesRepository.findByNumeroObligacionAndFechaCreacionGreaterThanEqualAndTipoGestionOrderByFechaCreacionDesc(dto.getNumeroObligacion(), acuPag.getGestiones().getFechaGestion(), acuPag.getClasificacion());
-            
-            if(!CollectionUtils.isEmpty(notificaciones)){
+
+            if (!CollectionUtils.isEmpty(notificaciones)) {
                 for (Notificaciones notificacione : notificaciones) {
-                    notificacione.setFechaFinalizacion(fechaCompromisoActualizada);
+                    if (acuPag.isIsActive()) {
+                        notificacione.setFechaFinalizacion(fechaCompromisoActualizada);
+
+                    } else {
+                        notificacione.setIsActive(false);
+
+                    }
                     notificacione = notificacionesRepository.save(notificacione);
                 }
             }
-            
-            
-            
-           
 
             PagosCuotasResponse pgr = new PagosCuotasResponse();
             pgr.setBase64(base64);
