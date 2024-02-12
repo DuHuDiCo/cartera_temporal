@@ -1,6 +1,7 @@
 package com.cartera_temp.cartera_temp.ServiceImpl;
 
 import com.cartera_temp.cartera_temp.FeignClients.usuario_client;
+import com.cartera_temp.cartera_temp.Models.AsesorCartera;
 import com.cartera_temp.cartera_temp.Models.Notificaciones;
 import com.cartera_temp.cartera_temp.ModelsClients.Usuario;
 import com.cartera_temp.cartera_temp.Service.NotificacionesService;
@@ -136,8 +137,10 @@ public class NotificacionesServiceImpl implements NotificacionesService {
         if (Objects.isNull(user)) {
             return null;
         }
+        
+          
 
-        List<Notificaciones> notificacionesBySede =notificacionesBySede = notificacionesRepository.findAllByIsActiveAndDesignatedToAndVerRealizadasAndNumeroObligacionContaining(true, user.getIdUsuario(), "VER",  sede);
+        List<Notificaciones> notificacionesBySede =notificacionesBySede = notificacionesRepository.findByIsActiveAndDesignatedToAndVerRealizadasAndNumeroObligacionContaining(true, user.getIdUsuario(), "VER",  sede);
        
         return notificacionesBySede;
     }

@@ -112,7 +112,6 @@ public class GestionesServiceImpl implements GestionesService {
         this.notificacionesRepository = notificacionesRepository;
     }
 
-    
     @Override
     public GestionResponse saveOneGestion(GestionToSaveDto dto) {
 
@@ -220,7 +219,6 @@ public class GestionesServiceImpl implements GestionesService {
 
             acuerdoPago.setNombresClasificacion(nombre);
 
-           
             Notificaciones notificacion = new Notificaciones();
             notificacion.setTipoGestion("ACUERDO DE PAGO");
             try {
@@ -275,31 +273,38 @@ public class GestionesServiceImpl implements GestionesService {
         //TAREA
         if (clasificacion.getTipo().equals("Tarea".toUpperCase())) {
 
-            Tarea tarea = new Tarea();
+            Tarea tarea = null;
+            if (Objects.nonNull(dto.getClasificacionId())) {
+                tarea = tareaRepository.findById(dto.getClasificacionId()).orElse(null);
+                if (Objects.isNull(tarea)) {
+                    return null;
+                }
+                tarea.setIsActive(false);
+            } else {
+                tarea.setAsesor(asesor);
+                tarea.setIsParteOfRecaudo(dto.getClasificacion().getTarea().getIsPartOfRecaudo());
+                tarea.setDetalleTarea(dto.getClasificacion().getTarea().getDetalleTarea());
+                tarea.setIsActive(true);
+                try {
+                    tarea.setFechaFinTarea(Functions.stringToDateAndFormat(dto.getClasificacion().getTarea().getFechaFinTarea()));
+                } catch (ParseException ex) {
+                    Logger.getLogger(GestionesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                try {
+                    tarea.setFechaTarea(Functions.obtenerFechaYhora());
+                } catch (ParseException ex) {
+                    Logger.getLogger(GestionesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                }
 
-            tarea.setAsesor(asesor);
-            tarea.setIsParteOfRecaudo(dto.getClasificacion().getTarea().getIsPartOfRecaudo());
-            tarea.setDetalleTarea(dto.getClasificacion().getTarea().getDetalleTarea());
-            tarea.setIsActive(true);
-            try {
-                tarea.setFechaFinTarea(Functions.stringToDateAndFormat(dto.getClasificacion().getTarea().getFechaFinTarea()));
-            } catch (ParseException ex) {
-                Logger.getLogger(GestionesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            try {
-                tarea.setFechaTarea(Functions.obtenerFechaYhora());
-            } catch (ParseException ex) {
-                Logger.getLogger(GestionesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-            }
+                tarea.setClasificacion(dto.getClasificacion().getTipoClasificacion());
+                tarea.setDesignatedTo(usuDesignated.getIdUsuario());
 
-            tarea.setClasificacion(dto.getClasificacion().getTipoClasificacion());
-            tarea.setDesignatedTo(usuDesignated.getIdUsuario());
-
-            NombresClasificacion nombre = nombresClasificacionRepository.findFirstByNombre(clasificacion.getNombre());
-            if (Objects.isNull(nombre)) {
-                return null;
+                NombresClasificacion nombre = nombresClasificacionRepository.findFirstByNombre(clasificacion.getNombre());
+                if (Objects.isNull(nombre)) {
+                    return null;
+                }
+                tarea.setNombresClasificacion(nombre);
             }
-            tarea.setNombresClasificacion(nombre);
 
             //guardar en tabla notificaciones
             if (Objects.nonNull(dto.getNotificacionId())) {
@@ -527,16 +532,16 @@ public class GestionesServiceImpl implements GestionesService {
             acuerdo.getCuotasList().clear();
             acuerdoPagoRepository.save(acuerdo);
         }
-        
+
         List<Notificaciones> notificaciones = notificacionesRepository.findByNumeroObligacionAndFechaCreacionGreaterThanEqualAndTipoGestionOrderByFechaCreacionDesc(gestion.getNumeroObligacion(), gestion.getFechaGestion(), acuerdo.getClasificacion());
-            
-            if(!CollectionUtils.isEmpty(notificaciones)){
-                for (Notificaciones notificacione : notificaciones) {
-                    notificacione.setIsActive(false);
-                    notificacione.setVerRealizadas("HIDE");
-                    notificacione = notificacionesRepository.save(notificacione);
-                }
+
+        if (!CollectionUtils.isEmpty(notificaciones)) {
+            for (Notificaciones notificacione : notificaciones) {
+                notificacione.setIsActive(false);
+                notificacione.setVerRealizadas("HIDE");
+                notificacione = notificacionesRepository.save(notificacione);
             }
+        }
     }
 
     @Override
@@ -685,15 +690,14 @@ public class GestionesServiceImpl implements GestionesService {
         int cuentasSinGestion = 0;
 
         for (CuentasPorCobrar cuenta : cuentas) {
-            int gestionesRealizadas = 0;
+
             for (Gestiones gestione : cuenta.getGestiones()) {
-                if (Functions.validarFechaPertenece(gestione.getFechaGestion())) {
-                    gestionesRealizadas++;
+                if (!Functions.validarFechaPertenece(gestione.getFechaGestion())) {
+                    cuentasSinGestion++;
+                    break;
                 }
             }
-            if (gestionesRealizadas > 0) {
-                cuentasSinGestion = cuentasSinGestion++;
-            }
+
         }
         return cuentasSinGestion;
     }

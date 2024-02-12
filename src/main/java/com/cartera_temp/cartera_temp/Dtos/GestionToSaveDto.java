@@ -18,6 +18,8 @@ public class GestionToSaveDto {
     private String userNotifying;
     
     private Long notificacionId;
+    
+    private Long clasificacionId;
 
     public GestionToSaveDto() {
     }
@@ -76,6 +78,14 @@ public class GestionToSaveDto {
 
     public void setNotificacionId(Long notificacionId) {
         this.notificacionId = notificacionId;
+    }
+
+    public Long getClasificacionId() {
+        return clasificacionId;
+    }
+
+    public void setClasificacionId(Long clasificacionId) {
+        this.clasificacionId = clasificacionId;
     }
     
     
