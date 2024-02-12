@@ -113,8 +113,32 @@ public class NotificacionesServiceImpl implements NotificacionesService {
     }
 
     @Override
-    public List<Notificaciones> findBySede(String sede) {
-        List<Notificaciones> notificacionesBySede = notificacionesRepository.findByNumeroObligacionContaining(sede);
+    public List<Notificaciones> findBySede(String sede, String username) {
+        
+         Usuario user = usuarioClient.getUserByUsername(username);
+        if (Objects.isNull(user)) {
+            return null;
+        }
+
+        List<Notificaciones> notificacionesBySede = new ArrayList<>();
+        try {
+            notificacionesBySede = notificacionesRepository.findAllByIsActiveAndDesignatedToAndVerRealizadasAndFechaFinalizacionBeforeAndNumeroObligacionContaining(true, user.getIdUsuario(), "VER", Functions.obtenerFechaYhora(), sede);
+        } catch (ParseException ex) {
+            Logger.getLogger(NotificacionesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return notificacionesBySede;
+    }
+    
+       @Override
+    public List<Notificaciones> findBySedeAll(String sede, String username) {
+        
+         Usuario user = usuarioClient.getUserByUsername(username);
+        if (Objects.isNull(user)) {
+            return null;
+        }
+
+        List<Notificaciones> notificacionesBySede =notificacionesBySede = notificacionesRepository.findAllByIsActiveAndDesignatedToAndVerRealizadasAndNumeroObligacionContaining(true, user.getIdUsuario(), "VER",  sede);
+       
         return notificacionesBySede;
     }
 }

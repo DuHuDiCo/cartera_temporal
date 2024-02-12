@@ -61,9 +61,9 @@ public class NotificacionesController {
         return ResponseEntity.ok(notificaciones);
     }
     
-    @GetMapping("/bySede")
-    public ResponseEntity<List<Notificaciones>> obtenerPorSede(@RequestParam(name = "sede") String sede){
-        List<Notificaciones> notificaciones = notificacionesService.findBySede(sede);
+    @GetMapping("/bySedeVencidas")
+    public ResponseEntity<List<Notificaciones>> obtenerPorSede(@RequestParam(name = "sede") String sede, @RequestParam(name = "username") String username){
+        List<Notificaciones> notificaciones = notificacionesService.findBySede(sede, username);
         return ResponseEntity.ok(notificaciones);
     }
 

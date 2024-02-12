@@ -21,6 +21,7 @@ public interface NotificacionesService {
     
     public Notificaciones getById(Long id);
     
-    public List<Notificaciones> findBySede(String sede);
+    public List<Notificaciones> findBySede(String sede,  String username);
+    public List<Notificaciones> findBySedeAll(String sede,  String username);
     
 }
