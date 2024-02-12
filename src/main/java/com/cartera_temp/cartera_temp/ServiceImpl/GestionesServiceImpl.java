@@ -216,6 +216,17 @@ public class GestionesServiceImpl implements GestionesService {
 
             acuerdoPago.setNombresClasificacion(nombre);
 
+            if (Objects.nonNull(dto.getNotificacionId())) {
+                Notificaciones notificacion = notificacionesService.getById(dto.getNotificacionId());
+
+                if (Objects.nonNull(notificacion)) {
+                    notificacion.setIsActive(false);
+                    notificacion.setVerRealizadas("HIDE");
+                    notificacion = notificacionesService.crearNotificaciones(notificacion);
+
+                }
+            }
+
             Notificaciones notificacion = new Notificaciones();
             notificacion.setTipoGestion("ACUERDO DE PAGO");
             try {
@@ -230,7 +241,9 @@ public class GestionesServiceImpl implements GestionesService {
             notificacion.setDesignatedBy(userNotifying.getNombres().toUpperCase().concat(" ").concat(userNotifying.getApellidos().toUpperCase()));
             notificacion.setVerRealizadas("VER");
             notificacion.setCliente(cpc.getCliente());
+
             acuerdoPago = acuerdoPagoRepository.save(acuerdoPago);
+            notificacion.setGestionId(acuerdoPago.getIdClasificacionGestion());
             notificacion = notificacionesService.crearNotificaciones(notificacion);
 
             gestion.setClasificacion(acuerdoPago);
@@ -295,6 +308,17 @@ public class GestionesServiceImpl implements GestionesService {
             tarea.setNombresClasificacion(nombre);
 
             //guardar en tabla notificaciones
+            if (Objects.nonNull(dto.getNotificacionId())) {
+                Notificaciones notificacion = notificacionesService.getById(dto.getNotificacionId());
+
+                if (Objects.nonNull(notificacion)) {
+                    notificacion.setIsActive(false);
+                    notificacion.setVerRealizadas("HIDE");
+                    notificacion = notificacionesService.crearNotificaciones(notificacion);
+
+                }
+            }
+
             Notificaciones notificacion = new Notificaciones();
             notificacion.setTipoGestion("TAREA");
             notificacion.setFechaCreacion(tarea.getFechaTarea());
@@ -306,6 +330,8 @@ public class GestionesServiceImpl implements GestionesService {
             notificacion.setIsActive(true);
             notificacion.setCliente(cpc.getCliente());
             tarea = tareaRepository.save(tarea);
+
+            notificacion.setGestionId(tarea.getIdClasificacionGestion());
             gestion.setClasificacion(tarea);
 
             notificacion = notificacionesService.crearNotificaciones(notificacion);
@@ -657,12 +683,12 @@ public class GestionesServiceImpl implements GestionesService {
         for (CuentasPorCobrar cuenta : cuentas) {
             int gestionesRealizadas = 0;
             for (Gestiones gestione : cuenta.getGestiones()) {
-                if(Functions.validarFechaPertenece(gestione.getFechaGestion())){
+                if (Functions.validarFechaPertenece(gestione.getFechaGestion())) {
                     gestionesRealizadas++;
                 }
             }
-            if(gestionesRealizadas > 0){
-                cuentasSinGestion = cuentasSinGestion ++;
+            if (gestionesRealizadas > 0) {
+                cuentasSinGestion = cuentasSinGestion++;
             }
         }
         return cuentasSinGestion;

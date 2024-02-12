@@ -46,6 +46,9 @@ public class Notificaciones {
     
     @Column(name = "ver_realizadas")
     private String verRealizadas;
+    
+    @Column(name = "gestion_id")
+    private Long GestionId;
 
     public Notificaciones() {
     }
@@ -129,4 +132,14 @@ public class Notificaciones {
         this.verRealizadas = verRealizadas;
     }
 
+    public Long getGestionId() {
+        return GestionId;
+    }
+
+    public void setGestionId(Long GestionId) {
+        this.GestionId = GestionId;
+    }
+
+    
+    
 }

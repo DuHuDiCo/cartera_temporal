@@ -106,4 +106,9 @@ public class NotificacionesServiceImpl implements NotificacionesService {
         return noti;
         
     }
+
+    @Override
+    public Notificaciones getById(Long id) {
+        return notificacionesRepository.findById(id).orElse(null);
+    }
 }

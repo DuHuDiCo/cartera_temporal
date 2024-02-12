@@ -19,4 +19,6 @@ public interface NotificacionesService {
     
     public List<Notificaciones> getRealizadas(String username);
     
+    public Notificaciones getById(Long id);
+    
 }
