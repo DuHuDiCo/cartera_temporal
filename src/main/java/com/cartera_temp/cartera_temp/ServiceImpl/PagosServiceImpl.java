@@ -13,6 +13,7 @@ import com.cartera_temp.cartera_temp.Models.Cuotas;
 import com.cartera_temp.cartera_temp.Models.Gestiones;
 import com.cartera_temp.cartera_temp.Models.NombresClasificacion;
 import com.cartera_temp.cartera_temp.Models.Nota;
+import com.cartera_temp.cartera_temp.Models.Notificaciones;
 import com.cartera_temp.cartera_temp.Models.Pagos;
 import com.cartera_temp.cartera_temp.Models.ReciboPago;
 import com.cartera_temp.cartera_temp.ModelsClients.Usuario;
@@ -26,6 +27,7 @@ import com.cartera_temp.cartera_temp.repository.CuentasPorCobrarRepository;
 import com.cartera_temp.cartera_temp.repository.GestionesRepository;
 import com.cartera_temp.cartera_temp.repository.NombresClasificacionRepository;
 import com.cartera_temp.cartera_temp.repository.NotaRepository;
+import com.cartera_temp.cartera_temp.repository.NotificacionesRepository;
 import com.cartera_temp.cartera_temp.repository.PagosRespositoty;
 import com.cartera_temp.cartera_temp.repository.ReciboPagoRepository;
 import java.io.IOException;
@@ -38,6 +40,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
@@ -54,11 +57,12 @@ public class PagosServiceImpl implements PagosService {
     private final AsesorCarteraRepository asesorCarteraRepository;
     private final NotaRepository notaRepository;
     private final NombresClasificacionRepository nombresClasificacionRepository;
+    private final NotificacionesRepository notificacionesRepository;
 
     @Value("${ruta.recibos}")
     private String path;
 
-    public PagosServiceImpl(PagosRespositoty pagosRespositoty, CuentasPorCobrarRepository cpcr, usuario_client usuClient, GestionesRepository gr, AcuerdoPagoRepository apr, GenerarPdf generarPdf, SaveFiles saveFiles, ReciboPagoRepository reciboPagoRepository, AsesorCarteraRepository asesorCarteraRepository, NotaRepository notaRepository, NombresClasificacionRepository nombresClasificacionRepository) {
+    public PagosServiceImpl(PagosRespositoty pagosRespositoty, CuentasPorCobrarRepository cpcr, usuario_client usuClient, GestionesRepository gr, AcuerdoPagoRepository apr, GenerarPdf generarPdf, SaveFiles saveFiles, ReciboPagoRepository reciboPagoRepository, AsesorCarteraRepository asesorCarteraRepository, NotaRepository notaRepository, NombresClasificacionRepository nombresClasificacionRepository, NotificacionesRepository notificacionesRepository) {
         this.pagosRespositoty = pagosRespositoty;
         this.cpcr = cpcr;
         this.usuClient = usuClient;
@@ -70,8 +74,10 @@ public class PagosServiceImpl implements PagosService {
         this.asesorCarteraRepository = asesorCarteraRepository;
         this.notaRepository = notaRepository;
         this.nombresClasificacionRepository = nombresClasificacionRepository;
+        this.notificacionesRepository = notificacionesRepository;
     }
 
+    
     @Override
     public PagosCuotasResponse guardarPago(PagosCuotasDto dto) {
 
@@ -207,6 +213,19 @@ public class PagosServiceImpl implements PagosService {
                 cpc.setGestiones(gr.saveAll(cpc.getGestiones()));
 
             }
+            
+            List<Notificaciones> notificaciones = notificacionesRepository.findByNumeroObligacionAndFechaCreacionGreaterThanEqualAndTipoGestionOrderByFechaCreacionDesc(dto.getNumeroObligacion(), acuPag.getGestiones().getFechaGestion(), acuPag.getClasificacion());
+            
+            if(!CollectionUtils.isEmpty(notificaciones)){
+                for (Notificaciones notificacione : notificaciones) {
+                    notificacione.setFechaFinalizacion(fechaCompromisoActualizada);
+                    notificacione = notificacionesRepository.save(notificacione);
+                }
+            }
+            
+            
+            
+           
 
             PagosCuotasResponse pgr = new PagosCuotasResponse();
             pgr.setBase64(base64);

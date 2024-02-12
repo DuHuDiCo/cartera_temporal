@@ -17,4 +17,6 @@ public interface NotificacionesRepository extends JpaRepository<Notificaciones, 
     
     List<Notificaciones> findAllByIsActiveAndDesignatedToAndVerRealizadasAndFechaFinalizacionBeforeAndNumeroObligacionContaining(boolean IsActive, Long id, String ver,  Date fechaActual, String numeroObligacion);
     List<Notificaciones> findAllByIsActiveAndDesignatedToAndVerRealizadasAndNumeroObligacionContaining(boolean IsActive, Long id, String ver, String numeroObligacion);
+    
+    List<Notificaciones> findByNumeroObligacionAndFechaCreacionGreaterThanEqualAndTipoGestionOrderByFechaCreacionDesc(String obligacion, Date fecha, String tipo);
 }

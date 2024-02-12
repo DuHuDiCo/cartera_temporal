@@ -45,6 +45,7 @@ import com.cartera_temp.cartera_temp.repository.GestionesRepository;
 import com.cartera_temp.cartera_temp.repository.NombresClasificacionRepository;
 import com.cartera_temp.cartera_temp.repository.HistoricoAcuerdoPagoRepository;
 import com.cartera_temp.cartera_temp.repository.NotaRepository;
+import com.cartera_temp.cartera_temp.repository.NotificacionesRepository;
 import com.cartera_temp.cartera_temp.repository.SedeRepository;
 import com.cartera_temp.cartera_temp.repository.TareaRepository;
 import java.io.IOException;
@@ -86,8 +87,9 @@ public class GestionesServiceImpl implements GestionesService {
     private final ClientesClient clientesClient;
     private final HttpServletRequest request;
     private final GenerarPdf pdf;
+    private final NotificacionesRepository notificacionesRepository;
 
-    public GestionesServiceImpl(GestionesRepository gestionesRepository, CuentasPorCobrarRepository cuentaCobrarRepository, UsuarioClientService usuarioClientService, AsesorCarteraService asesorCartera, FileService fileService, SedeRepository sedeRepository, BancoRepository bancoRepository, SaveFiles saveFiles, NotificacionesService notificacionesService, AcuerdoPagoRepository acuerdoPagoRepository, ClasificacionGestionRepository clasificacionGestionRepository, NotaRepository notaRepository, TareaRepository tareaRepository, NombresClasificacionRepository nombresClasificacionRepository, CuotaRepository cuotaRepository, HistoricoAcuerdoPagoRepository historicoAcuerdoPagoRepository, ClientesClient clientesClient, HttpServletRequest request, GenerarPdf pdf) {
+    public GestionesServiceImpl(GestionesRepository gestionesRepository, CuentasPorCobrarRepository cuentaCobrarRepository, UsuarioClientService usuarioClientService, AsesorCarteraService asesorCartera, FileService fileService, SedeRepository sedeRepository, BancoRepository bancoRepository, SaveFiles saveFiles, NotificacionesService notificacionesService, AcuerdoPagoRepository acuerdoPagoRepository, ClasificacionGestionRepository clasificacionGestionRepository, NotaRepository notaRepository, TareaRepository tareaRepository, NombresClasificacionRepository nombresClasificacionRepository, CuotaRepository cuotaRepository, HistoricoAcuerdoPagoRepository historicoAcuerdoPagoRepository, ClientesClient clientesClient, HttpServletRequest request, GenerarPdf pdf, NotificacionesRepository notificacionesRepository) {
         this.gestionesRepository = gestionesRepository;
         this.cuentaCobrarRepository = cuentaCobrarRepository;
         this.usuarioClientService = usuarioClientService;
@@ -107,8 +109,10 @@ public class GestionesServiceImpl implements GestionesService {
         this.clientesClient = clientesClient;
         this.request = request;
         this.pdf = pdf;
+        this.notificacionesRepository = notificacionesRepository;
     }
 
+    
     @Override
     public GestionResponse saveOneGestion(GestionToSaveDto dto) {
 
@@ -216,17 +220,7 @@ public class GestionesServiceImpl implements GestionesService {
 
             acuerdoPago.setNombresClasificacion(nombre);
 
-            if (Objects.nonNull(dto.getNotificacionId())) {
-                Notificaciones notificacion = notificacionesService.getById(dto.getNotificacionId());
-
-                if (Objects.nonNull(notificacion)) {
-                    notificacion.setIsActive(false);
-                    notificacion.setVerRealizadas("HIDE");
-                    notificacion = notificacionesService.crearNotificaciones(notificacion);
-
-                }
-            }
-
+           
             Notificaciones notificacion = new Notificaciones();
             notificacion.setTipoGestion("ACUERDO DE PAGO");
             try {
@@ -533,6 +527,16 @@ public class GestionesServiceImpl implements GestionesService {
             acuerdo.getCuotasList().clear();
             acuerdoPagoRepository.save(acuerdo);
         }
+        
+        List<Notificaciones> notificaciones = notificacionesRepository.findByNumeroObligacionAndFechaCreacionGreaterThanEqualAndTipoGestionOrderByFechaCreacionDesc(gestion.getNumeroObligacion(), gestion.getFechaGestion(), acuerdo.getClasificacion());
+            
+            if(!CollectionUtils.isEmpty(notificaciones)){
+                for (Notificaciones notificacione : notificaciones) {
+                    notificacione.setIsActive(false);
+                    notificacione.setVerRealizadas("HIDE");
+                    notificacione = notificacionesRepository.save(notificacione);
+                }
+            }
     }
 
     @Override
