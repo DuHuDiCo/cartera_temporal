@@ -141,4 +141,18 @@ public class NotificacionesServiceImpl implements NotificacionesService {
        
         return notificacionesBySede;
     }
+    
+    
+        @Override
+    public List<Notificaciones> findBySedeRealizadas(String sede, String username) {
+        
+         Usuario usu = usuarioClient.getUserByUsername(username);
+        if (Objects.isNull(usu)) {
+            return null;
+        }
+
+         List<Notificaciones> noti = notificacionesRepository.findAllByIsActiveAndDesignatedToAndVerRealizadasAndNumeroObligacionContainingOrderByFechaCreacionAsc(false, usu.getIdUsuario(), "VER", sede);
+       
+        return noti;
+    }
 }

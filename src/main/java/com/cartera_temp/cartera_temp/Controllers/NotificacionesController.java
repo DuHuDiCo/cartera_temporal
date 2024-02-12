@@ -66,5 +66,17 @@ public class NotificacionesController {
         List<Notificaciones> notificaciones = notificacionesService.findBySede(sede, username);
         return ResponseEntity.ok(notificaciones);
     }
+    
+    @GetMapping("/bySedeAll")
+    public ResponseEntity<List<Notificaciones>> obtenerPorSedeAll(@RequestParam(name = "sede") String sede, @RequestParam(name = "username") String username){
+        List<Notificaciones> notificaciones = notificacionesService.findBySedeAll(sede, username);
+        return ResponseEntity.ok(notificaciones);
+    }
+    
+    @GetMapping("/bySedeRealizadas")
+    public ResponseEntity<List<Notificaciones>> obtenerPorSedeRealizadas(@RequestParam(name = "sede") String sede, @RequestParam(name = "username") String username){
+        List<Notificaciones> notificaciones = notificacionesService.findBySedeRealizadas(sede, username);
+        return ResponseEntity.ok(notificaciones);
+    }
 
 }
