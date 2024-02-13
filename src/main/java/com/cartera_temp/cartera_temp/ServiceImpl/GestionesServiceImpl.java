@@ -167,6 +167,15 @@ public class GestionesServiceImpl implements GestionesService {
         //ACUERDO DE PAGO
         if (clasificacion.getTipo().equals("Acuerdo de Pago".toUpperCase())) {
 
+            if (Objects.nonNull(dto.getClasificacionId())) {
+                Tarea tarea = tareaRepository.findById(dto.getClasificacionId()).orElse(null);
+                if (Objects.isNull(tarea)) {
+                    return null;
+                }
+                tarea.setIsActive(false);
+                tarea = tareaRepository.save(tarea);
+            }
+
             AcuerdoPago acuerdoPago = new AcuerdoPago();
 
             acuerdoPago.setAsesor(asesor);
@@ -244,6 +253,15 @@ public class GestionesServiceImpl implements GestionesService {
 
         //NOTA
         if (clasificacion.getTipo().equals("Nota".toUpperCase())) {
+
+            if (Objects.nonNull(dto.getClasificacionId())) {
+                Tarea tarea = tareaRepository.findById(dto.getClasificacionId()).orElse(null);
+                if (Objects.isNull(tarea)) {
+                    return null;
+                }
+                tarea.setIsActive(false);
+                tarea = tareaRepository.save(tarea);
+            }
 
             Nota nota = new Nota();
 
