@@ -174,6 +174,17 @@ public class GestionesServiceImpl implements GestionesService {
                 }
                 tarea.setIsActive(false);
                 tarea = tareaRepository.save(tarea);
+
+                if (Objects.nonNull(dto.getNotificacionId())) {
+                    Notificaciones notificacion = notificacionesService.getById(dto.getNotificacionId());
+
+                    if (Objects.nonNull(notificacion)) {
+                        notificacion.setIsActive(false);
+                        notificacion.setVerRealizadas("HIDE");
+                        notificacion = notificacionesService.crearNotificaciones(notificacion);
+
+                    }
+                }
             }
 
             AcuerdoPago acuerdoPago = new AcuerdoPago();
@@ -261,6 +272,17 @@ public class GestionesServiceImpl implements GestionesService {
                 }
                 tarea.setIsActive(false);
                 tarea = tareaRepository.save(tarea);
+
+                if (Objects.nonNull(dto.getNotificacionId())) {
+                    Notificaciones notificacion = notificacionesService.getById(dto.getNotificacionId());
+
+                    if (Objects.nonNull(notificacion)) {
+                        notificacion.setIsActive(false);
+                        notificacion.setVerRealizadas("HIDE");
+                        notificacion = notificacionesService.crearNotificaciones(notificacion);
+
+                    }
+                }
             }
 
             Nota nota = new Nota();
