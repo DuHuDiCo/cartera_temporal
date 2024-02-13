@@ -314,6 +314,9 @@ public class GestionesServiceImpl implements GestionesService {
                     notificacion.setIsActive(false);
                     notificacion.setVerRealizadas("HIDE");
                     notificacion = notificacionesService.crearNotificaciones(notificacion);
+                    
+                    
+                    tarea.setIsActive(false);
 
                 }
             }
