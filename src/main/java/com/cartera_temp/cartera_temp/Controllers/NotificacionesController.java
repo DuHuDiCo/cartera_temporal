@@ -1,6 +1,7 @@
 
 package com.cartera_temp.cartera_temp.Controllers;
 
+import com.cartera_temp.cartera_temp.Dtos.NotificacionRequest;
 import com.cartera_temp.cartera_temp.Models.Notificaciones;
 import com.cartera_temp.cartera_temp.Service.NotificacionesService;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import java.util.Objects;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
@@ -38,8 +40,8 @@ public class NotificacionesController {
     }
     
     @PutMapping("/desactivateNotification")
-    public ResponseEntity<HttpStatus> desactivateNotificaciones(@RequestParam(name = "idNotificion")Long id){
-        boolean bol = notificacionesService.desactivateNotificacion(id);
+    public ResponseEntity<HttpStatus> desactivateNotificaciones(@RequestBody() NotificacionRequest notificacionRequest){
+        boolean bol = notificacionesService.desactivateNotificacion(notificacionRequest);
         if(bol == false){
             return ResponseEntity.badRequest().build();
         }
