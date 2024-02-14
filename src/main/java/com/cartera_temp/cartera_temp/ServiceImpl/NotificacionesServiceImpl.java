@@ -140,7 +140,7 @@ public class NotificacionesServiceImpl implements NotificacionesService {
             return null;
         }
 
-        List<Notificaciones> noti = notificacionesRepository.findByIsActiveAndDesignatedToAndVerRealizadasOrderByFechaCreacionAsc(true, usu.getIdUsuario(), "VER");
+        List<Notificaciones> noti = notificacionesRepository.findByIsActiveAndDesignatedToAndVerRealizadasOrderByFechaCreacionAsc(false, usu.getIdUsuario(), "VER");
         return noti;
 
     }
@@ -205,11 +205,11 @@ public class NotificacionesServiceImpl implements NotificacionesService {
         List<Notificaciones> noti = null;
 
          if(tipo.equals("SEDE")){
-           noti  = notificacionesRepository.findByIsActiveAndDesignatedToAndVerRealizadasAndNumeroObligacionContainingOrderByFechaCreacionAsc(false, usu.getIdUsuario(), "VER", sede);
+           noti  = notificacionesRepository.findByIsActiveAndDesignatedToAndVerRealizadasAndNumeroObligacionContainingAndTipoGestionOrderByFechaCreacionAsc(false, usu.getIdUsuario(), "VER", sede,"TAREA");
         }
         
          if(tipo.equals("CEDULA")){
-                noti = notificacionesRepository.findByIsActiveAndDesignatedToAndVerRealizadasAndClienteOrderByFechaCreacionAsc(false, usu.getIdUsuario(), "VER", sede);
+                noti = notificacionesRepository.findByIsActiveAndDesignatedToAndVerRealizadasAndClienteAndTipoGestionOrderByFechaCreacionAsc(false, usu.getIdUsuario(), "VER", sede, "TAREA");
             }
         
         return noti;

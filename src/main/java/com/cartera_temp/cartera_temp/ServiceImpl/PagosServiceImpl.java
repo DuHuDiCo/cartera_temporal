@@ -211,7 +211,7 @@ public class PagosServiceImpl implements PagosService {
 
                 gestion.setClasificacion(nota);
 
-                cpc.getGestiones().add(gestion);
+              
 
                 gestion = gr.save(gestion);
 
