@@ -64,20 +64,20 @@ public class NotificacionesController {
     }
     
     @GetMapping("/bySedeVencidas")
-    public ResponseEntity<List<Notificaciones>> obtenerPorSede(@RequestParam(name = "sede") String sede, @RequestParam(name = "username") String username){
-        List<Notificaciones> notificaciones = notificacionesService.findBySede(sede, username);
+    public ResponseEntity<List<Notificaciones>> obtenerPorSede(@RequestParam(name = "sede") String sede, @RequestParam(name = "username") String username, @RequestParam(name = "tipo") String tipo){
+        List<Notificaciones> notificaciones = notificacionesService.findBySede(sede, username,tipo);
         return ResponseEntity.ok(notificaciones);
     }
     
     @GetMapping("/bySedeAll")
-    public ResponseEntity<List<Notificaciones>> obtenerPorSedeAll(@RequestParam(name = "sede") String sede, @RequestParam(name = "username") String username){
-        List<Notificaciones> notificaciones = notificacionesService.findBySedeAll(sede, username);
+    public ResponseEntity<List<Notificaciones>> obtenerPorSedeAll(@RequestParam(name = "sede") String sede, @RequestParam(name = "username") String username, @RequestParam(name = "tipo") String tipo){
+        List<Notificaciones> notificaciones = notificacionesService.findBySedeAll(sede, username, tipo);
         return ResponseEntity.ok(notificaciones);
     }
     
     @GetMapping("/bySedeRealizadas")
-    public ResponseEntity<List<Notificaciones>> obtenerPorSedeRealizadas(@RequestParam(name = "sede") String sede, @RequestParam(name = "username") String username){
-        List<Notificaciones> notificaciones = notificacionesService.findBySedeRealizadas(sede, username);
+    public ResponseEntity<List<Notificaciones>> obtenerPorSedeRealizadas(@RequestParam(name = "sede") String sede, @RequestParam(name = "username") String username, @RequestParam(name = "tipo") String tipo){
+        List<Notificaciones> notificaciones = notificacionesService.findBySedeRealizadas(sede, username, tipo);
         return ResponseEntity.ok(notificaciones);
     }
 
