@@ -2,6 +2,7 @@
 
 package com.cartera_temp.cartera_temp.Service;
 
+import com.cartera_temp.cartera_temp.Dtos.NotificacionRequest;
 import com.cartera_temp.cartera_temp.Models.Notificaciones;
 import java.util.List;
 
@@ -13,7 +14,7 @@ public interface NotificacionesService {
     
     public List<Notificaciones> getNotificacionesVencidasAscendente(String username);
     
-    public boolean desactivateNotificacion(Long idNotificacion);
+    public boolean desactivateNotificacion( NotificacionRequest notificacionRequest);
     
     public boolean hideNotificationChecked(Long idNotificacion);
     

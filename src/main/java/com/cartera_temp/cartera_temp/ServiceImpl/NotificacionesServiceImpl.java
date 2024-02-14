@@ -1,12 +1,15 @@
 package com.cartera_temp.cartera_temp.ServiceImpl;
 
+import com.cartera_temp.cartera_temp.Dtos.NotificacionRequest;
 import com.cartera_temp.cartera_temp.FeignClients.usuario_client;
 import com.cartera_temp.cartera_temp.Models.AsesorCartera;
 import com.cartera_temp.cartera_temp.Models.Notificaciones;
+import com.cartera_temp.cartera_temp.Models.Tarea;
 import com.cartera_temp.cartera_temp.ModelsClients.Usuario;
 import com.cartera_temp.cartera_temp.Service.NotificacionesService;
 import com.cartera_temp.cartera_temp.Utils.Functions;
 import com.cartera_temp.cartera_temp.repository.NotificacionesRepository;
+import com.cartera_temp.cartera_temp.repository.TareaRepository;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -22,11 +25,15 @@ public class NotificacionesServiceImpl implements NotificacionesService {
 
     private final NotificacionesRepository notificacionesRepository;
     private final usuario_client usuarioClient;
+    private final TareaRepository tareaRepository;
 
-    public NotificacionesServiceImpl(NotificacionesRepository notificacionesRepository, usuario_client usuarioClient) {
+    public NotificacionesServiceImpl(NotificacionesRepository notificacionesRepository, usuario_client usuarioClient, TareaRepository tareaRepository) {
         this.notificacionesRepository = notificacionesRepository;
         this.usuarioClient = usuarioClient;
+        this.tareaRepository = tareaRepository;
     }
+
+    
 
     @Override
     public Notificaciones crearNotificaciones(Notificaciones notificaciones) {
@@ -66,46 +73,55 @@ public class NotificacionesServiceImpl implements NotificacionesService {
     }
 
     @Override
-    public boolean desactivateNotificacion(Long idNotificacion) {
-        Notificaciones noti = notificacionesRepository.findById(idNotificacion).orElse(null);
-        if(Objects.nonNull(noti)){
+    public boolean desactivateNotificacion( NotificacionRequest notificacionRequest) {
+        Notificaciones noti = notificacionesRepository.findById(notificacionRequest.getIdNotificacion()).orElse(null);
+        if (Objects.nonNull(noti)) {
             noti.setIsActive(false);
+            noti.setVerRealizadas("HIDE");
             noti = notificacionesRepository.save(noti);
+            
+            
+            Tarea tarea = tareaRepository.findById(notificacionRequest.getIdClasificacion()).orElse(null);
+            if(Objects.nonNull(tarea)){
+                tarea.setIsActive(false);
+                tarea = tareaRepository.save(tarea);
+            }
+            
             return true;
-        }else{
+        } else {
             return false;
         }
     }
 
     @Override
     public boolean hideNotificationChecked(Long idNotificacion) {
-        
+
         Notificaciones noti = notificacionesRepository.findById(idNotificacion).orElse(null);
-        if(Objects.nonNull(noti)){
+        if (Objects.nonNull(noti)) {
             noti.setVerRealizadas("HIDE");
             noti = notificacionesRepository.save(noti);
             return true;
-        }else{
+        } else {
             return false;
         }
-        
+
     }
 
     @Override
     public List<Notificaciones> getRealizadas(String username) {
-        
-        if(username == "" || username == null){
+
+        if (username == "" || username == null) {
             return null;
         }
-        
+
         Usuario usu = usuarioClient.getUserByUsername(username);
-        if(Objects.isNull(usu)){
+        if (Objects.isNull(usu)) {
             return null;
         }
-        
+
         List<Notificaciones> noti = notificacionesRepository.findAllByIsActiveAndDesignatedToAndVerRealizadasOrderByFechaCreacionAsc(false, usu.getIdUsuario(), "VER");
         return noti;
-        
+
     }
 
     @Override
@@ -115,8 +131,8 @@ public class NotificacionesServiceImpl implements NotificacionesService {
 
     @Override
     public List<Notificaciones> findBySede(String sede, String username) {
-        
-         Usuario user = usuarioClient.getUserByUsername(username);
+
+        Usuario user = usuarioClient.getUserByUsername(username);
         if (Objects.isNull(user)) {
             return null;
         }
@@ -129,33 +145,30 @@ public class NotificacionesServiceImpl implements NotificacionesService {
         }
         return notificacionesBySede;
     }
-    
-       @Override
+
+    @Override
     public List<Notificaciones> findBySedeAll(String sede, String username) {
-        
-         Usuario user = usuarioClient.getUserByUsername(username);
+
+        Usuario user = usuarioClient.getUserByUsername(username);
         if (Objects.isNull(user)) {
             return null;
         }
-        
-          
 
-        List<Notificaciones> notificacionesBySede =notificacionesBySede = notificacionesRepository.findByIsActiveAndDesignatedToAndVerRealizadasAndNumeroObligacionContaining(true, user.getIdUsuario(), "VER",  sede);
-       
+        List<Notificaciones> notificacionesBySede = notificacionesBySede = notificacionesRepository.findByIsActiveAndDesignatedToAndVerRealizadasAndNumeroObligacionContaining(true, user.getIdUsuario(), "VER", sede);
+
         return notificacionesBySede;
     }
-    
-    
-        @Override
+
+    @Override
     public List<Notificaciones> findBySedeRealizadas(String sede, String username) {
-        
-         Usuario usu = usuarioClient.getUserByUsername(username);
+
+        Usuario usu = usuarioClient.getUserByUsername(username);
         if (Objects.isNull(usu)) {
             return null;
         }
 
-         List<Notificaciones> noti = notificacionesRepository.findAllByIsActiveAndDesignatedToAndVerRealizadasAndNumeroObligacionContainingOrderByFechaCreacionAsc(false, usu.getIdUsuario(), "VER", sede);
-       
+        List<Notificaciones> noti = notificacionesRepository.findAllByIsActiveAndDesignatedToAndVerRealizadasAndNumeroObligacionContainingOrderByFechaCreacionAsc(false, usu.getIdUsuario(), "VER", sede);
+
         return noti;
     }
 }
