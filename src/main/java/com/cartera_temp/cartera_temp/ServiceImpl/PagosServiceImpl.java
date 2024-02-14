@@ -213,7 +213,7 @@ public class PagosServiceImpl implements PagosService {
 
                 cpc.getGestiones().add(gestion);
 
-                cpc.setGestiones(gr.saveAll(cpc.getGestiones()));
+                gestion = gr.save(gestion);
 
             }
 
