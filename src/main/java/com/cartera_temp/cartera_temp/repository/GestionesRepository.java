@@ -31,4 +31,6 @@ public interface GestionesRepository extends JpaRepository<Gestiones, Long>{
     
     List<Gestiones> findByAsesorCartera(AsesorCartera asesor);
     
+    Gestiones findFirstByNumeroObligacionAndFechaGestion(String obligacion, Date fecha);
+    
 }

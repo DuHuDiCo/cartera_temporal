@@ -3,11 +3,13 @@ package com.cartera_temp.cartera_temp.ServiceImpl;
 import com.cartera_temp.cartera_temp.Dtos.NotificacionRequest;
 import com.cartera_temp.cartera_temp.FeignClients.usuario_client;
 import com.cartera_temp.cartera_temp.Models.AsesorCartera;
+import com.cartera_temp.cartera_temp.Models.Gestiones;
 import com.cartera_temp.cartera_temp.Models.Notificaciones;
 import com.cartera_temp.cartera_temp.Models.Tarea;
 import com.cartera_temp.cartera_temp.ModelsClients.Usuario;
 import com.cartera_temp.cartera_temp.Service.NotificacionesService;
 import com.cartera_temp.cartera_temp.Utils.Functions;
+import com.cartera_temp.cartera_temp.repository.GestionesRepository;
 import com.cartera_temp.cartera_temp.repository.NotificacionesRepository;
 import com.cartera_temp.cartera_temp.repository.TareaRepository;
 import java.text.ParseException;
@@ -26,11 +28,13 @@ public class NotificacionesServiceImpl implements NotificacionesService {
     private final NotificacionesRepository notificacionesRepository;
     private final usuario_client usuarioClient;
     private final TareaRepository tareaRepository;
+    private final GestionesRepository gestionesRepository;
 
-    public NotificacionesServiceImpl(NotificacionesRepository notificacionesRepository, usuario_client usuarioClient, TareaRepository tareaRepository) {
+    public NotificacionesServiceImpl(NotificacionesRepository notificacionesRepository, usuario_client usuarioClient, TareaRepository tareaRepository, GestionesRepository gestionesRepository) {
         this.notificacionesRepository = notificacionesRepository;
         this.usuarioClient = usuarioClient;
         this.tareaRepository = tareaRepository;
+        this.gestionesRepository = gestionesRepository;
     }
 
     
@@ -73,21 +77,38 @@ public class NotificacionesServiceImpl implements NotificacionesService {
     }
 
     @Override
-    public boolean desactivateNotificacion( NotificacionRequest notificacionRequest) {
+    public boolean desactivateNotificacion(NotificacionRequest notificacionRequest) {
         Notificaciones noti = notificacionesRepository.findById(notificacionRequest.getIdNotificacion()).orElse(null);
         if (Objects.nonNull(noti)) {
             noti.setIsActive(false);
             noti.setVerRealizadas("HIDE");
             noti = notificacionesRepository.save(noti);
-            
-            
-            Tarea tarea = tareaRepository.findById(notificacionRequest.getIdClasificacion()).orElse(null);
-            if(Objects.nonNull(tarea)){
-                tarea.setIsActive(false);
-                tarea = tareaRepository.save(tarea);
+
+            if (Objects.isNull(notificacionRequest.getIdClasificacion())) {
+                Gestiones gestion = gestionesRepository.findFirstByNumeroObligacionAndFechaGestion(notificacionRequest.getNumeroObligacion(), notificacionRequest.getFechaCreacion());
+                if(Objects.isNull(gestion)){
+                    return false;
+                }
+                Tarea tarea = tareaRepository.findById(gestion.getClasificacionGestion().getIdClasificacionGestion()).orElse(null);
+                if (Objects.nonNull(tarea)) {
+                    tarea.setIsActive(false);
+                    tarea = tareaRepository.save(tarea);
+                     return true;
+                }
+
+                return false;
+            } else {
+                Tarea tarea = tareaRepository.findById(notificacionRequest.getIdClasificacion()).orElse(null);
+                if (Objects.nonNull(tarea)) {
+                    tarea.setIsActive(false);
+                    tarea = tareaRepository.save(tarea);
+                    return true;
+                }
+                return false;
+
+                
             }
-            
-            return true;
+
         } else {
             return false;
         }

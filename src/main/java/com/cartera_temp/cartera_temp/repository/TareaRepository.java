@@ -8,5 +8,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TareaRepository extends JpaRepository<Tarea, Long>{
+    
+    
 
 }

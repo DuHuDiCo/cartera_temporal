@@ -9,6 +9,7 @@ public class NotificacionRequest {
     private Long idNotificacion;
     private Date fechaCreacion;
     private Long idClasificacion;
+    private String numeroObligacion;
 
     public NotificacionRequest() {
     }
@@ -35,6 +36,14 @@ public class NotificacionRequest {
 
     public void setIdClasificacion(Long idClasificacion) {
         this.idClasificacion = idClasificacion;
+    }
+
+    public String getNumeroObligacion() {
+        return numeroObligacion;
+    }
+
+    public void setNumeroObligacion(String numeroObligacion) {
+        this.numeroObligacion = numeroObligacion;
     }
     
     
