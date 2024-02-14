@@ -13,8 +13,9 @@ public interface NotificacionesRepository extends JpaRepository<Notificaciones, 
 
     List<Notificaciones> findByDesignatedToAndFechaFinalizacionBetween(Long id, Date fechaInicio, Date fechaFin);
 
-    @Query(value = "SELECT * FROM notificaciones WHERE is_active = :isActive AND id_designated_to = :id AND ver_realizadas =:ver ORDER BY fecha_creacion asc")
+    @Query(value = "SELECT * FROM notificaciones WHERE is_active = :isActive AND id_designated_to = :id AND ver_realizadas =:ver ORDER BY fecha_creacion asc", nativeQuery = true)
     List<Notificaciones> findByIsActiveAndDesignatedToAndVerRealizadasOrderByFechaCreacionAsc(@Param("isActive") boolean isActive,@Param("id") Long id,@Param("ver") String ver);
+    
     List<Notificaciones> findByIsActiveAndDesignatedToAndVerRealizadasAndNumeroObligacionContainingOrderByFechaCreacionAsc(boolean isActive, Long id, String ver, String sede);
     List<Notificaciones> findByIsActiveAndDesignatedToAndVerRealizadasAndClienteOrderByFechaCreacionAsc(boolean isActive, Long id, String ver, String cliente);
 
