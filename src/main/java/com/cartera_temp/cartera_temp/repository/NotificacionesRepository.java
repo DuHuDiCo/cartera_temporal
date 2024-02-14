@@ -11,13 +11,16 @@ public interface NotificacionesRepository extends JpaRepository<Notificaciones, 
 
     List<Notificaciones> findByDesignatedToAndFechaFinalizacionBetween(Long id, Date fechaInicio, Date fechaFin);
 
-    List<Notificaciones> findAllByIsActiveAndDesignatedToAndVerRealizadasOrderByFechaCreacionAsc(boolean isActive, Long id, String ver);
+    List<Notificaciones> findByIsActiveAndDesignatedToAndVerRealizadasOrderByFechaCreacionAsc(boolean isActive, Long id, String ver);
     List<Notificaciones> findAllByIsActiveAndDesignatedToAndVerRealizadasAndNumeroObligacionContainingOrderByFechaCreacionAsc(boolean isActive, Long id, String ver, String sede);
+    List<Notificaciones> findAllByIsActiveAndDesignatedToAndVerRealizadasAndClienteOrderByFechaCreacionAsc(boolean isActive, Long id, String ver, String cliente);
 
     List<Notificaciones> findAllByIsActiveAndDesignatedToAndVerRealizadasAndFechaFinalizacionBefore(boolean IsActive, Long id, String ver,  Date fechaActual);
     
-    List<Notificaciones> findAllByIsActiveAndDesignatedToAndVerRealizadasAndFechaFinalizacionBeforeAndNumeroObligacionContaining(boolean IsActive, Long id, String ver,  Date fechaActual, String numeroObligacion);
-    List<Notificaciones> findByIsActiveAndDesignatedToAndVerRealizadasAndNumeroObligacionContaining(boolean IsActive, Long id, String ver, String numeroObligacion);
+    List<Notificaciones> findByIsActiveAndDesignatedToAndVerRealizadasAndFechaFinalizacionBeforeAndNumeroObligacionContaining(boolean IsActive, Long id, String ver,  Date fechaActual, String numeroObligacion);
+    List<Notificaciones> findByIsActiveAndDesignatedToAndVerRealizadasAndFechaFinalizacionBeforeAndClienteContaining(boolean IsActive, Long id, String ver,  Date fechaActual, String cliente);
+    List<Notificaciones> findByIsActiveAndDesignatedToAndNumeroObligacionContaining(boolean IsActive, Long id,String numeroObligacion);
+    List<Notificaciones> findByIsActiveAndDesignatedToAndClienteContaining(boolean IsActive, Long id,  String cliente);
     
     List<Notificaciones> findByNumeroObligacionAndFechaCreacionGreaterThanEqualAndTipoGestionOrderByFechaCreacionDesc(String obligacion, Date fecha, String tipo);
 }

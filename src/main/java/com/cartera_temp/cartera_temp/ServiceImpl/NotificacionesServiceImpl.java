@@ -53,7 +53,7 @@ public class NotificacionesServiceImpl implements NotificacionesService {
             return null;
         }
 
-        List<Notificaciones> notiFind = notificacionesRepository.findAllByIsActiveAndDesignatedToAndVerRealizadasOrderByFechaCreacionAsc(true, user.getIdUsuario(), "VER");
+        List<Notificaciones> notiFind = notificacionesRepository.findByIsActiveAndDesignatedToAndVerRealizadasOrderByFechaCreacionAsc(true, user.getIdUsuario(), "VER");
         return notiFind;
 
     }
@@ -140,7 +140,7 @@ public class NotificacionesServiceImpl implements NotificacionesService {
             return null;
         }
 
-        List<Notificaciones> noti = notificacionesRepository.findAllByIsActiveAndDesignatedToAndVerRealizadasOrderByFechaCreacionAsc(false, usu.getIdUsuario(), "VER");
+        List<Notificaciones> noti = notificacionesRepository.findByIsActiveAndDesignatedToAndVerRealizadasOrderByFechaCreacionAsc(false, usu.getIdUsuario(), "VER");
         return noti;
 
     }
@@ -151,7 +151,7 @@ public class NotificacionesServiceImpl implements NotificacionesService {
     }
 
     @Override
-    public List<Notificaciones> findBySede(String sede, String username) {
+    public List<Notificaciones> findBySede(String sede, String username, String tipo) {
 
         Usuario user = usuarioClient.getUserByUsername(username);
         if (Objects.isNull(user)) {
@@ -160,7 +160,13 @@ public class NotificacionesServiceImpl implements NotificacionesService {
 
         List<Notificaciones> notificacionesBySede = new ArrayList<>();
         try {
-            notificacionesBySede = notificacionesRepository.findAllByIsActiveAndDesignatedToAndVerRealizadasAndFechaFinalizacionBeforeAndNumeroObligacionContaining(true, user.getIdUsuario(), "VER", Functions.obtenerFechaYhora(), sede);
+            if(tipo.equals("CEDULA")){
+                notificacionesBySede = notificacionesRepository.findByIsActiveAndDesignatedToAndVerRealizadasAndFechaFinalizacionBeforeAndClienteContaining(true, user.getIdUsuario(), "VER", Functions.obtenerFechaYhora(), sede);
+            }
+            if(tipo.equals("SEDE")){
+                notificacionesBySede = notificacionesRepository.findByIsActiveAndDesignatedToAndVerRealizadasAndFechaFinalizacionBeforeAndNumeroObligacionContaining(true, user.getIdUsuario(), "VER", Functions.obtenerFechaYhora(), sede);
+            }
+            
         } catch (ParseException ex) {
             Logger.getLogger(NotificacionesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -168,28 +174,44 @@ public class NotificacionesServiceImpl implements NotificacionesService {
     }
 
     @Override
-    public List<Notificaciones> findBySedeAll(String sede, String username) {
+    public List<Notificaciones> findBySedeAll(String sede, String username, String tipo) {
 
         Usuario user = usuarioClient.getUserByUsername(username);
         if (Objects.isNull(user)) {
             return null;
         }
 
-        List<Notificaciones> notificacionesBySede = notificacionesBySede = notificacionesRepository.findByIsActiveAndDesignatedToAndVerRealizadasAndNumeroObligacionContaining(true, user.getIdUsuario(), "VER", sede);
+        List<Notificaciones> notificacionesBySede = null;
+        
+        if(tipo.equals("SEDE")){
+           notificacionesBySede  = notificacionesRepository.findByIsActiveAndDesignatedToAndNumeroObligacionContaining(true, user.getIdUsuario(),sede);
+        }
+        
+         if(tipo.equals("CEDULA")){
+                notificacionesBySede = notificacionesRepository.findByIsActiveAndDesignatedToAndClienteContaining(true, user.getIdUsuario(), sede);
+            }
 
         return notificacionesBySede;
     }
 
     @Override
-    public List<Notificaciones> findBySedeRealizadas(String sede, String username) {
+    public List<Notificaciones> findBySedeRealizadas(String sede, String username, String tipo) {
 
         Usuario usu = usuarioClient.getUserByUsername(username);
         if (Objects.isNull(usu)) {
             return null;
         }
 
-        List<Notificaciones> noti = notificacionesRepository.findAllByIsActiveAndDesignatedToAndVerRealizadasAndNumeroObligacionContainingOrderByFechaCreacionAsc(false, usu.getIdUsuario(), "VER", sede);
+        List<Notificaciones> noti = null;
 
+         if(tipo.equals("SEDE")){
+           noti  = notificacionesRepository.findAllByIsActiveAndDesignatedToAndVerRealizadasAndNumeroObligacionContainingOrderByFechaCreacionAsc(false, usu.getIdUsuario(), "VER", sede);
+        }
+        
+         if(tipo.equals("CEDULA")){
+                noti = notificacionesRepository.findAllByIsActiveAndDesignatedToAndVerRealizadasAndClienteOrderByFechaCreacionAsc(false, usu.getIdUsuario(), "VER", sede);
+            }
+        
         return noti;
     }
 }
