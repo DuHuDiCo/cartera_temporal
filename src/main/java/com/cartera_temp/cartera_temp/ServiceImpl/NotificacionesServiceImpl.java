@@ -68,7 +68,7 @@ public class NotificacionesServiceImpl implements NotificacionesService {
 
         List<Notificaciones> notiFind = new ArrayList<>();
         try {
-            notiFind = notificacionesRepository.findAllByIsActiveAndDesignatedToAndVerRealizadasAndFechaFinalizacionBefore(true, user.getIdUsuario(), "VER", Functions.obtenerFechaYhora());
+            notiFind = notificacionesRepository.findByIsActiveAndDesignatedToAndVerRealizadasAndFechaFinalizacionBefore(true, user.getIdUsuario(), "VER", Functions.obtenerFechaYhora());
         } catch (ParseException ex) {
             Logger.getLogger(NotificacionesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -205,11 +205,11 @@ public class NotificacionesServiceImpl implements NotificacionesService {
         List<Notificaciones> noti = null;
 
          if(tipo.equals("SEDE")){
-           noti  = notificacionesRepository.findAllByIsActiveAndDesignatedToAndVerRealizadasAndNumeroObligacionContainingOrderByFechaCreacionAsc(false, usu.getIdUsuario(), "VER", sede);
+           noti  = notificacionesRepository.findByIsActiveAndDesignatedToAndVerRealizadasAndNumeroObligacionContainingOrderByFechaCreacionAsc(false, usu.getIdUsuario(), "VER", sede);
         }
         
          if(tipo.equals("CEDULA")){
-                noti = notificacionesRepository.findAllByIsActiveAndDesignatedToAndVerRealizadasAndClienteOrderByFechaCreacionAsc(false, usu.getIdUsuario(), "VER", sede);
+                noti = notificacionesRepository.findByIsActiveAndDesignatedToAndVerRealizadasAndClienteOrderByFechaCreacionAsc(false, usu.getIdUsuario(), "VER", sede);
             }
         
         return noti;
