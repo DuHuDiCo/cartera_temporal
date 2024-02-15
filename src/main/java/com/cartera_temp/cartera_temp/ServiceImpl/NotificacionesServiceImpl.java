@@ -205,11 +205,11 @@ public class NotificacionesServiceImpl implements NotificacionesService {
         List<Notificaciones> noti = null;
 
          if(tipo.equals("SEDE")){
-           noti  = notificacionesRepository.findByIsActiveAndDesignatedToAndVerRealizadasAndNumeroObligacionContainingAndTipoGestionOrderByFechaCreacionAsc(false, usu.getIdUsuario(), "VER", sede,"TAREA");
+           noti  = notificacionesRepository.findByIsActiveAndDesignatedToAndVerRealizadasAndNumeroObligacionContainingAndTipoGestionOrderByFechaCreacionAsc(false, usu.getIdUsuario(), "HIDE", sede,"TAREA");
         }
         
          if(tipo.equals("CEDULA")){
-                noti = notificacionesRepository.findByIsActiveAndDesignatedToAndVerRealizadasAndClienteAndTipoGestionOrderByFechaCreacionAsc(false, usu.getIdUsuario(), "VER", sede, "TAREA");
+                noti = notificacionesRepository.findByIsActiveAndDesignatedToAndVerRealizadasAndClienteAndTipoGestionOrderByFechaCreacionAsc(false, usu.getIdUsuario(), "HIDE", sede, "TAREA");
             }
         
         return noti;
