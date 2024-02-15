@@ -81,7 +81,7 @@ public class NotificacionesServiceImpl implements NotificacionesService {
         Notificaciones noti = notificacionesRepository.findById(notificacionRequest.getIdNotificacion()).orElse(null);
         if (Objects.nonNull(noti)) {
             noti.setIsActive(false);
-            noti.setVerRealizadas("HIDE");
+            
             noti = notificacionesRepository.save(noti);
 
             if (Objects.isNull(notificacionRequest.getIdClasificacion())) {
@@ -140,7 +140,7 @@ public class NotificacionesServiceImpl implements NotificacionesService {
             return null;
         }
 
-        List<Notificaciones> noti = notificacionesRepository.findByIsActiveAndDesignatedToAndVerRealizadasAndTipoGestionOrderByFechaCreacionAsc(false, usu.getIdUsuario(), "HIDE", "TAREA");
+        List<Notificaciones> noti = notificacionesRepository.findByIsActiveAndDesignatedToAndVerRealizadasAndTipoGestionOrderByFechaCreacionAsc(false, usu.getIdUsuario(), "VER", "TAREA");
         return noti;
 
     }

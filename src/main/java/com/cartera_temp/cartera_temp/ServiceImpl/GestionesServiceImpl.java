@@ -180,7 +180,7 @@ public class GestionesServiceImpl implements GestionesService {
 
                     if (Objects.nonNull(notificacion)) {
                         notificacion.setIsActive(false);
-                        notificacion.setVerRealizadas("HIDE");
+                        
                         notificacion = notificacionesService.crearNotificaciones(notificacion);
 
                     }
@@ -278,7 +278,7 @@ public class GestionesServiceImpl implements GestionesService {
 
                     if (Objects.nonNull(notificacion)) {
                         notificacion.setIsActive(false);
-                        notificacion.setVerRealizadas("HIDE");
+                        
                         notificacion = notificacionesService.crearNotificaciones(notificacion);
 
                     }
@@ -353,7 +353,7 @@ public class GestionesServiceImpl implements GestionesService {
 
                 if (Objects.nonNull(notificacion)) {
                     notificacion.setIsActive(false);
-                    notificacion.setVerRealizadas("HIDE");
+                   
                     notificacion = notificacionesService.crearNotificaciones(notificacion);
 
                 }
