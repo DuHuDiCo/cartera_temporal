@@ -19,4 +19,7 @@ public interface ClientesClient {
     @GetMapping("/getClientByNumObligacionOrNombreCliente")
     List<ClientesDto> buscarClientesByDatos(@RequestParam(name = "dato") String dato,  @RequestHeader("Authorization") String token);
     
+    @GetMapping("/getClientByNumDoc")
+    ClientesDto buscarClientesByNumDoc(@RequestParam(name = "cedula") String cedula,  @RequestHeader("Authorization") String token);
+    
 }

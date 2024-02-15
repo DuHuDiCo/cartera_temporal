@@ -1,6 +1,7 @@
 package com.cartera_temp.cartera_temp.Components.Impl;
 
 import com.cartera_temp.cartera_temp.Components.GenerarPdf;
+import com.cartera_temp.cartera_temp.Dtos.ClientesDto;
 import com.cartera_temp.cartera_temp.Dtos.PagosCuotasDto;
 import com.cartera_temp.cartera_temp.Models.AcuerdoPago;
 import com.cartera_temp.cartera_temp.Models.CuentasPorCobrar;
@@ -68,7 +69,7 @@ public class GenerarPdfImpl implements GenerarPdf {
     }
 
     @Override
-    public String generarReporteAcuerdoPagoToClient(CuentasPorCobrar cpc, String username) throws IOException, ClassNotFoundException {
+    public String generarReporteAcuerdoPagoToClient(CuentasPorCobrar cpc, ClientesDto cliente,String username) throws IOException, ClassNotFoundException {
 
         if (Objects.isNull(cpc)) {
             System.out.println("cpc is null");
@@ -92,9 +93,9 @@ public class GenerarPdfImpl implements GenerarPdf {
             Logger.getLogger(GenerarPdfImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
         String sede = cpc.getSede().getNombreComercialSede();
-        String[] nombreClienteLetras = cpc.getCliente().toUpperCase().split("-");
-        String nombreClienteSplit = nombreClienteLetras[1];
-        String docCliente = cpc.getDocumentoCliente();
+        
+        String nombreClienteSplit = cliente.getNombreTitular();
+        String docCliente = cliente.getNumeroDocumento();
         String pagare = cpc.getPagare();
         Usuario usu = usuClient.obtenerUsuario(username);
         if (Objects.isNull(usu)) {
@@ -180,7 +181,7 @@ public class GenerarPdfImpl implements GenerarPdf {
                     String[] negritaFecha = Functions.fechaDateToStringSinHora().split("-");
 
                     //String[] lineas = {mensajeLetras1, mensajePrimero1, mensajeSegundo1, mensajeTercera1, fechaConvenio, inquietud};
-                    String variableConcat = nombreClienteLetras[1].concat(" ").concat(docCliente).concat(" ").concat(sede).concat(" ").concat(gmj)
+                    String variableConcat = nombreClienteSplit.concat(" ").concat(docCliente).concat(" ").concat(sede).concat(" ").concat(gmj)
                             .concat(" ").concat(" ").concat(valorAcuerdoLetras).concat(" ").concat(nit).concat(" ").concat(primeroLetras)
                             .concat(" ").concat(segundoLetras).concat(" ").concat(terceraLetras).concat(" ").concat(inquietud);
 

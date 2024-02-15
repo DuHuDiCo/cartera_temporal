@@ -180,7 +180,7 @@ public class GestionesServiceImpl implements GestionesService {
 
                     if (Objects.nonNull(notificacion)) {
                         notificacion.setIsActive(false);
-                        
+
                         notificacion = notificacionesService.crearNotificaciones(notificacion);
 
                     }
@@ -278,7 +278,7 @@ public class GestionesServiceImpl implements GestionesService {
 
                     if (Objects.nonNull(notificacion)) {
                         notificacion.setIsActive(false);
-                        
+
                         notificacion = notificacionesService.crearNotificaciones(notificacion);
 
                     }
@@ -353,7 +353,7 @@ public class GestionesServiceImpl implements GestionesService {
 
                 if (Objects.nonNull(notificacion)) {
                     notificacion.setIsActive(false);
-                   
+
                     notificacion = notificacionesService.crearNotificaciones(notificacion);
 
                 }
@@ -617,10 +617,19 @@ public class GestionesServiceImpl implements GestionesService {
 
         String token = request.getAttribute("token").toString();
 
-        List<ClientesDto> client = clientesClient.buscarClientesByNumeroObligacion(dto.getCedula(), token);
-        if (client.isEmpty()) {
-            System.out.println("clientes vacio");
-            return null;
+        List<ClientesDto> client = new ArrayList<>();
+        if (Objects.isNull(dto.getCedulaArchivo())) {
+            client = clientesClient.buscarClientesByNumeroObligacion(dto.getCedula(), token);
+            if (client.isEmpty()) {
+                System.out.println("clientes vacio");
+                return null;
+            }
+        } else {
+            client.add(clientesClient.buscarClientesByNumDoc(dto.getCedulaArchivo(), token));
+            if (client.isEmpty()) {
+                System.out.println("clientes vacio");
+                return null;
+            }
         }
 
         System.out.println(client.size());
@@ -664,7 +673,7 @@ public class GestionesServiceImpl implements GestionesService {
 
         link.setMessageToWpp("https://api.whatsapp.com/send?phone=".concat("+").concat(telToMessage).concat(message));
         try {
-            link.setBase64(pdf.generarReporteAcuerdoPagoToClient(cpc, dto.getUsername()));
+            link.setBase64(pdf.generarReporteAcuerdoPagoToClient(cpc, client.get(0),dto.getUsername()));
         } catch (IOException ex) {
             System.out.println(ex);
             Logger.getLogger(GestionesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);

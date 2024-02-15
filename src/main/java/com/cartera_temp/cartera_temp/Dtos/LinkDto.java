@@ -5,6 +5,7 @@ public class LinkDto {
     private String numeroObligacion;
     private String numeroAlterno;
     private String cedula;
+    private String cedulaArchivo;
     private String username;
 
     public LinkDto() {
@@ -40,6 +41,14 @@ public class LinkDto {
 
     public void setNumeroAlterno(String numeroAlterno) {
         this.numeroAlterno = numeroAlterno;
+    }
+
+    public String getCedulaArchivo() {
+        return cedulaArchivo;
+    }
+
+    public void setCedulaArchivo(String cedulaArchivo) {
+        this.cedulaArchivo = cedulaArchivo;
     }
     
     
