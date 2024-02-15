@@ -640,15 +640,9 @@ public class GestionesServiceImpl implements GestionesService {
             return null;
         }
 
-        ClientesDto clientToSend = new ClientesDto();
-
-        for (ClientesDto clientesDto : client) {
-
-            if (clientesDto.getNumeroDocumento().equals(dto.getCedula()) == true) {
-                clientToSend = clientesDto;
-                break;
-            }
-            System.out.println("numero docuomento y cedula diferentes");
+        ClientesDto clientToSend = client.get(0);
+        if(Objects.isNull(clientToSend)){
+            return null;
         }
 
         List<Telefono> telefono = clientToSend.getTelefonos().stream().filter(t -> t.isIsCurrent() == true).collect(Collectors.toList());
