@@ -54,7 +54,7 @@ public class AcuerdoPago extends ClasificacionGestion {
     @Column(name = "is_cumpliendo")
     private boolean isCumpliendo;
 
-    @OneToMany(mappedBy = "acuerdoPago", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "acuerdoPago", cascade = CascadeType.ALL, orphanRemoval = false)
     private List<Cuotas> cuotasList = new ArrayList<>();
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

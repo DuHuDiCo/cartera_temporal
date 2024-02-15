@@ -77,7 +77,7 @@ public class CuentasPorCobrar {
     @JoinColumn(name = "banco_id", referencedColumnName = "id_banco")
     private Banco banco;
     
-    @OneToMany(mappedBy = "cuentasPorCobrar", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "cuentasPorCobrar", cascade = CascadeType.ALL, orphanRemoval = false)
     private List<Gestiones> gestiones = new ArrayList<>();
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
