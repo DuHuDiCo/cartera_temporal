@@ -140,7 +140,7 @@ public class NotificacionesServiceImpl implements NotificacionesService {
             return null;
         }
 
-        List<Notificaciones> noti = notificacionesRepository.findByIsActiveAndDesignatedToAndVerRealizadasAndTipoGestionOrderByFechaCreacionAsc(false, usu.getIdUsuario(), "VER", "TAREA");
+        List<Notificaciones> noti = notificacionesRepository.findByIsActiveAndDesignatedToAndVerRealizadasAndTipoGestionOrderByFechaCreacionAsc(false, usu.getIdUsuario(), "HIDE", "TAREA");
         return noti;
 
     }
