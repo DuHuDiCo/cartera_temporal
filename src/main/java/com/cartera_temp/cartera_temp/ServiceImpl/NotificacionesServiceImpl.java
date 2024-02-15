@@ -209,7 +209,7 @@ public class NotificacionesServiceImpl implements NotificacionesService {
         }
         
          if(tipo.equals("CEDULA")){
-                noti = notificacionesRepository.findByIsActiveAndDesignatedToAndVerRealizadasAndClienteAndTipoGestionOrderByFechaCreacionAsc(false, usu.getIdUsuario(), "HIDE", sede, "TAREA");
+                noti = notificacionesRepository.findByIsActiveAndDesignatedToAndVerRealizadasAndClienteContainingAndTipoGestionOrderByFechaCreacionAsc(false, usu.getIdUsuario(), "HIDE", sede, "TAREA");
             }
         
         return noti;
