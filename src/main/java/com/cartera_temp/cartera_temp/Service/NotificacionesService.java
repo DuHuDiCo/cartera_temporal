@@ -5,24 +5,26 @@ package com.cartera_temp.cartera_temp.Service;
 import com.cartera_temp.cartera_temp.Dtos.NotificacionRequest;
 import com.cartera_temp.cartera_temp.Models.Notificaciones;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface NotificacionesService {
 
     public Notificaciones crearNotificaciones(Notificaciones notificaciones);
     
-    public List<Notificaciones> getNotificacionesAscendente(String username);
+    public  Page<Notificaciones> getNotificacionesAscendente(String username, Pageable pageble);
     
-    public List<Notificaciones> getNotificacionesVencidasAscendente(String username);
+    public  Page<Notificaciones> getNotificacionesVencidasAscendente(String username, Pageable pageble);
     
     public boolean desactivateNotificacion( NotificacionRequest notificacionRequest);
     
     public boolean hideNotificationChecked(Long idNotificacion);
     
-    public List<Notificaciones> getRealizadas(String username);
+    public  Page<Notificaciones> getRealizadas(String username, Pageable pageble);
     
     public Notificaciones getById(Long id);
     
-    public List<Notificaciones> findBySede(String sede,  String username, String tipo);
-    public List<Notificaciones> findBySedeAll(String sede,  String username , String tipo);
-    List<Notificaciones> findBySedeRealizadas(String sede, String username, String tipo) ;
+    public  Page<Notificaciones> findBySede(String sede,  String username, String tipo, Pageable pageble);
+    public  Page<Notificaciones> findBySedeAll(String sede,  String username , String tipo, Pageable pageble);
+     Page<Notificaciones> findBySedeRealizadas(String sede, String username, String tipo, Pageable pageble) ;
 }

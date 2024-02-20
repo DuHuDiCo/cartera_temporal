@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -46,29 +48,29 @@ public class NotificacionesServiceImpl implements NotificacionesService {
     }
 
     @Override
-    public List<Notificaciones> getNotificacionesAscendente(String username) {
+    public  Page<Notificaciones> getNotificacionesAscendente(String username, Pageable pageble) {
 
         Usuario user = usuarioClient.getUserByUsername(username);
         if (Objects.isNull(user)) {
             return null;
         }
 
-        List<Notificaciones> notiFind = notificacionesRepository.obtenerTodasNotificaciones(true, user.getIdUsuario(), "VER");
+       Page<Notificaciones> notiFind = notificacionesRepository.obtenerTodasNotificaciones(true, user.getIdUsuario(), "VER", pageble);
         return notiFind;
 
     }
 
     @Override
-    public List<Notificaciones> getNotificacionesVencidasAscendente(String username) {
+    public Page<Notificaciones> getNotificacionesVencidasAscendente(String username, Pageable pageable) {
 
         Usuario user = usuarioClient.getUserByUsername(username);
         if (Objects.isNull(user)) {
             return null;
         }
 
-        List<Notificaciones> notiFind = new ArrayList<>();
+         Page<Notificaciones> notiFind = null;
         try {
-            notiFind = notificacionesRepository.findByIsActiveAndDesignatedToAndVerRealizadasAndFechaFinalizacionBefore(true, user.getIdUsuario(), "VER", Functions.obtenerFechaYhora());
+            notiFind = notificacionesRepository.findByIsActiveAndDesignatedToAndVerRealizadasAndFechaFinalizacionBefore(true, user.getIdUsuario(), "VER", Functions.obtenerFechaYhora(), pageable);
         } catch (ParseException ex) {
             Logger.getLogger(NotificacionesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -129,7 +131,7 @@ public class NotificacionesServiceImpl implements NotificacionesService {
     }
 
     @Override
-    public List<Notificaciones> getRealizadas(String username) {
+    public  Page<Notificaciones> getRealizadas(String username, Pageable  pageable) {
 
         if (username == "" || username == null) {
             return null;
@@ -140,7 +142,7 @@ public class NotificacionesServiceImpl implements NotificacionesService {
             return null;
         }
 
-        List<Notificaciones> noti = notificacionesRepository.findByIsActiveAndDesignatedToAndVerRealizadasAndTipoGestionOrderByFechaCreacionAsc(false, usu.getIdUsuario(), "VER", "TAREA");
+        Page<Notificaciones> noti = notificacionesRepository.findByIsActiveAndDesignatedToAndVerRealizadasAndTipoGestionOrderByFechaCreacionAsc(false, usu.getIdUsuario(), "VER", "TAREA", pageable);
         return noti;
 
     }
@@ -151,20 +153,20 @@ public class NotificacionesServiceImpl implements NotificacionesService {
     }
 
     @Override
-    public List<Notificaciones> findBySede(String sede, String username, String tipo) {
+    public  Page<Notificaciones> findBySede(String sede, String username, String tipo, Pageable pageable) {
 
         Usuario user = usuarioClient.getUserByUsername(username);
         if (Objects.isNull(user)) {
             return null;
         }
 
-        List<Notificaciones> notificacionesBySede = new ArrayList<>();
+         Page<Notificaciones> notificacionesBySede = null;
         try {
             if(tipo.equals("CEDULA")){
-                notificacionesBySede = notificacionesRepository.findByIsActiveAndDesignatedToAndVerRealizadasAndFechaFinalizacionBeforeAndClienteContaining(true, user.getIdUsuario(), "VER", Functions.obtenerFechaYhora(), sede);
+                notificacionesBySede = notificacionesRepository.findByIsActiveAndDesignatedToAndVerRealizadasAndFechaFinalizacionBeforeAndClienteContaining(true, user.getIdUsuario(), "VER", Functions.obtenerFechaYhora(), sede, pageable);
             }
             if(tipo.equals("SEDE")){
-                notificacionesBySede = notificacionesRepository.findByIsActiveAndDesignatedToAndVerRealizadasAndFechaFinalizacionBeforeAndNumeroObligacionContaining(true, user.getIdUsuario(), "VER", Functions.obtenerFechaYhora(), sede);
+                notificacionesBySede = notificacionesRepository.findByIsActiveAndDesignatedToAndVerRealizadasAndFechaFinalizacionBeforeAndNumeroObligacionContaining(true, user.getIdUsuario(), "VER", Functions.obtenerFechaYhora(), sede, pageable);
             }
             
         } catch (ParseException ex) {
@@ -174,42 +176,42 @@ public class NotificacionesServiceImpl implements NotificacionesService {
     }
 
     @Override
-    public List<Notificaciones> findBySedeAll(String sede, String username, String tipo) {
+    public  Page<Notificaciones> findBySedeAll(String sede, String username, String tipo, Pageable pageable) {
 
         Usuario user = usuarioClient.getUserByUsername(username);
         if (Objects.isNull(user)) {
             return null;
         }
 
-        List<Notificaciones> notificacionesBySede = null;
+        Page<Notificaciones> notificacionesBySede = null;
         
         if(tipo.equals("SEDE")){
-           notificacionesBySede  = notificacionesRepository.findByIsActiveAndDesignatedToAndNumeroObligacionContaining(true, user.getIdUsuario(),sede);
+           notificacionesBySede  = notificacionesRepository.findByIsActiveAndDesignatedToAndNumeroObligacionContaining(true, user.getIdUsuario(),sede, pageable);
         }
         
          if(tipo.equals("CEDULA")){
-                notificacionesBySede = notificacionesRepository.findByIsActiveAndDesignatedToAndClienteContaining(true, user.getIdUsuario(), sede);
+                notificacionesBySede = notificacionesRepository.findByIsActiveAndDesignatedToAndClienteContaining(true, user.getIdUsuario(), sede, pageable);
             }
 
         return notificacionesBySede;
     }
 
     @Override
-    public List<Notificaciones> findBySedeRealizadas(String sede, String username, String tipo) {
+    public  Page<Notificaciones> findBySedeRealizadas(String sede, String username, String tipo, Pageable pageable) {
 
         Usuario usu = usuarioClient.getUserByUsername(username);
         if (Objects.isNull(usu)) {
             return null;
         }
 
-        List<Notificaciones> noti = null;
+         Page<Notificaciones> noti= null;
 
          if(tipo.equals("SEDE")){
-           noti  = notificacionesRepository.findByIsActiveAndDesignatedToAndVerRealizadasAndNumeroObligacionContainingAndTipoGestionOrderByFechaCreacionAsc(false, usu.getIdUsuario(), "VER", sede,"TAREA");
+           noti  = notificacionesRepository.findByIsActiveAndDesignatedToAndVerRealizadasAndNumeroObligacionContainingAndTipoGestionOrderByFechaCreacionAsc(false, usu.getIdUsuario(), "VER", sede,"TAREA", pageable);
         }
         
          if(tipo.equals("CEDULA")){
-                noti = notificacionesRepository.findByIsActiveAndDesignatedToAndVerRealizadasAndClienteContainingAndTipoGestionOrderByFechaCreacionAsc(false, usu.getIdUsuario(), "VER", sede, "TAREA");
+                noti = notificacionesRepository.findByIsActiveAndDesignatedToAndVerRealizadasAndClienteContainingAndTipoGestionOrderByFechaCreacionAsc(false, usu.getIdUsuario(), "VER", sede, "TAREA", pageable);
             }
         
         return noti;

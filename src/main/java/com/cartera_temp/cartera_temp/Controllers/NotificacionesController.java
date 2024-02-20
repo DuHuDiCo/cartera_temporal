@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Objects;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -28,14 +30,14 @@ public class NotificacionesController {
     }
     
     @GetMapping("/getAllNotificaciones")
-    public ResponseEntity<List<Notificaciones>> obtenerNotificacionesByAsignated(@RequestParam(name = "username") String username){
-        List<Notificaciones> notificaciones = notificacionesService.getNotificacionesAscendente(username);
+    public ResponseEntity<Page<Notificaciones>> obtenerNotificacionesByAsignated(@RequestParam(name = "username") String username,@RequestParam(defaultValue = "0", name = "page") int page, @RequestParam(defaultValue = "10", name = "size") int size ){
+       Page<Notificaciones> notificaciones = notificacionesService.getNotificacionesAscendente(username,PageRequest.of(page, size));
         return ResponseEntity.ok(notificaciones);
     }
     
     @GetMapping("/getAllNotificacionesVencidas")
-    public ResponseEntity<List<Notificaciones>> obtenerNotificacionesVencidasByAsignated(@RequestParam(name = "username") String username){
-        List<Notificaciones> notificaciones = notificacionesService.getNotificacionesVencidasAscendente(username);
+    public ResponseEntity<Page<Notificaciones>> obtenerNotificacionesVencidasByAsignated(@RequestParam(name = "username") String username,@RequestParam(defaultValue = "0", name = "page") int page, @RequestParam(defaultValue = "10", name = "size") int size ){
+        Page<Notificaciones> notificaciones = notificacionesService.getNotificacionesVencidasAscendente(username,PageRequest.of(page, size));
         return ResponseEntity.ok(notificaciones);
     }
     
@@ -58,26 +60,26 @@ public class NotificacionesController {
     }
     
     @GetMapping("/getAllNotificacionesRealizadas")
-    public ResponseEntity<List<Notificaciones>> obtenerNotificacionesRealizadasByAsignated(@RequestParam(name = "username") String username){
-        List<Notificaciones> notificaciones = notificacionesService.getRealizadas(username);
+    public ResponseEntity<Page<Notificaciones>> obtenerNotificacionesRealizadasByAsignated(@RequestParam(name = "username") String username, @RequestParam(defaultValue = "0", name = "page") int page, @RequestParam(defaultValue = "10", name = "size") int size ){
+        Page<Notificaciones> notificaciones = notificacionesService.getRealizadas(username, PageRequest.of(page, size));
         return ResponseEntity.ok(notificaciones);
     }
     
     @GetMapping("/bySedeVencidas")
-    public ResponseEntity<List<Notificaciones>> obtenerPorSede(@RequestParam(name = "sede") String sede, @RequestParam(name = "username") String username, @RequestParam(name = "tipo") String tipo){
-        List<Notificaciones> notificaciones = notificacionesService.findBySede(sede, username,tipo);
+    public ResponseEntity<Page<Notificaciones>> obtenerPorSede(@RequestParam(name = "sede") String sede, @RequestParam(name = "username") String username, @RequestParam(name = "tipo") String tipo, @RequestParam(defaultValue = "0", name = "page") int page, @RequestParam(defaultValue = "10", name = "size") int size ){
+        Page<Notificaciones> notificaciones = notificacionesService.findBySede(sede, username,tipo,PageRequest.of(page, size));
         return ResponseEntity.ok(notificaciones);
     }
     
     @GetMapping("/bySedeAll")
-    public ResponseEntity<List<Notificaciones>> obtenerPorSedeAll(@RequestParam(name = "sede") String sede, @RequestParam(name = "username") String username, @RequestParam(name = "tipo") String tipo){
-        List<Notificaciones> notificaciones = notificacionesService.findBySedeAll(sede, username, tipo);
+    public ResponseEntity<Page<Notificaciones>> obtenerPorSedeAll(@RequestParam(name = "sede") String sede, @RequestParam(name = "username") String username, @RequestParam(name = "tipo") String tipo, @RequestParam(defaultValue = "0", name = "page") int page, @RequestParam(defaultValue = "10", name = "size") int size ){
+        Page<Notificaciones> notificaciones = notificacionesService.findBySedeAll(sede, username, tipo, PageRequest.of(page, size));
         return ResponseEntity.ok(notificaciones);
     }
     
     @GetMapping("/bySedeRealizadas")
-    public ResponseEntity<List<Notificaciones>> obtenerPorSedeRealizadas(@RequestParam(name = "sede") String sede, @RequestParam(name = "username") String username, @RequestParam(name = "tipo") String tipo){
-        List<Notificaciones> notificaciones = notificacionesService.findBySedeRealizadas(sede, username, tipo);
+    public ResponseEntity<Page<Notificaciones>> obtenerPorSedeRealizadas(@RequestParam(name = "sede") String sede, @RequestParam(name = "username") String username, @RequestParam(name = "tipo") String tipo,@RequestParam(defaultValue = "0", name = "page") int page, @RequestParam(defaultValue = "10", name = "size") int size ){
+        Page<Notificaciones> notificaciones = notificacionesService.findBySedeRealizadas(sede, username, tipo,PageRequest.of(page, size));
         return ResponseEntity.ok(notificaciones);
     }
 
