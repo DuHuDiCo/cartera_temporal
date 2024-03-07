@@ -38,6 +38,7 @@ import java.io.IOException;
 import java.net.http.HttpRequest;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -504,7 +505,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
                     } else {
                         cuentasPorCobrarResponse.setDiasVencidos(diasVecidos);
                     }
-                    cuentasPorCobrarResponse.setClientes(clientes);
+                    cuentasPorCobrarResponse.setClientes(Arrays.asList(cliente));
                     cuentasPorCobrarResponse.setTiposVencimiento(cuentasPorCobrar.getTiposVencimiento());
 
                     AsesorCarteraResponse asesor = new AsesorCarteraResponse();
