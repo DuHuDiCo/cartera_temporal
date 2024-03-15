@@ -51,19 +51,14 @@ public class FiltrosServiceImpl implements FiltrosService {
         List<String> sedes = cuentasPorCobrarRepository.sedesByUsuario(asesor.getIdAsesorCartera());
         items.setSedes(sedes);
         
-        List<TiposVencimiento> vencimientos = cuentasPorCobrarRepository.vencimientosByUsuario(asesor.getIdAsesorCartera());
-       List<String> venciStrings = new ArrayList<>();
-        vencimientos.forEach(ven->{
-            venciStrings.add(ven.getTipoVencimiento());
-        });
+        
+       List<String> venciStrings =cuentasPorCobrarRepository.vencimientosByUsuario(asesor.getIdAsesorCartera()); 
+        
         items.setVencimientos(venciStrings);
         
         
-        List<String> clasificacionesString = new ArrayList<>();
-        List<ClasificacionJuridica> clasificaciones = cuentasPorCobrarRepository.clasificacionJuridicaByUsuario(asesor.getIdAsesorCartera());
-         clasificaciones.forEach(ven->{
-            clasificacionesString.add(ven.getClasificacionJuridica());
-        });
+        List<String> clasificacionesString =  cuentasPorCobrarRepository.clasificacionJuridicaByUsuario(asesor.getIdAsesorCartera());
+     
          items.setClasificacionJuridica(venciStrings);
         return items;
     }

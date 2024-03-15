@@ -49,10 +49,10 @@ public interface CuentasPorCobrarRepository extends JpaRepository<CuentasPorCobr
     @Query(value = "SELECT DISTINCT sede.sede FROM `cuentas_por_cobrar` INNER JOIN sede ON cuentas_por_cobrar.sede_id = sede.id_sede WHERE cuentas_por_cobrar.asesor_cartera_id = :idAsesor ORDER BY sede.sede ASC", nativeQuery = true)
     List<String> sedesByUsuario(@Param("idAsesor")Long idAsesor);
     
-    @Query(value = "SELECT DISTINCT tipos_vencimiento.* FROM `cuentas_por_cobrar` INNER JOIN tipos_vencimiento ON cuentas_por_cobrar.tipo_vencimiento_id = tipos_vencimiento.id_tipo_vencimiento WHERE cuentas_por_cobrar.asesor_cartera_id = :idAsesor ORDER BY tipos_vencimiento.id_tipo_vencimiento ASC", nativeQuery = true)
-    List<TiposVencimiento> vencimientosByUsuario(@Param("idAsesor")Long idAsesor);
+    @Query(value = "SELECT DISTINCT tipos_vencimiento.tipo_vencimiento FROM `cuentas_por_cobrar` INNER JOIN tipos_vencimiento ON cuentas_por_cobrar.tipo_vencimiento_id = tipos_vencimiento.id_tipo_vencimiento WHERE cuentas_por_cobrar.asesor_cartera_id = :idAsesor ORDER BY tipos_vencimiento.tipo_vencimiento ASC", nativeQuery = true)
+    List<String> vencimientosByUsuario(@Param("idAsesor")Long idAsesor);
     
     
-    @Query(value = "SELECT DISTINCT clasificacion_juridica.* FROM `cuentas_por_cobrar` INNER JOIN clasificacion_juridica ON cuentas_por_cobrar.clasificacion_juridica_id = clasificacion_juridica.id_clasificacion_juridica WHERE cuentas_por_cobrar.asesor_cartera_id = :idAsesor ORDER BY clasificacion_juridica.id_clasificacion_juridica ASC", nativeQuery = true)
-    List<ClasificacionJuridica> clasificacionJuridicaByUsuario(@Param("idAsesor")Long idAsesor);
+    @Query(value = "SELECT DISTINCT clasificacion_juridica.clasificacion_juridica FROM `cuentas_por_cobrar` INNER JOIN clasificacion_juridica ON cuentas_por_cobrar.clasificacion_juridica_id = clasificacion_juridica.id_clasificacion_juridica WHERE cuentas_por_cobrar.asesor_cartera_id = :idAsesor ORDER BY clasificacion_juridica.clasificacion_juridica ASC", nativeQuery = true)
+    List<String> clasificacionJuridicaByUsuario(@Param("idAsesor")Long idAsesor);
 }
