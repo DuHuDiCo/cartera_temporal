@@ -3,7 +3,9 @@
 package com.cartera_temp.cartera_temp.repository;
 
 import com.cartera_temp.cartera_temp.Models.AsesorCartera;
+import com.cartera_temp.cartera_temp.Models.ClasificacionJuridica;
 import com.cartera_temp.cartera_temp.Models.CuentasPorCobrar;
+import com.cartera_temp.cartera_temp.Models.TiposVencimiento;
 import java.util.Date;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -33,7 +35,7 @@ public interface CuentasPorCobrarRepository extends JpaRepository<CuentasPorCobr
     void reinicarIds();
     
     @Query(value = "SELECT * FROM cuentas_por_cobrar JOIN gestiones ON gestiones.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar JOIN clasificacion_gestion ON gestiones.clasificacion_gestion_id = clasificacion_gestion.id_clasificacion_gestion JOIN acuerdo_pago ON acuerdo_pago.id_clasificacion_gestion = clasificacion_gestion.id_clasificacion_gestion  WHERE acuerdo_pago.fecha_compromiso <= :fecha AND acuerdo_pago.is_active = true AND gestiones.id_asesor = :id_asesor",
-            countQuery = "SELECT * FROM cuentas_por_cobrar JOIN gestiones ON gestiones.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar JOIN clasificacion_gestion ON gestiones.clasificacion_gestion_id = clasificacion_gestion.id_clasificacion_gestion JOIN acuerdo_pago ON acuerdo_pago.id_clasificacion_gestion = clasificacion_gestion.id_clasificacion_gestion   WHERE acuerdo_pago.fecha_compromiso <= :fecha AND acuerdo_pago.is_active = true AND gestiones.id_asesor = :id_asesor", nativeQuery = true)
+            countQuery = "SELECT COUNT(*) FROM cuentas_por_cobrar JOIN gestiones ON gestiones.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar JOIN clasificacion_gestion ON gestiones.clasificacion_gestion_id = clasificacion_gestion.id_clasificacion_gestion JOIN acuerdo_pago ON acuerdo_pago.id_clasificacion_gestion = clasificacion_gestion.id_clasificacion_gestion   WHERE acuerdo_pago.fecha_compromiso <= :fecha AND acuerdo_pago.is_active = true AND gestiones.id_asesor = :id_asesor", nativeQuery = true)
     Page<CuentasPorCobrar> obtenerCuentasByFechaCompromiso(@Param("fecha")Date fecha, @Param("id_asesor") Long idAsesor, Pageable pageable);
 
     List<CuentasPorCobrar> findByAsesor(AsesorCartera asesor);
@@ -43,4 +45,14 @@ public interface CuentasPorCobrarRepository extends JpaRepository<CuentasPorCobr
     
         @Query(value = "SELECT * FROM cuentas_por_cobrar WHERE asesor_cartera_id = :idAsesor AND dias_vencidos > 0", nativeQuery = true)
     List<CuentasPorCobrar> gestionesAsignadasByAsesor(@Param("idAsesor")Long idAsesor);
+    
+    @Query(value = "SELECT DISTINCT sede.sede FROM `cuentas_por_cobrar` INNER JOIN sede ON cuentas_por_cobrar.sede_id = sede.id_sede WHERE cuentas_por_cobrar.asesor_cartera_id = :idAsesor ORDER BY sede.sede ASC", nativeQuery = true)
+    List<String> sedesByUsuario(@Param("idAsesor")Long idAsesor);
+    
+    @Query(value = "SELECT DISTINCT tipos_vencimiento.* FROM `cuentas_por_cobrar` INNER JOIN tipos_vencimiento ON cuentas_por_cobrar.tipo_vencimiento_id = tipos_vencimiento.id_tipo_vencimiento WHERE cuentas_por_cobrar.asesor_cartera_id = :idAsesor ORDER BY tipos_vencimiento.id_tipo_vencimiento ASC", nativeQuery = true)
+    List<TiposVencimiento> vencimientosByUsuario(@Param("idAsesor")Long idAsesor);
+    
+    
+    @Query(value = "SELECT DISTINCT clasificacion_juridica.* FROM `cuentas_por_cobrar` INNER JOIN clasificacion_juridica ON cuentas_por_cobrar.clasificacion_juridica_id = clasificacion_juridica.id_clasificacion_juridica WHERE cuentas_por_cobrar.asesor_cartera_id = :idAsesor ORDER BY clasificacion_juridica.id_clasificacion_juridica ASC", nativeQuery = true)
+    List<ClasificacionJuridica> clasificacionJuridicaByUsuario(@Param("idAsesor")Long idAsesor);
 }
