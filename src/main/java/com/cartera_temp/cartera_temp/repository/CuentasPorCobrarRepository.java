@@ -21,6 +21,11 @@ public interface CuentasPorCobrarRepository extends JpaRepository<CuentasPorCobr
     @Query(value = "SELECT * FROM `cuentas_por_cobrar` WHERE asesor_cartera_id = :id_asesor ORDER BY dias_vencidos DESC",
             countQuery = "SELECT COUNT(*) FROM `cuentas_por_cobrar` WHERE asesor_cartera_id = :id_asesor ORDER BY dias_vencidos DESC", nativeQuery = true)
     Page<CuentasPorCobrar> findByAsesorOrderByDiasVencidosDesc( @Param("id_asesor") Long idAsesor, Pageable pageable);
+    
+    
+      @Query(value = "SELECT * FROM `cuentas_por_cobrar`  ORDER BY dias_vencidos DESC",
+            countQuery = "SELECT COUNT(*) FROM `cuentas_por_cobrar` ORDER BY :order DESC", nativeQuery = true)
+    Page<CuentasPorCobrar> findByAll( @Param("order")String order, Pageable pageable);
 
     CuentasPorCobrar findByNumeroObligacion(String obligacion);
 
