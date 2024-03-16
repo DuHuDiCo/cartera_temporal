@@ -204,7 +204,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             return null;
         }
 
-        Page<CuentasPorCobrar> cuentas = cuentasPorCobrarRepository.findByAsesorOrderByDiasVencidosDesc(asesor, pageable);
+        Page<CuentasPorCobrar> cuentas = cuentasPorCobrarRepository.findByAsesorOrderByDiasVencidosDesc(asesor.getIdAsesorCartera(), pageable);
         List<CuentasPorCobrarResponse> cuentasResponse = new ArrayList<>();
 
         for (CuentasPorCobrar cuenta : cuentas.getContent()) {
