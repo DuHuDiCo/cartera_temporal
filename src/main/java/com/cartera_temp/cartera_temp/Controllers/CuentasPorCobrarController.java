@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Objects;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -49,7 +50,7 @@ public class CuentasPorCobrarController {
     
     @GetMapping("/cuentasCobrar")
     public ResponseEntity<Page<CuentasPorCobrarResponse>> listarCuentasCobrarByObligacion(@RequestParam(name = "username") String username, @RequestParam(defaultValue = "0", name = "page") int page, @RequestParam(defaultValue = "10", name = "size") int size , @RequestParam(defaultValue = "fecha_creacion", name = "fechaCreacion") String  order){
-        Page<CuentasPorCobrarResponse> cuentas = cuentasPorCobrarService.listarCuentasCobrarByAsesor(username,  PageRequest.of(page, size));
+        Page<CuentasPorCobrarResponse> cuentas = cuentasPorCobrarService.listarCuentasCobrarByAsesor(username,  PageRequest.of(page, size, Sort.by(order).ascending()));
         return ResponseEntity.ok(cuentas);
     }
     
