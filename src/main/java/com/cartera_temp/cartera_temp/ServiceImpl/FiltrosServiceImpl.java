@@ -59,7 +59,7 @@ public class FiltrosServiceImpl implements FiltrosService {
         
         List<String> clasificacionesString =  cuentasPorCobrarRepository.clasificacionJuridicaByUsuario(asesor.getIdAsesorCartera());
      
-         items.setClasificacionJuridica(venciStrings);
+         items.setClasificacionJuridica(clasificacionesString);
         return items;
     }
 
