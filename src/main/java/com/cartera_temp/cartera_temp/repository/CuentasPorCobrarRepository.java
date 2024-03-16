@@ -20,7 +20,7 @@ import org.springframework.data.repository.query.Param;
 @Repository
 public interface CuentasPorCobrarRepository extends JpaRepository<CuentasPorCobrar, Long>, JpaSpecificationExecutor<CuentasPorCobrar>{
     
-    Page<CuentasPorCobrar> findByAsesor(AsesorCartera asesor,  Pageable pageable);
+    Page<CuentasPorCobrar> findByAsesorOrderByDiasVencidosDesc(AsesorCartera asesor,  Pageable pageable);
     
     CuentasPorCobrar findByNumeroObligacion(String obligacion);
     
