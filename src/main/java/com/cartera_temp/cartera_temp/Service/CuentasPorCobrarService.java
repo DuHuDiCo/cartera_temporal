@@ -31,6 +31,6 @@ public interface CuentasPorCobrarService {
     
     public Page<CuentasPorCobrarResponse> filtrosCpcs(FiltroDto dto, Pageable pageable);
     
-    public Page<CuentasPorCobrarResponse> listarCuentasCobrar( Pageable pageable);
+    public Page<CuentasPorCobrarResponse> listarCuentasCobrar(String order,  Pageable pageable);
 
 }
