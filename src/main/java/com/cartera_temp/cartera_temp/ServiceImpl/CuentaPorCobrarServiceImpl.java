@@ -599,8 +599,8 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
     }
 
     @Override
-    public Page<CuentasPorCobrarResponse> listarCuentasCobrar(String order, Pageable pageable) {
-        Page<CuentasPorCobrar> pageCuentas = cuentasPorCobrarRepository.findByAll(order, pageable);
+    public Page<CuentasPorCobrarResponse> listarCuentasCobrar(Pageable pageable) {
+        Page<CuentasPorCobrar> pageCuentas = cuentasPorCobrarRepository.findByAll( pageable);
 
         List<CuentasPorCobrarResponse> cuentasResponse = new ArrayList<>();
 

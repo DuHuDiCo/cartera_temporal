@@ -98,7 +98,7 @@ public class CuentasPorCobrarController {
     
     @GetMapping("/cuentasCobrarAdmin")
     public ResponseEntity<Page<CuentasPorCobrarResponse>> listarCuentasCobrar(@RequestParam(defaultValue = "0", name = "page") int page, @RequestParam(defaultValue = "10", name = "size") int size , @RequestParam(defaultValue = "fecha_creacion", name = "fechaCreacion") String  order){
-        Page<CuentasPorCobrarResponse> cuentas = cuentasPorCobrarService.listarCuentasCobrar(order, PageRequest.of(page, size));
+        Page<CuentasPorCobrarResponse> cuentas = cuentasPorCobrarService.listarCuentasCobrar(PageRequest.of(page, size));
         return ResponseEntity.ok(cuentas);
     }
     
