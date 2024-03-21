@@ -53,11 +53,16 @@ public class CuentaPorCobrarSpecification {
                 predicates.add(root.get("tiposVencimiento").get("tipoVencimiento").in(filtro.getEdadVencimiento()));
             }
 
-            if ( Objects.nonNull(filtro.getClasificacionGestion())) {
-                
+            if (Objects.nonNull(filtro.getClasificacionGestion())) {
+
                 Join<CuentasPorCobrar, Gestiones> gestionesJoin = root.join("gestiones");
                 Join<Gestiones, ClasificacionGestion> clasificacionGestionJoin = gestionesJoin.join("clasificacionGestion");
-                predicates.add(criteriaBuilder.equal(clasificacionGestionJoin.get("clasificacion"), filtro.getClasificacionGestion().getTipoClasificacion()));
+                Join<Gestiones, Tarea> tareaJoin = criteriaBuilder.treat(clasificacionGestionJoin, Tarea.class);
+                Join<Tarea, NombresClasificacion> nombresClasificacionJoin = tareaJoin.join("nombresClasificacion");
+                predicates.add(criteriaBuilder.isTrue(tareaJoin.get("isActive")));
+                predicates.add(criteriaBuilder.equal(nombresClasificacionJoin.get("nombre"), filtro.getClasificacionGestion().getNombreClasificacion()));
+
+               
 
 //                if (filtro.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.ACUERDODEPAGO.getDato())) {
 //                    System.out.println("ACUERDO");
