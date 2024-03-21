@@ -1,6 +1,7 @@
 package com.cartera_temp.cartera_temp.Utils;
 
 import GestionesDataDto.enums.TipoClasificacion;
+import com.cartera_temp.cartera_temp.Dtos.ClasificacionGestionFiltro;
 import com.cartera_temp.cartera_temp.Dtos.FiltroDto;
 import com.cartera_temp.cartera_temp.Models.AcuerdoPago;
 import com.cartera_temp.cartera_temp.Models.ClasificacionGestion;
@@ -9,13 +10,20 @@ import com.cartera_temp.cartera_temp.Models.Gestiones;
 import com.cartera_temp.cartera_temp.Models.NombresClasificacion;
 import com.cartera_temp.cartera_temp.Models.Nota;
 import com.cartera_temp.cartera_temp.Models.Tarea;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.util.CollectionUtils;
 
 public class CuentaPorCobrarSpecification {
 
