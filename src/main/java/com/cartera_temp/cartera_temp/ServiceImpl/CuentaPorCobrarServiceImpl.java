@@ -579,7 +579,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
 //        List<CuentasPorCobrar> cpc = cuentasPorCobrarRepository.findAll(spec);
         List<CuentasPorCobrarResponse> cpcRes = new ArrayList<>();
         ModelMapper map = new ModelMapper();
-        for (CuentasPorCobrar cuentasPorCobrar : cuentas) {
+        for (CuentasPorCobrar cuentasPorCobrar : cpc.getContent()) {
 
             int diasVecidos = Functions.diferenciaFechas(cuentasPorCobrar.getFechaVencimiento());
             CuentasPorCobrarResponse cpcResFor = map.map(cuentasPorCobrar, CuentasPorCobrarResponse.class);
