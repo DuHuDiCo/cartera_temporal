@@ -70,7 +70,7 @@ public class CuentaPorCobrarSpecification {
                 if (filtro.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.NOTA.getDato())) {
                     System.out.println("NOTA");
                     Join<Gestiones, Nota> notaJoin = criteriaBuilder.treat(clasificacionGestionJoin, Nota.class);
-                    Join<AcuerdoPago, NombresClasificacion> nombresClasificacionJoin = notaJoin.join("nombresClasificacion");
+                    Join<Nota, NombresClasificacion> nombresClasificacionJoin = notaJoin.join("nombresClasificacion");
 
                     predicates.add(criteriaBuilder.equal(clasificacionGestionJoin.get("clasificacion"), TipoClasificacion.NOTA.getDato()));
                     predicates.add(criteriaBuilder.equal(nombresClasificacionJoin.get("nombre"), filtro.getClasificacionGestion().getNombreClasificacion()));
@@ -80,7 +80,7 @@ public class CuentaPorCobrarSpecification {
                     System.out.println("TAREA");
                     System.out.println(filtro.getClasificacionGestion().getNombreClasificacion());
                     Join<Gestiones, Tarea> tareaJoin = criteriaBuilder.treat(clasificacionGestionJoin, Tarea.class);
-                    Join<AcuerdoPago, NombresClasificacion> nombresClasificacionJoin = tareaJoin.join("nombresClasificacion");
+                    Join<Tarea, NombresClasificacion> nombresClasificacionJoin = tareaJoin.join("nombresClasificacion");
 
                     predicates.add(criteriaBuilder.isTrue(tareaJoin.get("isActive")));
                     predicates.add(criteriaBuilder.equal(nombresClasificacionJoin.get("nombre"), filtro.getClasificacionGestion().getNombreClasificacion()));
