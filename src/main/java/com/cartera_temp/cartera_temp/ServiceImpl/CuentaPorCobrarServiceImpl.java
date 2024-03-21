@@ -603,7 +603,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
 
         }
 
-        Page<CuentasPorCobrarResponse> cuentasPage = new PageImpl(cpcRes, pageable, cuentas.size());
+        Page<CuentasPorCobrarResponse> cuentasPage = new PageImpl(cpcRes, pageable, cpc.getTotalElements());
 
         return cuentasPage;
 
