@@ -551,8 +551,9 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             }
 
             cpc = cuentasPorCobrarRepository.findAll(spec, pageable);
+            var list = CollectionUtils.isEmpty(cpc.getContent()) ? null : cpc.getContent().size();
+            System.out.println("Lista---" + list);
 
-          
         } else {
 
             Usuario usuFiltro = usuarioClient.getUserByUsername(dto.getUsername());
@@ -567,8 +568,9 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
 
             try {
                 cpc = cuentasPorCobrarRepository.obtenerCuentasByFechaCompromiso(Functions.stringToDateAndFormat(dto.getFechaCompromisoInicio()), asesor.getIdAsesorCartera(), pageable);
-                
-                
+                var list = CollectionUtils.isEmpty(cpc.getContent()) ? null : cpc.getContent().size();
+                System.out.println("Lista---" + list);
+
             } catch (ParseException ex) {
                 Logger.getLogger(CuentaPorCobrarServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
