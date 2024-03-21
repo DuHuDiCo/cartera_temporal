@@ -23,7 +23,7 @@ public class FiltroDto {
     private Date fechaGestionFin;
     private String fechaCompromisoInicio;
     private String fechaCompromisoFin;
-    private List<ClasificacionGestionFiltro> clasificacionGestion = new ArrayList<>();
+    private ClasificacionGestionFiltro clasificacionGestion;
 
     public FiltroDto() {
     }
@@ -156,14 +156,15 @@ public class FiltroDto {
         this.isActive = isActive;
     }
 
-    public List<ClasificacionGestionFiltro> getClasificacionGestion() {
+    public ClasificacionGestionFiltro getClasificacionGestion() {
         return clasificacionGestion;
     }
 
-    public void setClasificacionGestion(List<ClasificacionGestionFiltro> clasificacionGestion) {
+    public void setClasificacionGestion(ClasificacionGestionFiltro clasificacionGestion) {
         this.clasificacionGestion = clasificacionGestion;
     }
 
+  
    
     
     

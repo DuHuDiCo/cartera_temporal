@@ -552,14 +552,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
 
             cpc = cuentasPorCobrarRepository.findAll(spec, pageable);
 
-           if (dto.getClasificacionGestion().size() > 0 && !CollectionUtils.isEmpty(cpc.getContent())) {
-                    for (CuentasPorCobrar cuentasPorCobrar : cpc.getContent()) {
-                        for (ClasificacionGestionFiltro clasificacionGestionFiltro : dto.getClasificacionGestion()) {
-                            cuentas.add( filtrarLista(cuentasPorCobrar, clasificacionGestionFiltro));
-                        }
-                    }
-                }
-
+          
         } else {
 
             Usuario usuFiltro = usuarioClient.getUserByUsername(dto.getUsername());
@@ -575,13 +568,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             try {
                 cpc = cuentasPorCobrarRepository.obtenerCuentasByFechaCompromiso(Functions.stringToDateAndFormat(dto.getFechaCompromisoInicio()), asesor.getIdAsesorCartera(), pageable);
                 
-                if (dto.getClasificacionGestion().size() > 0 &&  !CollectionUtils.isEmpty(cpc.getContent())) {
-                    for (CuentasPorCobrar cuentasPorCobrar : cpc.getContent()) {
-                        for (ClasificacionGestionFiltro clasificacionGestionFiltro : dto.getClasificacionGestion()) {
-                             cuentas.add( filtrarLista(cuentasPorCobrar, clasificacionGestionFiltro));
-                        }
-                    }
-                }
+                
             } catch (ParseException ex) {
                 Logger.getLogger(CuentaPorCobrarServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
