@@ -551,7 +551,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             }
 
             cpc = cuentasPorCobrarRepository.findAll(spec, pageable);
-            var list = CollectionUtils.isEmpty(cpc.getContent()) ? null : cpc.getContent().size();
+            var list = CollectionUtils.isEmpty(cpc.getContent()) ? null : cpc.getTotalElements();
             System.out.println("Lista---" + list);
 
         } else {
