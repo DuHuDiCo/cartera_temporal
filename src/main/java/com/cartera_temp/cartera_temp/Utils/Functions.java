@@ -246,16 +246,22 @@ public class Functions {
     public static boolean validarFechaPertenece(Date fecha){
         
         Date fechaActual = new Date();
+
+        // Obtener el primer día del mes actual
+        Calendar calInicio = Calendar.getInstance();
+        calInicio.setTime(fechaActual);
+        calInicio.set(Calendar.DAY_OF_MONTH, 1);
+        Date fechaInicioRango = calInicio.getTime();
+
+        // Obtener el último día del mes actual
+        Calendar calFin = Calendar.getInstance();
+        calFin.setTime(fechaActual);
+        calFin.set(Calendar.DAY_OF_MONTH, calFin.getActualMaximum(Calendar.DAY_OF_MONTH));
+        Date fechaFinRango = calFin.getTime();
+
         
-        Calendar calActual = Calendar.getInstance();
-        Calendar calDada = Calendar.getInstance();
-        
-        calActual.setTime(fechaActual);
-        calDada.setTime(fecha);
-        
-        if(calDada.get(Calendar.MONTH) == calActual.get(Calendar.MONTH) && calDada.get(Calendar.YEAR) ==calActual.get(Calendar.YEAR)){
-            return true;
-        }
+         boolean estaEnRango = fecha.after(fechaInicioRango) && fecha.before(fechaFinRango) ||
+                fecha.equals(fechaInicioRango) || fecha.equals(fechaFinRango);
         
         return false;
     }

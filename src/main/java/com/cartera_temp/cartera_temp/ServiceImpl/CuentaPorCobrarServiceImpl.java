@@ -1,6 +1,8 @@
 package com.cartera_temp.cartera_temp.ServiceImpl;
 
+import GestionesDataDto.enums.TipoClasificacion;
 import com.cartera_temp.cartera_temp.Dtos.AsesorCarteraResponse;
+import com.cartera_temp.cartera_temp.Dtos.ClasificacionGestionFiltro;
 import com.cartera_temp.cartera_temp.Dtos.ClientesDto;
 import com.cartera_temp.cartera_temp.Dtos.CuentaToCalculateDto;
 import com.cartera_temp.cartera_temp.Dtos.CuentasPorCobrarDto;
@@ -16,7 +18,9 @@ import com.cartera_temp.cartera_temp.Models.CondicionEspecial;
 import com.cartera_temp.cartera_temp.Models.CuentasPorCobrar;
 import com.cartera_temp.cartera_temp.Models.Cuotas;
 import com.cartera_temp.cartera_temp.Models.Gestiones;
+import com.cartera_temp.cartera_temp.Models.Nota;
 import com.cartera_temp.cartera_temp.Models.Sede;
+import com.cartera_temp.cartera_temp.Models.Tarea;
 import com.cartera_temp.cartera_temp.Models.TiposVencimiento;
 import com.cartera_temp.cartera_temp.ModelsClients.Usuario;
 import com.cartera_temp.cartera_temp.Service.AsesorCarteraService;
@@ -226,7 +230,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             c.setGestion(cuenta.getGestiones());
 
             c.setGestion(cuenta.getGestiones());
-            
+
             String obligacion = cuenta.getDocumentoCliente().concat(cuenta.getSede().getSede()).concat(cuenta.getBanco().getBanco());
 
             List<ClientesDto> clientes = clientesClient.buscarClientesByNumeroObligacion(obligacion, token);
@@ -302,7 +306,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
 
         cpcRes = map.map(cpc, CuentasPorCobrarResponse.class);
         cpcRes.setDiasVencidos(diasVecidos);
-        
+
         String obligacion = cpc.getDocumentoCliente().concat(cpc.getSede().getSede()).concat(cpc.getBanco().getBanco());
         List<ClientesDto> cliente = clientesClient.buscarClientesByNumeroObligacion(obligacion, token);
 
@@ -532,8 +536,9 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
 
     @Override
     public Page<CuentasPorCobrarResponse> filtrosCpcs(FiltroDto dto, Pageable pageable) {
-        
-         Page<CuentasPorCobrar> cpc = null;
+
+        Page<CuentasPorCobrar> cpc = null;
+        List<CuentasPorCobrar> cuentas = new ArrayList<>();
 
         if (Objects.isNull(dto.getFechaCompromisoInicio())) {
             Usuario usuFiltro = new Usuario();
@@ -545,30 +550,47 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
                 spec = CuentaPorCobrarSpecification.filtrarCuentas(dto, 0L);
             }
 
-           cpc = cuentasPorCobrarRepository.findAll(spec, pageable);
-        }else{
-            
-             Usuario usuFiltro = usuarioClient.getUserByUsername(dto.getUsername());
-             if(Objects.isNull(usuFiltro)){
-                 return null;
-             }
-             
-             AsesorCartera asesor = asesorCarteraRepository.findByUsuarioId(usuFiltro.getIdUsuario());
-             if(Objects.isNull(asesor)){
-                 return null;
-             }
-            
-             try {
-                 cpc = cuentasPorCobrarRepository.obtenerCuentasByFechaCompromiso(Functions.stringToDateAndFormat(dto.getFechaCompromisoInicio()), asesor.getIdAsesorCartera(),pageable);
-             } catch (ParseException ex) {
-                 Logger.getLogger(CuentaPorCobrarServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-             }
+            cpc = cuentasPorCobrarRepository.findAll(spec, pageable);
+
+           if (dto.getClasificacionGestion().size() > 0) {
+                    for (CuentasPorCobrar cuentasPorCobrar : cpc) {
+                        for (ClasificacionGestionFiltro clasificacionGestionFiltro : dto.getClasificacionGestion()) {
+                            cuentas.add( filtrarLista(cuentasPorCobrar, clasificacionGestionFiltro));
+                        }
+                    }
+                }
+
+        } else {
+
+            Usuario usuFiltro = usuarioClient.getUserByUsername(dto.getUsername());
+            if (Objects.isNull(usuFiltro)) {
+                return null;
+            }
+
+            AsesorCartera asesor = asesorCarteraRepository.findByUsuarioId(usuFiltro.getIdUsuario());
+            if (Objects.isNull(asesor)) {
+                return null;
+            }
+
+            try {
+                cpc = cuentasPorCobrarRepository.obtenerCuentasByFechaCompromiso(Functions.stringToDateAndFormat(dto.getFechaCompromisoInicio()), asesor.getIdAsesorCartera(), pageable);
+                
+                if (dto.getClasificacionGestion().size() > 0) {
+                    for (CuentasPorCobrar cuentasPorCobrar : cpc) {
+                        for (ClasificacionGestionFiltro clasificacionGestionFiltro : dto.getClasificacionGestion()) {
+                             cuentas.add( filtrarLista(cuentasPorCobrar, clasificacionGestionFiltro));
+                        }
+                    }
+                }
+            } catch (ParseException ex) {
+                Logger.getLogger(CuentaPorCobrarServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
 
 //        List<CuentasPorCobrar> cpc = cuentasPorCobrarRepository.findAll(spec);
         List<CuentasPorCobrarResponse> cpcRes = new ArrayList<>();
         ModelMapper map = new ModelMapper();
-        for (CuentasPorCobrar cuentasPorCobrar : cpc.getContent()) {
+        for (CuentasPorCobrar cuentasPorCobrar : cuentas) {
 
             int diasVecidos = Functions.diferenciaFechas(cuentasPorCobrar.getFechaVencimiento());
             CuentasPorCobrarResponse cpcResFor = map.map(cuentasPorCobrar, CuentasPorCobrarResponse.class);
@@ -592,7 +614,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
 
         }
 
-        Page<CuentasPorCobrarResponse> cuentasPage = new PageImpl(cpcRes, pageable, cpc.getTotalElements());
+        Page<CuentasPorCobrarResponse> cuentasPage = new PageImpl(cpcRes, pageable, cuentas.size());
 
         return cuentasPage;
 
@@ -600,7 +622,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
 
     @Override
     public Page<CuentasPorCobrarResponse> listarCuentasCobrar(Pageable pageable) {
-        Page<CuentasPorCobrar> pageCuentas = cuentasPorCobrarRepository.findByAll( pageable);
+        Page<CuentasPorCobrar> pageCuentas = cuentasPorCobrarRepository.findByAll(pageable);
 
         List<CuentasPorCobrarResponse> cuentasResponse = new ArrayList<>();
 
@@ -660,6 +682,51 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
         Page<CuentasPorCobrarResponse> cuentasPage = new PageImpl(cuentasResponse, pageable, pageCuentas.getTotalElements());
         return cuentasPage;
 
+    }
+
+    private CuentasPorCobrar filtrarLista(CuentasPorCobrar cuenta, ClasificacionGestionFiltro datosFiltro) {
+
+        List<Gestiones> gestiones = cuenta.getGestiones().stream().filter(ges -> ges.getClasificacionGestion().equals(datosFiltro.getTipoClasificacion()) && Functions.validarFechaPertenece(ges.getFechaGestion())).collect(Collectors.toList());
+
+        if (datosFiltro.getTipoClasificacion().equals(TipoClasificacion.ACUERDODEPAGO.getDato())) {
+            for (Gestiones gestione : gestiones) {
+                if (gestione.getClasificacionGestion() instanceof AcuerdoPago) {
+                    AcuerdoPago acuerdo = (AcuerdoPago) gestione.getClasificacionGestion();
+
+                    if (acuerdo.getNombresClasificacion().getNombre().toUpperCase().equals(datosFiltro.getNombreClasificacion().toUpperCase())) {
+                        return cuenta;
+                    }
+
+                }
+            }
+        }
+
+        if (datosFiltro.getTipoClasificacion().equals(TipoClasificacion.TAREA.getDato())) {
+            for (Gestiones gestione : gestiones) {
+                if (gestione.getClasificacionGestion() instanceof Tarea) {
+                    Tarea tarea = (Tarea) gestione.getClasificacionGestion();
+
+                    if (tarea.getNombresClasificacion().getNombre().toUpperCase().equals(datosFiltro.getNombreClasificacion().toUpperCase())) {
+                        return cuenta;
+                    }
+
+                }
+            }
+        }
+
+        if (datosFiltro.getTipoClasificacion().equals(TipoClasificacion.NOTA.getDato())) {
+            for (Gestiones gestione : gestiones) {
+                if (gestione.getClasificacionGestion() instanceof Nota) {
+                    Nota nota = (Nota) gestione.getClasificacionGestion();
+
+                    if (nota.getNombresClasificacion().getNombre().toUpperCase().equals(datosFiltro.getNombreClasificacion().toUpperCase())) {
+                        return cuenta;
+                    }
+
+                }
+            }
+        }
+        return null;
     }
 
 }
