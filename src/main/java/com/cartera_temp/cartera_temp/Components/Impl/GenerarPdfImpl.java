@@ -643,9 +643,9 @@ public class GenerarPdfImpl implements GenerarPdf {
 
         int pagoEfectivo = 0, pagoCheque = 0, pagoDebito = 0, pagoCredito = 0, adelantos = 0, consignacion = 0;
         int saldoTotalAcuerdo = dto.getAcuerdoTotal();
-        int saldoTotalCapital = dto.getCapitalTotal();
-        int saldoTotalHonorarios = dto.getHonorariosTotal();
-        int saldoTotalIntereses = dto.getInteresesTotal();
+        int saldoTotalCapital = (int) dto.getSaldoCapital();
+        int saldoTotalHonorarios =(int) dto.getSaldoHonorarios();
+        int saldoTotalIntereses =(int) dto.getSaldoInteresesMora();
 
         switch (tiposPago) {
             case "EFECTIVO":
