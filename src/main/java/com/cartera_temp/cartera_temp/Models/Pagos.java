@@ -23,6 +23,17 @@ public class Pagos {
     @Column(name = "valor_pago")
     private double valorPago;
 
+     @Column(name = "valor_capital")
+    private double valorCapital;
+     
+     @Column(name = "valor_intereses")
+    private double valorIntereses;
+     
+     
+    @Column(name = "valor_honorarios")
+    private double valorHonorarios;
+      
+    
     @Column(name = "fecha_pago")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaPago;
@@ -99,6 +110,30 @@ public class Pagos {
 
     public void setReciboPago(ReciboPago reciboPago) {
         this.reciboPago = reciboPago;
+    }
+
+    public double getValorCapital() {
+        return valorCapital;
+    }
+
+    public void setValorCapital(double valorCapital) {
+        this.valorCapital = valorCapital;
+    }
+
+    public double getValorIntereses() {
+        return valorIntereses;
+    }
+
+    public void setValorIntereses(double valorIntereses) {
+        this.valorIntereses = valorIntereses;
+    }
+
+    public double getValorHonorarios() {
+        return valorHonorarios;
+    }
+
+    public void setValorHonorarios(double valorHonorarios) {
+        this.valorHonorarios = valorHonorarios;
     }
     
     

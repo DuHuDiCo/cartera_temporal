@@ -39,11 +39,20 @@ public class Cuotas {
     @Column(name = "capital_cuota")
     private double capitalCuota;
     
+    @Column(name = "saldo_capital_cuota")
+    private double saldoCapitalCuota;
+    
     @Column(name = "honorarios" )
     private double honorarios;
     
+     @Column(name = "saldo_honorarios")
+    private double saldoHonorarios;
+    
     @Column(name = "interes_cuota")
     private double interesCuota;
+    
+    @Column(name = "saldo_interes_cuota")
+    private double salodInteresCuota;
     
     @Column(name = "cumplio")
     private boolean cumplio;
@@ -138,6 +147,30 @@ public class Cuotas {
 
     public void setPagos(Pagos pagos) {
         this.pagos = pagos;
+    }
+
+    public double getSaldoCapitalCuota() {
+        return saldoCapitalCuota;
+    }
+
+    public void setSaldoCapitalCuota(double saldoCapitalCuota) {
+        this.saldoCapitalCuota = saldoCapitalCuota;
+    }
+
+    public double getSaldoHonorarios() {
+        return saldoHonorarios;
+    }
+
+    public void setSaldoHonorarios(double saldoHonorarios) {
+        this.saldoHonorarios = saldoHonorarios;
+    }
+
+    public double getSalodInteresCuota() {
+        return salodInteresCuota;
+    }
+
+    public void setSalodInteresCuota(double salodInteresCuota) {
+        this.salodInteresCuota = salodInteresCuota;
     }
 
     

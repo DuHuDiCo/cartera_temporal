@@ -33,12 +33,24 @@ public class AcuerdoPago extends ClasificacionGestion {
 
     @Column(name = "valor_total_acuerdo")
     private double valorTotalAcuerdo;
+    
+    @Column(name = "valor_total_capital")
+    private double valorTotalCapital;
+    
+    @Column(name = "saldo_capital")
+    private double saldoCapital;
 
     @Column(name = "valor_intereses_mora")
     private double valorInteresesMora;
+    
+    @Column(name = "saldo_intereses_mora")
+    private double saldoInteresesMora;
 
     @Column(name = "honario_acuerdo")
     private double honorarioAcuerdo;
+    
+    @Column(name = "saldo_honorarios")
+    private double saldoHonorarios;
 
     @Column(name = "fecha_acuerdo")
     @Temporal(TemporalType.TIMESTAMP)
@@ -183,6 +195,38 @@ public class AcuerdoPago extends ClasificacionGestion {
 
     public void setIsCumpliendo(boolean isCumpliendo) {
         this.isCumpliendo = isCumpliendo;
+    }
+
+    public double getSaldoInteresesMora() {
+        return saldoInteresesMora;
+    }
+
+    public void setSaldoInteresesMora(double saldoInteresesMora) {
+        this.saldoInteresesMora = saldoInteresesMora;
+    }
+
+    public double getSaldoHonorarios() {
+        return saldoHonorarios;
+    }
+
+    public void setSaldoHonorarios(double saldoHonorarios) {
+        this.saldoHonorarios = saldoHonorarios;
+    }
+
+    public double getValorTotalCapital() {
+        return valorTotalCapital;
+    }
+
+    public void setValorTotalCapital(double valorTotalCapital) {
+        this.valorTotalCapital = valorTotalCapital;
+    }
+
+    public double getSaldoCapital() {
+        return saldoCapital;
+    }
+
+    public void setSaldoCapital(double saldoCapital) {
+        this.saldoCapital = saldoCapital;
     }
 
     

@@ -13,13 +13,15 @@ public class PagosCuotasDto {
     private int capitalTotal;
     private int acuerdoTotal;
     private int honorariosTotal;
+    private double saldoCapital;
+    private double saldoInteresesMora;
+    private double saldoHonorarios;
     private int interesesTotal;
     private String metodoPago;
     private String detalle;
     private boolean cumpliendo;
     private String username;
     private String nombreClasificacion;
-    
 
     public PagosCuotasDto() {
     }
@@ -47,7 +49,7 @@ public class PagosCuotasDto {
     public void setNumeroRecibo(String numeroRecibo) {
         this.numeroRecibo = numeroRecibo;
     }
-    
+
     public String getDetalle() {
         return detalle;
     }
@@ -135,7 +137,31 @@ public class PagosCuotasDto {
     public void setNombreClasificacion(String nombreClasificacion) {
         this.nombreClasificacion = nombreClasificacion;
     }
-    
+
+    public double getSaldoCapital() {
+        return saldoCapital;
+    }
+
+    public void setSaldoCapital(double saldoCapital) {
+        this.saldoCapital = saldoCapital;
+    }
+
+    public double getSaldoInteresesMora() {
+        return saldoInteresesMora;
+    }
+
+    public void setSaldoInteresesMora(double saldoInteresesMora) {
+        this.saldoInteresesMora = saldoInteresesMora;
+    }
+
+    public double getSaldoHonorarios() {
+        return saldoHonorarios;
+    }
+
+    public void setSaldoHonorarios(double saldoHonorarios) {
+        this.saldoHonorarios = saldoHonorarios;
+    }
+
     
     
 }

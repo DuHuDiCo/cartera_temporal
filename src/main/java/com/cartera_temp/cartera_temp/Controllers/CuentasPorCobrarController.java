@@ -19,6 +19,7 @@ import java.util.Objects;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -102,4 +103,6 @@ public class CuentasPorCobrarController {
         return ResponseEntity.ok(cuentas);
     }
     
+    
+     
 }

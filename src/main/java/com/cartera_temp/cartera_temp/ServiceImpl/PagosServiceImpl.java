@@ -119,6 +119,9 @@ public class PagosServiceImpl implements PagosService {
                 pago.setFechaPago(cuotasDto.getPagosDto().getFechaPago());
                 pago.setSaldoCuota(cuotasDto.getPagosDto().getSaldoCuota());
                 pago.setValorPago(cuotasDto.getPagosDto().getValorPago());
+                pago.setValorIntereses(cuotasDto.getPagosDto().getIntereses());
+                pago.setValorHonorarios(cuotasDto.getPagosDto().getHonorarios());
+                pago.setValorCapital( cuotasDto.getPagosDto().getCapital());
                 pago.setUsuarioId(usu.getIdUsuario());
                 pago.setDetalle(dto.getDetalle());
 
@@ -126,15 +129,22 @@ public class PagosServiceImpl implements PagosService {
 
                 acuPag.getCuotasList().get(i).setPagos(pago);
                 acuPag.getCuotasList().get(i).setCapitalCuota(cuotasDto.getCapitalCuota());
+                acuPag.getCuotasList().get(i).setSaldoCapitalCuota(cuotasDto.getSaldoCapital());
                 acuPag.getCuotasList().get(i).setHonorarios(cuotasDto.getHonorarios());
+                acuPag.getCuotasList().get(i).setSaldoHonorarios(cuotasDto.getSaldoHonorario());
                 acuPag.getCuotasList().get(i).setInteresCuota(cuotasDto.getInteresCuota());
-                acuPag.getCuotasList().get(i).setCumplio(true);
+                acuPag.getCuotasList().get(i).setSalodInteresCuota(cuotasDto.getSaldoIntereses());
+                acuPag.getCuotasList().get(i).setCumplio(cuotasDto.isCumplio());
 
             }
 
         }
 
+        acuPag.setValorTotalCapital(acuPag.getValorTotalAcuerdo() - acuPag.getValorInteresesMora() - acuPag.getHonorarioAcuerdo());
         acuPag.setIsCumpliendo(dto.isCumpliendo());
+        acuPag.setSaldoCapital(dto.getSaldoCapital());
+        acuPag.setSaldoHonorarios(dto.getSaldoHonorarios());
+        acuPag.setSaldoInteresesMora(dto.getSaldoInteresesMora());
         try {
             String base64 = generarPdf.generarReportePagoCuotas(dto);
 

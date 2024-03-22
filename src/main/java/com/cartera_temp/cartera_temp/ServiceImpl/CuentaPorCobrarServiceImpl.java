@@ -39,12 +39,9 @@ import com.cartera_temp.cartera_temp.repository.CondicionEspecialRepository;
 import com.cartera_temp.cartera_temp.repository.CuentasPorCobrarRepository;
 import com.cartera_temp.cartera_temp.repository.SedeRepository;
 import java.io.IOException;
-import java.net.http.HttpRequest;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
@@ -58,9 +55,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -717,5 +712,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
         }
         return null;
     }
+    
+    
 
 }

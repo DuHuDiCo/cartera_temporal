@@ -14,6 +14,8 @@ import org.springframework.data.repository.query.Param;
 public interface NotificacionesRepository extends JpaRepository<Notificaciones, Long> {
 
     Page<Notificaciones> findByDesignatedToAndFechaFinalizacionBetween(Long id, Date fechaInicio, Date fechaFin, Pageable pageable);
+    
+    Notificaciones findByGestionIdAndFechaCreacion(Long id, Date fecha);
 
     @Query(value = "SELECT * FROM notificaciones WHERE is_active = :isActive AND id_designated_to = :id AND ver_realizadas =:ver  ORDER BY fecha_creacion asc",
             countQuery = "SELECT COUNT(*) FROM notificaciones WHERE is_active = :isActive AND id_designated_to = :id AND ver_realizadas =:ver  ORDER BY fecha_creacion asc",

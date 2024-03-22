@@ -7,6 +7,9 @@ public class PagosDto {
     private double valorPago;
     private Date fechaPago;
     private double saldoCuota;
+    private double capital;
+    private double intereses;
+    private double honorarios;
 
     public PagosDto() {
     }
@@ -34,4 +37,30 @@ public class PagosDto {
     public void setSaldoCuota(double saldoCuota) {
         this.saldoCuota = saldoCuota;
     }
+
+    public double getCapital() {
+        return capital;
+    }
+
+    public void setCapital(double capital) {
+        this.capital = capital;
+    }
+
+    public double getIntereses() {
+        return intereses;
+    }
+
+    public void setIntereses(double intereses) {
+        this.intereses = intereses;
+    }
+
+    public double getHonorarios() {
+        return honorarios;
+    }
+
+    public void setHonorarios(double honorarios) {
+        this.honorarios = honorarios;
+    }
+    
+    
 }

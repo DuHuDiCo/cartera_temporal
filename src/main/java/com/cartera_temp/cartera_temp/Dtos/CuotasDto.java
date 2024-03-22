@@ -7,6 +7,9 @@ public class CuotasDto {
     private double valorCuota;
     private double capitalCuota;
     private double honorarios;
+    private double saldoCapital;
+    private double saldoHonorario;
+    private double saldoIntereses;
     private double interesCuota;
     private PagosDto pagosDto;
     private boolean cumplio;
@@ -76,6 +79,30 @@ public class CuotasDto {
 
     public void setPagosDto(PagosDto pagosDto) {
         this.pagosDto = pagosDto;
+    }
+
+    public double getSaldoCapital() {
+        return saldoCapital;
+    }
+
+    public void setSaldoCapital(double saldoCapital) {
+        this.saldoCapital = saldoCapital;
+    }
+
+    public double getSaldoHonorario() {
+        return saldoHonorario;
+    }
+
+    public void setSaldoHonorario(double saldoHonorario) {
+        this.saldoHonorario = saldoHonorario;
+    }
+
+    public double getSaldoIntereses() {
+        return saldoIntereses;
+    }
+
+    public void setSaldoIntereses(double saldoIntereses) {
+        this.saldoIntereses = saldoIntereses;
     }
     
     

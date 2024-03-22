@@ -31,4 +31,6 @@ public interface GestionesService {
     
     public AlertsGestiones alertasDeGestiones(String username, String fecha);
     
+    public boolean desactivarGestiones(Long idGestion);
+    
 }

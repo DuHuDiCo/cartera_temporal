@@ -205,7 +205,9 @@ public class GestionesServiceImpl implements GestionesService {
             acuerdoPago.setClasificacion(dto.getClasificacion().getTipoClasificacion());
             acuerdoPago.setValorCuotaMensual(dto.getClasificacion().getAcuerdoPago().getValorCuotaMensual());
             acuerdoPago.setHonorarioAcuerdo(dto.getClasificacion().getAcuerdoPago().getHonoriarioAcuerdo());
+            acuerdoPago.setSaldoHonorarios(dto.getClasificacion().getAcuerdoPago().getHonoriarioAcuerdo());
             acuerdoPago.setValorInteresesMora(dto.getClasificacion().getAcuerdoPago().getValorInteresesMora());
+            acuerdoPago.setSaldoInteresesMora(dto.getClasificacion().getAcuerdoPago().getValorInteresesMora());
             acuerdoPago.setValorTotalAcuerdo(dto.getClasificacion().getAcuerdoPago().getValorTotalAcuerdo());
             acuerdoPago.setIsActive(true);
 
@@ -228,6 +230,9 @@ public class GestionesServiceImpl implements GestionesService {
                 couta.setInteresCuota(cuotas.getInteresCuota());
                 couta.setNumeroCuota(cuotas.getNumeroCuota());
                 couta.setValorCuota(cuotas.getValorCuota());
+                couta.setSaldoCapitalCuota(cuotas.getCapitalCuota());
+                couta.setSaldoHonorarios(cuotas.getHonorarios());
+                couta.setSalodInteresCuota(cuotas.getInteresCuota());
 
                 acuerdoPago.agregarCuota(couta);
             }
@@ -641,7 +646,7 @@ public class GestionesServiceImpl implements GestionesService {
         }
 
         ClientesDto clientToSend = client.get(0);
-        if(Objects.isNull(clientToSend)){
+        if (Objects.isNull(clientToSend)) {
             return null;
         }
 
@@ -667,7 +672,7 @@ public class GestionesServiceImpl implements GestionesService {
 
         link.setMessageToWpp("https://api.whatsapp.com/send?phone=".concat("+").concat(telToMessage).concat(message));
         try {
-            link.setBase64(pdf.generarReporteAcuerdoPagoToClient(cpc, client.get(0),dto.getUsername()));
+            link.setBase64(pdf.generarReporteAcuerdoPagoToClient(cpc, client.get(0), dto.getUsername()));
         } catch (IOException ex) {
             System.out.println(ex);
             Logger.getLogger(GestionesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -745,4 +750,36 @@ public class GestionesServiceImpl implements GestionesService {
         }
         return cuentasSinGestion;
     }
+
+    @Override
+    public boolean desactivarGestiones(Long idGestion) {
+        Gestiones gestion = gestionesRepository.findById(idGestion).orElse(null);
+        if (Objects.isNull(gestion)) {
+            return false;
+        }
+
+        if (gestion.getClasificacionGestion() instanceof Tarea) {
+            Tarea tarea = (Tarea) gestion.getClasificacionGestion();
+
+            tarea.setIsActive(false);
+
+            Notificaciones notificacion = notificacionesRepository.findByGestionIdAndFechaCreacion(idGestion, tarea.getFechaTarea());
+            if (Objects.isNull(notificacion)) {
+                return false;
+            }
+
+            notificacion.setIsActive(false);
+            notificacion.setVerRealizadas("HIDE");
+
+            tarea = tareaRepository.save(tarea);
+            notificacion = notificacionesRepository.save(notificacion);
+
+            return true;
+
+        }
+
+        return false;
+
+    }
+
 }
