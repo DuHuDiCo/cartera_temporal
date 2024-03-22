@@ -48,7 +48,7 @@ public class Notificaciones {
     private String verRealizadas;
     
     @Column(name = "gestion_id")
-    private Long GestionId;
+    private Long gestionId;
 
     public Notificaciones() {
     }
@@ -133,12 +133,14 @@ public class Notificaciones {
     }
 
     public Long getGestionId() {
-        return GestionId;
+        return gestionId;
     }
 
-    public void setGestionId(Long GestionId) {
-        this.GestionId = GestionId;
+    public void setGestionId(Long gestionId) {
+        this.gestionId = gestionId;
     }
+
+    
 
     
     
