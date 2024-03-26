@@ -64,7 +64,7 @@ public class CuentaPorCobrarSpecification {
                 Date date  = Functions.obtenerFechaInicalMes();
                 predicates.add(criteriaBuilder.greaterThan(notaJoin.get("fechaNota"), date));
                 predicates.add(criteriaBuilder.equal(notaJoin.get("nombresClasificacion").get("idNombreClasificacion"), filtro.getClasificacionGestion().getId()));
-                query.distinct(true)
+                query.distinct(true);
 //                if (filtro.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.ACUERDODEPAGO.getDato())) {
 //                    System.out.println("ACUERDO");
 //                    System.out.println(filtro.getClasificacionGestion().getNombreClasificacion());
