@@ -60,7 +60,7 @@ public class CuentaPorCobrarSpecification {
                 Join<Gestiones, Nota> notaJoin = criteriaBuilder.treat(clasificacionGestionJoin, Nota.class);
 //                Join<Gestiones, Tarea> tareaJoin = criteriaBuilder.treat(clasificacionGestionJoin, Tarea.class);
 //                predicates.add(criteriaBuilder.isTrue(tareaJoin.get("isActive")));
-                predicates.add(criteriaBuilder.equal(notaJoin.get("nombresClasificacion").get("idNombreClasificacion"), filtro.getClasificacionGestion().getId()));
+                predicates.add(notaJoin.get("nombresClasificacion").get("idNombreClasificacion").in(filtro.getClasificacionGestion().getId()));
 //                if (filtro.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.ACUERDODEPAGO.getDato())) {
 //                    System.out.println("ACUERDO");
 //                    System.out.println(filtro.getClasificacionGestion().getNombreClasificacion());
