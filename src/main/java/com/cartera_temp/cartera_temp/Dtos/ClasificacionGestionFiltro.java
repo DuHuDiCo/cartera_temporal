@@ -5,7 +5,7 @@ package com.cartera_temp.cartera_temp.Dtos;
 public class ClasificacionGestionFiltro {
     
     private String tipoClasificacion;
-    private String nombreClasificacion;
+    private Long id;
 
     public ClasificacionGestionFiltro() {
     }
@@ -18,13 +18,15 @@ public class ClasificacionGestionFiltro {
         this.tipoClasificacion = tipoClasificacion;
     }
 
-    public String getNombreClasificacion() {
-        return nombreClasificacion;
+    public Long getId() {
+        return id;
     }
 
-    public void setNombreClasificacion(String nombreClasificacion) {
-        this.nombreClasificacion = nombreClasificacion;
+    public void setId(Long id) {
+        this.id = id;
     }
+
+   
     
     
     
