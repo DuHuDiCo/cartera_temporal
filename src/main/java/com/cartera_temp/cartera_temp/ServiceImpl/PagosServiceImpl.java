@@ -121,7 +121,7 @@ public class PagosServiceImpl implements PagosService {
                 pago.setValorPago(cuotasDto.getPagosDto().getValorPago());
                 pago.setValorIntereses(cuotasDto.getPagosDto().getIntereses());
                 pago.setValorHonorarios(cuotasDto.getPagosDto().getHonorarios());
-                pago.setValorCapital( cuotasDto.getPagosDto().getCapital());
+                pago.setValorCapital(cuotasDto.getPagosDto().getCapital());
                 pago.setUsuarioId(usu.getIdUsuario());
                 pago.setDetalle(dto.getDetalle());
 
@@ -137,8 +137,7 @@ public class PagosServiceImpl implements PagosService {
                 acuPag.getCuotasList().get(i).setCumplio(cuotasDto.isCumplio());
 
             }
-            
-            
+
             if (Objects.nonNull(cuotasDto.getPagosDto()) && Objects.nonNull(acuPag.getCuotasList().get(i).getPagos())) {
                 Pagos pago = acuPag.getCuotasList().get(i).getPagos();
                 pago.setFechaPago(cuotasDto.getPagosDto().getFechaPago());
@@ -146,7 +145,7 @@ public class PagosServiceImpl implements PagosService {
                 pago.setValorPago(cuotasDto.getPagosDto().getValorPago());
                 pago.setValorIntereses(cuotasDto.getPagosDto().getIntereses());
                 pago.setValorHonorarios(cuotasDto.getPagosDto().getHonorarios());
-                pago.setValorCapital( cuotasDto.getPagosDto().getCapital());
+                pago.setValorCapital(cuotasDto.getPagosDto().getCapital());
                 pago.setUsuarioId(usu.getIdUsuario());
                 pago.setDetalle(dto.getDetalle());
 
@@ -212,7 +211,7 @@ public class PagosServiceImpl implements PagosService {
                 acuPag.setFechaCompromiso(fechaCompromisoActualizada);
             }
 
-            if (acuPag.getCuotasList().get(acuPag.getCuotasList().size() - 1).getCapitalCuota() == 0) {
+            if (acuPag.getCuotasList().get(acuPag.getCuotasList().size() - 1).isCumplio()) {
                 acuPag.setIsActive(false);
             }
 
@@ -245,25 +244,23 @@ public class PagosServiceImpl implements PagosService {
 
                 gestion.setClasificacion(nota);
 
-              
-
                 gestion = gr.save(gestion);
 
             }
 
-            List<Notificaciones> notificaciones = notificacionesRepository.findByNumeroObligacionAndFechaCreacionGreaterThanEqualAndTipoGestionOrderByFechaCreacionDesc(dto.getNumeroObligacion(), acuPag.getGestiones().getFechaGestion(), acuPag.getClasificacion());
+            Notificaciones notificacion = notificacionesRepository.findByGestionIdAndFechaCreacion(acuPag.getIdClasificacionGestion(), acuPag.getFechaAcuerdo());
 
-            if (!CollectionUtils.isEmpty(notificaciones)) {
-                for (Notificaciones notificacione : notificaciones) {
-                    if (acuPag.isIsActive()) {
-                        notificacione.setFechaFinalizacion(fechaCompromisoActualizada);
+            if (Objects.nonNull(notificacion)) {
 
-                    } else {
-                        notificacione.setIsActive(false);
+                if (acuPag.isIsActive()) {
+                    notificacion.setFechaFinalizacion(fechaCompromisoActualizada);
 
-                    }
-                    notificacione = notificacionesRepository.save(notificacione);
+                } else {
+                    notificacion.setIsActive(false);
+
                 }
+                notificacion = notificacionesRepository.save(notificacion);
+
             }
 
             PagosCuotasResponse pgr = new PagosCuotasResponse();
