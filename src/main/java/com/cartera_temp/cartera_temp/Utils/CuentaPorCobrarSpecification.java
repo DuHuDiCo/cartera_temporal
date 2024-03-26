@@ -62,7 +62,7 @@ public class CuentaPorCobrarSpecification {
 //                Join<Gestiones, Tarea> tareaJoin = criteriaBuilder.treat(clasificacionGestionJoin, Tarea.class);
 //                predicates.add(criteriaBuilder.isTrue(tareaJoin.get("isActive")));
                 
-                predicates.add(criteriaBuilder.greaterThan(notaJoin.get("fechaNota"), filtro.getFechaGestionFin()));
+                predicates.add(criteriaBuilder.greaterThan(notaJoin.get("fechaNota"), "2024-02-01 00:00:00"));
                 predicates.add(criteriaBuilder.equal(notaJoin.get("nombresClasificacion").get("idNombreClasificacion"), filtro.getClasificacionGestion().getId()));
                 query.distinct(true);
 //                if (filtro.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.ACUERDODEPAGO.getDato())) {
