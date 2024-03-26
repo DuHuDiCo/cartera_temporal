@@ -57,7 +57,7 @@ public class CuentaPorCobrarSpecification {
 
                 Join<CuentasPorCobrar, Gestiones> gestionesJoin = root.join("gestiones");
                 Join<Gestiones, ClasificacionGestion> clasificacionGestionJoin = gestionesJoin.join("clasificacionGestion");
-                Join<Gestiones, Nota> notaJoin = clasificacionGestionJoin.join("gestion");
+                Join<ClasificacionGestion, Nota> notaJoin = clasificacionGestionJoin.join("gestion");
                 Join<Nota, NombresClasificacion> nombresClasificacionJoin = notaJoin.join("nombresClasificacion");
                 //                Join<Gestiones, Tarea> tareaJoin = criteriaBuilder.treat(clasificacionGestionJoin, Tarea.class);
 //                predicates.add(criteriaBuilder.isTrue(tareaJoin.get("isActive")));
