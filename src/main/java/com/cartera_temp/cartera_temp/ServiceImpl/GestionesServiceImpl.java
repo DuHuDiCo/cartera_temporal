@@ -763,7 +763,7 @@ public class GestionesServiceImpl implements GestionesService {
 
             tarea.setIsActive(false);
 
-            Notificaciones notificacion = notificacionesRepository.findByGestionIdAndFechaCreacion(idGestion, tarea.getFechaTarea());
+            Notificaciones notificacion = notificacionesRepository.findByGestionIdAndFechaCreacion(gestion.getClasificacionGestion().getIdClasificacionGestion(), tarea.getFechaTarea());
             if (Objects.isNull(notificacion)) {
                 return false;
             }
