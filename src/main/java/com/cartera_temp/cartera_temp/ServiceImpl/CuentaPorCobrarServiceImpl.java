@@ -668,50 +668,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
 
     }
 
-    private CuentasPorCobrar filtrarLista(CuentasPorCobrar cuenta, ClasificacionGestionFiltro datosFiltro) {
-
-        List<Gestiones> gestiones = cuenta.getGestiones().stream().filter(ges -> ges.getClasificacionGestion().equals(datosFiltro.getTipoClasificacion()) && Functions.validarFechaPertenece(ges.getFechaGestion())).collect(Collectors.toList());
-
-        if (datosFiltro.getTipoClasificacion().equals(TipoClasificacion.ACUERDODEPAGO.getDato())) {
-            for (Gestiones gestione : gestiones) {
-                if (gestione.getClasificacionGestion() instanceof AcuerdoPago) {
-                    AcuerdoPago acuerdo = (AcuerdoPago) gestione.getClasificacionGestion();
-
-                    if (acuerdo.getNombresClasificacion().getNombre().toUpperCase().equals(datosFiltro.getNombreClasificacion().toUpperCase())) {
-                        return cuenta;
-                    }
-
-                }
-            }
-        }
-
-        if (datosFiltro.getTipoClasificacion().equals(TipoClasificacion.TAREA.getDato())) {
-            for (Gestiones gestione : gestiones) {
-                if (gestione.getClasificacionGestion() instanceof Tarea) {
-                    Tarea tarea = (Tarea) gestione.getClasificacionGestion();
-
-                    if (tarea.getNombresClasificacion().getNombre().toUpperCase().equals(datosFiltro.getNombreClasificacion().toUpperCase())) {
-                        return cuenta;
-                    }
-
-                }
-            }
-        }
-
-        if (datosFiltro.getTipoClasificacion().equals(TipoClasificacion.NOTA.getDato())) {
-            for (Gestiones gestione : gestiones) {
-                if (gestione.getClasificacionGestion() instanceof Nota) {
-                    Nota nota = (Nota) gestione.getClasificacionGestion();
-
-                    if (nota.getNombresClasificacion().getNombre().toUpperCase().equals(datosFiltro.getNombreClasificacion().toUpperCase())) {
-                        return cuenta;
-                    }
-
-                }
-            }
-        }
-        return null;
-    }
+   
     
     
 
