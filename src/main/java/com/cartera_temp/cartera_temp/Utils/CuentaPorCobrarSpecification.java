@@ -58,11 +58,14 @@ public class CuentaPorCobrarSpecification {
                 Join<CuentasPorCobrar, Gestiones> gestionesJoin = root.join("gestiones");
                 Join<Gestiones, ClasificacionGestion> clasificacionGestionJoin = gestionesJoin.join("clasificacionGestion");
                 Join<Gestiones, Nota> notaJoin = criteriaBuilder.treat(clasificacionGestionJoin, Nota.class);
-                
-//                Join<Gestiones, Tarea> tareaJoin = criteriaBuilder.treat(clasificacionGestionJoin, Tarea.class);
+
+                //                Join<Gestiones, Tarea> tareaJoin = criteriaBuilder.treat(clasificacionGestionJoin, Tarea.class);
 //                predicates.add(criteriaBuilder.isTrue(tareaJoin.get("isActive")));
-                
-                predicates.add(criteriaBuilder.greaterThan(notaJoin.get("fechaNota"), "2024-02-01 00:00:00"));
+                try {
+                    predicates.add(criteriaBuilder.greaterThan(notaJoin.get("fechaNota"), Functions.fechaDateToString("01/02/2024 00:00")));
+                } catch (ParseException ex) {
+                    Logger.getLogger(CuentaPorCobrarSpecification.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 predicates.add(criteriaBuilder.equal(notaJoin.get("nombresClasificacion").get("idNombreClasificacion"), filtro.getClasificacionGestion().getId()));
                 query.distinct(true);
 //                if (filtro.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.ACUERDODEPAGO.getDato())) {
