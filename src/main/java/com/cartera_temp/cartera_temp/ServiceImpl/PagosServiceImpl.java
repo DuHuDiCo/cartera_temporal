@@ -284,7 +284,7 @@ public class PagosServiceImpl implements PagosService {
         Integer position = 0;
 
         for (int i = 0; i < cuotas.size(); i++) {
-            if (cuotas.get(i).isCumplio() && cuotas.get(i).getCapitalCuota() == 0 && cuotas.get(i).getHonorarios() == 0 && cuotas.get(i).getInteresCuota() == 0) {
+            if (cuotas.get(i).isCumplio()) {
                 position = i;
             }
         }
