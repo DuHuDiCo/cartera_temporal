@@ -65,6 +65,7 @@ public class CuentaPorCobrarSpecification {
 
                 if (filtro.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.ACUERDODEPAGO.getDato())) {
                     System.out.println("ACUERDO");
+                    System.out.println(filtro.getClasificacionGestion().getNombreClasificacion());
                     Join<Gestiones, AcuerdoPago> acuerdoPagoJoin = criteriaBuilder.treat(clasificacionGestionJoin, AcuerdoPago.class);
 //                    Join<AcuerdoPago, NombresClasificacion> nombresClasificacionJoin = acuerdoPagoJoin.join("nombresClasificacion");
 
@@ -74,11 +75,12 @@ public class CuentaPorCobrarSpecification {
 
                 if (filtro.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.NOTA.getDato())) {
                     System.out.println("NOTA");
+                    System.out.println(filtro.getClasificacionGestion().getNombreClasificacion());
                     Join<Gestiones, Nota> notaJoin = criteriaBuilder.treat(clasificacionGestionJoin, Nota.class);
 //                    Join<Nota, NombresClasificacion> nombresClasificacionJoin = notaJoin.join("nombresClasificacion");
 
                   predicates.add(criteriaBuilder.equal(notaJoin.get("nombresClasificacion").get("nombre"), filtro.getClasificacionGestion().getNombreClasificacion()));
-                    predicates.add(criteriaBuilder.equal(clasificacionGestionJoin.get("clasificacion"), TipoClasificacion.NOTA.getDato()));
+//                    predicates.add(criteriaBuilder.equal(clasificacionGestionJoin.get("clasificacion"), TipoClasificacion.NOTA.getDato()));
                     
                 }
 
