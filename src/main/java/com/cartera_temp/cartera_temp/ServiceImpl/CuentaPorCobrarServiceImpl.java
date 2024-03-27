@@ -55,6 +55,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -543,6 +544,11 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
                 spec = CuentaPorCobrarSpecification.filtrarCuentas(dto, usuFiltro.getIdUsuario());
             } else {
                 spec = CuentaPorCobrarSpecification.filtrarCuentas(dto, 0L);
+
+                String consultaGenerada = cuentasPorCobrarRepository.getQuery(spec);
+                System.out.println("Consulta generada: " + consultaGenerada);
+                
+
             }
 
             cpc = cuentasPorCobrarRepository.findAll(spec, pageable);
@@ -667,9 +673,5 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
         return cuentasPage;
 
     }
-
-   
-    
-    
 
 }

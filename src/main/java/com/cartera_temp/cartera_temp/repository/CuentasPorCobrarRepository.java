@@ -1,9 +1,7 @@
 package com.cartera_temp.cartera_temp.repository;
 
 import com.cartera_temp.cartera_temp.Models.AsesorCartera;
-import com.cartera_temp.cartera_temp.Models.ClasificacionJuridica;
 import com.cartera_temp.cartera_temp.Models.CuentasPorCobrar;
-import com.cartera_temp.cartera_temp.Models.TiposVencimiento;
 import java.util.Date;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -11,6 +9,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -18,14 +17,15 @@ import org.springframework.data.repository.query.Param;
 @Repository
 public interface CuentasPorCobrarRepository extends JpaRepository<CuentasPorCobrar, Long>, JpaSpecificationExecutor<CuentasPorCobrar> {
 
+    String getQuery(Specification<CuentasPorCobrar> specification);
+
     @Query(value = "SELECT * FROM `cuentas_por_cobrar` WHERE asesor_cartera_id = :id_asesor ORDER BY dias_vencidos DESC",
             countQuery = "SELECT COUNT(*) FROM `cuentas_por_cobrar` WHERE asesor_cartera_id = :id_asesor ORDER BY dias_vencidos DESC", nativeQuery = true)
-    Page<CuentasPorCobrar> findByAsesorOrderByDiasVencidosDesc( @Param("id_asesor") Long idAsesor, Pageable pageable);
-    
-    
-      @Query(value = "SELECT * FROM `cuentas_por_cobrar`  ORDER BY dias_vencidos DESC",
+    Page<CuentasPorCobrar> findByAsesorOrderByDiasVencidosDesc(@Param("id_asesor") Long idAsesor, Pageable pageable);
+
+    @Query(value = "SELECT * FROM `cuentas_por_cobrar`  ORDER BY dias_vencidos DESC",
             countQuery = "SELECT COUNT(*) FROM `cuentas_por_cobrar` ORDER BY dias_vencidos DESC", nativeQuery = true)
-    Page<CuentasPorCobrar> findByAll(  Pageable pageable);
+    Page<CuentasPorCobrar> findByAll(Pageable pageable);
 
     CuentasPorCobrar findByNumeroObligacion(String obligacion);
 

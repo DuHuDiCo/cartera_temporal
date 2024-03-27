@@ -54,7 +54,7 @@ public class CuentaPorCobrarSpecification {
             }
 
             if (Objects.nonNull(filtro.getClasificacionGestion())) {
-                predicates.clear();
+                
                 boolean active = true;
                 if (filtro.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.ACUERDODEPAGO.getDato())) {
 
