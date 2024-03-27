@@ -178,7 +178,7 @@ public class Functions {
 
     public static Date fechaDateToStringNormal(String fecha) throws ParseException {
 
-        SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String date = formato.format(fecha);
 
         Date fechaOk = formato.parse(date);
