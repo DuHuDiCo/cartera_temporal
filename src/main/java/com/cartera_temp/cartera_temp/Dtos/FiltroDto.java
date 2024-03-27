@@ -19,7 +19,7 @@ public class FiltroDto {
     private Double saldoCapitalFin;
     private Date fechaCpcInicio;
     private Date fechaCpcFin;
-    private Date fechaGestionInicio;
+    private String fechaGestionInicio;
     private Date fechaGestionFin;
     private String fechaCompromisoInicio;
     private String fechaCompromisoFin;
@@ -116,13 +116,15 @@ public class FiltroDto {
         this.fechaCpcFin = fechaCpcFin;
     }
 
-    public Date getFechaGestionInicio() {
+    public String getFechaGestionInicio() {
         return fechaGestionInicio;
     }
 
-    public void setFechaGestionInicio(Date fechaGestionInicio) {
+    public void setFechaGestionInicio(String fechaGestionInicio) {
         this.fechaGestionInicio = fechaGestionInicio;
     }
+
+    
 
     public Date getFechaGestionFin() {
         return fechaGestionFin;

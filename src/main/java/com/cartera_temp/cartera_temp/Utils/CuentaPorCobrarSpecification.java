@@ -58,51 +58,63 @@ public class CuentaPorCobrarSpecification {
                 boolean active = true;
                 if (filtro.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.ACUERDODEPAGO.getDato())) {
 
-                    System.out.println("ACUERDO");
-                    query.distinct(true);
-                    Join<CuentasPorCobrar, Gestiones> gestionesJoin = root.join("gestiones");
-                    Join<Gestiones, ClasificacionGestion> clasificacionGestionJoin = gestionesJoin.join("clasificacionGestion");
-                    Join<Gestiones, AcuerdoPago> acuerdoPagoJoin = criteriaBuilder.treat(clasificacionGestionJoin, AcuerdoPago.class);
-
-                    predicates.add(criteriaBuilder.and(
-                            criteriaBuilder.equal(clasificacionGestionJoin.get("clasificacion"), filtro.getClasificacionGestion().getTipoClasificacion()),
-                            criteriaBuilder.between(gestionesJoin.get("fechaGestion"), filtro.getFechaGestionInicio(), filtro.getFechaGestionFin()),
-                            criteriaBuilder.equal(acuerdoPagoJoin.get("isActive"), active)
-                    ));
+                    try {
+                        System.out.println("ACUERDO");
+                        query.distinct(true);
+                        Join<CuentasPorCobrar, Gestiones> gestionesJoin = root.join("gestiones");
+                        Join<Gestiones, ClasificacionGestion> clasificacionGestionJoin = gestionesJoin.join("clasificacionGestion");
+                        Join<Gestiones, AcuerdoPago> acuerdoPagoJoin = criteriaBuilder.treat(clasificacionGestionJoin, AcuerdoPago.class);
+                        
+                        predicates.add(criteriaBuilder.and(
+                                criteriaBuilder.equal(clasificacionGestionJoin.get("clasificacion"), filtro.getClasificacionGestion().getTipoClasificacion()),
+                                criteriaBuilder.between(gestionesJoin.get("fechaGestion"), Functions.fechaDateToStringNormal(filtro.getFechaGestionInicio()), filtro.getFechaGestionFin()),
+                                criteriaBuilder.equal(acuerdoPagoJoin.get("isActive"), active)
+                        ));
+                    } catch (ParseException ex) {
+                        Logger.getLogger(CuentaPorCobrarSpecification.class.getName()).log(Level.SEVERE, null, ex);
+                    }
 
                 }
 
                 if (filtro.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.NOTA.getDato())) {
-                    System.out.println("NOTA");
-                    query.distinct(true);
-                    Join<CuentasPorCobrar, Gestiones> gestionesJoin = root.join("gestiones");
-                    Join<Gestiones, ClasificacionGestion> clasificacionGestionJoin = gestionesJoin.join("clasificacionGestion");
-                    Join<Gestiones, Nota> notaJoin = criteriaBuilder.treat(clasificacionGestionJoin, Nota.class);
-                    Join<Nota, NombresClasificacion> nombresClasificacionJoin = notaJoin.join("nombresClasificacion");
-
-                    predicates.add(criteriaBuilder.and(
-                            criteriaBuilder.equal(nombresClasificacionJoin.get("idNombreClasificacion"), filtro.getClasificacionGestion().getId()),
-                            criteriaBuilder.between(gestionesJoin.get("fechaGestion"), filtro.getFechaGestionInicio(), filtro.getFechaGestionFin())
-                    ));
+                    try {
+                        System.out.println("NOTA");
+                        query.distinct(true);
+                        Join<CuentasPorCobrar, Gestiones> gestionesJoin = root.join("gestiones");
+                        Join<Gestiones, ClasificacionGestion> clasificacionGestionJoin = gestionesJoin.join("clasificacionGestion");
+                        Join<Gestiones, Nota> notaJoin = criteriaBuilder.treat(clasificacionGestionJoin, Nota.class);
+                        Join<Nota, NombresClasificacion> nombresClasificacionJoin = notaJoin.join("nombresClasificacion");
+                        
+                        predicates.add(criteriaBuilder.and(
+                                criteriaBuilder.equal(nombresClasificacionJoin.get("idNombreClasificacion"), filtro.getClasificacionGestion().getId()),
+                                criteriaBuilder.between(gestionesJoin.get("fechaGestion"), Functions.fechaDateToStringNormal(filtro.getFechaGestionInicio()), filtro.getFechaGestionFin())
+                        ));
+                    } catch (ParseException ex) {
+                        Logger.getLogger(CuentaPorCobrarSpecification.class.getName()).log(Level.SEVERE, null, ex);
+                    }
 
                 }
 
                 if (filtro.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.TAREA.getDato())) {
 
-                    System.out.println("TAREA");
-                    System.out.println(filtro.getFechaGestionInicio());
-                    System.out.println(filtro.getFechaGestionFin());
-                    query.distinct(true);
-                    Join<CuentasPorCobrar, Gestiones> gestionesJoin = root.join("gestiones");
-                    Join<Gestiones, ClasificacionGestion> clasificacionGestionJoin = gestionesJoin.join("clasificacionGestion");
-                    Join<Gestiones, Tarea> tareaJoin = criteriaBuilder.treat(clasificacionGestionJoin, Tarea.class);
-                    Join<Tarea, NombresClasificacion> nombresClasificacionJoin = tareaJoin.join("nombresClasificacion");
-
-                    predicates.add(criteriaBuilder.and(
-                            criteriaBuilder.equal(nombresClasificacionJoin.get("idNombreClasificacion"), filtro.getClasificacionGestion().getId()),
-                            criteriaBuilder.between(gestionesJoin.get("fechaGestion"), filtro.getFechaGestionInicio(), filtro.getFechaGestionFin())
-                    //                            criteriaBuilder.equal(tareaJoin.get("isActive"), active)
-                    ));
+                    try {
+                        System.out.println("TAREA");
+                        System.out.println(Functions.fechaDateToStringNormal(filtro.getFechaGestionInicio()));
+                        System.out.println(filtro.getFechaGestionFin());
+                        query.distinct(true);
+                        Join<CuentasPorCobrar, Gestiones> gestionesJoin = root.join("gestiones");
+                        Join<Gestiones, ClasificacionGestion> clasificacionGestionJoin = gestionesJoin.join("clasificacionGestion");
+                        Join<Gestiones, Tarea> tareaJoin = criteriaBuilder.treat(clasificacionGestionJoin, Tarea.class);
+                        Join<Tarea, NombresClasificacion> nombresClasificacionJoin = tareaJoin.join("nombresClasificacion");
+                        
+                        predicates.add(criteriaBuilder.and(
+                                criteriaBuilder.equal(nombresClasificacionJoin.get("idNombreClasificacion"), filtro.getClasificacionGestion().getId()),
+                                criteriaBuilder.between(gestionesJoin.get("fechaGestion"), Functions.fechaDateToStringNormal(filtro.getFechaGestionInicio()), filtro.getFechaGestionFin())
+                                //                            criteriaBuilder.equal(tareaJoin.get("isActive"), active)
+                        ));
+                    } catch (ParseException ex) {
+                        Logger.getLogger(CuentaPorCobrarSpecification.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
 
             }
@@ -114,8 +126,12 @@ public class CuentaPorCobrarSpecification {
             }
 
             if (filtro.getFechaGestionInicio() != null && filtro.getFechaGestionFin() != null && Objects.isNull(filtro.getClasificacionGestion())) {
-                Join<CuentasPorCobrar, Gestiones> gJoin = root.join("gestiones", JoinType.LEFT);
-                predicates.add(criteriaBuilder.between(gJoin.get("fechaGestion"), filtro.getFechaGestionInicio(), filtro.getFechaGestionFin()));
+                try {
+                    Join<CuentasPorCobrar, Gestiones> gJoin = root.join("gestiones", JoinType.LEFT);
+                    predicates.add(criteriaBuilder.between(gJoin.get("fechaGestion"), Functions.fechaDateToStringNormal(filtro.getFechaGestionInicio()), filtro.getFechaGestionFin()));
+                } catch (ParseException ex) {
+                    Logger.getLogger(CuentaPorCobrarSpecification.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
 
             if (filtro.getSaldoCapitalInicio() != null && filtro.getSaldoCapitalFin() != null) {
