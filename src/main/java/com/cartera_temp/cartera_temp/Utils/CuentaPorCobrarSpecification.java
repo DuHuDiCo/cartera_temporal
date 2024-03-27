@@ -61,9 +61,13 @@ public class CuentaPorCobrarSpecification {
                 Join<Gestiones, Nota> notaJoin = criteriaBuilder.treat(clasificacionGestionJoin, Nota.class);
 
                 try {
+                    Date fecha = Functions.fechaDateToString("01/02/2024 00:00");
+                    
+                    System.out.println(fecha);
+                    System.out.println(fecha.toString());
                     predicates.add(criteriaBuilder.and(
                             criteriaBuilder.equal(notaJoin.get("nombresClasificacion").get("idNombreClasificacion"), filtro.getClasificacionGestion().getId()),
-                            criteriaBuilder.greaterThan(gestionesJoin.get("fechaGestion"), Functions.fechaDateToString("01/02/2024 00:00"))
+                            criteriaBuilder.greaterThan(gestionesJoin.get("fechaGestion"), fecha)
                     ));
 
 //                //                Join<Gestiones, Tarea> tareaJoin = criteriaBuilder.treat(clasificacionGestionJoin, Tarea.class);
