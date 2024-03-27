@@ -44,6 +44,8 @@ public class Tarea extends ClasificacionGestion {
     @JoinColumn(name = "tipo_clasificacion_id")
     private NombresClasificacion nombresClasificacion;
     
+    
+    @Column(name = "is_active")
     private boolean  isActive;
 
     public Tarea() {
