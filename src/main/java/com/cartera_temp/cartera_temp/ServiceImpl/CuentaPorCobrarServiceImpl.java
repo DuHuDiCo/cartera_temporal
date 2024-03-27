@@ -545,8 +545,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             } else {
                 spec = CuentaPorCobrarSpecification.filtrarCuentas(dto, 0L);
 
-                String consultaGenerada = cuentasPorCobrarRepository.getQuery(spec);
-                System.out.println("Consulta generada: " + consultaGenerada);
+             
                 
 
             }
