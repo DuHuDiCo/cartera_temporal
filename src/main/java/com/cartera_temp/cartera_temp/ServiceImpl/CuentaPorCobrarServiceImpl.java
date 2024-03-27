@@ -534,22 +534,22 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
     public Page<CuentasPorCobrarResponse> filtrosCpcs(FiltroDto dto, Pageable pageable) {
 
         Page<CuentasPorCobrar> cpc = null;
-        List<CuentasPorCobrar> cuentas = new ArrayList<>();
 
         if (Objects.isNull(dto.getFechaCompromisoInicio())) {
             Usuario usuFiltro = new Usuario();
             Specification<CuentasPorCobrar> spec = null;
             if (!dto.getUsername().isBlank()) {
+                System.out.println("username no blank");
                 usuFiltro = usuarioClient.getUserByUsername(dto.getUsername());
                 spec = CuentaPorCobrarSpecification.filtrarCuentas(dto, usuFiltro.getIdUsuario());
             } else {
+                System.out.println("username blank");
                 spec = CuentaPorCobrarSpecification.filtrarCuentas(dto, 0L);
 
-                cpc = cuentasPorCobrarRepository.findAll(spec, pageable);
-                var list = CollectionUtils.isEmpty(cpc.getContent()) ? null : cpc.getTotalElements();
-                System.out.println("Lista---" + list);
-
             }
+            cpc = cuentasPorCobrarRepository.findAll(spec, pageable);
+            var list = CollectionUtils.isEmpty(cpc.getContent()) ? null : cpc.getTotalElements();
+            System.out.println("Lista---" + list);
 
         } else {
 
