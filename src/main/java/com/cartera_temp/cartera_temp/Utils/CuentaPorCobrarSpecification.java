@@ -99,7 +99,7 @@ public class CuentaPorCobrarSpecification {
 
                     try {
                         System.out.println("TAREA");
-                        System.out.println(Functions.fechaDateToStringNormal(filtro.getFechaGestionInicio()));
+                        System.out.println(Functions.fechaConHora(filtro.getFechaGestionInicio(), "inicio"));
                         System.out.println(filtro.getFechaGestionFin());
                         query.distinct(true);
                         Join<CuentasPorCobrar, Gestiones> gestionesJoin = root.join("gestiones");
