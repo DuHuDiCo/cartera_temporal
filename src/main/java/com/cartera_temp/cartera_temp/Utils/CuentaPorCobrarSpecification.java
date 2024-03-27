@@ -63,16 +63,18 @@ public class CuentaPorCobrarSpecification {
                         query.distinct(true);
                         Join<CuentasPorCobrar, Gestiones> gestionesJoin = root.join("gestiones");
                         Join<Gestiones, ClasificacionGestion> clasificacionGestionJoin = gestionesJoin.join("clasificacionGestion");
-//                        Join<Gestiones, AcuerdoPago> acuerdoPagoJoin = criteriaBuilder.treat(clasificacionGestionJoin, AcuerdoPago.class);
+                        Join<Gestiones, AcuerdoPago> acuerdoPagoJoin = criteriaBuilder.treat(clasificacionGestionJoin, AcuerdoPago.class);
 //                        Join<AcuerdoPago, NombresClasificacion> nombresClasificacionJoin = acuerdoPagoJoin.join("nombresClasificacion");
                         Date fecha = Functions.fechaDateToStringNormal("2024-02-01 00:00:00");
 
                         System.out.println(fecha);
                         System.out.println(fecha.toString());
 
+                        boolean active = true;
                         predicates.add(criteriaBuilder.and(
                                 criteriaBuilder.equal(clasificacionGestionJoin.get("clasificacion"), filtro.getClasificacionGestion().getTipoClasificacion()),
-                                criteriaBuilder.greaterThan(gestionesJoin.get("fechaGestion"), fecha)
+                                criteriaBuilder.greaterThan(gestionesJoin.get("fechaGestion"), fecha),
+                                criteriaBuilder.equal(acuerdoPagoJoin.get("isActive"), active)
                      
                         ));
 
