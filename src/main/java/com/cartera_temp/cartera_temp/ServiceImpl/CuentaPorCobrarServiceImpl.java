@@ -545,14 +545,11 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             } else {
                 spec = CuentaPorCobrarSpecification.filtrarCuentas(dto, 0L);
 
-             
-                
+                cpc = cuentasPorCobrarRepository.findAll(spec, pageable);
+                var list = CollectionUtils.isEmpty(cpc.getContent()) ? null : cpc.getTotalElements();
+                System.out.println("Lista---" + list);
 
             }
-
-            cpc = cuentasPorCobrarRepository.findAll(spec, pageable);
-            var list = CollectionUtils.isEmpty(cpc.getContent()) ? null : cpc.getTotalElements();
-            System.out.println("Lista---" + list);
 
         } else {
 
