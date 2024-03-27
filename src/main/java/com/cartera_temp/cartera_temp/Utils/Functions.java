@@ -176,6 +176,16 @@ public class Functions {
         return fechaOk;
     }
 
+    public static Date fechaDateToStringNormal(String fecha) throws ParseException {
+
+        SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        String date = formato.format(fecha);
+
+        Date fechaOk = formato.parse(date);
+
+        return fechaOk;
+    }
+
     public static String stringDoubleToMoney(double valor) {
         NumberFormat moneda = NumberFormat.getCurrencyInstance();
         String modenaString = moneda.format(valor);
@@ -219,7 +229,7 @@ public class Functions {
 
         return primerDiaDelMes;
     }
-    
+
     public static Date obtenerFechaInicalDia() {
 
         // Obtener la fecha actual
@@ -241,10 +251,9 @@ public class Functions {
         System.out.println(primerDiaDelMes);
         return primerDiaDelMes;
     }
-    
-    
-    public static boolean validarFechaPertenece(Date fecha){
-        
+
+    public static boolean validarFechaPertenece(Date fecha) {
+
         Date fechaActual = new Date();
 
         // Obtener el primer día del mes actual
@@ -259,10 +268,9 @@ public class Functions {
         calFin.set(Calendar.DAY_OF_MONTH, calFin.getActualMaximum(Calendar.DAY_OF_MONTH));
         Date fechaFinRango = calFin.getTime();
 
-        
-         boolean estaEnRango = fecha.after(fechaInicioRango) && fecha.before(fechaFinRango) ||
-                fecha.equals(fechaInicioRango) || fecha.equals(fechaFinRango);
-        
+        boolean estaEnRango = fecha.after(fechaInicioRango) && fecha.before(fechaFinRango)
+                || fecha.equals(fechaInicioRango) || fecha.equals(fechaFinRango);
+
         return false;
     }
 }

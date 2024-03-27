@@ -61,7 +61,7 @@ public class CuentaPorCobrarSpecification {
                 Join<Gestiones, Nota> notaJoin = criteriaBuilder.treat(clasificacionGestionJoin, Nota.class);
 
                 try {
-                    Date fecha = Functions.fechaDateToString("01/02/2024 00:00");
+                    Date fecha = Functions.fechaDateToStringNormal("2024-02-01 00:00:00");
                     
                     System.out.println(fecha);
                     System.out.println(fecha.toString());
