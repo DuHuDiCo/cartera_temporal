@@ -73,8 +73,8 @@ public class CuentaPorCobrarSpecification {
                         System.out.println(fecha.toString());
                         predicates.add(criteriaBuilder.and(
                                 criteriaBuilder.equal(acuerdoPagoJoin.get("nombresClasificacion").get("idNombreClasificacion"), filtro.getClasificacionGestion().getId()),
-                                criteriaBuilder.greaterThan(gestionesJoin.get("fechaGestion"), fecha),
-                                criteriaBuilder.isTrue(acuerdoPagoJoin.get("isActive"))
+                                criteriaBuilder.greaterThan(gestionesJoin.get("fechaGestion"), fecha)
+//                                criteriaBuilder.isTrue(acuerdoPagoJoin.get("isActive"))
                         ));
                     } catch (ParseException ex) {
                         Logger.getLogger(CuentaPorCobrarSpecification.class.getName()).log(Level.SEVERE, null, ex);
@@ -116,8 +116,8 @@ public class CuentaPorCobrarSpecification {
                         System.out.println(fecha.toString());
                         predicates.add(criteriaBuilder.and(
                                 criteriaBuilder.equal(tareaJoin.get("nombresClasificacion").get("idNombreClasificacion"), filtro.getClasificacionGestion().getId()),
-                                criteriaBuilder.greaterThan(gestionesJoin.get("fechaGestion"), fecha),
-                                criteriaBuilder.isTrue(tareaJoin.get("isActive"))
+                                criteriaBuilder.greaterThan(gestionesJoin.get("fechaGestion"), fecha)
+//                                criteriaBuilder.isTrue(tareaJoin.get("isActive"))
                         ));
                     } catch (ParseException ex) {
                         Logger.getLogger(CuentaPorCobrarSpecification.class.getName()).log(Level.SEVERE, null, ex);
