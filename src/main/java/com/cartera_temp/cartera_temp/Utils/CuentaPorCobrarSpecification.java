@@ -59,6 +59,7 @@ public class CuentaPorCobrarSpecification {
                 if (filtro.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.ACUERDODEPAGO.getDato())) {
 
                     try {
+                        System.out.println("entro en acuerdo de pago");
                         System.out.println(TipoClasificacion.ACUERDODEPAGO.getDato());
                         query.distinct(true);
                         Join<CuentasPorCobrar, Gestiones> gestionesJoin = root.join("gestiones");
@@ -78,6 +79,7 @@ public class CuentaPorCobrarSpecification {
 
                 if (filtro.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.NOTA.getDato())) {
                     try {
+                        System.out.println("entro en nota");
                         System.out.println(TipoClasificacion.NOTA.getDato());
                         query.distinct(true);
                         Join<CuentasPorCobrar, Gestiones> gestionesJoin = root.join("gestiones");
@@ -98,6 +100,7 @@ public class CuentaPorCobrarSpecification {
                 if (filtro.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.TAREA.getDato())) {
 
                     try {
+                        System.out.println("entro en tarea");
                         System.out.println(TipoClasificacion.TAREA.getDato());
                         System.out.println(Functions.fechaConHora(filtro.getFechaGestionInicio(), "inicio"));
                         System.out.println(filtro.getFechaGestionFin());
