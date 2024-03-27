@@ -58,16 +58,18 @@ public class CuentaPorCobrarSpecification {
                 Join<CuentasPorCobrar, Gestiones> gestionesJoin = root.join("gestiones");
                 Join<Gestiones, ClasificacionGestion> clasificacionGestionJoin = gestionesJoin.join("clasificacionGestion");
                 Join<Gestiones, Nota> notaJoin = criteriaBuilder.treat(clasificacionGestionJoin, Nota.class);
-                Join<Nota, NombresClasificacion> nombresClasificacionJoin = notaJoin.join("nombresClasificacion");
+
                 //                Join<Gestiones, Tarea> tareaJoin = criteriaBuilder.treat(clasificacionGestionJoin, Tarea.class);
 //                predicates.add(criteriaBuilder.isTrue(tareaJoin.get("isActive")));
                 try {
                     predicates.add(criteriaBuilder.greaterThan(notaJoin.get("fechaNota"), Functions.fechaDateToString("01/02/2024 00:00")));
+                    Join<Nota, NombresClasificacion> nombresClasificacionJoin = notaJoin.join("nombresClasificacion");
+                    predicates.add(criteriaBuilder.equal(nombresClasificacionJoin.get("idNombreClasificacion"), filtro.getClasificacionGestion().getId()));
+                    query.distinct(true);
                 } catch (ParseException ex) {
                     Logger.getLogger(CuentaPorCobrarSpecification.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                predicates.add(criteriaBuilder.equal(nombresClasificacionJoin.get("idNombreClasificacion"), filtro.getClasificacionGestion().getId()));
-                query.distinct(true);
+
 //                if (filtro.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.ACUERDODEPAGO.getDato())) {
 //                    System.out.println("ACUERDO");
 //                    System.out.println(filtro.getClasificacionGestion().getNombreClasificacion());
