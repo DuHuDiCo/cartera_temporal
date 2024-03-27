@@ -55,7 +55,7 @@ public class CuentaPorCobrarSpecification {
 
             if (Objects.nonNull(filtro.getClasificacionGestion())) {
                 predicates.clear();
-
+                boolean active = true;
                 if (filtro.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.ACUERDODEPAGO.getDato())) {
 
                     System.out.println("ACUERDO");
@@ -64,7 +64,6 @@ public class CuentaPorCobrarSpecification {
                     Join<Gestiones, ClasificacionGestion> clasificacionGestionJoin = gestionesJoin.join("clasificacionGestion");
                     Join<Gestiones, AcuerdoPago> acuerdoPagoJoin = criteriaBuilder.treat(clasificacionGestionJoin, AcuerdoPago.class);
 
-                    boolean active = true;
                     predicates.add(criteriaBuilder.and(
                             criteriaBuilder.equal(clasificacionGestionJoin.get("clasificacion"), filtro.getClasificacionGestion().getTipoClasificacion()),
                             criteriaBuilder.between(gestionesJoin.get("fechaGestion"), filtro.getFechaGestionInicio(), filtro.getFechaGestionFin()),
@@ -100,7 +99,7 @@ public class CuentaPorCobrarSpecification {
                     predicates.add(criteriaBuilder.and(
                             criteriaBuilder.equal(nombresClasificacionJoin.get("idNombreClasificacion"), filtro.getClasificacionGestion().getId()),
                             criteriaBuilder.between(gestionesJoin.get("fechaGestion"), filtro.getFechaGestionInicio(), filtro.getFechaGestionFin()),
-                            criteriaBuilder.isTrue(tareaJoin.get("isActive"))
+                            criteriaBuilder.equal(tareaJoin.get("isActive"), active)
                     ));
                 }
 
