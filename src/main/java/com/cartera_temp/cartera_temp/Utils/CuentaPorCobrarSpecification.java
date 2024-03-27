@@ -54,21 +54,33 @@ public class CuentaPorCobrarSpecification {
             }
 
             if (Objects.nonNull(filtro.getClasificacionGestion())) {
-
-                Join<CuentasPorCobrar, Gestiones> gestionesJoin = root.join("gestiones");
-                Join<Gestiones, ClasificacionGestion> clasificacionGestionJoin = gestionesJoin.join("clasificacionGestion");
-                Join<Gestiones, Nota> notaJoin = criteriaBuilder.treat(clasificacionGestionJoin, Nota.class);
-
-                //                Join<Gestiones, Tarea> tareaJoin = criteriaBuilder.treat(clasificacionGestionJoin, Tarea.class);
-//                predicates.add(criteriaBuilder.isTrue(tareaJoin.get("isActive")));
+                
+                query.distinct(true);
+                root.join("gestiones");
+                root.join("gestiones").join("clasificacionGestion");
+                root.join("gestiones").join("nota");
+                 root.join("gestiones").join("nota").join("nombresClasificacion");
+                 
                 try {
-                    predicates.add(criteriaBuilder.greaterThan(notaJoin.get("fechaNota"), Functions.fechaDateToString("01/02/2024 00:00")));
-                    Join<Nota, NombresClasificacion> nombresClasificacionJoin = notaJoin.join("nombresClasificacion");
-                    predicates.add(criteriaBuilder.equal(nombresClasificacionJoin.get("idNombreClasificacion"), filtro.getClasificacionGestion().getId()));
-                    query.distinct(true);
-                } catch (ParseException ex) {
-                    Logger.getLogger(CuentaPorCobrarSpecification.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                    predicates.add(criteriaBuilder.and(
+                            criteriaBuilder.equal(root.get("nombresClasificacion").get("idNombreClasificacion"), filtro.getClasificacionGestion().getId()),
+                            criteriaBuilder.greaterThan(root.get("gestiones").get("fechaGestion"),Functions.fechaDateToString("01/02/2024 00:00"))
+                    ));
+                    
+//                Join<CuentasPorCobrar, Gestiones> gestionesJoin = root.join("gestiones");
+//                Join<Gestiones, ClasificacionGestion> clasificacionGestionJoin = gestionesJoin.join("clasificacionGestion");
+//                Join<Gestiones, Nota> notaJoin = criteriaBuilder.treat(clasificacionGestionJoin, Nota.class);
+//
+//                //                Join<Gestiones, Tarea> tareaJoin = criteriaBuilder.treat(clasificacionGestionJoin, Tarea.class);
+////                predicates.add(criteriaBuilder.isTrue(tareaJoin.get("isActive")));
+//                try {
+//                    predicates.add(criteriaBuilder.greaterThan(notaJoin.get("fechaNota"), Functions.fechaDateToString("01/02/2024 00:00")));
+//                    Join<Nota, NombresClasificacion> nombresClasificacionJoin = notaJoin.join("nombresClasificacion");
+//                    predicates.add(criteriaBuilder.equal(nombresClasificacionJoin.get("idNombreClasificacion"), filtro.getClasificacionGestion().getId()));
+//                    query.distinct(true);
+//                } catch (ParseException ex) {
+//                    Logger.getLogger(CuentaPorCobrarSpecification.class.getName()).log(Level.SEVERE, null, ex);
+//                }
 
 //                if (filtro.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.ACUERDODEPAGO.getDato())) {
 //                    System.out.println("ACUERDO");
@@ -102,6 +114,9 @@ public class CuentaPorCobrarSpecification {
 //                    predicates.add(criteriaBuilder.equal(tareaJoin.get("nombresClasificacion").get("nombre"), filtro.getClasificacionGestion().getNombreClasificacion()));
 //
 //                }
+                } catch (ParseException ex) {
+                    Logger.getLogger(CuentaPorCobrarSpecification.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
 
             if (filtro.getFechaCpcInicio() != null && filtro.getFechaCpcFin() != null) {
