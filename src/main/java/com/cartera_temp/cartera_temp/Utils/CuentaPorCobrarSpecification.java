@@ -60,7 +60,7 @@ public class CuentaPorCobrarSpecification {
 
                     try {
                         System.out.println("entro en acuerdo de pago");
-                        System.out.println(TipoClasificacion.ACUERDODEPAGO.getDato());
+                        System.out.println(filtro.getClasificacionGestion().getTipoClasificacion());
                         query.distinct(true);
                         Join<CuentasPorCobrar, Gestiones> gestionesJoin = root.join("gestiones");
                         Join<Gestiones, ClasificacionGestion> clasificacionGestionJoin = gestionesJoin.join("clasificacionGestion");
@@ -80,7 +80,7 @@ public class CuentaPorCobrarSpecification {
                 if (filtro.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.NOTA.getDato())) {
                     try {
                         System.out.println("entro en nota");
-                        System.out.println(TipoClasificacion.NOTA.getDato());
+                        System.out.println(filtro.getClasificacionGestion().getTipoClasificacion());
                         query.distinct(true);
                         Join<CuentasPorCobrar, Gestiones> gestionesJoin = root.join("gestiones");
                         Join<Gestiones, ClasificacionGestion> clasificacionGestionJoin = gestionesJoin.join("clasificacionGestion");
@@ -101,7 +101,7 @@ public class CuentaPorCobrarSpecification {
 
                     try {
                         System.out.println("entro en tarea");
-                        System.out.println(TipoClasificacion.TAREA.getDato());
+                        System.out.println(filtro.getClasificacionGestion().getTipoClasificacion());
                         System.out.println(Functions.fechaConHora(filtro.getFechaGestionInicio(), "inicio"));
                         System.out.println(filtro.getFechaGestionFin());
                         query.distinct(true);
