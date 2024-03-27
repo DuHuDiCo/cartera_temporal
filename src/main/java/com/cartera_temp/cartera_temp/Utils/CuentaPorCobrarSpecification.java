@@ -70,9 +70,9 @@ public class CuentaPorCobrarSpecification {
                         System.out.println(fecha);
                         System.out.println(fecha.toString());
                         predicates.add(criteriaBuilder.and(
-                                criteriaBuilder.equal(nombresClasificacionJoin.get("idNombreClasificacion"), filtro.getClasificacionGestion().getId()),
-                                criteriaBuilder.greaterThan(gestionesJoin.get("fechaGestion"), fecha),
-                                criteriaBuilder.equal(acuerdoPagoJoin.get("tipoAcuerdo"), "MORA")
+                                criteriaBuilder.equal(nombresClasificacionJoin.get("idNombreClasificacion"), filtro.getClasificacionGestion().getId())
+//                                criteriaBuilder.greaterThan(gestionesJoin.get("fechaGestion"), fecha),
+//                                criteriaBuilder.equal(acuerdoPagoJoin.get("tipoAcuerdo"), "MORA")
                         ));
                     } catch (ParseException ex) {
                         Logger.getLogger(CuentaPorCobrarSpecification.class.getName()).log(Level.SEVERE, null, ex);
