@@ -539,17 +539,17 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             Usuario usuFiltro = new Usuario();
             Specification<CuentasPorCobrar> spec = null;
             if (!dto.getUsername().isBlank()) {
-                System.out.println("username no blank");
+              
                 usuFiltro = usuarioClient.getUserByUsername(dto.getUsername());
                 spec = CuentaPorCobrarSpecification.filtrarCuentas(dto, usuFiltro.getIdUsuario());
             } else {
-                System.out.println("username blank");
+                
                 spec = CuentaPorCobrarSpecification.filtrarCuentas(dto, 0L);
 
             }
             cpc = cuentasPorCobrarRepository.findAll(spec, pageable);
             var list = CollectionUtils.isEmpty(cpc.getContent()) ? null : cpc.getTotalElements();
-            System.out.println("Lista---" + list);
+            
 
         } else {
 
@@ -566,7 +566,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             try {
                 cpc = cuentasPorCobrarRepository.obtenerCuentasByFechaCompromiso(Functions.stringToDateAndFormat(dto.getFechaCompromisoInicio()), asesor.getIdAsesorCartera(), pageable);
                 var list = CollectionUtils.isEmpty(cpc.getContent()) ? null : cpc.getContent().size();
-                System.out.println("Lista---" + list);
+                
 
             } catch (ParseException ex) {
                 Logger.getLogger(CuentaPorCobrarServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
