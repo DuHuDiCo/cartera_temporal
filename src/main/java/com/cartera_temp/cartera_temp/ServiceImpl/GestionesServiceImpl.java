@@ -720,11 +720,12 @@ public class GestionesServiceImpl implements GestionesService {
 
         AlertsGestiones alerts = new AlertsGestiones();
 
-        alerts.setGestionesRealizadas(gestionesRepository.gestionesByAsesor(fechaInicialMes, fechaFinalMes, asesor.getIdAsesorCartera()).size());
-        alerts.setAcuerdosDePagosRealizados(gestionesRepository.acuerdosPagoRealizados(asesor.getIdAsesorCartera(), "ACUERDO DE PAGO", fechaInicialMes, fechaFinalMes).size());
-        alerts.setAcuerdosDePagosActivos(gestionesRepository.acuerdoPagoActivos(asesor.getIdAsesorCartera(), "ACUERDO DE PAGO", fechaInicialMes, fechaFinalMes).size());
-        alerts.setGestionesDia(gestionesRepository.gestionesByAsesor(fechaInicialDia, fechaFinalDia,asesor.getIdAsesorCartera()).size());
-        alerts.setAcuerdoPagoDia(gestionesRepository.acuerdosPagoRealizados(asesor.getIdAsesorCartera(), "ACUERDO DE PAGO", fechaInicialDia, fechaFinalDia).size());
+        List<CuentasPorCobrar> gestionesByAsesor = cuentaCobrarRepository.gestionesByAsesor(fechaInicialMes, fechaFinalMes, asesor.getIdAsesorCartera());
+        alerts.setGestionesRealizadas(gestionesByAsesor.size());
+        alerts.setAcuerdosDePagosRealizados(cuentaCobrarRepository.acuerdosPagoRealizados(asesor.getIdAsesorCartera(), "ACUERDO DE PAGO", fechaInicialMes, fechaFinalMes).size());
+        alerts.setAcuerdosDePagosActivos(cuentaCobrarRepository.acuerdoPagoActivos(asesor.getIdAsesorCartera(), "ACUERDO DE PAGO", fechaInicialMes, fechaFinalMes).size());
+        alerts.setGestionesDia(cuentaCobrarRepository.gestionesByAsesor(fechaInicialDia, fechaFinalDia,asesor.getIdAsesorCartera()).size());
+        alerts.setAcuerdoPagoDia(cuentaCobrarRepository.acuerdosPagoRealizados(asesor.getIdAsesorCartera(), "ACUERDO DE PAGO", fechaInicialDia, fechaFinalDia).size());
         alerts.setCuentasAsignadas(cuentaCobrarRepository.gestionesAsignadasByAsesorCount(asesor.getIdAsesorCartera()).size());
         alerts.setCuentasSinGestion(cuentaCobrarRepository.gestionesSinGestion(asesor.getIdAsesorCartera(), fechaInicialMes).size());
         alerts.setCuentasTotales(cuentaCobrarRepository.gestionesAsignadasByAsesorCountTotal(asesor.getIdAsesorCartera()).size());

@@ -60,4 +60,17 @@ public interface CuentasPorCobrarRepository extends JpaRepository<CuentasPorCobr
 
     @Query(value = "SELECT DISTINCT clasificacion_juridica.clasificacion_juridica FROM `cuentas_por_cobrar` INNER JOIN clasificacion_juridica ON cuentas_por_cobrar.clasificacion_juridica_id = clasificacion_juridica.id_clasificacion_juridica WHERE cuentas_por_cobrar.asesor_cartera_id = :idAsesor ORDER BY clasificacion_juridica.clasificacion_juridica ASC", nativeQuery = true)
     List<String> clasificacionJuridicaByUsuario(@Param("idAsesor") Long idAsesor );
+    
+     @Query(value = "SELECT DISTINCT cuentas_por_cobrar.* FROM cuentas_por_cobrar JOIN gestiones ON gestiones.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar WHERE gestiones.fecha_gestion BETWEEN :fechaInicial AND :fechaFin AND cuentas_por_cobrar.asesor_cartera_id = :id_asesor AND cuentas_por_cobrar.mora_obligatoria > 0", nativeQuery = true)
+    List<CuentasPorCobrar> gestionesByAsesor(@Param("fechaInicial") Date fechaIncial, @Param("fechaFin") Date fechaFin,@Param("id_asesor")long idAsesor);
+    
+    
+    @Query(value = "SELECT DISTINCT cuentas_por_cobrar.* FROM cuentas_por_cobrar JOIN gestiones ON gestiones.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar JOIN clasificacion_gestion ON gestiones.clasificacion_gestion_id = clasificacion_gestion.id_clasificacion_gestion JOIN acuerdo_pago ON acuerdo_pago.id_clasificacion_gestion = clasificacion_gestion.id_clasificacion_gestion WHERE cuentas_por_cobrar.asesor_cartera_id = :id_asesor AND clasificacion_gestion.clasificacion = :clasificacion AND acuerdo_pago.fecha_acuerdo BETWEEN :fechaInicial AND :fechaFin",
+           nativeQuery = true)
+    List<CuentasPorCobrar> acuerdosPagoRealizados(  @Param("id_asesor")long idAsesor,@Param("clasificacion") String clasificacion,@Param("fechaInicial") Date fechaInicial,@Param("fechaFin") Date fechaFin );
+    
+    @Query(value = "SELECT DISTINCT cuentas_por_cobrar.* FROM cuentas_por_cobrar JOIN gestiones ON gestiones.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar JOIN clasificacion_gestion ON gestiones.clasificacion_gestion_id = clasificacion_gestion.id_clasificacion_gestion JOIN acuerdo_pago ON acuerdo_pago.id_clasificacion_gestion = clasificacion_gestion.id_clasificacion_gestion WHERE cuentas_por_cobrar.asesor_cartera_id = :id_asesor AND clasificacion_gestion.clasificacion = :clasificacion AND acuerdo_pago.fecha_acuerdo BETWEEN :fechaInicial AND :fechaFin AND acuerdo_pago.is_active = true",
+           nativeQuery = true)
+    List<CuentasPorCobrar> acuerdoPagoActivos(@Param("id_asesor")long idAsesor,@Param("clasificacion") String clasificacion,@Param("fechaInicial") Date fechaInicial,@Param("fechaFin") Date fechaFin);
+    
 }
