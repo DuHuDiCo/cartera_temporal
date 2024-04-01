@@ -596,7 +596,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
 
             List<ClientesDto> clientes = clientesClient.buscarClientesByNumeroObligacion(cuentasPorCobrar.getDocumentoCliente(), token);
             cpcResFor.setClientes(clientes);
-            cpcResFor.setGestion(organizarGestiones(cuentasPorCobrar.getGestiones()));
+            cpcResFor.setGestion(organizarGestiones(cuentasPorCobrar.getGestiones(), dto) );
             
             
             cpcRes.add(cpcResFor);
@@ -675,13 +675,14 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
     }
     
     
-    private List<Gestiones> organizarGestiones(List<Gestiones> gestionesDesorganizadas){
+    private List<Gestiones> organizarGestiones(List<Gestiones> gestionesDesorganizadas, FiltroDto filtro){
         
         List<Gestiones> gestionesOrganizadas = new ArrayList<>();
         
          List<Gestiones> gestionesNotas = gestionesDesorganizadas.stream().filter(ges-> {
             if(ges.getClasificacionGestion() instanceof Nota){
-                return ges.getClasificacionGestion().getClasificacion().equals(TipoClasificacion.NOTA.getDato());
+                Nota nota = (Nota) ges.getClasificacionGestion();
+                return ges.getClasificacionGestion().getClasificacion().equals(TipoClasificacion.NOTA.getDato()) && nota.getNombresClasificacion().getIdNombreClasificacion().equals(filtro.getClasificacionGestion().getId());
             }
             return false;
         }).collect(Collectors.toList());
@@ -692,7 +693,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
          List<Gestiones> gestionesTareas = gestionesDesorganizadas.stream().filter(ges-> {
             if(ges.getClasificacionGestion() instanceof Tarea){
                 Tarea tarea = (Tarea) ges.getClasificacionGestion();
-                return tarea.isIsActive();
+                return tarea.isIsActive() && tarea.getNombresClasificacion().getIdNombreClasificacion().equals(filtro.getClasificacionGestion().getId());
             }
             return false;
         }).collect(Collectors.toList());
