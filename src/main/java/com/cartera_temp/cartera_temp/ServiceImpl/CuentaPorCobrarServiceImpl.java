@@ -711,6 +711,10 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
 
             gestionesNotas.forEach(ges -> gestionesOrganizadas.add(ges));
         }
+        
+        if(CollectionUtils.isEmpty(gestionesOrganizadas)){
+            gestionesOrganizadas = gestionesDesorganizadas;
+        }
         return gestionesOrganizadas;
     }
 
