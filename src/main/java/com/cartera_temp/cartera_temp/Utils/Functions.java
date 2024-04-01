@@ -45,8 +45,6 @@ public class Functions {
         }
 
     }
-    
-    
 
     public static String dateToString(Date fecha) throws ParseException {
         try {
@@ -181,7 +179,6 @@ public class Functions {
     public static Date fechaDateToStringNormal(String fecha) throws ParseException {
 
         SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        
 
         Date fechaOk = formato.parse(fecha);
 
@@ -209,7 +206,7 @@ public class Functions {
         return (int) dias;
     }
 
-    public static Date obtenerFechaInicalMes() {
+    public static Date obtenerFechaInicalMes(int dia) {
 
         // Obtener la fecha actual
         Date fechaActual = new Date();
@@ -219,7 +216,7 @@ public class Functions {
         calendar.setTime(fechaActual);
 
         // Establecer el día del mes en 1
-        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        calendar.set(Calendar.DAY_OF_MONTH, dia);
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
@@ -274,5 +271,45 @@ public class Functions {
                 || fecha.equals(fechaInicioRango) || fecha.equals(fechaFinRango);
 
         return false;
+    }
+
+    public static Date obtenerFechaInicialFinalMes(boolean obtenerFechaInicial, String mesOrDay) {
+        Date fecha = new Date();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(fecha);
+
+        switch (mesOrDay) {
+            case "MES":
+                // Si el indicador es verdadero, obtener la fecha inicial del mes
+                if (obtenerFechaInicial) {
+                    cal.set(Calendar.DAY_OF_MONTH, 1); // Establecer el día del mes como 1
+                    cal.set(Calendar.HOUR_OF_DAY, 0); // Establecer las horas a 0
+                    cal.set(Calendar.MINUTE, 0); // Establecer los minutos a 0
+                    cal.set(Calendar.SECOND, 0); // Establecer los segundos a 0
+                    cal.set(Calendar.MILLISECOND, 0); // Establecer los milisegundos a 0
+                } else { // Si el indicador es falso, obtener la fecha final del mes
+                    cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH)); // Establecer el día del mes como el último día del mes
+                    cal.set(Calendar.HOUR_OF_DAY, 23); // Establecer las horas a 23
+                    cal.set(Calendar.MINUTE, 59); // Establecer los minutos a 59
+                    cal.set(Calendar.SECOND, 59); // Establecer los segundos a 59
+                    cal.set(Calendar.MILLISECOND, 999); // Establecer los milisegundos a 999
+                }
+                break;
+            case "DIA":
+                // Si el indicador es verdadero, obtener la fecha inicial del mes
+                if (obtenerFechaInicial) {
+                    cal.set(Calendar.HOUR_OF_DAY, 0); // Establecer las horas a 0
+                    cal.set(Calendar.MINUTE, 0); // Establecer los minutos a 0
+                    cal.set(Calendar.SECOND, 0); // Establecer los segundos a 0
+                    cal.set(Calendar.MILLISECOND, 0); // Establecer los milisegundos a 0
+                } else { // Si el indicador es falso, obtener el final del día
+                    cal.set(Calendar.HOUR_OF_DAY, 23); // Establecer las horas a 23
+                    cal.set(Calendar.MINUTE, 59); // Establecer los minutos a 59
+                    cal.set(Calendar.SECOND, 59); // Establecer los segundos a 59
+                    cal.set(Calendar.MILLISECOND, 999); // Establecer los milisegundos a 999
+                }
+
+        }
+        return cal.getTime(); // Devolver la fecha resultante
     }
 }

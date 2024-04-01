@@ -700,13 +700,13 @@ public class GestionesServiceImpl implements GestionesService {
     @Override
     public AlertsGestiones alertasDeGestiones(String username, String fecha) {
 
-        String[] fechaHraSplit = fecha.split("T");
-
-        String[] fechaSplit = fechaHraSplit[0].split("-");
-
-        String fechaMes = fechaSplit[0].concat("-").concat(fechaSplit[1]).concat("-").concat("01");
-
-        String fechaDIa = fechaSplit[0].concat("-").concat(fechaSplit[1]).concat("-").concat(fechaSplit[2]);
+    
+        
+        Date fechaInicialMes = Functions.obtenerFechaInicialFinalMes(true, "MES");
+        Date fechaFinalMes = Functions.obtenerFechaInicialFinalMes(false, "MES");
+        
+        Date fechaInicialDia = Functions.obtenerFechaInicialFinalMes(true, "DIA");
+        Date fechaFinalDia = Functions.obtenerFechaInicialFinalMes(false, "DIA");
 
         Usuario usuario = usuarioClientService.obtenerUsuario(username);
         if (Objects.isNull(usuario)) {
@@ -720,36 +720,19 @@ public class GestionesServiceImpl implements GestionesService {
 
         AlertsGestiones alerts = new AlertsGestiones();
 
-        try {
-            alerts.setGestionesRealizadas(gestionesRepository.gestionesByAsesor(Functions.stringToDateAndFormat(fechaMes), asesor.getIdAsesorCartera()));
-            alerts.setAcuerdosDePagosRealizados(gestionesRepository.acuerdosPagoRealizados(Functions.stringToDateAndFormat(fechaMes), "ACUERDO DE PAGO", asesor.getIdAsesorCartera()));
-            alerts.setAcuerdosDePagosActivos(gestionesRepository.acuerdoPagoActivos(Functions.stringToDateAndFormat(fechaMes), "ACUERDO DE PAGO", asesor.getIdAsesorCartera()));
-            alerts.setGestionesDia(gestionesRepository.gestionesByAsesor(Functions.stringToDateAndFormat(fechaDIa), asesor.getIdAsesorCartera()));
-            alerts.setAcuerdoPagoDia(gestionesRepository.acuerdosPagoRealizados(Functions.stringToDateAndFormat(fechaDIa), "ACUERDO DE PAGO", asesor.getIdAsesorCartera()));
-            alerts.setCuentasAsignadas(cuentaCobrarRepository.gestionesAsignadasByAsesorCount(asesor.getIdAsesorCartera()));
-            alerts.setCuentasSinGestion(contarCuentasSinGestion(cuentaCobrarRepository.gestionesAsignadasByAsesor(asesor.getIdAsesorCartera())));
-        } catch (ParseException ex) {
-            Logger.getLogger(GestionesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        alerts.setGestionesRealizadas(gestionesRepository.gestionesByAsesor(fechaInicialMes, fechaFinalMes, asesor.getIdAsesorCartera()).size());
+        alerts.setAcuerdosDePagosRealizados(gestionesRepository.acuerdosPagoRealizados(asesor.getIdAsesorCartera(), "ACUERDO DE PAGO", fechaInicialMes, fechaFinalMes).size());
+        alerts.setAcuerdosDePagosActivos(gestionesRepository.acuerdoPagoActivos(asesor.getIdAsesorCartera(), "ACUERDO DE PAGO", fechaInicialMes, fechaFinalMes).size());
+        alerts.setGestionesDia(gestionesRepository.gestionesByAsesor(fechaInicialDia, fechaFinalDia,asesor.getIdAsesorCartera()).size());
+        alerts.setAcuerdoPagoDia(gestionesRepository.acuerdosPagoRealizados(asesor.getIdAsesorCartera(), "ACUERDO DE PAGO", fechaInicialDia, fechaFinalDia).size());
+        alerts.setCuentasAsignadas(cuentaCobrarRepository.gestionesAsignadasByAsesorCount(asesor.getIdAsesorCartera()).size());
+        alerts.setCuentasSinGestion(cuentaCobrarRepository.gestionesSinGestion(asesor.getIdAsesorCartera(), fechaInicialMes).size());
+        alerts.setCuentasTotales(cuentaCobrarRepository.gestionesAsignadasByAsesorCountTotal(asesor.getIdAsesorCartera()).size());
 
         return alerts;
     }
 
-    private int contarCuentasSinGestion(List<CuentasPorCobrar> cuentas) {
-        int cuentasSinGestion = 0;
-
-        for (CuentasPorCobrar cuenta : cuentas) {
-
-            for (Gestiones gestione : cuenta.getGestiones()) {
-                if (!Functions.validarFechaPertenece(gestione.getFechaGestion())) {
-                    cuentasSinGestion++;
-                    break;
-                }
-            }
-
-        }
-        return cuentasSinGestion;
-    }
+    
 
     @Override
     public boolean desactivarGestiones(Long idGestion) {

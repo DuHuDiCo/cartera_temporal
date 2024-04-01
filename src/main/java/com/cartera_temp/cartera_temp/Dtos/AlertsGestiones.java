@@ -17,6 +17,8 @@ public class AlertsGestiones {
     private int cuentasAsignadas;
     
     private int cuentasSinGestion;
+    
+    private int cuentasTotales;
 
     public AlertsGestiones() {
     }
@@ -75,6 +77,14 @@ public class AlertsGestiones {
 
     public void setCuentasSinGestion(int cuentasSinGestion) {
         this.cuentasSinGestion = cuentasSinGestion;
+    }
+
+    public int getCuentasTotales() {
+        return cuentasTotales;
+    }
+
+    public void setCuentasTotales(int cuentasTotales) {
+        this.cuentasTotales = cuentasTotales;
     }
     
     
