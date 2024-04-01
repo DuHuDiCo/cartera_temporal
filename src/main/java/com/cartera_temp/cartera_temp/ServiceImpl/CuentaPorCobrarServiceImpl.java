@@ -713,7 +713,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
         }
         
         if(CollectionUtils.isEmpty(gestionesOrganizadas)){
-            gestionesOrganizadas = gestionesDesorganizadas;
+            return gestionesDesorganizadas;
         }
         return gestionesOrganizadas;
     }
