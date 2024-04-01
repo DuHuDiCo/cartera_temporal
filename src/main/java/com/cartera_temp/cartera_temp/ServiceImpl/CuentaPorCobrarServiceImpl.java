@@ -596,12 +596,10 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
 
             List<ClientesDto> clientes = clientesClient.buscarClientesByNumeroObligacion(cuentasPorCobrar.getDocumentoCliente(), token);
             cpcResFor.setClientes(clientes);
-            cpcResFor.setGestion(organizarGestiones(cuentasPorCobrar.getGestiones(), dto) );
-            
-            
+            cpcResFor.setGestion(organizarGestiones(cuentasPorCobrar.getGestiones(), dto));
+
             cpcRes.add(cpcResFor);
 
-            
         }
 
         Page<CuentasPorCobrarResponse> cuentasPage = new PageImpl(cpcRes, pageable, cpc.getTotalElements());
@@ -673,43 +671,46 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
         return cuentasPage;
 
     }
-    
-    
-    private List<Gestiones> organizarGestiones(List<Gestiones> gestionesDesorganizadas, FiltroDto filtro){
-        
+
+    private List<Gestiones> organizarGestiones(List<Gestiones> gestionesDesorganizadas, FiltroDto filtro) {
+
         List<Gestiones> gestionesOrganizadas = new ArrayList<>();
-        
-         List<Gestiones> gestionesNotas = gestionesDesorganizadas.stream().filter(ges-> {
-            if(ges.getClasificacionGestion() instanceof Nota){
-                Nota nota = (Nota) ges.getClasificacionGestion();
-                return ges.getClasificacionGestion().getClasificacion().equals(TipoClasificacion.NOTA.getDato()) && nota.getNombresClasificacion().getIdNombreClasificacion().equals(filtro.getClasificacionGestion().getId());
-            }
-            return false;
-        }).collect(Collectors.toList());
-        
-         gestionesNotas.forEach(ges-> gestionesOrganizadas.add( ges));
-        
-               
-         List<Gestiones> gestionesTareas = gestionesDesorganizadas.stream().filter(ges-> {
-            if(ges.getClasificacionGestion() instanceof Tarea){
-                Tarea tarea = (Tarea) ges.getClasificacionGestion();
-                return tarea.isIsActive() && tarea.getNombresClasificacion().getIdNombreClasificacion().equals(filtro.getClasificacionGestion().getId());
-            }
-            return false;
-        }).collect(Collectors.toList());
-        
-         gestionesTareas.forEach(ges-> gestionesOrganizadas.add( ges));
-         
-         List<Gestiones> gestionesAcuerdos = gestionesDesorganizadas.stream().filter(ges-> {
-            if(ges.getClasificacionGestion() instanceof AcuerdoPago){
-                AcuerdoPago acuerdo = (AcuerdoPago) ges.getClasificacionGestion();
-                return acuerdo.isIsActive();
-            }
-            return false;
-        }).collect(Collectors.toList());
-        
-        gestionesAcuerdos.forEach(ges-> gestionesOrganizadas.add( ges));
-         
+
+        if (filtro.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.ACUERDODEPAGO.getDato())) {
+            List<Gestiones> gestionesAcuerdos = gestionesDesorganizadas.stream().filter(ges -> {
+                if (ges.getClasificacionGestion() instanceof AcuerdoPago) {
+                    AcuerdoPago acuerdo = (AcuerdoPago) ges.getClasificacionGestion();
+                    return acuerdo.isIsActive();
+                }
+                return false;
+            }).collect(Collectors.toList());
+
+            gestionesAcuerdos.forEach(ges -> gestionesOrganizadas.add(ges));
+        }
+
+        if (filtro.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.TAREA.getDato())) {
+            List<Gestiones> gestionesTareas = gestionesDesorganizadas.stream().filter(ges -> {
+                if (ges.getClasificacionGestion() instanceof Tarea) {
+                    Tarea tarea = (Tarea) ges.getClasificacionGestion();
+                    return tarea.isIsActive() && tarea.getNombresClasificacion().getIdNombreClasificacion().equals(filtro.getClasificacionGestion().getId());
+                }
+                return false;
+            }).collect(Collectors.toList());
+
+            gestionesTareas.forEach(ges -> gestionesOrganizadas.add(ges));
+        }
+
+        if (filtro.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.NOTA.getDato())) {
+            List<Gestiones> gestionesNotas = gestionesDesorganizadas.stream().filter(ges -> {
+                if (ges.getClasificacionGestion() instanceof Nota) {
+                    Nota nota = (Nota) ges.getClasificacionGestion();
+                    return ges.getClasificacionGestion().getClasificacion().equals(TipoClasificacion.NOTA.getDato()) && nota.getNombresClasificacion().getIdNombreClasificacion().equals(filtro.getClasificacionGestion().getId());
+                }
+                return false;
+            }).collect(Collectors.toList());
+
+            gestionesNotas.forEach(ges -> gestionesOrganizadas.add(ges));
+        }
         return gestionesOrganizadas;
     }
 
