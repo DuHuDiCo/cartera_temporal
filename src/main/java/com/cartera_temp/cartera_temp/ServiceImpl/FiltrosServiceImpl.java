@@ -1,17 +1,12 @@
 package com.cartera_temp.cartera_temp.ServiceImpl;
 
-import com.cartera_temp.cartera_temp.Dtos.ClientesDto;
 import com.cartera_temp.cartera_temp.Dtos.ItemsFiltros;
-import com.cartera_temp.cartera_temp.FeignClients.ClientesClient;
 import com.cartera_temp.cartera_temp.FeignClients.usuario_client;
 import com.cartera_temp.cartera_temp.Models.AsesorCartera;
-import com.cartera_temp.cartera_temp.Models.ClasificacionJuridica;
-import com.cartera_temp.cartera_temp.Models.TiposVencimiento;
 import com.cartera_temp.cartera_temp.ModelsClients.Usuario;
 import com.cartera_temp.cartera_temp.Service.FiltrosService;
 import com.cartera_temp.cartera_temp.repository.AsesorCarteraRepository;
 import com.cartera_temp.cartera_temp.repository.CuentasPorCobrarRepository;
-import java.util.ArrayList;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Objects;

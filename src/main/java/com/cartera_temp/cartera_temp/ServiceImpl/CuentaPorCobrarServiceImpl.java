@@ -596,8 +596,12 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
 
             List<ClientesDto> clientes = clientesClient.buscarClientesByNumeroObligacion(cuentasPorCobrar.getDocumentoCliente(), token);
             cpcResFor.setClientes(clientes);
+            cpcResFor.setGestion(organizarGestiones(cuentasPorCobrar.getGestiones()));
+            
+            
             cpcRes.add(cpcResFor);
 
+            
         }
 
         Page<CuentasPorCobrarResponse> cuentasPage = new PageImpl(cpcRes, pageable, cpc.getTotalElements());
@@ -668,6 +672,51 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
         Page<CuentasPorCobrarResponse> cuentasPage = new PageImpl(cuentasResponse, pageable, pageCuentas.getTotalElements());
         return cuentasPage;
 
+    }
+    
+    
+    private List<Gestiones> organizarGestiones(List<Gestiones> gestionesDesorganizadas){
+        
+        List<Gestiones> gestionesOrganizadas = new ArrayList<>();
+        
+        for (Gestiones gestionesDesorganizada : gestionesDesorganizadas) {
+            if(gestionesDesorganizada.getClasificacionGestion() instanceof AcuerdoPago){
+                AcuerdoPago acuerdo = (AcuerdoPago) gestionesDesorganizada.getClasificacionGestion();
+                if(acuerdo.isIsActive()){
+                    gestionesOrganizadas.add(gestionesDesorganizada);
+                }
+                
+            }
+            
+            if(gestionesDesorganizada.getClasificacionGestion() instanceof Tarea){
+                Tarea tarea = (Tarea) gestionesDesorganizada.getClasificacionGestion();
+                if(tarea.isIsActive()){
+                    gestionesOrganizadas.add(gestionesDesorganizada);
+                }
+            }
+            
+              if(gestionesDesorganizada.getClasificacionGestion() instanceof Nota){
+                 gestionesOrganizadas.add(gestionesDesorganizada);
+              }
+              
+              
+              if(gestionesDesorganizada.getClasificacionGestion() instanceof AcuerdoPago){
+                AcuerdoPago acuerdo = (AcuerdoPago) gestionesDesorganizada.getClasificacionGestion();
+                if(!acuerdo.isIsActive()){
+                    gestionesOrganizadas.add(gestionesDesorganizada);
+                }
+                
+            }
+            
+            if(gestionesDesorganizada.getClasificacionGestion() instanceof Tarea){
+                Tarea tarea = (Tarea) gestionesDesorganizada.getClasificacionGestion();
+                if(!tarea.isIsActive()){
+                    gestionesOrganizadas.add(gestionesDesorganizada);
+                }
+            }
+              
+        }
+        return gestionesOrganizadas;
     }
 
 }
