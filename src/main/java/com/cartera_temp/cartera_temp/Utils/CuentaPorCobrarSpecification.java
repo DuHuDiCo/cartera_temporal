@@ -140,6 +140,8 @@ public class CuentaPorCobrarSpecification {
                 predicates.add(criteriaBuilder.equal(root.get("asesor").get("usuarioId"), idUsuario));
             }
 
+            query.orderBy(criteriaBuilder.desc(root.get("dias_vencidos")));
+            
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
 
         };
