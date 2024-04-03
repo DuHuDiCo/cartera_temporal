@@ -4,6 +4,7 @@ import java.util.Date;
 
 public class PagosDto {
 
+    private Long idPago;
     private double valorPago;
     private Date fechaPago;
     private double saldoCuota;
@@ -68,6 +69,14 @@ public class PagosDto {
 
     public void setExisted(boolean existed) {
         this.existed = existed;
+    }
+
+    public Long getIdPago() {
+        return idPago;
+    }
+
+    public void setIdPago(Long idPago) {
+        this.idPago = idPago;
     }
     
     
