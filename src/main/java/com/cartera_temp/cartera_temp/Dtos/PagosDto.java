@@ -10,7 +10,7 @@ public class PagosDto {
     private double capital;
     private double intereses;
     private double honorarios;
-
+    private boolean existed;
     public PagosDto() {
     }
 
@@ -60,6 +60,14 @@ public class PagosDto {
 
     public void setHonorarios(double honorarios) {
         this.honorarios = honorarios;
+    }
+
+    public boolean isExisted() {
+        return existed;
+    }
+
+    public void setExisted(boolean existed) {
+        this.existed = existed;
     }
     
     

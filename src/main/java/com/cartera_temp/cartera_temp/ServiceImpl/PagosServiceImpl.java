@@ -138,7 +138,7 @@ public class PagosServiceImpl implements PagosService {
 
             }
 
-            if (Objects.nonNull(cuotasDto.getPagosDto()) && Objects.nonNull(acuPag.getCuotasList().get(i).getPagos())) {
+            if (Objects.nonNull(cuotasDto.getPagosDto()) && Objects.nonNull(acuPag.getCuotasList().get(i).getPagos()) && !cuotasDto.getPagosDto().isExisted()) {
                 Pagos pago = acuPag.getCuotasList().get(i).getPagos();
                 pago.setFechaPago(cuotasDto.getPagosDto().getFechaPago());
                 pago.setSaldoCuota(cuotasDto.getPagosDto().getSaldoCuota());
