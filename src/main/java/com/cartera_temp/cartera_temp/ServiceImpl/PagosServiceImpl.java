@@ -114,9 +114,31 @@ public class PagosServiceImpl implements PagosService {
 
             CuotasDto cuotasDto = dto.getCuotasDto().get(i);
 
-            
+            if (Objects.nonNull(cuotasDto.getPagosDto()) && Objects.isNull(acuPag.getCuotasList().get(i).getPagos()) && !cuotasDto.getPagosDto().isExisted()) {
+                Pagos pago = new Pagos();
+                pago.setFechaPago(cuotasDto.getPagosDto().getFechaPago());
+                pago.setSaldoCuota(cuotasDto.getPagosDto().getSaldoCuota());
+                pago.setValorPago(cuotasDto.getPagosDto().getValorPago());
+                pago.setValorIntereses(cuotasDto.getPagosDto().getIntereses());
+                pago.setValorHonorarios(cuotasDto.getPagosDto().getHonorarios());
+                pago.setValorCapital(cuotasDto.getPagosDto().getCapital());
+                pago.setUsuarioId(usu.getIdUsuario());
+                pago.setDetalle(dto.getDetalle());
 
-            if (Objects.nonNull(cuotasDto.getPagosDto()) && Objects.nonNull(acuPag.getCuotasList().get(i).getPagos()) && !cuotasDto.getPagosDto().isExisted()) {
+                pago = pagosRespositoty.save(pago);
+
+                acuPag.getCuotasList().get(i).setPagos(pago);
+                acuPag.getCuotasList().get(i).setCapitalCuota(cuotasDto.getCapitalCuota());
+                acuPag.getCuotasList().get(i).setSaldoCapitalCuota(cuotasDto.getSaldoCapital());
+                acuPag.getCuotasList().get(i).setHonorarios(cuotasDto.getHonorarios());
+                acuPag.getCuotasList().get(i).setSaldoHonorarios(cuotasDto.getSaldoHonorario());
+                acuPag.getCuotasList().get(i).setInteresCuota(cuotasDto.getInteresCuota());
+                acuPag.getCuotasList().get(i).setSalodInteresCuota(cuotasDto.getSaldoIntereses());
+                acuPag.getCuotasList().get(i).setCumplio(cuotasDto.isCumplio());
+
+            }
+
+            if (Objects.nonNull(cuotasDto.getPagosDto()) && Objects.nonNull(acuPag.getCuotasList().get(i).getPagos()) && cuotasDto.getPagosDto().isExisted()) {
                 Pagos pago = acuPag.getCuotasList().get(i).getPagos();
                 pago.setFechaPago(cuotasDto.getPagosDto().getFechaPago());
                 pago.setSaldoCuota(cuotasDto.getPagosDto().getSaldoCuota());
