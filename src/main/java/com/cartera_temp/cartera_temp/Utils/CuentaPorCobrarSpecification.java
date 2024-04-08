@@ -72,6 +72,7 @@ public class CuentaPorCobrarSpecification {
                         ));
                     } catch (ParseException ex) {
                         Logger.getLogger(CuentaPorCobrarSpecification.class.getName()).log(Level.SEVERE, null, ex);
+                         System.out.println(ex.getMessage());
                     }
 
                 }
@@ -86,7 +87,9 @@ public class CuentaPorCobrarSpecification {
                         Join<Nota, NombresClasificacion> nombresClasificacionJoin = notaJoin.join("nombresClasificacion");
 
                         predicates.add(criteriaBuilder.and(
+                                criteriaBuilder.equal(clasificacionGestionJoin.get("clasificacion"), filtro.getClasificacionGestion().getTipoClasificacion()),
                                 criteriaBuilder.equal(nombresClasificacionJoin.get("idNombreClasificacion"), filtro.getClasificacionGestion().getId()),
+                                
                                 criteriaBuilder.between(gestionesJoin.get("fechaGestion"), Functions.fechaConHora(filtro.getFechaGestionInicio(), "inicio"), filtro.getFechaGestionFin())
                         ));
 
@@ -95,6 +98,7 @@ public class CuentaPorCobrarSpecification {
                         System.out.println(filtro.getClasificacionGestion().getId());
                     } catch (ParseException ex) {
                         Logger.getLogger(CuentaPorCobrarSpecification.class.getName()).log(Level.SEVERE, null, ex);
+                        System.out.println(ex.getMessage());
                     }
 
                 }
@@ -110,6 +114,7 @@ public class CuentaPorCobrarSpecification {
                         Join<Tarea, NombresClasificacion> nombresClasificacionJoin = tareaJoin.join("nombresClasificacion");
 
                         predicates.add(criteriaBuilder.and(
+                                criteriaBuilder.equal(clasificacionGestionJoin.get("clasificacion"), filtro.getClasificacionGestion().getTipoClasificacion()),
                                 criteriaBuilder.equal(nombresClasificacionJoin.get("idNombreClasificacion"), filtro.getClasificacionGestion().getId()),
                                 criteriaBuilder.between(gestionesJoin.get("fechaGestion"), Functions.fechaConHora(filtro.getFechaGestionInicio(), "inicio"), filtro.getFechaGestionFin())
                         //                            criteriaBuilder.equal(tareaJoin.get("isActive"), active)
@@ -119,6 +124,7 @@ public class CuentaPorCobrarSpecification {
                         System.out.println(filtro.getClasificacionGestion().getId());
                     } catch (ParseException ex) {
                         Logger.getLogger(CuentaPorCobrarSpecification.class.getName()).log(Level.SEVERE, null, ex);
+                         System.out.println(ex.getMessage());
                     }
                 }
 
