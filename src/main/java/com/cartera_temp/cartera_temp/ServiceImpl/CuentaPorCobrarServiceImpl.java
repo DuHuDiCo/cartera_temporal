@@ -551,7 +551,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             
             if(dto.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.TAREA.getDato())){
                 try {
-                    cpc = cuentasPorCobrarRepository.tareas(Functions.fechaConHora(dto.getFechaGestionInicio(), "inicio"), dto.getFechaGestionFin(), dto.getClasificacionGestion().getId());
+                    cpc = cuentasPorCobrarRepository.tareas(Functions.fechaConHora(dto.getFechaGestionInicio(), "inicio"), dto.getFechaGestionFin(), dto.getClasificacionGestion().getId(), pageable);
                 } catch (ParseException ex) {
                     Logger.getLogger(CuentaPorCobrarServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
