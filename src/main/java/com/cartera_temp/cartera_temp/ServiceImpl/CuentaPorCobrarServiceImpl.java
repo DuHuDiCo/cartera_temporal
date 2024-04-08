@@ -42,6 +42,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
@@ -696,7 +697,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
                     return acuerdo.isIsActive();
                 }
                 return false;
-            }).collect(Collectors.toList());
+            }).reduce((first, second)-> second).map(Collections::singletonList).orElse(Collections.emptyList());
 
             gestionesAcuerdos.forEach(ges -> gestionesOrganizadas.add(ges));
         }
@@ -708,7 +709,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
                     return tarea.isIsActive() && tarea.getNombresClasificacion().getIdNombreClasificacion().equals(filtro.getClasificacionGestion().getId());
                 }
                 return false;
-            }).collect(Collectors.toList());
+            }).reduce((first, second)-> second).map(Collections::singletonList).orElse(Collections.emptyList());
 
             gestionesTareas.forEach(ges -> gestionesOrganizadas.add(ges));
         }
@@ -720,7 +721,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
                     return ges.getClasificacionGestion().getClasificacion().equals(TipoClasificacion.NOTA.getDato()) && nota.getNombresClasificacion().getIdNombreClasificacion().equals(filtro.getClasificacionGestion().getId());
                 }
                 return false;
-            }).collect(Collectors.toList());
+            }).reduce((first, second)-> second).map(Collections::singletonList).orElse(Collections.emptyList());
 
             gestionesNotas.forEach(ges -> gestionesOrganizadas.add(ges));
         }
