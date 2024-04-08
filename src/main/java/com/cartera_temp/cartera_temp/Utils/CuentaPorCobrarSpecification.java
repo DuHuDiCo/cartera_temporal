@@ -110,7 +110,7 @@ public class CuentaPorCobrarSpecification {
 
                     try {
 
-                        System.out.println(TipoClasificacion.TAREA.getDato() + "lina 103");
+                        System.out.println(TipoClasificacion.TAREA.getDato() + " linea 103");
                         System.out.println(Functions.fechaConHora(filtro.getFechaGestionInicio(), "inicio").toString());
                         System.out.println(filtro.getFechaGestionFin());
                         System.out.println(filtro.getClasificacionGestion().getId());
@@ -123,8 +123,8 @@ public class CuentaPorCobrarSpecification {
                         Join<Tarea, NombresClasificacion> nombresClasificacionJoin = tareaJoin.join("nombresClasificacion");
 
                         predicates.add(criteriaBuilder.and(
-                                criteriaBuilder.equal(clasificacionGestionJoin.get("clasificacion"), filtro.getClasificacionGestion().getTipoClasificacion()),
-                                criteriaBuilder.equal(nombresClasificacionJoin.get("idNombreClasificacion"), filtro.getClasificacionGestion().getId())
+                                criteriaBuilder.equal(clasificacionGestionJoin.get("clasificacion"), filtro.getClasificacionGestion().getTipoClasificacion())
+//                                criteriaBuilder.equal(nombresClasificacionJoin.get("idNombreClasificacion"), filtro.getClasificacionGestion().getId())
 //                                criteriaBuilder.between(gestionesJoin.get("fechaGestion"), Functions.fechaConHora(filtro.getFechaGestionInicio(), "inicio"), filtro.getFechaGestionFin())
                         ));
                         System.out.println("predicates size = "+predicates.size());
