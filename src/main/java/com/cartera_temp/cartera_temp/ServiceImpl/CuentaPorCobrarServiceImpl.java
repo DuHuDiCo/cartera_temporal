@@ -678,7 +678,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
 
         List<Gestiones> gestionesOrganizadas = new ArrayList<>();
 
-        if (filtro.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.ACUERDODEPAGO.getDato())) {
+        if (Objects.nonNull(filtro.getClasificacionGestion())&&filtro.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.ACUERDODEPAGO.getDato())) {
             List<Gestiones> gestionesAcuerdos = gestionesDesorganizadas.stream().filter(ges -> {
                 if (ges.getClasificacionGestion() instanceof AcuerdoPago) {
                     AcuerdoPago acuerdo = (AcuerdoPago) ges.getClasificacionGestion();
@@ -690,7 +690,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             gestionesAcuerdos.forEach(ges -> gestionesOrganizadas.add(ges));
         }
 
-        if (filtro.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.TAREA.getDato())) {
+        if (Objects.nonNull(filtro.getClasificacionGestion())&&filtro.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.TAREA.getDato())) {
             List<Gestiones> gestionesTareas = gestionesDesorganizadas.stream().filter(ges -> {
                 if (ges.getClasificacionGestion() instanceof Tarea) {
                     Tarea tarea = (Tarea) ges.getClasificacionGestion();
@@ -702,7 +702,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             gestionesTareas.forEach(ges -> gestionesOrganizadas.add(ges));
         }
 
-        if (filtro.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.NOTA.getDato())) {
+        if ( Objects.nonNull(filtro.getClasificacionGestion())&&filtro.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.NOTA.getDato())) {
             List<Gestiones> gestionesNotas = gestionesDesorganizadas.stream().filter(ges -> {
                 if (ges.getClasificacionGestion() instanceof Nota) {
                     Nota nota = (Nota) ges.getClasificacionGestion();
