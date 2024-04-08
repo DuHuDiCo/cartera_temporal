@@ -566,7 +566,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             try {
                 cpc = cuentasPorCobrarRepository.obtenerCuentasByFechaCompromiso(Functions.stringToDateAndFormat(dto.getFechaCompromisoInicio()), asesor.getIdAsesorCartera(), pageable);
                 var list = CollectionUtils.isEmpty(cpc.getContent()) ? null : cpc.getContent().size();
-                var list = CollectionUtils.isEmpty(cpc.getContent()) ? null : cpc.getTotalElements();
+                
                 System.out.println("SIZE : " + list);
 
             } catch (ParseException ex) {
