@@ -10,6 +10,7 @@ import com.cartera_temp.cartera_temp.Models.Gestiones;
 import com.cartera_temp.cartera_temp.Models.NombresClasificacion;
 import com.cartera_temp.cartera_temp.Models.Nota;
 import com.cartera_temp.cartera_temp.Models.Tarea;
+import com.cartera_temp.cartera_temp.repository.CuentasPorCobrarRepository;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,15 +18,20 @@ import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.persistence.Tuple;
+import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Subquery;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.CollectionUtils;
 
 public class CuentaPorCobrarSpecification {
+
+  
 
     public static Specification<CuentasPorCobrar> filtrarCuentas(FiltroDto filtro, Long idUsuario) {
 
@@ -106,7 +112,6 @@ public class CuentaPorCobrarSpecification {
 
                 }
 
-                
                 if (filtro.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.TAREA.getDato())) {
                     try {
                         System.out.println(TipoClasificacion.TAREA.getDato() + "lina 81");
@@ -118,7 +123,7 @@ public class CuentaPorCobrarSpecification {
 
                         predicates.add(criteriaBuilder.and(
                                 criteriaBuilder.equal(clasificacionGestionJoin.get("clasificacion"), filtro.getClasificacionGestion().getTipoClasificacion()),
-                                criteriaBuilder.equal(nombresClasificacionJoin.get("idNombreClasificacion"), filtro.getClasificacionGestion().getId()),
+//                                criteriaBuilder.equal(nombresClasificacionJoin.get("idNombreClasificacion"), filtro.getClasificacionGestion().getId()),
                                 criteriaBuilder.between(gestionesJoin.get("fechaGestion"), Functions.fechaConHora(filtro.getFechaGestionInicio(), "inicio"), filtro.getFechaGestionFin())
                         ));
 
@@ -127,7 +132,8 @@ public class CuentaPorCobrarSpecification {
                         System.out.println(filtro.getClasificacionGestion().getId());
                         System.out.println(filtro.getClasificacionGestion().getTipoClasificacion());
                         
-                        System.out.println("Consulta: "+ query.toString());
+                      
+                      
                     } catch (ParseException ex) {
                         Logger.getLogger(CuentaPorCobrarSpecification.class.getName()).log(Level.SEVERE, null, ex);
                         System.out.println(ex.getMessage());

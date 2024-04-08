@@ -15,6 +15,10 @@ import org.springframework.data.repository.query.Param;
 
 @Repository
 public interface CuentasPorCobrarRepository extends JpaRepository<CuentasPorCobrar, Long>, JpaSpecificationExecutor<CuentasPorCobrar> {
+    
+    
+    
+    
 
     @Query(value = "SELECT * FROM `cuentas_por_cobrar` WHERE asesor_cartera_id = :id_asesor ORDER BY dias_vencidos DESC",
             countQuery = "SELECT COUNT(*) FROM `cuentas_por_cobrar` WHERE asesor_cartera_id = :id_asesor ORDER BY dias_vencidos DESC", nativeQuery = true)
@@ -72,5 +76,7 @@ public interface CuentasPorCobrarRepository extends JpaRepository<CuentasPorCobr
     @Query(value = "SELECT DISTINCT cuentas_por_cobrar.* FROM cuentas_por_cobrar JOIN gestiones ON gestiones.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar JOIN clasificacion_gestion ON gestiones.clasificacion_gestion_id = clasificacion_gestion.id_clasificacion_gestion JOIN acuerdo_pago ON acuerdo_pago.id_clasificacion_gestion = clasificacion_gestion.id_clasificacion_gestion WHERE cuentas_por_cobrar.asesor_cartera_id = :id_asesor AND clasificacion_gestion.clasificacion = :clasificacion AND acuerdo_pago.fecha_acuerdo BETWEEN :fechaInicial AND :fechaFin AND acuerdo_pago.is_active = true",
            nativeQuery = true)
     List<CuentasPorCobrar> acuerdoPagoActivos(@Param("id_asesor")long idAsesor,@Param("clasificacion") String clasificacion,@Param("fechaInicial") Date fechaInicial,@Param("fechaFin") Date fechaFin);
+    
+    
     
 }
