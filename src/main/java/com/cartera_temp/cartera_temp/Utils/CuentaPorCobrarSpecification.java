@@ -128,6 +128,9 @@ public class CuentaPorCobrarSpecification {
                                 criteriaBuilder.between(gestionesJoin.get("fechaGestion"), Functions.fechaConHora(filtro.getFechaGestionInicio(), "inicio"), filtro.getFechaGestionFin())
                         ));
                         System.out.println("predicates size = "+predicates.size());
+                        for (Predicate predicate : predicates) {
+                            System.out.println(predicate.toString());
+                        }
                     } catch (ParseException ex) {
                         Logger.getLogger(CuentaPorCobrarSpecification.class.getName()).log(Level.SEVERE, null, ex);
                         System.out.println(ex.getMessage());
