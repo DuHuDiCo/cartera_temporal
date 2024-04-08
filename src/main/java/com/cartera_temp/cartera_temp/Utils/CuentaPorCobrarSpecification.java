@@ -92,6 +92,7 @@ public class CuentaPorCobrarSpecification {
 
                         System.out.println(Functions.fechaConHora(filtro.getFechaGestionInicio(), "inicio").toString());
                         System.out.println(filtro.getFechaGestionFin());
+                        System.out.println(filtro.getClasificacionGestion().getId());
                     } catch (ParseException ex) {
                         Logger.getLogger(CuentaPorCobrarSpecification.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -115,6 +116,7 @@ public class CuentaPorCobrarSpecification {
                         ));
                         System.out.println(Functions.fechaConHora(filtro.getFechaGestionInicio(), "inicio").toString());
                         System.out.println(filtro.getFechaGestionFin());
+                        System.out.println(filtro.getClasificacionGestion().getId());
                     } catch (ParseException ex) {
                         Logger.getLogger(CuentaPorCobrarSpecification.class.getName()).log(Level.SEVERE, null, ex);
                     }
