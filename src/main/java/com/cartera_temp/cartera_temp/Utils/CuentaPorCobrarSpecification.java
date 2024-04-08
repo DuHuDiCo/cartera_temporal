@@ -59,7 +59,7 @@ public class CuentaPorCobrarSpecification {
                 if (filtro.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.ACUERDODEPAGO.getDato())) {
 
                     try {
-                        System.out.println(TipoClasificacion.ACUERDODEPAGO.getDato());
+                        System.out.println(TipoClasificacion.ACUERDODEPAGO.getDato()+ "lina 62");
                         query.distinct(true);
                         Join<CuentasPorCobrar, Gestiones> gestionesJoin = root.join("gestiones");
                         Join<Gestiones, ClasificacionGestion> clasificacionGestionJoin = gestionesJoin.join("clasificacionGestion");
@@ -78,7 +78,7 @@ public class CuentaPorCobrarSpecification {
 
                 if (filtro.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.NOTA.getDato())) {
                     try {
-                        System.out.println(TipoClasificacion.NOTA.getDato());
+                        System.out.println(TipoClasificacion.NOTA.getDato()+ "lina 81");
                         query.distinct(true);
                         Join<CuentasPorCobrar, Gestiones> gestionesJoin = root.join("gestiones");
                         Join<Gestiones, ClasificacionGestion> clasificacionGestionJoin = gestionesJoin.join("clasificacionGestion");
@@ -100,7 +100,7 @@ public class CuentaPorCobrarSpecification {
                 }
 
                 if (filtro.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.TAREA.getDato())) {
-                    System.out.println(TipoClasificacion.TAREA.getDato());
+                    System.out.println(TipoClasificacion.TAREA.getDato()+ "lina 103");
                     try {
 
                         query.distinct(true);
