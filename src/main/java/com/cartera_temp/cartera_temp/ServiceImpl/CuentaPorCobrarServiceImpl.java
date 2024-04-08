@@ -539,17 +539,17 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             Usuario usuFiltro = new Usuario();
             Specification<CuentasPorCobrar> spec = null;
             if (!dto.getUsername().isBlank()) {
-              
+
                 usuFiltro = usuarioClient.getUserByUsername(dto.getUsername());
                 spec = CuentaPorCobrarSpecification.filtrarCuentas(dto, usuFiltro.getIdUsuario());
             } else {
-                
+
                 spec = CuentaPorCobrarSpecification.filtrarCuentas(dto, 0L);
 
             }
             cpc = cuentasPorCobrarRepository.findAll(spec, pageable);
             var list = CollectionUtils.isEmpty(cpc.getContent()) ? null : cpc.getTotalElements();
-            
+            System.out.println("SIZE : " + list);
 
         } else {
 
@@ -566,7 +566,8 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             try {
                 cpc = cuentasPorCobrarRepository.obtenerCuentasByFechaCompromiso(Functions.stringToDateAndFormat(dto.getFechaCompromisoInicio()), asesor.getIdAsesorCartera(), pageable);
                 var list = CollectionUtils.isEmpty(cpc.getContent()) ? null : cpc.getContent().size();
-                
+                var list = CollectionUtils.isEmpty(cpc.getContent()) ? null : cpc.getTotalElements();
+                System.out.println("SIZE : " + list);
 
             } catch (ParseException ex) {
                 Logger.getLogger(CuentaPorCobrarServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -711,8 +712,8 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
 
             gestionesNotas.forEach(ges -> gestionesOrganizadas.add(ges));
         }
-        
-        if(CollectionUtils.isEmpty(gestionesOrganizadas)){
+
+        if (CollectionUtils.isEmpty(gestionesOrganizadas)) {
             return gestionesDesorganizadas;
         }
         return gestionesOrganizadas;

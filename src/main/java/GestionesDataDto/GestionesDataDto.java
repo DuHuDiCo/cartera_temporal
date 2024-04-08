@@ -10,6 +10,8 @@ public class GestionesDataDto {
     
     private String multipartFile;
 
+    
+
     public GestionesDataDto() {
     }
 
@@ -29,7 +31,7 @@ public class GestionesDataDto {
         this.multipartFile = multipartFile;
     }
 
-    
+   
     
     
 
