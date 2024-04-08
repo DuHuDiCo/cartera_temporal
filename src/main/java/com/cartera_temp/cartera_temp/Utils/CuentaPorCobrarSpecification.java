@@ -99,6 +99,7 @@ public class CuentaPorCobrarSpecification {
                         System.out.println(Functions.fechaConHora(filtro.getFechaGestionInicio(), "inicio").toString());
                         System.out.println(filtro.getFechaGestionFin());
                         System.out.println(filtro.getClasificacionGestion().getId());
+                        System.out.println(filtro.getClasificacionGestion().getTipoClasificacion());
                     } catch (ParseException ex) {
                         Logger.getLogger(CuentaPorCobrarSpecification.class.getName()).log(Level.SEVERE, null, ex);
                         System.out.println(ex.getMessage());
