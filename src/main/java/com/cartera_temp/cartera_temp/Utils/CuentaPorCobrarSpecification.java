@@ -126,6 +126,8 @@ public class CuentaPorCobrarSpecification {
                         System.out.println(filtro.getFechaGestionFin());
                         System.out.println(filtro.getClasificacionGestion().getId());
                         System.out.println(filtro.getClasificacionGestion().getTipoClasificacion());
+                        
+                        System.out.println("Consulta: "+ query.toString());
                     } catch (ParseException ex) {
                         Logger.getLogger(CuentaPorCobrarSpecification.class.getName()).log(Level.SEVERE, null, ex);
                         System.out.println(ex.getMessage());
