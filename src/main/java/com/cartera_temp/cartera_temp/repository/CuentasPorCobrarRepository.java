@@ -17,7 +17,8 @@ import org.springframework.data.repository.query.Param;
 public interface CuentasPorCobrarRepository extends JpaRepository<CuentasPorCobrar, Long>, JpaSpecificationExecutor<CuentasPorCobrar> {
     
     
-    
+    @Query(value = "SELECt DISTINCT cuentas_por_cobrar.* FROM `cuentas_por_cobrar` JOIN gestiones ON gestiones.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar JOIN clasificacion_gestion ON gestiones.clasificacion_gestion_id = clasificacion_gestion.id_clasificacion_gestion JOIN nota ON nota.id_clasificacion_gestion = clasificacion_gestion.id_clasificacion_gestion JOIN nombres_clasificacion ON nota.tipo_clasificacion_id = nombres_clasificacion.id_nombre_clasificacion WHERE gestiones.fecha_gestion BETWEEN :fechaInicio AND :fechaFin AND nombres_clasificacion.id_nombre_clasificacion = :idNombre ORDER BY dias_vencidos DESC", nativeQuery = true)
+    Page<CuentasPorCobrar> tareas(@Param("fechaInicio") Date fechaInicio,@Param("fechaFin") Date fechaFin, @Param("idNombre") Long id);
     
 
     @Query(value = "SELECT * FROM `cuentas_por_cobrar` WHERE asesor_cartera_id = :id_asesor ORDER BY dias_vencidos DESC",
