@@ -697,6 +697,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             List<Gestiones> gestionesTareas = gestionesDesorganizadas.stream().filter(ges -> {
                 if (ges.getClasificacionGestion() instanceof Tarea) {
                     Tarea tarea = (Tarea) ges.getClasificacionGestion();
+                    System.out.println(tarea.getNombresClasificacion().getIdNombreClasificacion());
                     return tarea.getNombresClasificacion().getIdNombreClasificacion().equals(filtro.getClasificacionGestion().getId());
                 }
                 return false;
