@@ -114,16 +114,16 @@ public class CuentaPorCobrarSpecification {
                     try {
                         System.out.println(TipoClasificacion.TAREA.getDato() + "lina 81");
                         query.distinct(true);
-                        Join<CuentasPorCobrar, Gestiones> gestionesJoin = root.join("gestiones");
-                        Join<Gestiones, ClasificacionGestion> clasificacionGestionJoin = gestionesJoin.join("clasificacionGestion");
-                        Join<Gestiones, Tarea> tareaJoin = criteriaBuilder.treat(clasificacionGestionJoin, Tarea.class);
-                        Join<Tarea, NombresClasificacion> nombresClasificacionJoin = tareaJoin.join("nombresClasificacion");
+                        Join<CuentasPorCobrar, Tarea> tareaJoin = root.join("gestiones").join("clasificacionGestion").join("tarea", JoinType.LEFT);
+//                        Join<Gestiones, ClasificacionGestion> clasificacionGestionJoin = gestionesJoin.join("clasificacionGestion");
+//                        Join<Gestiones, Tarea> tareaJoin = criteriaBuilder.treat(clasificacionGestionJoin, Tarea.class);
+//                        Join<Tarea, NombresClasificacion> nombresClasificacionJoin = tareaJoin.join("nombresClasificacion");
 
                         predicates.add(criteriaBuilder.and(
-                                criteriaBuilder.equal(root.join("gestiones").get("clasificacionGestion").get("clasificacion"), filtro.getClasificacionGestion().getTipoClasificacion())
+//                                criteriaBuilder.equal(root.join("gestiones").join("clasificacionGestion", JoinType.LEFT).join(Tarea.class).get("clasificacion")))
                         //                                criteriaBuilder.between(gestionesJoin.get("fechaGestion"), Functions.fechaConHora(filtro.getFechaGestionInicio(), "inicio"), filtro.getFechaGestionFin())
                         //                                criteriaBuilder.equal(root.join("gestiones").get("clasificacionGestion").get("clasificacion"), filtro.getClasificacionGestion().getTipoClasificacion()),
-                        //                               criteriaBuilder.equal(tareaJoin.get("nombresClasificacion").get("idNombreClasificacion"),filtro.getClasificacionGestion().getId())
+                                                       criteriaBuilder.equal(tareaJoin.get("nombresClasificacion").get("idNombreClasificacion"),filtro.getClasificacionGestion().getId())
                         //                                criteriaBuilder.equal(nombresClasificacionJoin.get("idNombreClasificacion"),filtro.getClasificacionGestion().getId())
                         ));
 
