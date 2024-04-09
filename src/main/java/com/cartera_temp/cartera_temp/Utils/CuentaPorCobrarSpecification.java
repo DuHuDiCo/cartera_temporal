@@ -136,7 +136,7 @@ public class CuentaPorCobrarSpecification {
                         subquery.select(criteriaBuilder.max(subRoot.get("fechaGestion")).as(Date.class));
                         subquery.where(criteriaBuilder.equal(subRoot.get("cuentasPorCobrar"), root));
                         
-                        predicates.add(criteriaBuilder.equal(root.get("gestiones").get("fechaGestion"), subquery));
+                        predicates.add(criteriaBuilder.equal(root.join("gestiones").get("fechaGestion"), subquery));
 
                         System.out.println(Functions.fechaConHora(filtro.getFechaGestionInicio(), "inicio").toString());
                         System.out.println(filtro.getFechaGestionFin());
