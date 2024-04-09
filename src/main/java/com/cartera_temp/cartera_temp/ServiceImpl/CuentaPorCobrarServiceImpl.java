@@ -577,11 +577,18 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
                 Logger.getLogger(CuentaPorCobrarServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        
+        List<CuentasPorCobrar> cuentasFiltradas = new ArrayList<>();
+        if(dto.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.TAREA.getDato())){
+            cuentasFiltradas = filtarCuentas(cpc.getContent(), dto.getClasificacionGestion().getId());
+        }else{
+            cuentasFiltradas = cpc.getContent();
+        }
 
 //        List<CuentasPorCobrar> cpc = cuentasPorCobrarRepository.findAll(spec);
         List<CuentasPorCobrarResponse> cpcRes = new ArrayList<>();
         ModelMapper map = new ModelMapper();
-        for (CuentasPorCobrar cuentasPorCobrar : cpc.getContent()) {
+        for (CuentasPorCobrar cuentasPorCobrar :cuentasFiltradas) {
 
             int diasVecidos = Functions.diferenciaFechas(cuentasPorCobrar.getFechaVencimiento());
             CuentasPorCobrarResponse cpcResFor = map.map(cuentasPorCobrar, CuentasPorCobrarResponse.class);
@@ -721,6 +728,23 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             return gestionesDesorganizadas;
         }
         return gestionesOrganizadas;
+    }
+    
+    private List<CuentasPorCobrar> filtarCuentas(List<CuentasPorCobrar> cuentas, Long id){
+        
+        List<CuentasPorCobrar> cuentasFiltradas = cuentas.stream()
+                .filter(cuenta -> !cuenta.getGestiones().isEmpty())
+                .filter(cuenta-> {
+                    if(cuenta.getGestiones().get(cuenta.getGestiones().size()-1).getClasificacionGestion() instanceof Tarea){
+                        Tarea tarea = (Tarea) cuenta.getGestiones().get(cuenta.getGestiones().size()-1).getClasificacionGestion();
+                        return tarea.getNombresClasificacion().getIdNombreClasificacion().equals(id);
+                    }
+                    return false;
+                }).collect(Collectors.toList());
+        
+        
+        
+        return cuentasFiltradas;
     }
 
 }
