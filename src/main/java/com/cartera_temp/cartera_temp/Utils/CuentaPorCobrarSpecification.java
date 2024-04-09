@@ -115,17 +115,28 @@ public class CuentaPorCobrarSpecification {
                         System.out.println(TipoClasificacion.TAREA.getDato() + "lina 81");
                         query.distinct(true);
                         Join<CuentasPorCobrar, ClasificacionGestion> clasificacionGestionJoin = root.join("gestiones").join("clasificacionGestion");
+
+                        
+                        
 //                        Join<Gestiones, ClasificacionGestion> clasificacionGestionJoin = gestionesJoin.join("clasificacionGestion");
 //                        Join<Gestiones, Tarea> tareaJoin = criteriaBuilder.treat(clasificacionGestionJoin, Tarea.class);
 //                        Join<Tarea, NombresClasificacion> nombresClasificacionJoin = tareaJoin.join("nombresClasificacion");
 
                         predicates.add(criteriaBuilder.and(
-//                                criteriaBuilder.equal(root.join("gestiones").join("clasificacionGestion", JoinType.LEFT).join(Tarea.class).get("clasificacion")))
-                        //                                criteriaBuilder.between(gestionesJoin.get("fechaGestion"), Functions.fechaConHora(filtro.getFechaGestionInicio(), "inicio"), filtro.getFechaGestionFin())
-                        //                                criteriaBuilder.equal(root.join("gestiones").get("clasificacionGestion").get("clasificacion"), filtro.getClasificacionGestion().getTipoClasificacion()),
-                                                       criteriaBuilder.equal(criteriaBuilder.treat(clasificacionGestionJoin, Tarea.class).get("nombresClasificacion").get("idNombreClasificacion"),filtro.getClasificacionGestion().getId())
+                                //                                criteriaBuilder.equal(root.join("gestiones").join("clasificacionGestion", JoinType.LEFT).join(Tarea.class).get("clasificacion")))
+                                //                                criteriaBuilder.between(gestionesJoin.get("fechaGestion"), Functions.fechaConHora(filtro.getFechaGestionInicio(), "inicio"), filtro.getFechaGestionFin())
+                                //                                criteriaBuilder.equal(root.join("gestiones").get("clasificacionGestion").get("clasificacion"), filtro.getClasificacionGestion().getTipoClasificacion()),
+                                criteriaBuilder.equal(criteriaBuilder.treat(clasificacionGestionJoin, Tarea.class).get("nombresClasificacion").get("idNombreClasificacion"), filtro.getClasificacionGestion().getId())
                         //                                criteriaBuilder.equal(nombresClasificacionJoin.get("idNombreClasificacion"),filtro.getClasificacionGestion().getId())
                         ));
+                        
+                        
+                        Subquery<Date> subquery = query.subquery(Date.class);
+                        Root<Gestiones> subRoot = subquery.from(Gestiones.class);
+                        subquery.select(criteriaBuilder.max(subRoot.get("fechaGestion")).as(Date.class));
+                        subquery.where(criteriaBuilder.equal(subRoot.get("cuentasPorCobrar"), root));
+                        
+                        predicates.add(criteriaBuilder.equal(root.get("gestiones").get("fechaGestion"), subquery));
 
                         System.out.println(Functions.fechaConHora(filtro.getFechaGestionInicio(), "inicio").toString());
                         System.out.println(filtro.getFechaGestionFin());
