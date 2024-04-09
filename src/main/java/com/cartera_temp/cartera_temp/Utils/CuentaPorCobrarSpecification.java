@@ -125,7 +125,7 @@ public class CuentaPorCobrarSpecification {
 //                                criteriaBuilder.equal(clasificacionGestionJoin.get("clasificacion"), filtro.getClasificacionGestion().getTipoClasificacion()),
                                 criteriaBuilder.between(gestionesJoin.get("fechaGestion"), Functions.fechaConHora(filtro.getFechaGestionInicio(), "inicio"), filtro.getFechaGestionFin()),
                               
-                                criteriaBuilder.equal(nombresClasificacionJoin.get("idNombreClasificacion"), filtro.getClasificacionGestion().getId())
+                                criteriaBuilder.equal(nombresClasificacionJoin.get("nombre"), "Iniciar Juridico")
                                 
                         ));
 
