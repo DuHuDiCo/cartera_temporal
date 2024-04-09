@@ -601,7 +601,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
 
             List<ClientesDto> clientes = clientesClient.buscarClientesByNumeroObligacion(cuentasPorCobrar.getDocumentoCliente(), token);
             cpcResFor.setClientes(clientes);
-            cpcResFor.setGestion(organizarGestiones(cuentasPorCobrar.getGestiones(), dto));
+            cpcResFor.setGestion(cuentasPorCobrar.getGestiones());
 
             cpcRes.add(cpcResFor);
 
