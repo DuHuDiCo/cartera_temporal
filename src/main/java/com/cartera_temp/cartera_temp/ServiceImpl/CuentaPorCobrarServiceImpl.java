@@ -541,7 +541,6 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             Specification<CuentasPorCobrar> spec = null;
             if (!dto.getUsername().isBlank()) {
 
-                
                 usuFiltro = usuarioClient.getUserByUsername(dto.getUsername());
                 spec = CuentaPorCobrarSpecification.filtrarCuentas(dto, usuFiltro.getIdUsuario());
             } else {
@@ -549,17 +548,9 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
                 spec = CuentaPorCobrarSpecification.filtrarCuentas(dto, 0L);
 
             }
-            
-            if(dto.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.TAREA.getDato())){
-                try {
-                    cpc = cuentasPorCobrarRepository.tareas(Functions.fechaConHora(dto.getFechaGestionInicio(), "inicio"), dto.getFechaGestionFin(), dto.getClasificacionGestion().getId(), pageable);
-                } catch (ParseException ex) {
-                    Logger.getLogger(CuentaPorCobrarServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }else{
-                cpc = cuentasPorCobrarRepository.findAll(spec, pageable);
-            }
-            
+
+            cpc = cuentasPorCobrarRepository.findAll(spec, pageable);
+
             var list = CollectionUtils.isEmpty(cpc.getContent()) ? null : cpc.getTotalElements();
             System.out.println("SIZE : " + list);
             System.out.println(spec);
@@ -579,7 +570,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             try {
                 cpc = cuentasPorCobrarRepository.obtenerCuentasByFechaCompromiso(Functions.stringToDateAndFormat(dto.getFechaCompromisoInicio()), asesor.getIdAsesorCartera(), pageable);
                 var list = CollectionUtils.isEmpty(cpc.getContent()) ? null : cpc.getContent().size();
-                
+
                 System.out.println("SIZE : " + list);
 
             } catch (ParseException ex) {
@@ -690,38 +681,38 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
 
         List<Gestiones> gestionesOrganizadas = new ArrayList<>();
 
-        if (Objects.nonNull(filtro.getClasificacionGestion())&&filtro.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.ACUERDODEPAGO.getDato())) {
+        if (Objects.nonNull(filtro.getClasificacionGestion()) && filtro.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.ACUERDODEPAGO.getDato())) {
             List<Gestiones> gestionesAcuerdos = gestionesDesorganizadas.stream().filter(ges -> {
                 if (ges.getClasificacionGestion() instanceof AcuerdoPago) {
                     AcuerdoPago acuerdo = (AcuerdoPago) ges.getClasificacionGestion();
                     return acuerdo.isIsActive();
                 }
                 return false;
-            }).reduce((first, second)-> second).map(Collections::singletonList).orElse(Collections.emptyList());
+            }).reduce((first, second) -> second).map(Collections::singletonList).orElse(Collections.emptyList());
 
             gestionesAcuerdos.forEach(ges -> gestionesOrganizadas.add(ges));
         }
 
-        if (Objects.nonNull(filtro.getClasificacionGestion())&&filtro.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.TAREA.getDato())) {
+        if (Objects.nonNull(filtro.getClasificacionGestion()) && filtro.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.TAREA.getDato())) {
             List<Gestiones> gestionesTareas = gestionesDesorganizadas.stream().filter(ges -> {
                 if (ges.getClasificacionGestion() instanceof Tarea) {
                     Tarea tarea = (Tarea) ges.getClasificacionGestion();
                     return tarea.isIsActive() && tarea.getNombresClasificacion().getIdNombreClasificacion().equals(filtro.getClasificacionGestion().getId());
                 }
                 return false;
-            }).reduce((first, second)-> second).map(Collections::singletonList).orElse(Collections.emptyList());
+            }).reduce((first, second) -> second).map(Collections::singletonList).orElse(Collections.emptyList());
 
             gestionesTareas.forEach(ges -> gestionesOrganizadas.add(ges));
         }
 
-        if ( Objects.nonNull(filtro.getClasificacionGestion())&&filtro.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.NOTA.getDato())) {
+        if (Objects.nonNull(filtro.getClasificacionGestion()) && filtro.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.NOTA.getDato())) {
             List<Gestiones> gestionesNotas = gestionesDesorganizadas.stream().filter(ges -> {
                 if (ges.getClasificacionGestion() instanceof Nota) {
                     Nota nota = (Nota) ges.getClasificacionGestion();
                     return ges.getClasificacionGestion().getClasificacion().equals(TipoClasificacion.NOTA.getDato()) && nota.getNombresClasificacion().getIdNombreClasificacion().equals(filtro.getClasificacionGestion().getId());
                 }
                 return false;
-            }).reduce((first, second)-> second).map(Collections::singletonList).orElse(Collections.emptyList());
+            }).reduce((first, second) -> second).map(Collections::singletonList).orElse(Collections.emptyList());
 
             gestionesNotas.forEach(ges -> gestionesOrganizadas.add(ges));
         }
