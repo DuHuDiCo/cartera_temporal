@@ -1,6 +1,7 @@
 package com.cartera_temp.cartera_temp.Models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -13,7 +14,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
-public class Tarea extends ClasificacionGestion {
+public class Tarea extends ClasificacionGestion implements Serializable {
 
     @OneToOne(mappedBy = "clasificacionGestion", cascade = CascadeType.ALL)
     @JsonIgnore
@@ -55,15 +56,6 @@ public class Tarea extends ClasificacionGestion {
         return gestiones;
     }
 
-    public NombresClasificacion getNombresClasificacion() {
-        return nombresClasificacion;
-    }
-
-    public void setNombresClasificacion(NombresClasificacion nombresClasificacion) {
-        this.nombresClasificacion = nombresClasificacion;
-    }
-    
-    
 
     public void setGestiones(Gestiones gestiones) {
         this.gestiones = gestiones;
@@ -123,6 +115,14 @@ public class Tarea extends ClasificacionGestion {
 
     public void setIsParteOfRecaudo(boolean isParteOfRecaudo) {
         this.isParteOfRecaudo = isParteOfRecaudo;
+    }
+
+    public NombresClasificacion getNombresClasificacion() {
+        return nombresClasificacion;
+    }
+
+    public void setNombresClasificacion(NombresClasificacion nombresClasificacion) {
+        this.nombresClasificacion = nombresClasificacion;
     }
 
     
