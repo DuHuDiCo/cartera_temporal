@@ -122,7 +122,7 @@ public class CuentaPorCobrarSpecification {
                         predicates.add(criteriaBuilder.and(
                                 //                                criteriaBuilder.equal(clasificacionGestionJoin.get("clasificacion"), filtro.getClasificacionGestion().getTipoClasificacion()),
                                 criteriaBuilder.between(gestionesJoin.get("fechaGestion"), Functions.fechaConHora(filtro.getFechaGestionInicio(), "inicio"), filtro.getFechaGestionFin()),
-                                criteriaBuilder.equal(tareaJoin.get("asesor").get("idAsesorCartera"), 3L)
+                                criteriaBuilder.equal(tareaJoin.get("nombresClasificacion").get("idNombreClasificacion"), 5L)
                         //                                criteriaBuilder.equal(nombresClasificacionJoin.get("nombre"), "Iniciar Juridico")
 
                         ));
