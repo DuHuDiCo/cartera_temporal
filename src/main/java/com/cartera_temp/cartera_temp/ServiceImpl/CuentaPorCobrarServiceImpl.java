@@ -578,17 +578,12 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             }
         }
         
-        List<CuentasPorCobrar> cuentasFiltradas = new ArrayList<>();
-        if(dto.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.TAREA.getDato())){
-            cuentasFiltradas = filtarCuentas(cpc.getContent(), dto.getClasificacionGestion().getId());
-        }else{
-            cuentasFiltradas = cpc.getContent();
-        }
+        
 
 //        List<CuentasPorCobrar> cpc = cuentasPorCobrarRepository.findAll(spec);
         List<CuentasPorCobrarResponse> cpcRes = new ArrayList<>();
         ModelMapper map = new ModelMapper();
-        for (CuentasPorCobrar cuentasPorCobrar :cuentasFiltradas) {
+        for (CuentasPorCobrar cuentasPorCobrar :cpc.getContent()) {
 
             int diasVecidos = Functions.diferenciaFechas(cuentasPorCobrar.getFechaVencimiento());
             CuentasPorCobrarResponse cpcResFor = map.map(cuentasPorCobrar, CuentasPorCobrarResponse.class);
