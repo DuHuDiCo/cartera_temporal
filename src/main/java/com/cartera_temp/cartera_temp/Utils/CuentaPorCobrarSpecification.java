@@ -31,8 +31,6 @@ import org.springframework.util.CollectionUtils;
 
 public class CuentaPorCobrarSpecification {
 
-  
-
     public static Specification<CuentasPorCobrar> filtrarCuentas(FiltroDto filtro, Long idUsuario) {
 
         return (root, query, criteriaBuilder) -> {
@@ -119,23 +117,21 @@ public class CuentaPorCobrarSpecification {
                         Join<CuentasPorCobrar, Gestiones> gestionesJoin = root.join("gestiones");
                         Join<Gestiones, ClasificacionGestion> clasificacionGestionJoin = gestionesJoin.join("clasificacionGestion");
                         Join<Gestiones, Tarea> tareaJoin = criteriaBuilder.treat(clasificacionGestionJoin, Tarea.class);
-                         Join<Tarea, NombresClasificacion> nombresClasificacionJoin = tareaJoin.join("nombresClasificacion");
+                        Join<Tarea, NombresClasificacion> nombresClasificacionJoin = tareaJoin.join("nombresClasificacion");
 
                         predicates.add(criteriaBuilder.and(
-//                                criteriaBuilder.equal(clasificacionGestionJoin.get("clasificacion"), filtro.getClasificacionGestion().getTipoClasificacion()),
+                                //                                criteriaBuilder.equal(clasificacionGestionJoin.get("clasificacion"), filtro.getClasificacionGestion().getTipoClasificacion()),
                                 criteriaBuilder.between(gestionesJoin.get("fechaGestion"), Functions.fechaConHora(filtro.getFechaGestionInicio(), "inicio"), filtro.getFechaGestionFin()),
-                              
-                                criteriaBuilder.equal(nombresClasificacionJoin.get("nombre"), "Iniciar Juridico")
-                                
+                                criteriaBuilder.equal(tareaJoin.get("asesor").get("idAsesorCartera"), 3L)
+                        //                                criteriaBuilder.equal(nombresClasificacionJoin.get("nombre"), "Iniciar Juridico")
+
                         ));
 
                         System.out.println(Functions.fechaConHora(filtro.getFechaGestionInicio(), "inicio").toString());
                         System.out.println(filtro.getFechaGestionFin());
                         System.out.println(filtro.getClasificacionGestion().getId());
                         System.out.println(filtro.getClasificacionGestion().getTipoClasificacion());
-                        
-                      
-                      
+
                     } catch (ParseException ex) {
                         Logger.getLogger(CuentaPorCobrarSpecification.class.getName()).log(Level.SEVERE, null, ex);
                         System.out.println(ex.getMessage());
