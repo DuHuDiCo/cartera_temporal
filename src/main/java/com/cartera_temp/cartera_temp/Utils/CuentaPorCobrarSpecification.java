@@ -132,7 +132,7 @@ public class CuentaPorCobrarSpecification {
                                 //                                criteriaBuilder.equal(criteriaBuilder.treat(clasificacionGestionJoin, Tarea.class).get("nombresClasificacion").get("idNombreClasificacion"), filtro.getClasificacionGestion().getId()),
                                 
                                 criteriaBuilder.equal(nombresClasificacionJoin.get("idNombreClasificacion"), filtro.getClasificacionGestion().getId()),
-                                criteriaBuilder.equal(gestionesJoin.get("fechaGestion"), subquery)
+                                criteriaBuilder.equal(root.join("gestiones").get("fechaGestion"), subquery)
                         ));
                         
                         
