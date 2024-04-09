@@ -577,13 +577,11 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
                 Logger.getLogger(CuentaPorCobrarServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
-        
 
 //        List<CuentasPorCobrar> cpc = cuentasPorCobrarRepository.findAll(spec);
         List<CuentasPorCobrarResponse> cpcRes = new ArrayList<>();
         ModelMapper map = new ModelMapper();
-        for (CuentasPorCobrar cuentasPorCobrar :cpc.getContent()) {
+        for (CuentasPorCobrar cuentasPorCobrar : cpc.getContent()) {
 
             int diasVecidos = Functions.diferenciaFechas(cuentasPorCobrar.getFechaVencimiento());
             CuentasPorCobrarResponse cpcResFor = map.map(cuentasPorCobrar, CuentasPorCobrarResponse.class);
@@ -687,7 +685,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             List<Gestiones> gestionesAcuerdos = gestionesDesorganizadas.stream().filter(ges -> {
                 if (ges.getClasificacionGestion() instanceof AcuerdoPago) {
                     AcuerdoPago acuerdo = (AcuerdoPago) ges.getClasificacionGestion();
-                    return acuerdo.isIsActive();
+                    return acuerdo.getNombresClasificacion().getIdNombreClasificacion().equals(filtro.getClasificacionGestion().getId());
                 }
                 return false;
             }).reduce((first, second) -> second).map(Collections::singletonList).orElse(Collections.emptyList());
@@ -699,7 +697,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             List<Gestiones> gestionesTareas = gestionesDesorganizadas.stream().filter(ges -> {
                 if (ges.getClasificacionGestion() instanceof Tarea) {
                     Tarea tarea = (Tarea) ges.getClasificacionGestion();
-                    return tarea.isIsActive() && tarea.getNombresClasificacion().getIdNombreClasificacion().equals(filtro.getClasificacionGestion().getId());
+                    return tarea.getNombresClasificacion().getIdNombreClasificacion().equals(filtro.getClasificacionGestion().getId());
                 }
                 return false;
             }).reduce((first, second) -> second).map(Collections::singletonList).orElse(Collections.emptyList());
@@ -711,7 +709,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             List<Gestiones> gestionesNotas = gestionesDesorganizadas.stream().filter(ges -> {
                 if (ges.getClasificacionGestion() instanceof Nota) {
                     Nota nota = (Nota) ges.getClasificacionGestion();
-                    return ges.getClasificacionGestion().getClasificacion().equals(TipoClasificacion.NOTA.getDato()) && nota.getNombresClasificacion().getIdNombreClasificacion().equals(filtro.getClasificacionGestion().getId());
+                    return nota.getNombresClasificacion().getIdNombreClasificacion().equals(filtro.getClasificacionGestion().getId());
                 }
                 return false;
             }).reduce((first, second) -> second).map(Collections::singletonList).orElse(Collections.emptyList());
@@ -725,22 +723,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
         }
         return gestionesOrganizadas;
     }
+
     
-    private List<CuentasPorCobrar> filtarCuentas(List<CuentasPorCobrar> cuentas, Long id){
-        
-        List<CuentasPorCobrar> cuentasFiltradas = cuentas.stream()
-                .filter(cuenta -> !cuenta.getGestiones().isEmpty())
-                .filter(cuenta-> {
-                    if(cuenta.getGestiones().get(cuenta.getGestiones().size()-1).getClasificacionGestion() instanceof Tarea){
-                        Tarea tarea = (Tarea) cuenta.getGestiones().get(cuenta.getGestiones().size()-1).getClasificacionGestion();
-                        return tarea.getNombresClasificacion().getIdNombreClasificacion().equals(id);
-                    }
-                    return false;
-                }).collect(Collectors.toList());
-        
-        
-        
-        return cuentasFiltradas;
-    }
 
 }
