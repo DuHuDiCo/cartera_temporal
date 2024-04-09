@@ -128,11 +128,13 @@ public class CuentaPorCobrarSpecification {
                         predicates.add(criteriaBuilder.and(
                                 //                                criteriaBuilder.equal(root.join("gestiones").join("clasificacionGestion", JoinType.LEFT).join(Tarea.class).get("clasificacion")))
                                 //                                criteriaBuilder.between(gestionesJoin.get("fechaGestion"), Functions.fechaConHora(filtro.getFechaGestionInicio(), "inicio"), filtro.getFechaGestionFin())
-                                //                                criteriaBuilder.equal(root.join("gestiones").get("clasificacionGestion").get("clasificacion"), filtro.getClasificacionGestion().getTipoClasificacion()),
+                                criteriaBuilder.equal(root.join("gestiones").get("clasificacionGestion").get("clasificacion"), filtro.getClasificacionGestion().getTipoClasificacion()),
                                 //                                criteriaBuilder.equal(criteriaBuilder.treat(clasificacionGestionJoin, Tarea.class).get("nombresClasificacion").get("idNombreClasificacion"), filtro.getClasificacionGestion().getId()),
-                                criteriaBuilder.equal(root.join("gestiones").get("fechaGestion"), subquery),
+                                
                                 criteriaBuilder.equal(nombresClasificacionJoin.get("idNombreClasificacion"), filtro.getClasificacionGestion().getId())
                         ));
+                        
+                        predicates.add(criteriaBuilder.equal(root.join("gestiones").get("fechaGestion"), subquery));
 
                         System.out.println(Functions.fechaConHora(filtro.getFechaGestionInicio(), "inicio").toString());
                         System.out.println(filtro.getFechaGestionFin());
