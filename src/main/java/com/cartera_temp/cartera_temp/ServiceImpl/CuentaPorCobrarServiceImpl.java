@@ -720,6 +720,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
         }
 
         if (CollectionUtils.isEmpty(gestionesOrganizadas)) {
+            System.out.println("VACIO");
             return gestionesDesorganizadas;
         }
         return gestionesOrganizadas;
