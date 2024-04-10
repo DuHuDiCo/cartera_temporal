@@ -18,7 +18,7 @@ public interface CuentasPorCobrarRepository extends JpaRepository<CuentasPorCobr
     
     
     @Query(value = "SELECT DISTINCT cuentas_por_cobrar.*FROM `cuentas_por_cobrar` "
-            + "JOIN  banco ON cuentas_por_cobrar.banco_id = banco.id_banco "
+           + "JOIN  banco ON cuentas_por_cobrar.banco_id = banco.id_banco "
             + "JOIN tipos_vencimiento ON cuentas_por_cobrar.tipo_vencimiento_id = tipos_vencimiento.id_tipo_vencimiento "
             + "JOIN sede ON cuentas_por_cobrar.sede_id = sede.id_sede "
             + "JOIN clasificacion_juridica ON cuentas_por_cobrar.clasificacion_juridica_id = clasificacion_juridica.id_clasificacion_juridica "
@@ -30,7 +30,7 @@ public interface CuentasPorCobrarRepository extends JpaRepository<CuentasPorCobr
             + "(:vencimientos IS NULL OR  tipos_vencimiento.tipo_vencimiento IN :vencimientos) AND "
             + "(:sedes IS NULL  OR sede.sede IN :sedes) AND "
             + "(:juridicas IS NULL  OR clasificacion_juridica.clasificacion_juridica IN :juridicas) AND "
-            + "(:diasVencidos IS NULL  OR cuentas_por_cobrar.dias_vencidos BETWEEN :diasVencidos[0] AND :diasVencidos[1])  "
+            + "(:diasStart IS NULL  OR cuentas_por_cobrar.dias_vencidos BETWEEN :diasStart AND :diasEnd)  "
             + "AND gestiones.fecha_gestion = (SELECT MAX(fecha_gestion) from gestiones as g WHERE g.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar) AND nombres_clasificacion.id_nombre_clasificacion = :idNombre "
             + "ORDER BY cuentas_por_cobrar.dias_vencidos DESC",
             countQuery = "SELECT COUNT(DISTINCT cuentas_por_cobrar.*) FROM `cuentas_por_cobrar` "
