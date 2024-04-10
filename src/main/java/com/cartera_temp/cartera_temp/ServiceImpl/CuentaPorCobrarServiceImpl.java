@@ -549,7 +549,19 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
 
             }
 
-            cpc = cuentasPorCobrarRepository.findAll(spec, pageable);
+            if (dto.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.TAREA.getDato())) {
+
+                int[] dias = {};
+                if (Objects.nonNull(dto.getDiasVencidosInicio())) {
+                    dias[0] = dto.getDiasVencidosInicio();
+                    dias[1] = dto.getDiasVencidosFin();
+                }
+
+                cpc = cuentasPorCobrarRepository.obtenerTareasFiltro(dto.getClasificacionGestion().getId(), dto.getBanco(), dto.getEdadVencimiento(), dto.getSede(),
+                        dto.getClasiJuridica(), dias, pageable);
+            } else {
+                cpc = cuentasPorCobrarRepository.findAll(spec, pageable);
+            }
 
             var list = CollectionUtils.isEmpty(cpc.getContent()) ? null : cpc.getTotalElements();
             System.out.println("SIZE : " + list);
@@ -724,7 +736,5 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
         }
         return gestionesOrganizadas;
     }
-
-    
 
 }

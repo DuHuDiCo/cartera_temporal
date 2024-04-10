@@ -110,50 +110,50 @@ public class CuentaPorCobrarSpecification {
 
                 }
 
-                if (filtro.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.TAREA.getDato())) {
-                    try {
-                        System.out.println(TipoClasificacion.TAREA.getDato() + "lina 81");
-                        query.distinct(true);
-//                        Join<CuentasPorCobrar, ClasificacionGestion> clasificacionGestionJoin = root.join("gestiones").join("clasificacionGestion");
-
-//                        Subquery<Date> subquery = query.subquery(Date.class);
+//                if (filtro.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.TAREA.getDato())) {
+//                    try {
+//                        System.out.println(TipoClasificacion.TAREA.getDato() + "lina 81");
+//                        query.distinct(true);
+////                        Join<CuentasPorCobrar, ClasificacionGestion> clasificacionGestionJoin = root.join("gestiones").join("clasificacionGestion");
+//
+////                        Subquery<Date> subquery = query.subquery(Date.class);
+////                        Root<Gestiones> subRoot = subquery.from(Gestiones.class);
+////                        subquery.select(criteriaBuilder.max(subRoot.get("fechaGestion")).as(Date.class));
+////                        subquery.where(criteriaBuilder.equal(subRoot.get("cuentasPorCobrar"), root));
+//                        Join<CuentasPorCobrar, Gestiones> gestionesJoin = root.join("gestiones");
+//                        Join<Gestiones, ClasificacionGestion> clasificacionGestionJoin = gestionesJoin.join("clasificacionGestion");
+//                        Join<Gestiones, Tarea> tareaJoin = criteriaBuilder.treat(clasificacionGestionJoin, Tarea.class);
+//                        Join<Tarea, NombresClasificacion> nombresClasificacionJoin = tareaJoin.join("nombresClasificacion");
+//
+//                        Subquery<Long> subquery = query.subquery(Long.class);
 //                        Root<Gestiones> subRoot = subquery.from(Gestiones.class);
-//                        subquery.select(criteriaBuilder.max(subRoot.get("fechaGestion")).as(Date.class));
-//                        subquery.where(criteriaBuilder.equal(subRoot.get("cuentasPorCobrar"), root));
-                        Join<CuentasPorCobrar, Gestiones> gestionesJoin = root.join("gestiones");
-                        Join<Gestiones, ClasificacionGestion> clasificacionGestionJoin = gestionesJoin.join("clasificacionGestion");
-                        Join<Gestiones, Tarea> tareaJoin = criteriaBuilder.treat(clasificacionGestionJoin, Tarea.class);
-                        Join<Tarea, NombresClasificacion> nombresClasificacionJoin = tareaJoin.join("nombresClasificacion");
-
-                        Subquery<Long> subquery = query.subquery(Long.class);
-                        Root<Gestiones> subRoot = subquery.from(Gestiones.class);
-                        subquery.select(criteriaBuilder.max(subRoot.get("clasificacionGestion").get("id_clasificacion_gestion")));
-                        subquery.where(criteriaBuilder.equal(subRoot.get("cuenta_cobrar_id"), root.get("id_cuenta_por_cobrar")));
-
-                        predicates.add(criteriaBuilder.and(
-                                //                                criteriaBuilder.equal(root.join("gestiones").join("clasificacionGestion", JoinType.LEFT).join(Tarea.class).get("clasificacion")))
-                                //                                criteriaBuilder.between(gestionesJoin.get("fechaGestion"), Functions.fechaConHora(filtro.getFechaGestionInicio(), "inicio"), filtro.getFechaGestionFin())
-                                //                                criteriaBuilder.equal(root.join("gestiones").get("clasificacionGestion").get("clasificacion"), filtro.getClasificacionGestion().getTipoClasificacion()),
-                                //                                criteriaBuilder.equal(criteriaBuilder.treat(clasificacionGestionJoin, Tarea.class).get("nombresClasificacion").get("idNombreClasificacion"), filtro.getClasificacionGestion().getId()),
-
-                                //                                criteriaBuilder.equal(nombresClasificacionJoin.get("idNombreClasificacion"), filtro.getClasificacionGestion().getId())
-                                //                                criteriaBuilder.equal(root.join("gestiones").get("fechaGestion"), subquery)
-                                criteriaBuilder.equal(gestionesJoin.get("clasificacionGestion").get("cuenta_cobrar_id"), subquery), // Ajuste aquí
-                                criteriaBuilder.equal(nombresClasificacionJoin.get("idNombreClasificacion"), filtro.getClasificacionGestion().getId())
-                        
-                        ));
-
-                        System.out.println(Functions.fechaConHora(filtro.getFechaGestionInicio(), "inicio").toString());
-                        System.out.println(filtro.getFechaGestionFin());
-                        System.out.println(filtro.getClasificacionGestion().getId());
-                        System.out.println(filtro.getClasificacionGestion().getTipoClasificacion());
-
-                    } catch (ParseException ex) {
-                        Logger.getLogger(CuentaPorCobrarSpecification.class.getName()).log(Level.SEVERE, null, ex);
-                        System.out.println(ex.getMessage());
-                    }
-
-                }
+//                        subquery.select(criteriaBuilder.max(subRoot.get("clasificacionGestion").get("id_clasificacion_gestion")));
+//                        subquery.where(criteriaBuilder.equal(subRoot.get("cuenta_cobrar_id"), root.get("id_cuenta_por_cobrar")));
+//
+//                        predicates.add(criteriaBuilder.and(
+//                                //                                criteriaBuilder.equal(root.join("gestiones").join("clasificacionGestion", JoinType.LEFT).join(Tarea.class).get("clasificacion")))
+//                                //                                criteriaBuilder.between(gestionesJoin.get("fechaGestion"), Functions.fechaConHora(filtro.getFechaGestionInicio(), "inicio"), filtro.getFechaGestionFin())
+//                                //                                criteriaBuilder.equal(root.join("gestiones").get("clasificacionGestion").get("clasificacion"), filtro.getClasificacionGestion().getTipoClasificacion()),
+//                                //                                criteriaBuilder.equal(criteriaBuilder.treat(clasificacionGestionJoin, Tarea.class).get("nombresClasificacion").get("idNombreClasificacion"), filtro.getClasificacionGestion().getId()),
+//
+//                                //                                criteriaBuilder.equal(nombresClasificacionJoin.get("idNombreClasificacion"), filtro.getClasificacionGestion().getId())
+//                                //                                criteriaBuilder.equal(root.join("gestiones").get("fechaGestion"), subquery)
+//                                criteriaBuilder.equal(gestionesJoin.get("clasificacionGestion").get("cuenta_cobrar_id"), subquery), // Ajuste aquí
+//                                criteriaBuilder.equal(nombresClasificacionJoin.get("idNombreClasificacion"), filtro.getClasificacionGestion().getId())
+//                        
+//                        ));
+//
+//                        System.out.println(Functions.fechaConHora(filtro.getFechaGestionInicio(), "inicio").toString());
+//                        System.out.println(filtro.getFechaGestionFin());
+//                        System.out.println(filtro.getClasificacionGestion().getId());
+//                        System.out.println(filtro.getClasificacionGestion().getTipoClasificacion());
+//
+//                    } catch (ParseException ex) {
+//                        Logger.getLogger(CuentaPorCobrarSpecification.class.getName()).log(Level.SEVERE, null, ex);
+//                        System.out.println(ex.getMessage());
+//                    }
+//
+//                }
 
             }
 
