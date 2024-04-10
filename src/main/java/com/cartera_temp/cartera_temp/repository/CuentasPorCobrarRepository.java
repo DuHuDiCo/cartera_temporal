@@ -15,49 +15,60 @@ import org.springframework.data.repository.query.Param;
 
 @Repository
 public interface CuentasPorCobrarRepository extends JpaRepository<CuentasPorCobrar, Long>, JpaSpecificationExecutor<CuentasPorCobrar> {
-    
-    
-    @Query(value = "SELECT DISTINCT cuentas_por_cobrar.*FROM `cuentas_por_cobrar` "
-           + "JOIN  banco ON cuentas_por_cobrar.banco_id = banco.id_banco "
+
+    @Query(value = "SELECT DISTINCT cuentas_por_cobrar.* "
+            + "FROM cuentas_por_cobrar "
+            + "JOIN banco ON cuentas_por_cobrar.banco_id = banco.id_banco "
             + "JOIN tipos_vencimiento ON cuentas_por_cobrar.tipo_vencimiento_id = tipos_vencimiento.id_tipo_vencimiento "
             + "JOIN sede ON cuentas_por_cobrar.sede_id = sede.id_sede "
             + "JOIN clasificacion_juridica ON cuentas_por_cobrar.clasificacion_juridica_id = clasificacion_juridica.id_clasificacion_juridica "
             + "JOIN gestiones ON gestiones.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar "
             + "JOIN clasificacion_gestion ON gestiones.clasificacion_gestion_id = clasificacion_gestion.id_clasificacion_gestion "
             + "JOIN tarea ON tarea.id_clasificacion_gestion = clasificacion_gestion.id_clasificacion_gestion "
-            + " JOIN nombres_clasificacion ON tarea.tipo_clasificacion_id = nombres_clasificacion.id_nombre_clasificacion "
-            + "WHERE (:bancos IS NULL  OR banco.banco IN :bancos) AND "
-            + "(:vencimientos IS NULL OR  tipos_vencimiento.tipo_vencimiento IN :vencimientos) AND "
-            + "(:sedes IS NULL  OR sede.sede IN :sedes) AND "
-            + "(:juridicas IS NULL  OR clasificacion_juridica.clasificacion_juridica IN :juridicas) AND "
-            + "(:diasStart IS NULL  OR cuentas_por_cobrar.dias_vencidos BETWEEN :diasStart AND :diasEnd)  "
-            + "AND gestiones.fecha_gestion = (SELECT MAX(fecha_gestion) from gestiones as g WHERE g.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar) AND nombres_clasificacion.id_nombre_clasificacion = :idNombre "
+            + "JOIN nombres_clasificacion ON tarea.tipo_clasificacion_id = nombres_clasificacion.id_nombre_clasificacion "
+            + "WHERE  "
+            + "    (banco.banco IN :bancos OR :bancos IS NULL ) "
+            + "    AND (tipos_vencimiento.tipo_vencimiento IN :vencimientos OR :vencimientos IS NULL ) "
+            + "    AND (sede.sede IN :sedes OR :sedes IS NULL ) "
+            + "    AND (clasificacion_juridica.clasificacion_juridica IN :juridicas OR :juridicas IS NULL ) "
+            + "    AND (cuentas_por_cobrar.dias_vencidos BETWEEN :diasStart AND :diasEnd OR :diasStart IS NULL OR :diasEnd IS NULL) "
+            + "    AND gestiones.fecha_gestion = ( "
+            + "        SELECT MAX(fecha_gestion) "
+            + "        FROM gestiones AS g "
+            + "        WHERE g.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar "
+            + "    ) "
+            + "    AND nombres_clasificacion.id_nombre_clasificacion = :id "
             + "ORDER BY cuentas_por_cobrar.dias_vencidos DESC",
             countQuery = "SELECT COUNT(DISTINCT cuentas_por_cobrar.*) FROM `cuentas_por_cobrar` "
-             + "JOIN  banco ON cuentas_por_cobrar.banco_id = banco.id_banco "
+            + "FROM cuentas_por_cobrar "
+            + "JOIN banco ON cuentas_por_cobrar.banco_id = banco.id_banco "
             + "JOIN tipos_vencimiento ON cuentas_por_cobrar.tipo_vencimiento_id = tipos_vencimiento.id_tipo_vencimiento "
             + "JOIN sede ON cuentas_por_cobrar.sede_id = sede.id_sede "
             + "JOIN clasificacion_juridica ON cuentas_por_cobrar.clasificacion_juridica_id = clasificacion_juridica.id_clasificacion_juridica "
             + "JOIN gestiones ON gestiones.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar "
             + "JOIN clasificacion_gestion ON gestiones.clasificacion_gestion_id = clasificacion_gestion.id_clasificacion_gestion "
             + "JOIN tarea ON tarea.id_clasificacion_gestion = clasificacion_gestion.id_clasificacion_gestion "
-            + " JOIN nombres_clasificacion ON tarea.tipo_clasificacion_id = nombres_clasificacion.id_nombre_clasificacion "
-            + "WHERE (:bancos IS NULL  OR banco.banco IN :bancos) AND "
-            + "(:vencimientos IS NULL OR  tipos_vencimiento.tipo_vencimiento IN :vencimientos) AND "
-            + "(:sedes IS NULL  OR sede.sede IN :sedes) AND "
-            + "(:juridicas IS NULL  OR clasificacion_juridica.clasificacion_juridica IN :juridicas) AND "
-            + "(:diasStart IS NULL  OR cuentas_por_cobrar.dias_vencidos BETWEEN :diasStart AND :diasEnd)  "
-            + "AND gestiones.fecha_gestion = (SELECT MAX(fecha_gestion) from gestiones as g WHERE g.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar) AND nombres_clasificacion.id_nombre_clasificacion = :idNombre "
+            + "JOIN nombres_clasificacion ON tarea.tipo_clasificacion_id = nombres_clasificacion.id_nombre_clasificacion "
+            + "WHERE  "
+            + "    (banco.banco IN :bancos OR :bancos IS NULL ) "
+            + "    AND (tipos_vencimiento.tipo_vencimiento IN :vencimientos OR :vencimientos IS NULL ) "
+            + "    AND (sede.sede IN :sedes OR :sedes IS NULL ) "
+            + "    AND (clasificacion_juridica.clasificacion_juridica IN :juridicas OR :juridicas IS NULL ) "
+            + "    AND (cuentas_por_cobrar.dias_vencidos BETWEEN :diasStart AND :diasEnd OR :diasStart IS NULL OR :diasEnd IS NULL) "
+            + "    AND gestiones.fecha_gestion = ( "
+            + "        SELECT MAX(fecha_gestion) "
+            + "        FROM gestiones AS g "
+            + "        WHERE g.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar "
+            + "    ) "
+            + "    AND nombres_clasificacion.id_nombre_clasificacion = :id "
             + "ORDER BY cuentas_por_cobrar.dias_vencidos DESC",
             nativeQuery = true)
-    Page<CuentasPorCobrar> obtenerTareasFiltro(@Param("idNombre") Long id, @Param("bancos") List<String> bancos, @Param("vencimientos") List<String> vencimientos
-            ,@Param("sedes") List<String> sedes, @Param("juridicas") List<String> juridicas , @Param("diasStart") int diasStart, @Param("diasEnd") int diasEnd, Pageable pageable);
-    
-    
-    @Query(value = "SELECT DISTINCT cuentas_por_cobrar.* FROM `cuentas_por_cobrar` JOIN gestiones ON gestiones.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar JOIN clasificacion_gestion ON gestiones.clasificacion_gestion_id = clasificacion_gestion.id_clasificacion_gestion JOIN tarea ON tarea.id_clasificacion_gestion = clasificacion_gestion.id_clasificacion_gestion JOIN nombres_clasificacion ON tarea.tipo_clasificacion_id = nombres_clasificacion.id_nombre_clasificacion WHERE gestiones.fecha_gestion BETWEEN :fechaInicio AND :fechaFin AND nombres_clasificacion.id_nombre_clasificacion = :idNombre ORDER BY dias_vencidos DESC", 
-            countQuery ="SELECT COUNT( DISTINCT cuentas_por_cobrar.id_cuenta_por_cobrar) FROM `cuentas_por_cobrar` JOIN gestiones ON gestiones.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar JOIN clasificacion_gestion ON gestiones.clasificacion_gestion_id = clasificacion_gestion.id_clasificacion_gestion JOIN tarea ON tarea.id_clasificacion_gestion = clasificacion_gestion.id_clasificacion_gestion JOIN nombres_clasificacion ON tarea.tipo_clasificacion_id = nombres_clasificacion.id_nombre_clasificacion WHERE gestiones.fecha_gestion BETWEEN :fechaInicio AND :fechaFin AND nombres_clasificacion.id_nombre_clasificacion = :idNombre ORDER BY dias_vencidos DESC",nativeQuery = true)
-    Page<CuentasPorCobrar> tareas(@Param("fechaInicio") Date fechaInicio,@Param("fechaFin") Date fechaFin, @Param("idNombre") Long id, Pageable pageable);
-    
+    Page<CuentasPorCobrar> obtenerTareasFiltro(@Param("idNombre") Long id, @Param("bancos") List<String> bancos, @Param("vencimientos") List<String> vencimientos,
+            @Param("sedes") List<String> sedes, @Param("juridicas") List<String> juridicas, @Param("diasStart") int diasStart, @Param("diasEnd") int diasEnd, Pageable pageable);
+
+    @Query(value = "SELECT DISTINCT cuentas_por_cobrar.* FROM `cuentas_por_cobrar` JOIN gestiones ON gestiones.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar JOIN clasificacion_gestion ON gestiones.clasificacion_gestion_id = clasificacion_gestion.id_clasificacion_gestion JOIN tarea ON tarea.id_clasificacion_gestion = clasificacion_gestion.id_clasificacion_gestion JOIN nombres_clasificacion ON tarea.tipo_clasificacion_id = nombres_clasificacion.id_nombre_clasificacion WHERE gestiones.fecha_gestion BETWEEN :fechaInicio AND :fechaFin AND nombres_clasificacion.id_nombre_clasificacion = :idNombre ORDER BY dias_vencidos DESC",
+            countQuery = "SELECT COUNT( DISTINCT cuentas_por_cobrar.id_cuenta_por_cobrar) FROM `cuentas_por_cobrar` JOIN gestiones ON gestiones.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar JOIN clasificacion_gestion ON gestiones.clasificacion_gestion_id = clasificacion_gestion.id_clasificacion_gestion JOIN tarea ON tarea.id_clasificacion_gestion = clasificacion_gestion.id_clasificacion_gestion JOIN nombres_clasificacion ON tarea.tipo_clasificacion_id = nombres_clasificacion.id_nombre_clasificacion WHERE gestiones.fecha_gestion BETWEEN :fechaInicio AND :fechaFin AND nombres_clasificacion.id_nombre_clasificacion = :idNombre ORDER BY dias_vencidos DESC", nativeQuery = true)
+    Page<CuentasPorCobrar> tareas(@Param("fechaInicio") Date fechaInicio, @Param("fechaFin") Date fechaFin, @Param("idNombre") Long id, Pageable pageable);
 
     @Query(value = "SELECT * FROM `cuentas_por_cobrar` WHERE asesor_cartera_id = :id_asesor ORDER BY dias_vencidos DESC",
             countQuery = "SELECT COUNT(*) FROM `cuentas_por_cobrar` WHERE asesor_cartera_id = :id_asesor ORDER BY dias_vencidos DESC", nativeQuery = true)
@@ -91,7 +102,6 @@ public interface CuentasPorCobrarRepository extends JpaRepository<CuentasPorCobr
     @Query(value = "SELECT DISTINCT cuentas_por_cobrar.* FROM cuentas_por_cobrar JOIN gestiones ON gestiones.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar WHERE cuentas_por_cobrar.asesor_cartera_id = :idAsesor", nativeQuery = true)
     List<CuentasPorCobrar> gestionesAsignadasByAsesorCountTotal(@Param("idAsesor") Long idAsesor);
 
-    
     @Query(value = "SELECT DISTINCT cuentas_por_cobrar.* FROM cuentas_por_cobrar JOIN gestiones ON gestiones.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar WHERE cuentas_por_cobrar.asesor_cartera_id = :idAsesor AND (SELECT MAX(gestiones.fecha_gestion) FROM gestiones WHERE gestiones.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar) < :fechaInicial AND cuentas_por_cobrar.mora_obligatoria > 0", nativeQuery = true)
     List<CuentasPorCobrar> gestionesSinGestion(@Param("idAsesor") Long idAsesor, @Param("fechaInicial") Date fechaIncial);
 
@@ -102,20 +112,17 @@ public interface CuentasPorCobrarRepository extends JpaRepository<CuentasPorCobr
     List<String> vencimientosByUsuario(@Param("idAsesor") Long idAsesor);
 
     @Query(value = "SELECT DISTINCT clasificacion_juridica.clasificacion_juridica FROM `cuentas_por_cobrar` INNER JOIN clasificacion_juridica ON cuentas_por_cobrar.clasificacion_juridica_id = clasificacion_juridica.id_clasificacion_juridica WHERE cuentas_por_cobrar.asesor_cartera_id = :idAsesor ORDER BY clasificacion_juridica.clasificacion_juridica ASC", nativeQuery = true)
-    List<String> clasificacionJuridicaByUsuario(@Param("idAsesor") Long idAsesor );
-    
-     @Query(value = "SELECT DISTINCT cuentas_por_cobrar.* FROM cuentas_por_cobrar JOIN gestiones ON gestiones.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar WHERE gestiones.fecha_gestion BETWEEN :fechaInicial AND :fechaFin AND cuentas_por_cobrar.asesor_cartera_id = :id_asesor AND cuentas_por_cobrar.mora_obligatoria > 0", nativeQuery = true)
-    List<CuentasPorCobrar> gestionesByAsesor(@Param("fechaInicial") Date fechaIncial, @Param("fechaFin") Date fechaFin,@Param("id_asesor")long idAsesor);
-    
-    
+    List<String> clasificacionJuridicaByUsuario(@Param("idAsesor") Long idAsesor);
+
+    @Query(value = "SELECT DISTINCT cuentas_por_cobrar.* FROM cuentas_por_cobrar JOIN gestiones ON gestiones.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar WHERE gestiones.fecha_gestion BETWEEN :fechaInicial AND :fechaFin AND cuentas_por_cobrar.asesor_cartera_id = :id_asesor AND cuentas_por_cobrar.mora_obligatoria > 0", nativeQuery = true)
+    List<CuentasPorCobrar> gestionesByAsesor(@Param("fechaInicial") Date fechaIncial, @Param("fechaFin") Date fechaFin, @Param("id_asesor") long idAsesor);
+
     @Query(value = "SELECT DISTINCT cuentas_por_cobrar.* FROM cuentas_por_cobrar JOIN gestiones ON gestiones.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar JOIN clasificacion_gestion ON gestiones.clasificacion_gestion_id = clasificacion_gestion.id_clasificacion_gestion JOIN acuerdo_pago ON acuerdo_pago.id_clasificacion_gestion = clasificacion_gestion.id_clasificacion_gestion WHERE cuentas_por_cobrar.asesor_cartera_id = :id_asesor AND clasificacion_gestion.clasificacion = :clasificacion AND acuerdo_pago.fecha_acuerdo BETWEEN :fechaInicial AND :fechaFin",
-           nativeQuery = true)
-    List<CuentasPorCobrar> acuerdosPagoRealizados(  @Param("id_asesor")long idAsesor,@Param("clasificacion") String clasificacion,@Param("fechaInicial") Date fechaInicial,@Param("fechaFin") Date fechaFin );
-    
+            nativeQuery = true)
+    List<CuentasPorCobrar> acuerdosPagoRealizados(@Param("id_asesor") long idAsesor, @Param("clasificacion") String clasificacion, @Param("fechaInicial") Date fechaInicial, @Param("fechaFin") Date fechaFin);
+
     @Query(value = "SELECT DISTINCT cuentas_por_cobrar.* FROM cuentas_por_cobrar JOIN gestiones ON gestiones.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar JOIN clasificacion_gestion ON gestiones.clasificacion_gestion_id = clasificacion_gestion.id_clasificacion_gestion JOIN acuerdo_pago ON acuerdo_pago.id_clasificacion_gestion = clasificacion_gestion.id_clasificacion_gestion WHERE cuentas_por_cobrar.asesor_cartera_id = :id_asesor AND clasificacion_gestion.clasificacion = :clasificacion AND acuerdo_pago.fecha_acuerdo BETWEEN :fechaInicial AND :fechaFin AND acuerdo_pago.is_active = true",
-           nativeQuery = true)
-    List<CuentasPorCobrar> acuerdoPagoActivos(@Param("id_asesor")long idAsesor,@Param("clasificacion") String clasificacion,@Param("fechaInicial") Date fechaInicial,@Param("fechaFin") Date fechaFin);
-    
-    
-    
+            nativeQuery = true)
+    List<CuentasPorCobrar> acuerdoPagoActivos(@Param("id_asesor") long idAsesor, @Param("clasificacion") String clasificacion, @Param("fechaInicial") Date fechaInicial, @Param("fechaFin") Date fechaFin);
+
 }
