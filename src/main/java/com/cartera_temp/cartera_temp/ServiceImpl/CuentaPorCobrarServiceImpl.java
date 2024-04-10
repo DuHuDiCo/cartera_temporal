@@ -620,11 +620,11 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             asesor.setUsuario(usu);
             cpcResFor.setAsesorCarteraResponse(asesor);
 
-            cpcResFor.setGestion(cuentasPorCobrar.getGestiones());
+            cpcResFor.setGestion(organizarGestiones(cuentasPorCobrar.getGestiones(), dto));
 
             List<ClientesDto> clientes = clientesClient.buscarClientesByNumeroObligacion(cuentasPorCobrar.getDocumentoCliente(), token);
             cpcResFor.setClientes(clientes);
-            cpcResFor.setGestion(cuentasPorCobrar.getGestiones());
+            
 
             cpcRes.add(cpcResFor);
 
