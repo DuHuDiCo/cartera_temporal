@@ -551,14 +551,9 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
 
             if (dto.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.TAREA.getDato())) {
 
-                int[] dias = {};
-                if (Objects.nonNull(dto.getDiasVencidosInicio())) {
-                    dias[0] = dto.getDiasVencidosInicio();
-                    dias[1] = dto.getDiasVencidosFin();
-                }
-
+              
                 cpc = cuentasPorCobrarRepository.obtenerTareasFiltro(dto.getClasificacionGestion().getId(), dto.getBanco(), dto.getEdadVencimiento(), dto.getSede(),
-                        dto.getClasiJuridica(), dias, pageable);
+                        dto.getClasiJuridica(), dto.getDiasVencidosInicio(), dto.getDiasVencidosFin(),pageable);
             } else {
                 cpc = cuentasPorCobrarRepository.findAll(spec, pageable);
             }

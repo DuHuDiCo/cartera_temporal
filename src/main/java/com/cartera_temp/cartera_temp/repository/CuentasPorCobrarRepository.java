@@ -46,12 +46,12 @@ public interface CuentasPorCobrarRepository extends JpaRepository<CuentasPorCobr
             + "(:vencimientos IS NULL OR  tipos_vencimiento.tipo_vencimiento IN :vencimientos) AND "
             + "(:sedes IS NULL  OR sede.sede IN :sedes) AND "
             + "(:juridicas IS NULL  OR clasificacion_juridica.clasificacion_juridica IN :juridicas) AND "
-            + "(:diasVencidos IS NULL  OR cuentas_por_cobrar.dias_vencidos BETWEEN :diasVencidos[0] AND :diasVencidos[1])  "
+            + "(:diasStart IS NULL  OR cuentas_por_cobrar.dias_vencidos BETWEEN :diasStart AND :diasEnd)  "
             + "AND gestiones.fecha_gestion = (SELECT MAX(fecha_gestion) from gestiones as g WHERE g.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar) AND nombres_clasificacion.id_nombre_clasificacion = :idNombre "
             + "ORDER BY cuentas_por_cobrar.dias_vencidos DESC",
             nativeQuery = true)
     Page<CuentasPorCobrar> obtenerTareasFiltro(@Param("idNombre") Long id, @Param("bancos") List<String> bancos, @Param("vencimientos") List<String> vencimientos
-            ,@Param("sedes") List<String> sedes, @Param("juridicas") List<String> juridicas , @Param("diasVencidos") int[]diasVencidos,Pageable pageable);
+            ,@Param("sedes") List<String> sedes, @Param("juridicas") List<String> juridicas , @Param("diasStart") int diasStart, @Param("diasEnd") int diasEnd, Pageable pageable);
     
     
     @Query(value = "SELECT DISTINCT cuentas_por_cobrar.* FROM `cuentas_por_cobrar` JOIN gestiones ON gestiones.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar JOIN clasificacion_gestion ON gestiones.clasificacion_gestion_id = clasificacion_gestion.id_clasificacion_gestion JOIN tarea ON tarea.id_clasificacion_gestion = clasificacion_gestion.id_clasificacion_gestion JOIN nombres_clasificacion ON tarea.tipo_clasificacion_id = nombres_clasificacion.id_nombre_clasificacion WHERE gestiones.fecha_gestion BETWEEN :fechaInicio AND :fechaFin AND nombres_clasificacion.id_nombre_clasificacion = :idNombre ORDER BY dias_vencidos DESC", 
