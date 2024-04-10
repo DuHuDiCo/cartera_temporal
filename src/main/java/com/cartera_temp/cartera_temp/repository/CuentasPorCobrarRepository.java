@@ -17,7 +17,7 @@ import org.springframework.data.repository.query.Param;
 public interface CuentasPorCobrarRepository extends JpaRepository<CuentasPorCobrar, Long>, JpaSpecificationExecutor<CuentasPorCobrar> {
     
     
-    @Query(value = "SELECT DISTINCT cuentas_por_cobrar.* FROM `cuentas_por_cobrar` "
+    @Query(value = "SELECT DISTINCT cuentas_por_cobrar.*FROM `cuentas_por_cobrar` "
             + "JOIN  banco ON cuentas_por_cobrar.banco_id = banco.id_banco "
             + "JOIN tipos_vencimiento ON cuentas_por_cobrar.tipo_vencimiento_id = tipos_vencimiento.id_tipo_vencimiento "
             + "JOIN sede ON cuentas_por_cobrar.sede_id = sede.id_sede "
@@ -27,8 +27,8 @@ public interface CuentasPorCobrarRepository extends JpaRepository<CuentasPorCobr
             + "JOIN tarea ON tarea.id_clasificacion_gestion = clasificacion_gestion.id_clasificacion_gestion"
             + " JOIN nombres_clasificacion ON tarea.tipo_clasificacion_id = nombres_clasificacion.id_nombre_clasificacion "
             + "WHERE gestiones.fecha_gestion = (SELECT MAX(fecha_gestion) from gestiones as g WHERE g.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar) AND nombres_clasificacion.id_nombre_clasificacion = :idNombre "
-            + "(:bancos IS NULL OR banco.banco IN :bancos) AND (:vencimientos IS NULL OR tipos_vencimiento.tipo_vencimiento IN :vencimientos) AND (:sedes IS NULL OR sede.sede IN :sedes)"
-            + "(:juridicas IS NULL OR clasificacion_juridica.clasificacion_juridica IN :juridicas) AND (:diasVencidos IS NUL OR cuentas_por_cobrar.dias_vencidos BETWEEN :diasVencidos[0] AND :diasVencidos[1]) "
+            + "(:bancos IS NULL  OR :bancos  IS EMPTY  OR banco.banco IN :bancos) AND (:vencimientos IS NULL OR  :vencimientos IS EMPTY OR tipos_vencimiento.tipo_vencimiento IN :vencimientos) AND (:sedes IS NULL OR :sedes IS EMPTY OR sede.sede IN :sedes)"
+            + "(:juridicas IS NULL OR :juridicas IS EMPTY  OR clasificacion_juridica.clasificacion_juridica IN :juridicas) AND (:diasVencidos IS NULL OR  IS EMPTY  OR cuentas_por_cobrar.dias_vencidos BETWEEN :diasVencidos[0] AND :diasVencidos[1]) "
             + "ORDER BY dias_vencidos DESC",
             countQuery = "SELECT COUNT(DISTINCT cuentas_por_cobrar.*) FROM `cuentas_por_cobrar` "
             + "JOIN  banco ON cuentas_por_cobrar.banco_id = banco.id_banco "
