@@ -38,7 +38,7 @@ public interface CuentasPorCobrarRepository extends JpaRepository<CuentasPorCobr
             + "    ) "
             + "    AND nombres_clasificacion.id_nombre_clasificacion = :idNombre "
             + "ORDER BY cuentas_por_cobrar.dias_vencidos DESC",
-            countQuery = "SELECT COUNT(DISTINCT cuentas_por_cobrar.*) FROM `cuentas_por_cobrar` "
+            countQuery = "SELECT COUNT(DISTINCT cuentas_por_cobrar.id_cuenta_por_cobrar) FROM cuentas_por_cobrar "
            + "JOIN banco ON cuentas_por_cobrar.banco_id = banco.id_banco "
             + "JOIN tipos_vencimiento ON cuentas_por_cobrar.tipo_vencimiento_id = tipos_vencimiento.id_tipo_vencimiento "
             + "JOIN sede ON cuentas_por_cobrar.sede_id = sede.id_sede "
