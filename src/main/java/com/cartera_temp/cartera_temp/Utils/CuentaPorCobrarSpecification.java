@@ -68,16 +68,18 @@ public class CuentaPorCobrarSpecification {
                         Join<CuentasPorCobrar, Gestiones> gestionesJoin = root.join("gestiones");
                         Join<Gestiones, ClasificacionGestion> clasificacionGestionJoin = gestionesJoin.join("clasificacionGestion");
                         Join<Gestiones, AcuerdoPago> acuerdoPagoJoin = criteriaBuilder.treat(clasificacionGestionJoin, AcuerdoPago.class);
-                        Subquery<Long> subquery = query.subquery(Long.class);
+                        
+                        Subquery<Date> subquery = query.subquery(Date.class);
                         Root<Gestiones> subRoot = subquery.from(Gestiones.class);
-                        subquery.select(criteriaBuilder.max(subRoot.get("clasificacionGestion").get("id_clasificacion_gestion")));
-                        subquery.where(criteriaBuilder.equal(subRoot.get("cuenta_cobrar_id"), root.get("id_cuenta_por_cobrar")));
+                        subquery.select(criteriaBuilder.max(subRoot.get("fechaGestion")).as(Date.class));
+                        subquery.where(criteriaBuilder.equal(subRoot.get("cuentasPorCobrar"), root));
+
                         
                         
                         predicates.add(criteriaBuilder.and(
                                 criteriaBuilder.equal(clasificacionGestionJoin.get("clasificacion"), filtro.getClasificacionGestion().getTipoClasificacion()),
                                 criteriaBuilder.equal(acuerdoPagoJoin.get("isActive"), active),
-                                criteriaBuilder.equal(gestionesJoin.get("clasificacionGestion").get("cuenta_cobrar_id"), subquery)
+                                criteriaBuilder.equal(gestionesJoin.get("fechaGestion"), subquery)
                         ));
                         System.out.println(Functions.fechaConHora(filtro.getFechaGestionInicio(), "inicio").toString());
                         System.out.println(filtro.getFechaGestionFin());
