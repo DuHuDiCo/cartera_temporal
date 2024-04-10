@@ -46,7 +46,7 @@ public interface CuentasPorCobrarRepository extends JpaRepository<CuentasPorCobr
             + "(:vencimientos IS NULL OR  :vencimientos IS EMPTY OR tipos_vencimiento.tipo_vencimiento IN :vencimientos) AND "
             + "(:sedes IS NULL OR :sedes IS EMPTY OR sede.sede IN :sedes) AND "
             + "(:juridicas IS NULL OR :juridicas IS EMPTY  OR clasificacion_juridica.clasificacion_juridica IN :juridicas) AND "
-            + "(:diasVencidos IS NULL OR  IS EMPTY  OR cuentas_por_cobrar.dias_vencidos BETWEEN :diasVencidos[0] AND :diasVencidos[1])  "
+            + "(:diasVencidos IS NULL OR :diasVencidos IS EMPTY  OR cuentas_por_cobrar.dias_vencidos BETWEEN :diasVencidos[0] AND :diasVencidos[1])  "
             + "AND gestiones.fecha_gestion = (SELECT MAX(fecha_gestion) from gestiones as g WHERE g.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar) AND nombres_clasificacion.id_nombre_clasificacion = :idNombre "
             + "ORDER BY cuentas_por_cobrar.dias_vencidos DESC",
             nativeQuery = true)
