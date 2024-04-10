@@ -36,7 +36,7 @@ public interface CuentasPorCobrarRepository extends JpaRepository<CuentasPorCobr
             + "        FROM gestiones AS g "
             + "        WHERE g.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar "
             + "    ) "
-            + "    AND nombres_clasificacion.id_nombre_clasificacion = :id "
+            + "    AND nombres_clasificacion.id_nombre_clasificacion = :idNombre "
             + "ORDER BY cuentas_por_cobrar.dias_vencidos DESC",
             countQuery = "SELECT COUNT(DISTINCT cuentas_por_cobrar.*) FROM `cuentas_por_cobrar` "
             + "JOIN banco ON cuentas_por_cobrar.banco_id = banco.id_banco "
@@ -58,11 +58,11 @@ public interface CuentasPorCobrarRepository extends JpaRepository<CuentasPorCobr
             + "        FROM gestiones AS g "
             + "        WHERE g.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar "
             + "    ) "
-            + "    AND nombres_clasificacion.id_nombre_clasificacion = :id "
+            + "    AND nombres_clasificacion.id_nombre_clasificacion = :idNombre "
             + "ORDER BY cuentas_por_cobrar.dias_vencidos DESC",
             nativeQuery = true)
-    Page<CuentasPorCobrar> obtenerTareasFiltro(@Param("idNombre") Long id, @Param("bancos") List<String> bancos, @Param("vencimientos") List<String> vencimientos,
-            @Param("sedes") List<String> sedes, @Param("juridicas") List<String> juridicas, @Param("diasStart") int diasStart, @Param("diasEnd") int diasEnd, Pageable pageable);
+    Page<CuentasPorCobrar> obtenerTareasFiltro( @Param("bancos") List<String> bancos, @Param("vencimientos") List<String> vencimientos,
+            @Param("sedes") List<String> sedes, @Param("juridicas") List<String> juridicas, @Param("diasStart") int diasStart, @Param("diasEnd") int diasEnd, @Param("idNombre") Long id,Pageable pageable);
 
     @Query(value = "SELECT DISTINCT cuentas_por_cobrar.* FROM `cuentas_por_cobrar` JOIN gestiones ON gestiones.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar JOIN clasificacion_gestion ON gestiones.clasificacion_gestion_id = clasificacion_gestion.id_clasificacion_gestion JOIN tarea ON tarea.id_clasificacion_gestion = clasificacion_gestion.id_clasificacion_gestion JOIN nombres_clasificacion ON tarea.tipo_clasificacion_id = nombres_clasificacion.id_nombre_clasificacion WHERE gestiones.fecha_gestion BETWEEN :fechaInicio AND :fechaFin AND nombres_clasificacion.id_nombre_clasificacion = :idNombre ORDER BY dias_vencidos DESC",
             countQuery = "SELECT COUNT( DISTINCT cuentas_por_cobrar.id_cuenta_por_cobrar) FROM `cuentas_por_cobrar` JOIN gestiones ON gestiones.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar JOIN clasificacion_gestion ON gestiones.clasificacion_gestion_id = clasificacion_gestion.id_clasificacion_gestion JOIN tarea ON tarea.id_clasificacion_gestion = clasificacion_gestion.id_clasificacion_gestion JOIN nombres_clasificacion ON tarea.tipo_clasificacion_id = nombres_clasificacion.id_nombre_clasificacion WHERE gestiones.fecha_gestion BETWEEN :fechaInicio AND :fechaFin AND nombres_clasificacion.id_nombre_clasificacion = :idNombre ORDER BY dias_vencidos DESC", nativeQuery = true)
