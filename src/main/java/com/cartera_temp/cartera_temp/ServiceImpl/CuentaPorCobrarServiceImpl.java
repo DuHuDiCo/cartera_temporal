@@ -549,7 +549,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
 
             }
 
-            if (Objects.nonNull(dto.getClasificacionGestion().getTipoClasificacion())) {
+            if (Objects.nonNull(dto.getClasificacionGestion())) {
                 if (dto.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.TAREA.getDato())) {
 
                     List<String> bancos = null;
