@@ -549,34 +549,35 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
 
             }
 
-            if (dto.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.TAREA.getDato())) {
+            if (Objects.nonNull(dto.getClasificacionGestion().getTipoClasificacion())) {
+                if (dto.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.TAREA.getDato())) {
 
-                List<String> bancos = null;
-                List<String> clasi = null;
-                List<String> sedes = null;
-                List<String> edadVen = null;
+                    List<String> bancos = null;
+                    List<String> clasi = null;
+                    List<String> sedes = null;
+                    List<String> edadVen = null;
 
-                if (!dto.getBanco().isEmpty()) {
-                    bancos = dto.getBanco();
-                }
-                if (!dto.getSede().isEmpty()) {
-                    sedes = dto.getSede();
-                }
-                if (!dto.getClasiJuridica().isEmpty()) {
-                    clasi = dto.getClasiJuridica();
-                }
-                if (!dto.getEdadVencimiento().isEmpty()) {
-                    edadVen = dto.getEdadVencimiento();
-                }
+                    if (!dto.getBanco().isEmpty()) {
+                        bancos = dto.getBanco();
+                    }
+                    if (!dto.getSede().isEmpty()) {
+                        sedes = dto.getSede();
+                    }
+                    if (!dto.getClasiJuridica().isEmpty()) {
+                        clasi = dto.getClasiJuridica();
+                    }
+                    if (!dto.getEdadVencimiento().isEmpty()) {
+                        edadVen = dto.getEdadVencimiento();
+                    }
 
-                cpc = cuentasPorCobrarRepository.obtenerTareasFiltro(bancos, edadVen, sedes,clasi, dto.getDiasVencidosInicio(), dto.getDiasVencidosFin(), dto.getClasificacionGestion().getId(), pageable);
+                    cpc = cuentasPorCobrarRepository.obtenerTareasFiltro(bancos, edadVen, sedes, clasi, dto.getDiasVencidosInicio(), dto.getDiasVencidosFin(), dto.getClasificacionGestion().getId(), pageable);
+                } else {
+                    cpc = cuentasPorCobrarRepository.findAll(spec, pageable);
+                }
             } else {
                 cpc = cuentasPorCobrarRepository.findAll(spec, pageable);
+                var list = CollectionUtils.isEmpty(cpc.getContent()) ? null : cpc.getTotalElements();
             }
-
-            var list = CollectionUtils.isEmpty(cpc.getContent()) ? null : cpc.getTotalElements();
-            
-            
 
         } else {
 
@@ -593,8 +594,6 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             try {
                 cpc = cuentasPorCobrarRepository.obtenerCuentasByFechaCompromiso(Functions.stringToDateAndFormat(dto.getFechaCompromisoInicio()), asesor.getIdAsesorCartera(), pageable);
                 var list = CollectionUtils.isEmpty(cpc.getContent()) ? null : cpc.getContent().size();
-
-                
 
             } catch (ParseException ex) {
                 Logger.getLogger(CuentaPorCobrarServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -624,7 +623,6 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
 
             List<ClientesDto> clientes = clientesClient.buscarClientesByNumeroObligacion(cuentasPorCobrar.getDocumentoCliente(), token);
             cpcResFor.setClientes(clientes);
-            
 
             cpcRes.add(cpcResFor);
 
@@ -720,7 +718,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             List<Gestiones> gestionesTareas = gestionesDesorganizadas.stream().filter(ges -> {
                 if (ges.getClasificacionGestion() instanceof Tarea) {
                     Tarea tarea = (Tarea) ges.getClasificacionGestion();
-                    
+
                     return tarea.getNombresClasificacion().getIdNombreClasificacion().equals(filtro.getClasificacionGestion().getId());
                 }
                 return false;
@@ -742,7 +740,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
         }
 
         if (CollectionUtils.isEmpty(gestionesOrganizadas)) {
-            
+
             return gestionesDesorganizadas;
         }
         return gestionesOrganizadas;
