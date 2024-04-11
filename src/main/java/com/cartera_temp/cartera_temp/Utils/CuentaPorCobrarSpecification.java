@@ -62,8 +62,8 @@ public class CuentaPorCobrarSpecification {
                 boolean active = true;
                 if (filtro.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.ACUERDODEPAGO.getDato())) {
 
-                    try {
-                        System.out.println(TipoClasificacion.ACUERDODEPAGO.getDato() + "lina 62");
+                   
+                        
                         query.distinct(true);
                         Join<CuentasPorCobrar, Gestiones> gestionesJoin = root.join("gestiones");
                         Join<Gestiones, ClasificacionGestion> clasificacionGestionJoin = gestionesJoin.join("clasificacionGestion");
@@ -81,18 +81,13 @@ public class CuentaPorCobrarSpecification {
                                 criteriaBuilder.equal(acuerdoPagoJoin.get("isActive"), active),
                                 criteriaBuilder.equal(gestionesJoin.get("fechaGestion"), subquery)
                         ));
-                        System.out.println(Functions.fechaConHora(filtro.getFechaGestionInicio(), "inicio").toString());
-                        System.out.println(filtro.getFechaGestionFin());
-                        System.out.println(filtro.getClasificacionGestion().getId());
-                    } catch (ParseException ex) {
-                        Logger.getLogger(CuentaPorCobrarSpecification.class.getName()).log(Level.SEVERE, null, ex);
-                        System.out.println(ex.getMessage());
-                    }
+                        
+                  
 
                 }
 
                 if (filtro.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.NOTA.getDato())) {
-                    try {
+                    
                         System.out.println(TipoClasificacion.NOTA.getDato() + "lina 81");
                         query.distinct(true);
                         Join<CuentasPorCobrar, Gestiones> gestionesJoin = root.join("gestiones");
@@ -111,14 +106,8 @@ public class CuentaPorCobrarSpecification {
                                 criteriaBuilder.equal(gestionesJoin.get("fechaGestion"), subquery)
                         ));
 
-                        System.out.println(Functions.fechaConHora(filtro.getFechaGestionInicio(), "inicio").toString());
-                        System.out.println(filtro.getFechaGestionFin());
-                        System.out.println(filtro.getClasificacionGestion().getId());
-                        System.out.println(filtro.getClasificacionGestion().getTipoClasificacion());
-                    } catch (ParseException ex) {
-                        Logger.getLogger(CuentaPorCobrarSpecification.class.getName()).log(Level.SEVERE, null, ex);
-                        System.out.println(ex.getMessage());
-                    }
+                       
+                  
 
                 }
 

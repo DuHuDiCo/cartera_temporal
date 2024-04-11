@@ -72,7 +72,7 @@ public class GenerarPdfImpl implements GenerarPdf {
     public String generarReporteAcuerdoPagoToClient(CuentasPorCobrar cpc, ClientesDto cliente,String username) throws IOException, ClassNotFoundException {
 
         if (Objects.isNull(cpc)) {
-            System.out.println("cpc is null");
+            
             return null;
         }
 

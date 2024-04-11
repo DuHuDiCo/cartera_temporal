@@ -575,8 +575,8 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             }
 
             var list = CollectionUtils.isEmpty(cpc.getContent()) ? null : cpc.getTotalElements();
-            System.out.println("SIZE : " + list);
-            System.out.println(spec);
+            
+            
 
         } else {
 
@@ -594,7 +594,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
                 cpc = cuentasPorCobrarRepository.obtenerCuentasByFechaCompromiso(Functions.stringToDateAndFormat(dto.getFechaCompromisoInicio()), asesor.getIdAsesorCartera(), pageable);
                 var list = CollectionUtils.isEmpty(cpc.getContent()) ? null : cpc.getContent().size();
 
-                System.out.println("SIZE : " + list);
+                
 
             } catch (ParseException ex) {
                 Logger.getLogger(CuentaPorCobrarServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -720,7 +720,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             List<Gestiones> gestionesTareas = gestionesDesorganizadas.stream().filter(ges -> {
                 if (ges.getClasificacionGestion() instanceof Tarea) {
                     Tarea tarea = (Tarea) ges.getClasificacionGestion();
-                    System.out.println(tarea.getNombresClasificacion().getIdNombreClasificacion());
+                    
                     return tarea.getNombresClasificacion().getIdNombreClasificacion().equals(filtro.getClasificacionGestion().getId());
                 }
                 return false;
@@ -742,7 +742,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
         }
 
         if (CollectionUtils.isEmpty(gestionesOrganizadas)) {
-            System.out.println("VACIO");
+            
             return gestionesDesorganizadas;
         }
         return gestionesOrganizadas;

@@ -482,7 +482,7 @@ public class GestionesServiceImpl implements GestionesService {
             cuenta.agregarGestion(newGestion);
             gestionesSaved.add(newGestion);
 
-            System.out.println(gestionesSaved.size());
+            
 
         }
 
@@ -512,7 +512,7 @@ public class GestionesServiceImpl implements GestionesService {
 
         Gestiones gestion = gestionesRepository.findById(idAcuerdoPago).orElse(null);
         if (Objects.isNull(gestion)) {
-            System.out.println("nulll");
+            
             return;
         }
 
@@ -531,7 +531,7 @@ public class GestionesServiceImpl implements GestionesService {
 
         Usuario usuario = usuarioClientService.obtenerUsuarioById(acuerdo.getAsesor().getUsuarioId());
         if (Objects.isNull(usuario)) {
-            System.out.println("null");
+            return;
         }
 
         CuentasPorCobrar cpc = cuentaCobrarRepository.findByNumeroObligacion(acuerdo.getGestiones().getNumeroObligacion());
@@ -594,15 +594,13 @@ public class GestionesServiceImpl implements GestionesService {
     public LinkToClient sendLinkAndPdfToClient(LinkDto dto) {
 
         if (dto.getNumeroObligacion() == "" || dto.getNumeroObligacion() == null || dto.getCedula() == "" || dto.getCedula() == null) {
-            System.out.println("numero obligacion o cedula vacio");
-            System.out.println(dto.getNumeroObligacion());
-            System.out.println(dto.getCedula());
+            
             return null;
         }
 
         CuentasPorCobrar cpc = cuentaCobrarRepository.findByNumeroObligacion(dto.getNumeroObligacion());
         if (Objects.isNull(cpc)) {
-            System.out.println("cp vacio");
+            
             return null;
         }
 
@@ -626,22 +624,22 @@ public class GestionesServiceImpl implements GestionesService {
         if (Objects.isNull(dto.getCedulaArchivo())) {
             client = clientesClient.buscarClientesByNumeroObligacion(dto.getCedula(), token);
             if (client.isEmpty()) {
-                System.out.println("clientes vacio");
+                
                 return null;
             }
         } else {
             client.add(clientesClient.buscarClientesByNumDoc(dto.getCedulaArchivo(), token));
             if (client.isEmpty()) {
-                System.out.println("clientes vacio");
+                
                 return null;
             }
         }
 
-        System.out.println(client.size());
+        
 
         Usuario usu = usuarioClientService.obtenerUsuarioById(cpc.getAsesor().getUsuarioId());
         if (Objects.isNull(usu)) {
-            System.out.println("usuario cedula vacio");
+            
             return null;
         }
 

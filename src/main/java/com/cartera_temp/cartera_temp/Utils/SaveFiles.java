@@ -83,7 +83,7 @@ public class SaveFiles {
     }
      
      public byte[] fileToByte(String ruta) throws FileNotFoundException, IOException{
-         System.out.println(ruta);
+         
          File file = new File(ruta);
          byte[] imageBytes = new byte[(int) file.length()];
          

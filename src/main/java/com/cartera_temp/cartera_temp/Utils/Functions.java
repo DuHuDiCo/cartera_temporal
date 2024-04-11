@@ -224,7 +224,7 @@ public class Functions {
 
         // Obtener la fecha del primer día del mes actual
         Date primerDiaDelMes = calendar.getTime();
-        System.out.println(primerDiaDelMes);
+        
 
         return primerDiaDelMes;
     }
@@ -247,7 +247,7 @@ public class Functions {
         // Obtener la fecha del primer día del mes actual
         Date primerDiaDelMes = calendar.getTime();
 
-        System.out.println(primerDiaDelMes);
+        
         return primerDiaDelMes;
     }
 

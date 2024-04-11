@@ -171,7 +171,7 @@ public class FileServiceImpl implements FileService {
 
                     GestionesDto gestiones = new GestionesDto(numeroObligacion, asesor, fechaGestion, clasificacion, datosAdicionales);
                     gestionesDto.add(gestiones);
-                    System.out.println(gestionesDto.size());
+                    
                 } catch (Exception e) {
                     System.out.println(e);
                 }

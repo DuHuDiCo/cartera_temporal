@@ -28,8 +28,7 @@ public class NombreClasificacionServiceImpl implements NombreClasificacionServic
             return null;
         }
         
-        System.out.println(dto.getNombreClasificacion());
-        System.out.println(dto.getTipo());
+        
          nc = new NombresClasificacion();
         
         nc.setNombre(dto.getNombreClasificacion());
