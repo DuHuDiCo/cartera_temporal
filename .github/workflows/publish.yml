@@ -3,3 +3,9 @@ name: publish
 on:
   push:
     branches: ["Production"]
+  pull_request:
+    branches: ["Production"]
+
+jobs:
+  create-docker-image:
+    
