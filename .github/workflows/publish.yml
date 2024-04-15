@@ -1,5 +1,43 @@
-name: publish
-
 on:
   push:
     branches: ["Production"]
+  pull_request:
+    branches: ["Production"]
+
+jobs:
+  create-docker-image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v2
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.TOKEN_CD }}
+
+      - name: Build images
+        run: |
+          docker build . --tag ghcr.io/duhudico/cartera-temporal-latest
+          docker push ghcr.io/duhudico/cartera-temporal-latest
+
+  deploy:
+    needs: create-docker-image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install sshpass
+        run: sudo apt-get install -y sshpass
+
+      - name: SSH into server and deploy
+        run: |
+          sshpass -p ${{secrets.AUTH_PASS}} ssh -o StrictHostKeyChecking=no ${{secrets.AUTH_SERVER}} << 'EOF'
+            cd /root/cartera-temporal/
+            docker pull ghcr.io/duhudico/cartera-temporal-latest
+            docker stop cartera-temporal && docker rm cartera-temporal
+            docker run -d --name cartera-temporal --network sge-microservices \
+            -v /root/uploadsApps/cartera-temporal/uploads/Firmas:/uploads/Firmas \
+            -v /root/uploadsApps/cartera-temporal/uploads/Recibos:/uploads/Recibos \
+            -e TZ=America/Bogota -p 8021:8021 ghcr.io/duhudico/cartera-temporal-latest
+          EOF
