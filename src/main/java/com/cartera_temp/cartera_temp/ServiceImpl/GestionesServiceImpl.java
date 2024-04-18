@@ -757,11 +757,11 @@ public class GestionesServiceImpl implements GestionesService {
                 .acuerdosPagoRealizados(asesor.getIdAsesorCartera(), "ACUERDO DE PAGO", fechaInicialDia, fechaFinalDia)
                 .size());
         alerts.setCuentasAsignadas(
-                gestionesRepository.gestionesAsignadasByAsesorCount(asesor.getIdAsesorCartera()).size());
+                cuentaCobrarRepository.gestionesAsignadasByAsesorCount(asesor.getIdAsesorCartera()).size());
         alerts.setCuentasSinGestion(
-                gestionesRepository.gestionesSinGestion(asesor.getIdAsesorCartera(), fechaInicialMes).size());
+                cuentaCobrarRepository.gestionesSinGestion(asesor.getIdAsesorCartera(), fechaInicialMes).size());
         alerts.setCuentasTotales(
-                gestionesRepository.gestionesAsignadasByAsesorCountTotal(asesor.getIdAsesorCartera()).size());
+                cuentaCobrarRepository.gestionesAsignadasByAsesorCountTotal(asesor.getIdAsesorCartera()).size());
 
         return alerts;
     }
