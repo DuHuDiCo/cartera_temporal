@@ -89,7 +89,15 @@ public class GestionesServiceImpl implements GestionesService {
     private final GenerarPdf pdf;
     private final NotificacionesRepository notificacionesRepository;
 
-    public GestionesServiceImpl(GestionesRepository gestionesRepository, CuentasPorCobrarRepository cuentaCobrarRepository, UsuarioClientService usuarioClientService, AsesorCarteraService asesorCartera, FileService fileService, SedeRepository sedeRepository, BancoRepository bancoRepository, SaveFiles saveFiles, NotificacionesService notificacionesService, AcuerdoPagoRepository acuerdoPagoRepository, ClasificacionGestionRepository clasificacionGestionRepository, NotaRepository notaRepository, TareaRepository tareaRepository, NombresClasificacionRepository nombresClasificacionRepository, CuotaRepository cuotaRepository, HistoricoAcuerdoPagoRepository historicoAcuerdoPagoRepository, ClientesClient clientesClient, HttpServletRequest request, GenerarPdf pdf, NotificacionesRepository notificacionesRepository) {
+    public GestionesServiceImpl(GestionesRepository gestionesRepository,
+            CuentasPorCobrarRepository cuentaCobrarRepository, UsuarioClientService usuarioClientService,
+            AsesorCarteraService asesorCartera, FileService fileService, SedeRepository sedeRepository,
+            BancoRepository bancoRepository, SaveFiles saveFiles, NotificacionesService notificacionesService,
+            AcuerdoPagoRepository acuerdoPagoRepository, ClasificacionGestionRepository clasificacionGestionRepository,
+            NotaRepository notaRepository, TareaRepository tareaRepository,
+            NombresClasificacionRepository nombresClasificacionRepository, CuotaRepository cuotaRepository,
+            HistoricoAcuerdoPagoRepository historicoAcuerdoPagoRepository, ClientesClient clientesClient,
+            HttpServletRequest request, GenerarPdf pdf, NotificacionesRepository notificacionesRepository) {
         this.gestionesRepository = gestionesRepository;
         this.cuentaCobrarRepository = cuentaCobrarRepository;
         this.usuarioClientService = usuarioClientService;
@@ -115,7 +123,8 @@ public class GestionesServiceImpl implements GestionesService {
     @Override
     public GestionResponse saveOneGestion(GestionToSaveDto dto) {
 
-        if (dto.getNumeroObligacion() == null || dto.getNumeroObligacion().equals("") || dto.getClasificacion() == null || dto.getClasificacion().equals("")) {
+        if (dto.getNumeroObligacion() == null || dto.getNumeroObligacion().equals("") || dto.getClasificacion() == null
+                || dto.getClasificacion().equals("")) {
             return null;
         }
 
@@ -159,12 +168,13 @@ public class GestionesServiceImpl implements GestionesService {
             Logger.getLogger(GestionesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        NombresClasificacion clasificacion = nombresClasificacionRepository.findByNombreAndTipo(dto.getClasificacion().getNombreClasificacion(), dto.getClasificacion().getTipoClasificacion());
+        NombresClasificacion clasificacion = nombresClasificacionRepository.findByNombreAndTipo(
+                dto.getClasificacion().getNombreClasificacion(), dto.getClasificacion().getTipoClasificacion());
         if (Objects.isNull(clasificacion)) {
             return null;
         }
 
-        //ACUERDO DE PAGO
+        // ACUERDO DE PAGO
         if (clasificacion.getTipo().equals("Acuerdo de Pago".toUpperCase())) {
 
             if (Objects.nonNull(dto.getClasificacionId())) {
@@ -197,7 +207,8 @@ public class GestionesServiceImpl implements GestionesService {
                 Logger.getLogger(GestionesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
             try {
-                acuerdoPago.setFechaCompromiso(Functions.stringToDateAndFormat(dto.getClasificacion().getAcuerdoPago().getFechaCompromiso()));
+                acuerdoPago.setFechaCompromiso(
+                        Functions.stringToDateAndFormat(dto.getClasificacion().getAcuerdoPago().getFechaCompromiso()));
             } catch (ParseException ex) {
                 Logger.getLogger(GestionesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -255,7 +266,8 @@ public class GestionesServiceImpl implements GestionesService {
             notificacion.setNumeroObligacion(cpc.getNumeroObligacion());
             notificacion.setDesignatedTo(usuDesignated.getIdUsuario());
             notificacion.setIsActive(true);
-            notificacion.setDesignatedBy(userNotifying.getNombres().toUpperCase().concat(" ").concat(userNotifying.getApellidos().toUpperCase()));
+            notificacion.setDesignatedBy(userNotifying.getNombres().toUpperCase().concat(" ")
+                    .concat(userNotifying.getApellidos().toUpperCase()));
             notificacion.setVerRealizadas("VER");
             notificacion.setCliente(cpc.getCliente());
 
@@ -267,7 +279,7 @@ public class GestionesServiceImpl implements GestionesService {
 
         }
 
-        //NOTA
+        // NOTA
         if (clasificacion.getTipo().equals("Nota".toUpperCase())) {
 
             if (Objects.nonNull(dto.getClasificacionId())) {
@@ -315,7 +327,7 @@ public class GestionesServiceImpl implements GestionesService {
 
         }
 
-        //TAREA
+        // TAREA
         if (clasificacion.getTipo().equals("Tarea".toUpperCase())) {
 
             Tarea tarea = null;
@@ -333,7 +345,8 @@ public class GestionesServiceImpl implements GestionesService {
             tarea.setDetalleTarea(dto.getClasificacion().getTarea().getDetalleTarea());
             tarea.setIsActive(true);
             try {
-                tarea.setFechaFinTarea(Functions.stringToDateAndFormat(dto.getClasificacion().getTarea().getFechaFinTarea()));
+                tarea.setFechaFinTarea(
+                        Functions.stringToDateAndFormat(dto.getClasificacion().getTarea().getFechaFinTarea()));
             } catch (ParseException ex) {
                 Logger.getLogger(GestionesServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -352,7 +365,7 @@ public class GestionesServiceImpl implements GestionesService {
             }
             tarea.setNombresClasificacion(nombre);
 
-            //guardar en tabla notificaciones
+            // guardar en tabla notificaciones
             if (Objects.nonNull(dto.getNotificacionId())) {
                 Notificaciones notificacion = notificacionesService.getById(dto.getNotificacionId());
 
@@ -370,7 +383,8 @@ public class GestionesServiceImpl implements GestionesService {
             notificacion.setFechaFinalizacion(tarea.getFechaFinTarea());
             notificacion.setNumeroObligacion(cpc.getNumeroObligacion());
             notificacion.setDesignatedTo(tarea.getDesignatedTo());
-            notificacion.setDesignatedBy(userNotifying.getNombres().toUpperCase().concat(userNotifying.getApellidos().toUpperCase()));
+            notificacion.setDesignatedBy(
+                    userNotifying.getNombres().toUpperCase().concat(userNotifying.getApellidos().toUpperCase()));
             notificacion.setVerRealizadas("VER");
             notificacion.setIsActive(true);
             notificacion.setCliente(cpc.getCliente());
@@ -482,8 +496,6 @@ public class GestionesServiceImpl implements GestionesService {
             cuenta.agregarGestion(newGestion);
             gestionesSaved.add(newGestion);
 
-            
-
         }
 
         return gestionesRepository.saveAll(gestionesSaved);
@@ -496,7 +508,8 @@ public class GestionesServiceImpl implements GestionesService {
             return null;
         }
 
-        Gestiones ultimaGestion = gestionesRepository.findTopByNumeroObligacionOrderByFechaGestionDesc(numeroObligacion);
+        Gestiones ultimaGestion = gestionesRepository
+                .findTopByNumeroObligacionOrderByFechaGestionDesc(numeroObligacion);
         if (Objects.isNull(ultimaGestion)) {
             return null;
         }
@@ -512,7 +525,7 @@ public class GestionesServiceImpl implements GestionesService {
 
         Gestiones gestion = gestionesRepository.findById(idAcuerdoPago).orElse(null);
         if (Objects.isNull(gestion)) {
-            
+
             return;
         }
 
@@ -534,7 +547,8 @@ public class GestionesServiceImpl implements GestionesService {
             return;
         }
 
-        CuentasPorCobrar cpc = cuentaCobrarRepository.findByNumeroObligacion(acuerdo.getGestiones().getNumeroObligacion());
+        CuentasPorCobrar cpc = cuentaCobrarRepository
+                .findByNumeroObligacion(acuerdo.getGestiones().getNumeroObligacion());
 
         String mora_total = acuerdo.getTipoAcuerdo();
         String valorAcuerdo = Double.toString(acuerdo.getValorTotalAcuerdo());
@@ -543,7 +557,8 @@ public class GestionesServiceImpl implements GestionesService {
         String fechaCorte = acuerdo.getFechaAcuerdo().toString();
         double valorTotalCuotasPagadas = 0;
         int totalCuotasPagadas = 0;
-        String cuotasTosave = "Cliente: ".concat(cpc.getCliente().concat("\n Numero de Obligacion: ").concat(cpc.getNumeroObligacion())
+        String cuotasTosave = "Cliente: ".concat(cpc.getCliente().concat("\n Numero de Obligacion: ")
+                .concat(cpc.getNumeroObligacion())
                 .concat("\n Asesor Cartera: ").concat(usuario.getNombres()).concat(usuario.getApellidos())
                 .concat("\n Acuerdo pactuado por mora o total: ").concat(mora_total)
                 .concat("\n Valor del acuerdo de pago: $").concat(String.valueOf(valorAcuerdo))
@@ -554,7 +569,12 @@ public class GestionesServiceImpl implements GestionesService {
         acuerdo.setIsActive(false);
 
         for (Cuotas cuota : cuotas) {
-            cuotasTosave = cuotasTosave.concat(Integer.toString(cuota.getNumeroCuota()).concat(" ").concat(Double.toString(cuota.getValorCuota())).concat(" ").concat(Double.toString(cuota.getCapitalCuota())).concat(" ").concat(cuota.getFechaVencimiento().toString()).concat(" ").concat(Double.toString(cuota.getHonorarios()))).concat("\n");
+            cuotasTosave = cuotasTosave.concat(
+                    Integer.toString(cuota.getNumeroCuota()).concat(" ").concat(Double.toString(cuota.getValorCuota()))
+                            .concat(" ").concat(Double.toString(cuota.getCapitalCuota())).concat(" ")
+                            .concat(cuota.getFechaVencimiento().toString()).concat(" ")
+                            .concat(Double.toString(cuota.getHonorarios())))
+                    .concat("\n");
 
             if (cuota.isCumplio()) {
                 valorTotalCuotasPagadas = valorTotalCuotasPagadas + cuota.getValorCuota();
@@ -579,7 +599,9 @@ public class GestionesServiceImpl implements GestionesService {
             acuerdoPagoRepository.save(acuerdo);
         }
 
-        List<Notificaciones> notificaciones = notificacionesRepository.findByNumeroObligacionAndFechaCreacionGreaterThanEqualAndTipoGestionOrderByFechaCreacionDesc(gestion.getNumeroObligacion(), gestion.getFechaGestion(), acuerdo.getClasificacion());
+        List<Notificaciones> notificaciones = notificacionesRepository
+                .findByNumeroObligacionAndFechaCreacionGreaterThanEqualAndTipoGestionOrderByFechaCreacionDesc(
+                        gestion.getNumeroObligacion(), gestion.getFechaGestion(), acuerdo.getClasificacion());
 
         if (!CollectionUtils.isEmpty(notificaciones)) {
             for (Notificaciones notificacione : notificaciones) {
@@ -593,14 +615,15 @@ public class GestionesServiceImpl implements GestionesService {
     @Override
     public LinkToClient sendLinkAndPdfToClient(LinkDto dto) {
 
-        if (dto.getNumeroObligacion() == "" || dto.getNumeroObligacion() == null || dto.getCedula() == "" || dto.getCedula() == null) {
-            
+        if (dto.getNumeroObligacion() == "" || dto.getNumeroObligacion() == null || dto.getCedula() == ""
+                || dto.getCedula() == null) {
+
             return null;
         }
 
         CuentasPorCobrar cpc = cuentaCobrarRepository.findByNumeroObligacion(dto.getNumeroObligacion());
         if (Objects.isNull(cpc)) {
-            
+
             return null;
         }
 
@@ -624,22 +647,20 @@ public class GestionesServiceImpl implements GestionesService {
         if (Objects.isNull(dto.getCedulaArchivo())) {
             client = clientesClient.buscarClientesByNumeroObligacion(dto.getCedula(), token);
             if (client.isEmpty()) {
-                
+
                 return null;
             }
         } else {
             client.add(clientesClient.buscarClientesByNumDoc(dto.getCedulaArchivo(), token));
             if (client.isEmpty()) {
-                
+
                 return null;
             }
         }
 
-        
-
         Usuario usu = usuarioClientService.obtenerUsuarioById(cpc.getAsesor().getUsuarioId());
         if (Objects.isNull(usu)) {
-            
+
             return null;
         }
 
@@ -648,7 +669,8 @@ public class GestionesServiceImpl implements GestionesService {
             return null;
         }
 
-        List<Telefono> telefono = clientToSend.getTelefonos().stream().filter(t -> t.isIsCurrent() == true).collect(Collectors.toList());
+        List<Telefono> telefono = clientToSend.getTelefonos().stream().filter(t -> t.isIsCurrent() == true)
+                .collect(Collectors.toList());
 
         String telToMessage;
         if (Objects.nonNull(dto.getNumeroAlterno())) {
@@ -660,12 +682,16 @@ public class GestionesServiceImpl implements GestionesService {
         LinkToClient link = new LinkToClient();
 
         String nombreTitular = clientToSend.getNombreTitular().replaceAll(" ", "%20").toUpperCase();
-        String asesorCartera = usu.getNombres().replaceAll(" ", "%20").concat("%20").concat(usu.getApellidos().replaceAll(" ", "%20")).toUpperCase();
+        String asesorCartera = usu.getNombres().replaceAll(" ", "%20").concat("%20")
+                .concat(usu.getApellidos().replaceAll(" ", "%20")).toUpperCase();
 
-        String message = "&text=Buen%20día%20señor/a%20".concat(nombreTitular).concat(",%20se%20comunica%20con%20GMJ%20hogar;%20por%20medio%20de%20este%20mensaje%20le%20notificamos")
-                .concat("%20que%20su%20acuerdo%20de%20pago%20").concat("por%20el/la%20").concat(moraTotal).concat("%20ha%20sido%20efectuado%20exitosamente,%20a%20continuación%20enviaremos%20un%20PDF%20con%20la%20")
+        String message = "&text=Buen%20día%20señor/a%20".concat(nombreTitular)
+                .concat(",%20se%20comunica%20con%20GMJ%20hogar;%20por%20medio%20de%20este%20mensaje%20le%20notificamos")
+                .concat("%20que%20su%20acuerdo%20de%20pago%20").concat("por%20el/la%20").concat(moraTotal)
+                .concat("%20ha%20sido%20efectuado%20exitosamente,%20a%20continuación%20enviaremos%20un%20PDF%20con%20la%20")
                 .concat("información%20de%20su%20acuerdo%20de%20pago,%20este%20contiene%20las%20fechas%20de%20pago%20y%20los%20valores%20de%20las%20cuotas%20")
-                .concat("mensuales%20acordadas%20con%20nuestro%20asesor/a%20de%20cartera%20".concat(asesorCartera).concat(",%20si%20tiene%20alguna%20duda%20por%20favor%20ponerse%20"))
+                .concat("mensuales%20acordadas%20con%20nuestro%20asesor/a%20de%20cartera%20".concat(asesorCartera)
+                        .concat(",%20si%20tiene%20alguna%20duda%20por%20favor%20ponerse%20"))
                 .concat("en%20contacto%20por%20este%20mismo%20medio,%20muchas%20gracias");
 
         link.setMessageToWpp("https://api.whatsapp.com/send?phone=".concat("+").concat(telToMessage).concat(message));
@@ -698,11 +724,9 @@ public class GestionesServiceImpl implements GestionesService {
     @Override
     public AlertsGestiones alertasDeGestiones(String username, String fecha) {
 
-    
-        
         Date fechaInicialMes = Functions.obtenerFechaInicialFinalMes(true, "MES");
         Date fechaFinalMes = Functions.obtenerFechaInicialFinalMes(false, "MES");
-        
+
         Date fechaInicialDia = Functions.obtenerFechaInicialFinalMes(true, "DIA");
         Date fechaFinalDia = Functions.obtenerFechaInicialFinalMes(false, "DIA");
 
@@ -718,20 +742,29 @@ public class GestionesServiceImpl implements GestionesService {
 
         AlertsGestiones alerts = new AlertsGestiones();
 
-        List<CuentasPorCobrar> gestionesByAsesor = cuentaCobrarRepository.gestionesByAsesor(fechaInicialMes, fechaFinalMes, asesor.getIdAsesorCartera());
+        List<Gestiones> gestionesByAsesor = cuentaCobrarRepository.gestionesByAsesor(fechaInicialMes, fechaFinalMes,
+                asesor.getIdAsesorCartera());
         alerts.setGestionesRealizadas(gestionesByAsesor.size());
-        alerts.setAcuerdosDePagosRealizados(cuentaCobrarRepository.acuerdosPagoRealizados(asesor.getIdAsesorCartera(), "ACUERDO DE PAGO", fechaInicialMes, fechaFinalMes).size());
-        alerts.setAcuerdosDePagosActivos(cuentaCobrarRepository.acuerdoPagoActivos(asesor.getIdAsesorCartera(), "ACUERDO DE PAGO", fechaInicialMes, fechaFinalMes).size());
-        alerts.setGestionesDia(cuentaCobrarRepository.gestionesByAsesor(fechaInicialDia, fechaFinalDia,asesor.getIdAsesorCartera()).size());
-        alerts.setAcuerdoPagoDia(cuentaCobrarRepository.acuerdosPagoRealizados(asesor.getIdAsesorCartera(), "ACUERDO DE PAGO", fechaInicialDia, fechaFinalDia).size());
-        alerts.setCuentasAsignadas(cuentaCobrarRepository.gestionesAsignadasByAsesorCount(asesor.getIdAsesorCartera()).size());
-        alerts.setCuentasSinGestion(cuentaCobrarRepository.gestionesSinGestion(asesor.getIdAsesorCartera(), fechaInicialMes).size());
-        alerts.setCuentasTotales(cuentaCobrarRepository.gestionesAsignadasByAsesorCountTotal(asesor.getIdAsesorCartera()).size());
+        alerts.setAcuerdosDePagosRealizados(cuentaCobrarRepository
+                .acuerdosPagoRealizados(asesor.getIdAsesorCartera(), "ACUERDO DE PAGO", fechaInicialMes, fechaFinalMes)
+                .size());
+        alerts.setAcuerdosDePagosActivos(cuentaCobrarRepository
+                .acuerdoPagoActivos(asesor.getIdAsesorCartera(), "ACUERDO DE PAGO", fechaInicialMes, fechaFinalMes)
+                .size());
+        alerts.setGestionesDia(cuentaCobrarRepository
+                .gestionesByAsesor(fechaInicialDia, fechaFinalDia, asesor.getIdAsesorCartera()).size());
+        alerts.setAcuerdoPagoDia(cuentaCobrarRepository
+                .acuerdosPagoRealizados(asesor.getIdAsesorCartera(), "ACUERDO DE PAGO", fechaInicialDia, fechaFinalDia)
+                .size());
+        alerts.setCuentasAsignadas(
+                cuentaCobrarRepository.gestionesAsignadasByAsesorCount(asesor.getIdAsesorCartera()).size());
+        alerts.setCuentasSinGestion(
+                cuentaCobrarRepository.gestionesSinGestion(asesor.getIdAsesorCartera(), fechaInicialMes).size());
+        alerts.setCuentasTotales(
+                cuentaCobrarRepository.gestionesAsignadasByAsesorCountTotal(asesor.getIdAsesorCartera()).size());
 
         return alerts;
     }
-
-    
 
     @Override
     public boolean desactivarGestiones(Long idGestion) {
@@ -745,7 +778,8 @@ public class GestionesServiceImpl implements GestionesService {
 
             tarea.setIsActive(false);
 
-            Notificaciones notificacion = notificacionesRepository.findByGestionIdAndFechaCreacion(gestion.getClasificacionGestion().getIdClasificacionGestion(), tarea.getFechaTarea());
+            Notificaciones notificacion = notificacionesRepository.findByGestionIdAndFechaCreacion(
+                    gestion.getClasificacionGestion().getIdClasificacionGestion(), tarea.getFechaTarea());
             if (Objects.isNull(notificacion)) {
                 return false;
             }
