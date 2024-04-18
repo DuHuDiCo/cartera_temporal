@@ -352,5 +352,10 @@ public class CuentasPorCobrar {
         this.totalObligatoria = totalObligatoria;
     }
 
+    @Override
+    public String toString() {
+        return "CuentasPorCobrar{" + "idCuentasPorCobrar=" + idCuentasPorCobrar + ", numeroObligacion=" + numeroObligacion + ", cliente=" + cliente + ", documentoCliente=" + documentoCliente + '}';
+    }
+
     
 }

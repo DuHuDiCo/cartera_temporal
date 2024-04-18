@@ -605,6 +605,10 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
         ModelMapper map = new ModelMapper();
         for (CuentasPorCobrar cuentasPorCobrar : cpc.getContent()) {
 
+            if (cuentasPorCobrar.getDocumentoCliente().equals("21454828")) {
+                System.out.println(cuentasPorCobrar.toString());
+            }
+
             int diasVecidos = Functions.diferenciaFechas(cuentasPorCobrar.getFechaVencimiento());
             CuentasPorCobrarResponse cpcResFor = map.map(cuentasPorCobrar, CuentasPorCobrarResponse.class);
             if (diasVecidos < 0) {
