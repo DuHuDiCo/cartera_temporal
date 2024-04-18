@@ -742,26 +742,26 @@ public class GestionesServiceImpl implements GestionesService {
 
         AlertsGestiones alerts = new AlertsGestiones();
 
-        List<Gestiones> gestionesByAsesor = cuentaCobrarRepository.gestionesByAsesor(fechaInicialMes, fechaFinalMes,
+        List<Gestiones> gestionesByAsesor = gestionesRepository.gestionesByAsesor(fechaInicialMes, fechaFinalMes,
                 asesor.getIdAsesorCartera());
         alerts.setGestionesRealizadas(gestionesByAsesor.size());
-        alerts.setAcuerdosDePagosRealizados(cuentaCobrarRepository
+        alerts.setAcuerdosDePagosRealizados(gestionesRepository
                 .acuerdosPagoRealizados(asesor.getIdAsesorCartera(), "ACUERDO DE PAGO", fechaInicialMes, fechaFinalMes)
                 .size());
-        alerts.setAcuerdosDePagosActivos(cuentaCobrarRepository
+        alerts.setAcuerdosDePagosActivos(gestionesRepository
                 .acuerdoPagoActivos(asesor.getIdAsesorCartera(), "ACUERDO DE PAGO", fechaInicialMes, fechaFinalMes)
                 .size());
-        alerts.setGestionesDia(cuentaCobrarRepository
+        alerts.setGestionesDia(gestionesRepository
                 .gestionesByAsesor(fechaInicialDia, fechaFinalDia, asesor.getIdAsesorCartera()).size());
-        alerts.setAcuerdoPagoDia(cuentaCobrarRepository
+        alerts.setAcuerdoPagoDia(gestionesRepository
                 .acuerdosPagoRealizados(asesor.getIdAsesorCartera(), "ACUERDO DE PAGO", fechaInicialDia, fechaFinalDia)
                 .size());
         alerts.setCuentasAsignadas(
-                cuentaCobrarRepository.gestionesAsignadasByAsesorCount(asesor.getIdAsesorCartera()).size());
+                gestionesRepository.gestionesAsignadasByAsesorCount(asesor.getIdAsesorCartera()).size());
         alerts.setCuentasSinGestion(
-                cuentaCobrarRepository.gestionesSinGestion(asesor.getIdAsesorCartera(), fechaInicialMes).size());
+                gestionesRepository.gestionesSinGestion(asesor.getIdAsesorCartera(), fechaInicialMes).size());
         alerts.setCuentasTotales(
-                cuentaCobrarRepository.gestionesAsignadasByAsesorCountTotal(asesor.getIdAsesorCartera()).size());
+                gestionesRepository.gestionesAsignadasByAsesorCountTotal(asesor.getIdAsesorCartera()).size());
 
         return alerts;
     }
