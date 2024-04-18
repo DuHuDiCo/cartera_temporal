@@ -81,7 +81,13 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
     private final ClasificacionJuridicaService clasificacionJuridicaService;
     private final CondicionEspecialRepository condicionEspecialRepository;
 
-    public CuentaPorCobrarServiceImpl(CuentasPorCobrarRepository cuentasPorCobrarRepository, SedeService sedeService, AsesorCarteraService asesorCarteraService, BancoService bancoService, usuario_client usuarioClient, ModelMapper modelMapper, ClientesClient clientesClient, FileService fileService, HttpServletRequest httpServletRequest, BancoRepository bancoRepository, SedeRepository sedeRepository, AsesorCarteraRepository asesorCarteraRepository, TiposVencimientoService tiposVencimientoService, SaveFiles saveFiles, ClasificacionJuridicaService clasificacionJuridicaService, CondicionEspecialRepository condicionEspecialRepository) {
+    public CuentaPorCobrarServiceImpl(CuentasPorCobrarRepository cuentasPorCobrarRepository, SedeService sedeService,
+            AsesorCarteraService asesorCarteraService, BancoService bancoService, usuario_client usuarioClient,
+            ModelMapper modelMapper, ClientesClient clientesClient, FileService fileService,
+            HttpServletRequest httpServletRequest, BancoRepository bancoRepository, SedeRepository sedeRepository,
+            AsesorCarteraRepository asesorCarteraRepository, TiposVencimientoService tiposVencimientoService,
+            SaveFiles saveFiles, ClasificacionJuridicaService clasificacionJuridicaService,
+            CondicionEspecialRepository condicionEspecialRepository) {
         this.cuentasPorCobrarRepository = cuentasPorCobrarRepository;
         this.sedeService = sedeService;
         this.asesorCarteraService = asesorCarteraService;
@@ -106,23 +112,27 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
         List<CuentasPorCobrar> cuentasSaved = new ArrayList<>();
 
         for (CuentasPorCobrarDto cuentaPorCobrar : cuentasPorCobrarDto) {
-            CuentasPorCobrar cuentas = cuentasPorCobrarRepository.findByNumeroObligacion(cuentaPorCobrar.getNumeroObligacion());
+            CuentasPorCobrar cuentas = cuentasPorCobrarRepository
+                    .findByNumeroObligacion(cuentaPorCobrar.getNumeroObligacion());
             if (Objects.isNull(cuentas)) {
                 cuentas = new CuentasPorCobrar();
 
             }
 
-            TiposVencimiento tv = tiposVencimientoService.obtenerTipoVencimientoByNombre(cuentaPorCobrar.getEdadVencimiento().toUpperCase());
+            TiposVencimiento tv = tiposVencimientoService
+                    .obtenerTipoVencimientoByNombre(cuentaPorCobrar.getEdadVencimiento().toUpperCase());
             if (Objects.isNull(tv)) {
                 return null;
             }
 
-            ClasificacionJuridica cj = clasificacionJuridicaService.getClasificacionByNombre(cuentaPorCobrar.getClasificacionJuridica().toUpperCase());
+            ClasificacionJuridica cj = clasificacionJuridicaService
+                    .getClasificacionByNombre(cuentaPorCobrar.getClasificacionJuridica().toUpperCase());
             if (Objects.isNull(cj)) {
                 return null;
             }
 
-            CondicionEspecial ce = condicionEspecialRepository.findByCondicionEspecial(cuentaPorCobrar.getCondicionEspecial().toUpperCase());
+            CondicionEspecial ce = condicionEspecialRepository
+                    .findByCondicionEspecial(cuentaPorCobrar.getCondicionEspecial().toUpperCase());
             if (Objects.isNull(ce)) {
                 return null;
             }
@@ -205,11 +215,12 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             return null;
         }
 
-        Page<CuentasPorCobrar> cuentas = cuentasPorCobrarRepository.findByAsesorOrderByDiasVencidosDesc(asesor.getIdAsesorCartera(), pageable);
+        Page<CuentasPorCobrar> cuentas = cuentasPorCobrarRepository
+                .findByAsesorOrderByDiasVencidosDesc(asesor.getIdAsesorCartera(), pageable);
         List<CuentasPorCobrarResponse> cuentasResponse = new ArrayList<>();
 
         for (CuentasPorCobrar cuenta : cuentas.getContent()) {
-            //calcular nuevos dias vencidos
+            // calcular nuevos dias vencidos
             int diasVecidos = Functions.diferenciaFechas(cuenta.getFechaVencimiento());
             CuentasPorCobrarResponse c = modelMapper.map(cuenta, CuentasPorCobrarResponse.class);
             if (diasVecidos < 0) {
@@ -228,7 +239,8 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
 
             c.setGestion(cuenta.getGestiones());
 
-            String obligacion = cuenta.getDocumentoCliente().concat(cuenta.getSede().getSede()).concat(cuenta.getBanco().getBanco());
+            String obligacion = cuenta.getDocumentoCliente().concat(cuenta.getSede().getSede())
+                    .concat(cuenta.getBanco().getBanco());
 
             List<ClientesDto> clientes = clientesClient.buscarClientesByNumeroObligacion(obligacion, token);
             c.setClientes(clientes);
@@ -243,7 +255,8 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
                                 try {
                                     base = saveFiles.pdfToBase64(cuotas.getPagos().getReciboPago().getRuta());
                                 } catch (IOException ex) {
-                                    Logger.getLogger(CuentaPorCobrarServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                                    Logger.getLogger(CuentaPorCobrarServiceImpl.class.getName()).log(Level.SEVERE, null,
+                                            ex);
                                 }
                                 cuotas.getPagos().getReciboPago().setRuta(base);
                             }
@@ -256,7 +269,8 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             cuentasResponse.add(c);
         }
 
-        Page<CuentasPorCobrarResponse> cuentasPage = new PageImpl(cuentasResponse, pageable, cuentas.getTotalElements());
+        Page<CuentasPorCobrarResponse> cuentasPage = new PageImpl(cuentasResponse, pageable,
+                cuentas.getTotalElements());
 
         return cuentasPage;
 
@@ -269,10 +283,10 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
         CuentasPorCobrar cuentasClean = cuentasPorCobrarRepository.isEmpty();
         if (Objects.nonNull(cuentasClean)) {
             cuentasPorCobrarRepository.deleteAll();
-//            cuentasPorCobrarRepository.reinicarIds();
-//            bancoRepository.reinicarIds();
-//            sedeRepository.reinicarIds();
-//            asesorCarteraRepository.reinicarIds();
+            // cuentasPorCobrarRepository.reinicarIds();
+            // bancoRepository.reinicarIds();
+            // sedeRepository.reinicarIds();
+            // asesorCarteraRepository.reinicarIds();
         }
 
         List<CuentasPorCobrar> cuentas = guardarCuentas(cuentasDto);
@@ -294,7 +308,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             return null;
         }
 
-        //calcular nuevos dias vencidos
+        // calcular nuevos dias vencidos
         int diasVecidos = Functions.diferenciaFechas(cpc.getFechaVencimiento());
 
         CuentasPorCobrarResponse cpcRes = new CuentasPorCobrarResponse();
@@ -368,7 +382,8 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
 
                                 }
                             } catch (IOException ex) {
-                                Logger.getLogger(CuentaPorCobrarServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                                Logger.getLogger(CuentaPorCobrarServiceImpl.class.getName()).log(Level.SEVERE, null,
+                                        ex);
                             }
                         }
 
@@ -377,12 +392,14 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
 
             }
 
-            //calcular nuevos dias vencidos
+            // calcular nuevos dias vencidos
             int diasVecidos = Functions.diferenciaFechas(cuentasPorCobrar.getFechaVencimiento());
 
-            CuentasPorCobrarResponse cuentasPorCobrarResponse = map.map(cuentasPorCobrar, CuentasPorCobrarResponse.class);
+            CuentasPorCobrarResponse cuentasPorCobrarResponse = map.map(cuentasPorCobrar,
+                    CuentasPorCobrarResponse.class);
 
-            List<ClientesDto> cliente = clientesClient.buscarClientesByNumeroObligacion(cuentasPorCobrar.getDocumentoCliente(), token);
+            List<ClientesDto> cliente = clientesClient
+                    .buscarClientesByNumeroObligacion(cuentasPorCobrar.getDocumentoCliente(), token);
             if (CollectionUtils.isEmpty(cliente)) {
                 return null;
             }
@@ -419,7 +436,8 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
     @Override
     public CuentasPorCobrarResponse updateCpcToCalculate(CuentaToCalculateDto dto) {
 
-        if (dto.getFechaVencimiento() == null || dto.getNumeroObligacion() == null || dto.getNumeroObligacion() == "" || dto.getUsername() == null || dto.getUsername() == "" || dto.getValorTotal() == 0) {
+        if (dto.getFechaVencimiento() == null || dto.getNumeroObligacion() == null || dto.getNumeroObligacion() == ""
+                || dto.getUsername() == null || dto.getUsername() == "" || dto.getValorTotal() == 0) {
             return null;
         }
 
@@ -470,7 +488,8 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
 
         String token = httpServletRequest.getAttribute("token").toString();
 
-        List<ClientesDto> clientesDto = clientesClient.buscarClientesByNumeroObligacion(cpc.getDocumentoCliente(), token);
+        List<ClientesDto> clientesDto = clientesClient.buscarClientesByNumeroObligacion(cpc.getDocumentoCliente(),
+                token);
 
         cpcRes.setClientes(clientesDto);
 
@@ -489,7 +508,9 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
 
         List<CuentasPorCobrarResponse> cuentasCobrar = new ArrayList<>();
 
-        List<ClientesDto> clientesFilter = clientes.stream().filter(c -> c.getNumeroDocumento().equals(dato) || c.getNombreTitular().equals(dato)).collect(Collectors.toList());
+        List<ClientesDto> clientesFilter = clientes.stream()
+                .filter(c -> c.getNumeroDocumento().equals(dato) || c.getNombreTitular().equals(dato))
+                .collect(Collectors.toList());
 
         if (CollectionUtils.isEmpty(clientesFilter)) {
             clientesFilter = clientes;
@@ -499,7 +520,8 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             if (!CollectionUtils.isEmpty(cuenta)) {
                 for (CuentasPorCobrar cuentasPorCobrar : cuenta) {
 
-                    CuentasPorCobrarResponse cuentasPorCobrarResponse = modelMapper.map(cuentasPorCobrar, CuentasPorCobrarResponse.class);
+                    CuentasPorCobrarResponse cuentasPorCobrarResponse = modelMapper.map(cuentasPorCobrar,
+                            CuentasPorCobrarResponse.class);
                     int diasVecidos = Functions.diferenciaFechas(cuentasPorCobrar.getFechaVencimiento());
                     if (diasVecidos < 0) {
                         cuentasPorCobrarResponse.setDiasVencidos(0);
@@ -570,7 +592,9 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
                         edadVen = dto.getEdadVencimiento();
                     }
 
-                    cpc = cuentasPorCobrarRepository.obtenerTareasFiltro(bancos, edadVen, sedes, clasi, dto.getDiasVencidosInicio(), dto.getDiasVencidosFin(), dto.getClasificacionGestion().getId(), pageable);
+                    cpc = cuentasPorCobrarRepository.obtenerTareasFiltro(bancos, edadVen, sedes, clasi,
+                            dto.getDiasVencidosInicio(), dto.getDiasVencidosFin(),
+                            dto.getClasificacionGestion().getId(), pageable);
                 } else {
                     cpc = cuentasPorCobrarRepository.findAll(spec, pageable);
                 }
@@ -592,7 +616,9 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             }
 
             try {
-                cpc = cuentasPorCobrarRepository.obtenerCuentasByFechaCompromiso(Functions.stringToDateAndFormat(dto.getFechaCompromisoInicio()), asesor.getIdAsesorCartera(), pageable);
+                cpc = cuentasPorCobrarRepository.obtenerCuentasByFechaCompromiso(
+                        Functions.stringToDateAndFormat(dto.getFechaCompromisoInicio()), asesor.getIdAsesorCartera(),
+                        pageable);
                 var list = CollectionUtils.isEmpty(cpc.getContent()) ? null : cpc.getContent().size();
 
             } catch (ParseException ex) {
@@ -600,7 +626,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             }
         }
 
-//        List<CuentasPorCobrar> cpc = cuentasPorCobrarRepository.findAll(spec);
+        // List<CuentasPorCobrar> cpc = cuentasPorCobrarRepository.findAll(spec);
         List<CuentasPorCobrarResponse> cpcRes = new ArrayList<>();
         ModelMapper map = new ModelMapper();
         for (CuentasPorCobrar cuentasPorCobrar : cpc.getContent()) {
@@ -625,7 +651,8 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
 
             cpcResFor.setGestion(organizarGestiones(cuentasPorCobrar.getGestiones(), dto));
 
-            List<ClientesDto> clientes = clientesClient.buscarClientesByNumeroObligacion(cuentasPorCobrar.getDocumentoCliente(), token);
+            List<ClientesDto> clientes = clientesClient
+                    .buscarClientesByNumeroObligacion(cuentasPorCobrar.getDocumentoCliente(), token);
             cpcResFor.setClientes(clientes);
 
             cpcRes.add(cpcResFor);
@@ -647,7 +674,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
         String token = httpServletRequest.getAttribute("token").toString();
 
         for (CuentasPorCobrar cuentasPorCobrar : pageCuentas.getContent()) {
-            //calcular nuevos dias vencidos
+            // calcular nuevos dias vencidos
             int diasVecidos = Functions.diferenciaFechas(cuentasPorCobrar.getFechaVencimiento());
             CuentasPorCobrarResponse c = modelMapper.map(cuentasPorCobrar, CuentasPorCobrarResponse.class);
             if (diasVecidos < 0) {
@@ -671,7 +698,8 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
 
             c.setGestion(cuentasPorCobrar.getGestiones());
 
-            List<ClientesDto> clientes = clientesClient.buscarClientesByNumeroObligacion(cuentasPorCobrar.getDocumentoCliente(), token);
+            List<ClientesDto> clientes = clientesClient
+                    .buscarClientesByNumeroObligacion(cuentasPorCobrar.getDocumentoCliente(), token);
             c.setClientes(clientes);
 
             if (cuentasPorCobrar.getGestiones().size() > 0) {
@@ -684,7 +712,8 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
                                 try {
                                     base = saveFiles.pdfToBase64(cuotas.getPagos().getReciboPago().getRuta());
                                 } catch (IOException ex) {
-                                    Logger.getLogger(CuentaPorCobrarServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                                    Logger.getLogger(CuentaPorCobrarServiceImpl.class.getName()).log(Level.SEVERE, null,
+                                            ex);
                                 }
                                 cuotas.getPagos().getReciboPago().setRuta(base);
                             }
@@ -697,7 +726,8 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             cuentasResponse.add(c);
 
         }
-        Page<CuentasPorCobrarResponse> cuentasPage = new PageImpl(cuentasResponse, pageable, pageCuentas.getTotalElements());
+        Page<CuentasPorCobrarResponse> cuentasPage = new PageImpl(cuentasResponse, pageable,
+                pageCuentas.getTotalElements());
         return cuentasPage;
 
     }
@@ -706,11 +736,13 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
 
         List<Gestiones> gestionesOrganizadas = new ArrayList<>();
 
-        if (Objects.nonNull(filtro.getClasificacionGestion()) && filtro.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.ACUERDODEPAGO.getDato())) {
+        if (Objects.nonNull(filtro.getClasificacionGestion()) && filtro.getClasificacionGestion().getTipoClasificacion()
+                .equals(TipoClasificacion.ACUERDODEPAGO.getDato())) {
             List<Gestiones> gestionesAcuerdos = gestionesDesorganizadas.stream().filter(ges -> {
                 if (ges.getClasificacionGestion() instanceof AcuerdoPago) {
                     AcuerdoPago acuerdo = (AcuerdoPago) ges.getClasificacionGestion();
-                    return acuerdo.getNombresClasificacion().getIdNombreClasificacion().equals(filtro.getClasificacionGestion().getId());
+                    return acuerdo.getNombresClasificacion().getIdNombreClasificacion()
+                            .equals(filtro.getClasificacionGestion().getId());
                 }
                 return false;
             }).reduce((first, second) -> second).map(Collections::singletonList).orElse(Collections.emptyList());
@@ -718,12 +750,14 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             gestionesAcuerdos.forEach(ges -> gestionesOrganizadas.add(ges));
         }
 
-        if (Objects.nonNull(filtro.getClasificacionGestion()) && filtro.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.TAREA.getDato())) {
+        if (Objects.nonNull(filtro.getClasificacionGestion())
+                && filtro.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.TAREA.getDato())) {
             List<Gestiones> gestionesTareas = gestionesDesorganizadas.stream().filter(ges -> {
                 if (ges.getClasificacionGestion() instanceof Tarea) {
                     Tarea tarea = (Tarea) ges.getClasificacionGestion();
 
-                    return tarea.getNombresClasificacion().getIdNombreClasificacion().equals(filtro.getClasificacionGestion().getId());
+                    return tarea.getNombresClasificacion().getIdNombreClasificacion()
+                            .equals(filtro.getClasificacionGestion().getId());
                 }
                 return false;
             }).reduce((first, second) -> second).map(Collections::singletonList).orElse(Collections.emptyList());
@@ -731,11 +765,13 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             gestionesTareas.forEach(ges -> gestionesOrganizadas.add(ges));
         }
 
-        if (Objects.nonNull(filtro.getClasificacionGestion()) && filtro.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.NOTA.getDato())) {
+        if (Objects.nonNull(filtro.getClasificacionGestion())
+                && filtro.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.NOTA.getDato())) {
             List<Gestiones> gestionesNotas = gestionesDesorganizadas.stream().filter(ges -> {
                 if (ges.getClasificacionGestion() instanceof Nota) {
                     Nota nota = (Nota) ges.getClasificacionGestion();
-                    return nota.getNombresClasificacion().getIdNombreClasificacion().equals(filtro.getClasificacionGestion().getId());
+                    return nota.getNombresClasificacion().getIdNombreClasificacion()
+                            .equals(filtro.getClasificacionGestion().getId());
                 }
                 return false;
             }).reduce((first, second) -> second).map(Collections::singletonList).orElse(Collections.emptyList());
