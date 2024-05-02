@@ -752,7 +752,7 @@ public class GestionesServiceImpl implements GestionesService {
                 .acuerdoPagoActivos(asesor.getIdAsesorCartera(), "ACUERDO DE PAGO", fechaInicialMes, fechaFinalMes)
                 .size());
         alerts.setGestionesDia(gestionesRepository
-                .gestionesByAsesor(fechaInicialDia, fechaFinalDia, asesor.getIdAsesorCartera()).size());
+                .gestionesDiaByAsesor(fechaInicialDia, fechaFinalDia, asesor.getIdAsesorCartera()).size());
         alerts.setAcuerdoPagoDia(gestionesRepository
                 .acuerdosPagoRealizados(asesor.getIdAsesorCartera(), "ACUERDO DE PAGO", fechaInicialDia, fechaFinalDia)
                 .size());

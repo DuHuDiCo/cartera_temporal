@@ -25,6 +25,10 @@ public interface GestionesRepository extends JpaRepository<Gestiones, Long> {
         List<Gestiones> gestionesByAsesor(@Param("fechaInicial") Date fechaIncial, @Param("fechaFin") Date fechaFin,
                         @Param("id_asesor") long idAsesor);
 
+        @Query(value = "SELECT DISTINCT gestiones.* FROM cuentas_por_cobrar JOIN gestiones ON gestiones.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar WHERE gestiones.fecha_gestion BETWEEN :fechaInicial AND :fechaFin AND cuentas_por_cobrar.asesor_cartera_id = :id_asesor ", nativeQuery = true)
+        List<Gestiones> gestionesDiaByAsesor(@Param("fechaInicial") Date fechaIncial, @Param("fechaFin") Date fechaFin,
+                        @Param("id_asesor") long idAsesor);
+
         @Query(value = "SELECT DISTINCT gestiones.* FROM cuentas_por_cobrar JOIN gestiones ON gestiones.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar JOIN clasificacion_gestion ON gestiones.clasificacion_gestion_id = clasificacion_gestion.id_clasificacion_gestion JOIN acuerdo_pago ON acuerdo_pago.id_clasificacion_gestion = clasificacion_gestion.id_clasificacion_gestion WHERE cuentas_por_cobrar.asesor_cartera_id = :id_asesor AND clasificacion_gestion.clasificacion = :clasificacion AND acuerdo_pago.fecha_acuerdo BETWEEN :fechaInicial AND :fechaFin", nativeQuery = true)
         List<Gestiones> acuerdosPagoRealizados(@Param("id_asesor") long idAsesor,
                         @Param("clasificacion") String clasificacion, @Param("fechaInicial") Date fechaInicial,
