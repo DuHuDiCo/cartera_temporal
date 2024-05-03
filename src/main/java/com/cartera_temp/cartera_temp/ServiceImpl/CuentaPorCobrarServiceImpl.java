@@ -257,6 +257,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
                                 } catch (IOException ex) {
                                     Logger.getLogger(CuentaPorCobrarServiceImpl.class.getName()).log(Level.SEVERE, null,
                                             ex);
+                                    continue;
                                 }
                                 cuotas.getPagos().getReciboPago().setRuta(base);
                             }
