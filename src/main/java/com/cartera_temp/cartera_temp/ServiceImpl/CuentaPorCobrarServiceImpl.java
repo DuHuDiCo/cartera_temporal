@@ -259,6 +259,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
                                             ex);
                                     continue;
                                 }
+                                System.out.println(cuotas.getIdCuota());
                                 cuotas.getPagos().getReciboPago().setRuta(base);
                             }
                         }
