@@ -25,7 +25,7 @@ public interface GestionesRepository extends JpaRepository<Gestiones, Long> {
         List<Gestiones> gestionesByAsesor(@Param("fechaInicial") Date fechaIncial, @Param("fechaFin") Date fechaFin,
                         @Param("id_asesor") long idAsesor);
 
-        @Query(value = "SELECT DISTINCT gestiones.* FROM cuentas_por_cobrar JOIN gestiones ON gestiones.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar WHERE gestiones.fecha_gestion BETWEEN :fechaInicial AND :fechaFin AND cuentas_por_cobrar.asesor_cartera_id = :id_asesor ", nativeQuery = true)
+        @Query(value = "SELECT * FROM gestiones WHERE fecha_gestion BETWEEN :fechaIncial AND :fechaFin AND id_asesor = :id_asesor ", nativeQuery = true)
         List<Gestiones> gestionesDiaByAsesor(@Param("fechaInicial") Date fechaIncial, @Param("fechaFin") Date fechaFin,
                         @Param("id_asesor") long idAsesor);
 
