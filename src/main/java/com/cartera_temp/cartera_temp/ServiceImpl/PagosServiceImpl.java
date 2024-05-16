@@ -62,7 +62,12 @@ public class PagosServiceImpl implements PagosService {
     @Value("${ruta.recibos}")
     private String path;
 
-    public PagosServiceImpl(PagosRespositoty pagosRespositoty, CuentasPorCobrarRepository cpcr, usuario_client usuClient, GestionesRepository gr, AcuerdoPagoRepository apr, GenerarPdf generarPdf, SaveFiles saveFiles, ReciboPagoRepository reciboPagoRepository, AsesorCarteraRepository asesorCarteraRepository, NotaRepository notaRepository, NombresClasificacionRepository nombresClasificacionRepository, NotificacionesRepository notificacionesRepository) {
+    public PagosServiceImpl(PagosRespositoty pagosRespositoty, CuentasPorCobrarRepository cpcr,
+            usuario_client usuClient, GestionesRepository gr, AcuerdoPagoRepository apr, GenerarPdf generarPdf,
+            SaveFiles saveFiles, ReciboPagoRepository reciboPagoRepository,
+            AsesorCarteraRepository asesorCarteraRepository, NotaRepository notaRepository,
+            NombresClasificacionRepository nombresClasificacionRepository,
+            NotificacionesRepository notificacionesRepository) {
         this.pagosRespositoty = pagosRespositoty;
         this.cpcr = cpcr;
         this.usuClient = usuClient;
@@ -114,33 +119,64 @@ public class PagosServiceImpl implements PagosService {
 
             CuotasDto cuotasDto = dto.getCuotasDto().get(i);
 
-            if (Objects.nonNull(cuotasDto.getPagosDto()) &&  !cuotasDto.getPagosDto().isExisted() && cuotasDto.getPagosDto().getIdPago() == 0) {
-                Pagos pago = new Pagos();
-                pago.setFechaPago(cuotasDto.getPagosDto().getFechaPago());
-                pago.setSaldoCuota(cuotasDto.getPagosDto().getSaldoCuota());
-                pago.setValorPago(cuotasDto.getPagosDto().getValorPago());
-                pago.setValorIntereses(cuotasDto.getPagosDto().getIntereses());
-                pago.setValorHonorarios(cuotasDto.getPagosDto().getHonorarios());
-                pago.setValorCapital(cuotasDto.getPagosDto().getCapital());
-                pago.setUsuarioId(usu.getIdUsuario());
-                pago.setDetalle(dto.getDetalle());
+            if (Objects.nonNull(cuotasDto.getPagosDto()) && !cuotasDto.getPagosDto().isExisted()
+                    && cuotasDto.getPagosDto().getIdPago() == 0) {
+                if (Objects.nonNull(acuPag.getCuotasList().get(i).getPagos())
+                        && acuPag.getCuotasList().get(i).getPagos().getSaldoCuota() > 0) {
 
-                pago = pagosRespositoty.save(pago);
+                    Pagos pagoExisting = acuPag.getCuotasList().get(i).getPagos();
+                    Pagos pago = new Pagos();
+                    pago.setFechaPago(cuotasDto.getPagosDto().getFechaPago());
+                    pago.setSaldoCuota(cuotasDto.getPagosDto().getSaldoCuota());
+                    pago.setValorPago(pagoExisting.getValorPago() + cuotasDto.getPagosDto().getValorPago());
+                    pago.setValorIntereses(pagoExisting.getValorIntereses() + cuotasDto.getPagosDto().getIntereses());
+                    pago.setValorHonorarios(
+                            pagoExisting.getValorHonorarios() + cuotasDto.getPagosDto().getHonorarios());
+                    pago.setValorCapital(pagoExisting.getValorCapital() + cuotasDto.getPagosDto().getCapital());
+                    pago.setUsuarioId(usu.getIdUsuario());
+                    pago.setDetalle(dto.getDetalle());
 
-                acuPag.getCuotasList().get(i).setPagos(pago);
-                acuPag.getCuotasList().get(i).setCapitalCuota(cuotasDto.getCapitalCuota());
-                acuPag.getCuotasList().get(i).setSaldoCapitalCuota(cuotasDto.getSaldoCapital());
-                acuPag.getCuotasList().get(i).setHonorarios(cuotasDto.getHonorarios());
-                acuPag.getCuotasList().get(i).setSaldoHonorarios(cuotasDto.getSaldoHonorario());
-                acuPag.getCuotasList().get(i).setInteresCuota(cuotasDto.getInteresCuota());
-                acuPag.getCuotasList().get(i).setSalodInteresCuota(cuotasDto.getSaldoIntereses());
-                acuPag.getCuotasList().get(i).setCumplio(cuotasDto.isCumplio());
+                    pago = pagosRespositoty.save(pago);
+
+                    acuPag.getCuotasList().get(i).setPagos(pago);
+                    acuPag.getCuotasList().get(i).setCapitalCuota(cuotasDto.getCapitalCuota());
+                    acuPag.getCuotasList().get(i).setSaldoCapitalCuota(cuotasDto.getSaldoCapital());
+                    acuPag.getCuotasList().get(i).setHonorarios(cuotasDto.getHonorarios());
+                    acuPag.getCuotasList().get(i).setSaldoHonorarios(cuotasDto.getSaldoHonorario());
+                    acuPag.getCuotasList().get(i).setInteresCuota(cuotasDto.getInteresCuota());
+                    acuPag.getCuotasList().get(i).setSalodInteresCuota(cuotasDto.getSaldoIntereses());
+                    acuPag.getCuotasList().get(i).setCumplio(cuotasDto.isCumplio());
+
+                } else {
+                    Pagos pago = new Pagos();
+                    pago.setFechaPago(cuotasDto.getPagosDto().getFechaPago());
+                    pago.setSaldoCuota(cuotasDto.getPagosDto().getSaldoCuota());
+                    pago.setValorPago(cuotasDto.getPagosDto().getValorPago());
+                    pago.setValorIntereses(cuotasDto.getPagosDto().getIntereses());
+                    pago.setValorHonorarios(cuotasDto.getPagosDto().getHonorarios());
+                    pago.setValorCapital(cuotasDto.getPagosDto().getCapital());
+                    pago.setUsuarioId(usu.getIdUsuario());
+                    pago.setDetalle(dto.getDetalle());
+
+                    pago = pagosRespositoty.save(pago);
+
+                    acuPag.getCuotasList().get(i).setPagos(pago);
+                    acuPag.getCuotasList().get(i).setCapitalCuota(cuotasDto.getCapitalCuota());
+                    acuPag.getCuotasList().get(i).setSaldoCapitalCuota(cuotasDto.getSaldoCapital());
+                    acuPag.getCuotasList().get(i).setHonorarios(cuotasDto.getHonorarios());
+                    acuPag.getCuotasList().get(i).setSaldoHonorarios(cuotasDto.getSaldoHonorario());
+                    acuPag.getCuotasList().get(i).setInteresCuota(cuotasDto.getInteresCuota());
+                    acuPag.getCuotasList().get(i).setSalodInteresCuota(cuotasDto.getSaldoIntereses());
+                    acuPag.getCuotasList().get(i).setCumplio(cuotasDto.isCumplio());
+
+                }
 
             }
 
         }
 
-        acuPag.setValorTotalCapital(acuPag.getValorTotalAcuerdo() - acuPag.getValorInteresesMora() - acuPag.getHonorarioAcuerdo());
+        acuPag.setValorTotalCapital(
+                acuPag.getValorTotalAcuerdo() - acuPag.getValorInteresesMora() - acuPag.getHonorarioAcuerdo());
         acuPag.setIsCumpliendo(dto.isCumpliendo());
         acuPag.setSaldoCapital(dto.getSaldoCapital());
         acuPag.setSaldoHonorarios(dto.getSaldoHonorarios());
@@ -179,12 +215,12 @@ public class PagosServiceImpl implements PagosService {
 
                 CuotasDto cuotasDto = dto.getCuotasDto().get(i);
 
-                if (Objects.nonNull(cuotasDto.getPagosDto()) && Objects.nonNull(acuPag.getCuotasList().get(i).getPagos()) && !cuotasDto.getPagosDto().isExisted() && cuotasDto.getPagosDto().getIdPago() == 0) {
-                     acuPag.getCuotasList().get(i).getPagos().setReciboPago(recibo);
+                if (Objects.nonNull(cuotasDto.getPagosDto())
+                        && Objects.nonNull(acuPag.getCuotasList().get(i).getPagos())
+                        && !cuotasDto.getPagosDto().isExisted() && cuotasDto.getPagosDto().getIdPago() == 0) {
+                    acuPag.getCuotasList().get(i).getPagos().setReciboPago(recibo);
                 }
             }
-
-           
 
             Date fechaCompromisoActualizada = obtenerFechaCompromiso(acuPag.getCuotasList());
 
@@ -212,11 +248,13 @@ public class PagosServiceImpl implements PagosService {
 
                 Nota nota = new Nota();
                 nota.setClasificacion("NOTA");
-                nota.setDetalleNota("ACUERDO DE PAGO CON ID:  ".concat(acuPag.getIdClasificacionGestion().toString()).concat(" ").concat(dto.getDetalle()));
+                nota.setDetalleNota("ACUERDO DE PAGO CON ID:  ".concat(acuPag.getIdClasificacionGestion().toString())
+                        .concat(" ").concat(dto.getDetalle()));
                 nota.setFechaNota(Functions.obtenerFechaYhora());
                 nota.setAsesor(asesor);
 
-                NombresClasificacion nombre = nombresClasificacionRepository.findFirstByNombre(dto.getNombreClasificacion());
+                NombresClasificacion nombre = nombresClasificacionRepository
+                        .findFirstByNombre(dto.getNombreClasificacion());
                 if (Objects.isNull(nombre)) {
                     return null;
                 }
@@ -229,7 +267,8 @@ public class PagosServiceImpl implements PagosService {
 
             }
 
-            Notificaciones notificacion = notificacionesRepository.findByGestionIdAndFechaCreacion(acuPag.getIdClasificacionGestion(), acuPag.getFechaAcuerdo());
+            Notificaciones notificacion = notificacionesRepository
+                    .findByGestionIdAndFechaCreacion(acuPag.getIdClasificacionGestion(), acuPag.getFechaAcuerdo());
 
             if (Objects.nonNull(notificacion)) {
 
