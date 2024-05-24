@@ -599,6 +599,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
                             dto.getClasificacionGestion().getId(), pageable);
                 } else {
 
+                    System.out.println("ACUERDOS");
                     if (dto.getClasificacionGestion().getTipoClasificacion()
                             .equals(TipoClasificacion.ACUERDODEPAGO.getDato())) {
                         AsesorCartera asesor = asesorCarteraRepository.findByUsuarioId(usuFiltro.getIdUsuario());
