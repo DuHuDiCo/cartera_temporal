@@ -598,11 +598,24 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
                             dto.getDiasVencidosInicio(), dto.getDiasVencidosFin(),
                             dto.getClasificacionGestion().getId(), pageable);
                 } else {
-                    cpc = cuentasPorCobrarRepository.findAll(spec, pageable);
+
+                    if (dto.getClasificacionGestion().getTipoClasificacion()
+                            .equals(TipoClasificacion.ACUERDODEPAGO.getDato())) {
+                        AsesorCartera asesor = asesorCarteraRepository.findByUsuarioId(usuFiltro.getIdUsuario());
+                        if (Objects.isNull(asesor)) {
+                            return null;
+                        }
+                        cpc = cuentasPorCobrarRepository.obtenerAcuerdosPagoActivos(asesor.getIdAsesorCartera(),
+                                pageable);
+                    } else {
+                        cpc = cuentasPorCobrarRepository.findAll(spec, pageable);
+                    }
+
                 }
             } else {
                 cpc = cuentasPorCobrarRepository.findAll(spec, pageable);
                 var list = CollectionUtils.isEmpty(cpc.getContent()) ? null : cpc.getTotalElements();
+
             }
 
         } else {
