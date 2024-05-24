@@ -602,11 +602,11 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
                     if (dto.getClasificacionGestion().getTipoClasificacion()
                             .equals(TipoClasificacion.ACUERDODEPAGO.getDato())) {
                         AsesorCartera asesor = asesorCarteraRepository.findByUsuarioId(usuFiltro.getIdUsuario());
+                        System.out.println(Objects.isNull(asesor));
                         if (Objects.isNull(asesor)) {
                             return null;
                         }
 
-                        System.out.println(Objects.isNull(asesor));
                         cpc = cuentasPorCobrarRepository.obtenerAcuerdosPagoActivos(asesor.getIdAsesorCartera(),
                                 pageable);
 
