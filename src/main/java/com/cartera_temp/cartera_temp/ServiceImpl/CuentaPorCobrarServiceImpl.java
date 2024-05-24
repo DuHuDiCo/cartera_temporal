@@ -605,8 +605,12 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
                         if (Objects.isNull(asesor)) {
                             return null;
                         }
+
+                        System.out.println(Objects.isNull(asesor));
                         cpc = cuentasPorCobrarRepository.obtenerAcuerdosPagoActivos(asesor.getIdAsesorCartera(),
                                 pageable);
+
+                        System.out.println(cpc.getContent().size());
                     } else {
                         cpc = cuentasPorCobrarRepository.findAll(spec, pageable);
                     }

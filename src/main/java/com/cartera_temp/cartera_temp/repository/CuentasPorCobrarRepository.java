@@ -131,6 +131,6 @@ public interface CuentasPorCobrarRepository
                         @Param("fechaFin") Date fechaFin);
 
         @Query(value = "SELECT * FROM `cuentas_por_cobrar` LEFT JOIN gestiones ON gestiones.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar LEFT JOIN clasificacion_gestion ON gestiones.clasificacion_gestion_id = clasificacion_gestion.id_clasificacion_gestion LEFT JOIN acuerdo_pago ON acuerdo_pago.id_clasificacion_gestion = clasificacion_gestion.id_clasificacion_gestion WHERE clasificacion_gestion.clasificacion = 'ACUERDO DE PAGO' AND acuerdo_pago.is_active = true AND gestiones.id_asesor = :asesor ORDER BY cuentas_por_cobrar.id_cuenta_por_cobrar DESC", countQuery = "SELECT COUNT(*) FROM `cuentas_por_cobrar` LEFT JOIN gestiones ON gestiones.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar LEFT JOIN clasificacion_gestion ON gestiones.clasificacion_gestion_id = clasificacion_gestion.id_clasificacion_gestion LEFT JOIN acuerdo_pago ON acuerdo_pago.id_clasificacion_gestion = clasificacion_gestion.id_clasificacion_gestion WHERE clasificacion_gestion.clasificacion = 'ACUERDO DE PAGO' AND acuerdo_pago.is_active = true AND gestiones.id_asesor = :asesor ORDER BY cuentas_por_cobrar.id_cuenta_por_cobrar DESC", nativeQuery = true)
-        Page<CuentasPorCobrar> obtenerAcuerdosPagoActivos(@Param("asesor") Long idAsesor, Pageable pageable);
+        Page<CuentasPorCobrar> obtenerAcuerdosPagoActivos(@Param("asesor") Long asesor, Pageable pageable);
 
 }
