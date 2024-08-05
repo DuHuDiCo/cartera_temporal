@@ -28,10 +28,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/api/v1/cuentas")
-@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin(origins = { "*", "http://localhost:4000" }, maxAge = 3600)
 public class CuentasPorCobrarController {
-    
-    
+
     private final CuentasPorCobrarService cuentasPorCobrarService;
     private final FileService fileService;
 
@@ -40,69 +39,80 @@ public class CuentasPorCobrarController {
         this.fileService = fileService;
     }
 
-    
-    
     @PostMapping("/save")
-    public ResponseEntity<List<CuentasPorCobrar>> guardarCuentas(@RequestBody MultipartFile file, @RequestParam(name = "delimitante") String delimitante){
-        
+    public ResponseEntity<List<CuentasPorCobrar>> guardarCuentas(@RequestBody MultipartFile file,
+            @RequestParam(name = "delimitante") String delimitante) {
+
         List<CuentasPorCobrar> cuentas = cuentasPorCobrarService.processingData(file, delimitante);
-        return CollectionUtils.isEmpty(cuentas)?ResponseEntity.badRequest().build():ResponseEntity.ok(cuentas);
+        return CollectionUtils.isEmpty(cuentas) ? ResponseEntity.badRequest().build() : ResponseEntity.ok(cuentas);
     }
-    
+
     @GetMapping("/cuentasCobrar")
-    public ResponseEntity<Page<CuentasPorCobrarResponse>> listarCuentasCobrarByObligacion(@RequestParam(name = "username") String username, @RequestParam(defaultValue = "0", name = "page") int page, @RequestParam(defaultValue = "10", name = "size") int size , @RequestParam(defaultValue = "fecha_creacion", name = "fechaCreacion") String  order){
-        Page<CuentasPorCobrarResponse> cuentas = cuentasPorCobrarService.listarCuentasCobrarByAsesor(username,  PageRequest.of(page, size, Sort.by(order).ascending()));
+    public ResponseEntity<Page<CuentasPorCobrarResponse>> listarCuentasCobrarByObligacion(
+            @RequestParam(name = "username") String username, @RequestParam(defaultValue = "0", name = "page") int page,
+            @RequestParam(defaultValue = "10", name = "size") int size,
+            @RequestParam(defaultValue = "fecha_creacion", name = "fechaCreacion") String order) {
+        Page<CuentasPorCobrarResponse> cuentas = cuentasPorCobrarService.listarCuentasCobrarByAsesor(username,
+                PageRequest.of(page, size, Sort.by(order).ascending()));
         return ResponseEntity.ok(cuentas);
     }
-    
+
     @GetMapping("/getCuentaCobrarByNumeroObligacion")
-    public ResponseEntity<CuentasPorCobrarResponse>obtenerCuentaCobrarByNumObligacion(@RequestParam(name = "numeroObligacion")String numeroObligacion){
-        
+    public ResponseEntity<CuentasPorCobrarResponse> obtenerCuentaCobrarByNumObligacion(
+            @RequestParam(name = "numeroObligacion") String numeroObligacion) {
+
         CuentasPorCobrarResponse cpcRes = cuentasPorCobrarService.getCpcByNumeroObligacion(numeroObligacion);
-        if(Objects.isNull(cpcRes)){
+        if (Objects.isNull(cpcRes)) {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(cpcRes);
-        
+
     }
-    
+
     @GetMapping("/getCuentaCobrarByCedula")
-    public ResponseEntity<List<CuentasPorCobrarResponse>> obtenerCuentasPorCobrarByNumeroCedula(@RequestParam(name = "cedula")String numeroObligacion){
-        
-        List<CuentasPorCobrarResponse> cpcRes = cuentasPorCobrarService.getCpcByNumeroObligacionContaining(numeroObligacion);
+    public ResponseEntity<List<CuentasPorCobrarResponse>> obtenerCuentasPorCobrarByNumeroCedula(
+            @RequestParam(name = "cedula") String numeroObligacion) {
+
+        List<CuentasPorCobrarResponse> cpcRes = cuentasPorCobrarService
+                .getCpcByNumeroObligacionContaining(numeroObligacion);
         return ResponseEntity.ok(cpcRes);
-        
+
     }
-    
+
     @PutMapping("/updateCuentaCobrarToCalculate")
-    public ResponseEntity<CuentasPorCobrarResponse> updateCuentaCobrarToCalculate(@RequestBody CuentaToCalculateDto dto){
+    public ResponseEntity<CuentasPorCobrarResponse> updateCuentaCobrarToCalculate(
+            @RequestBody CuentaToCalculateDto dto) {
         CuentasPorCobrarResponse cpc = cuentasPorCobrarService.updateCpcToCalculate(dto);
-        if(Objects.isNull(cpc)){
+        if (Objects.isNull(cpc)) {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(cpc);
     }
 
-    
     @GetMapping("/cuentasByDato")
-    public ResponseEntity<List<CuentasPorCobrarResponse>> cuentasCobrarByDato(@RequestParam(name = "dato") String dato){
+    public ResponseEntity<List<CuentasPorCobrarResponse>> cuentasCobrarByDato(
+            @RequestParam(name = "dato") String dato) {
         List<CuentasPorCobrarResponse> cuentas = cuentasPorCobrarService.buscarCuentasByDatos(dato);
         return ResponseEntity.ok(cuentas);
     }
-    
+
     @PostMapping("/filtrosCuentas")
-    public ResponseEntity<Page<CuentasPorCobrarResponse>> filtros(@RequestBody FiltroDto dto, @RequestParam(defaultValue = "0", name = "page") int page, @RequestParam(defaultValue = "10", name = "size") int size , @RequestParam(defaultValue = "fecha_creacion", name = "fechaCreacion") String  order){
+    public ResponseEntity<Page<CuentasPorCobrarResponse>> filtros(@RequestBody FiltroDto dto,
+            @RequestParam(defaultValue = "0", name = "page") int page,
+            @RequestParam(defaultValue = "10", name = "size") int size,
+            @RequestParam(defaultValue = "fecha_creacion", name = "fechaCreacion") String order) {
         Page<CuentasPorCobrarResponse> cpcRes = cuentasPorCobrarService.filtrosCpcs(dto, PageRequest.of(page, size));
         return ResponseEntity.ok(cpcRes);
     }
-    
-    
+
     @GetMapping("/cuentasCobrarAdmin")
-    public ResponseEntity<Page<CuentasPorCobrarResponse>> listarCuentasCobrar(@RequestParam(defaultValue = "0", name = "page") int page, @RequestParam(defaultValue = "10", name = "size") int size , @RequestParam(defaultValue = "fecha_creacion", name = "fechaCreacion") String  order){
-        Page<CuentasPorCobrarResponse> cuentas = cuentasPorCobrarService.listarCuentasCobrar(PageRequest.of(page, size));
+    public ResponseEntity<Page<CuentasPorCobrarResponse>> listarCuentasCobrar(
+            @RequestParam(defaultValue = "0", name = "page") int page,
+            @RequestParam(defaultValue = "10", name = "size") int size,
+            @RequestParam(defaultValue = "fecha_creacion", name = "fechaCreacion") String order) {
+        Page<CuentasPorCobrarResponse> cuentas = cuentasPorCobrarService
+                .listarCuentasCobrar(PageRequest.of(page, size));
         return ResponseEntity.ok(cuentas);
     }
-    
-    
-     
+
 }
