@@ -39,7 +39,7 @@ public interface CuentasPorCobrarRepository
                         + "        FROM gestiones AS g "
                         + "        WHERE g.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar "
                         + "    ) "
-                        + "    AND nombres_clasificacion.id_nombre_clasificacion = :idNombre "
+                        + "    AND nombres_clasificacion.id_nombre_clasificacion = :idNombre  AND total_obligatoria > 0"
                         + "ORDER BY cuentas_por_cobrar.dias_vencidos DESC", countQuery = "SELECT COUNT(DISTINCT cuentas_por_cobrar.id_cuenta_por_cobrar) FROM cuentas_por_cobrar "
                                         + "JOIN banco ON cuentas_por_cobrar.banco_id = banco.id_banco "
                                         + "JOIN tipos_vencimiento ON cuentas_por_cobrar.tipo_vencimiento_id = tipos_vencimiento.id_tipo_vencimiento "
@@ -60,7 +60,7 @@ public interface CuentasPorCobrarRepository
                                         + "        FROM gestiones AS g "
                                         + "        WHERE g.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar "
                                         + "    ) "
-                                        + "    AND nombres_clasificacion.id_nombre_clasificacion = :idNombre "
+                                        + "    AND nombres_clasificacion.id_nombre_clasificacion = :idNombre AND total_obligatoria > 0"
                                         + "ORDER BY cuentas_por_cobrar.dias_vencidos DESC", nativeQuery = true)
         Page<CuentasPorCobrar> obtenerTareasFiltro(@Param("bancos") List<String> bancos,
                         @Param("vencimientos") List<String> vencimientos,
@@ -91,7 +91,7 @@ public interface CuentasPorCobrarRepository
         @Query(value = "ALTER TABLE cuentas_por_cobrar AUTO_INCREMENT = 1", nativeQuery = true)
         void reinicarIds();
 
-        @Query(value = "SELECT * FROM cuentas_por_cobrar JOIN gestiones ON gestiones.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar JOIN clasificacion_gestion ON gestiones.clasificacion_gestion_id = clasificacion_gestion.id_clasificacion_gestion JOIN acuerdo_pago ON acuerdo_pago.id_clasificacion_gestion = clasificacion_gestion.id_clasificacion_gestion  WHERE acuerdo_pago.fecha_compromiso <= :fecha AND acuerdo_pago.is_active = true AND gestiones.id_asesor = :id_asesor", countQuery = "SELECT COUNT(*) FROM cuentas_por_cobrar JOIN gestiones ON gestiones.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar JOIN clasificacion_gestion ON gestiones.clasificacion_gestion_id = clasificacion_gestion.id_clasificacion_gestion JOIN acuerdo_pago ON acuerdo_pago.id_clasificacion_gestion = clasificacion_gestion.id_clasificacion_gestion   WHERE acuerdo_pago.fecha_compromiso <= :fecha AND acuerdo_pago.is_active = true AND gestiones.id_asesor = :id_asesor", nativeQuery = true)
+        @Query(value = "SELECT * FROM cuentas_por_cobrar JOIN gestiones ON gestiones.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar JOIN clasificacion_gestion ON gestiones.clasificacion_gestion_id = clasificacion_gestion.id_clasificacion_gestion JOIN acuerdo_pago ON acuerdo_pago.id_clasificacion_gestion = clasificacion_gestion.id_clasificacion_gestion  WHERE acuerdo_pago.fecha_compromiso <= :fecha AND acuerdo_pago.is_active = true AND gestiones.id_asesor = :id_asesor AND total_obligatoria > 0", countQuery = "SELECT COUNT(*) FROM cuentas_por_cobrar JOIN gestiones ON gestiones.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar JOIN clasificacion_gestion ON gestiones.clasificacion_gestion_id = clasificacion_gestion.id_clasificacion_gestion JOIN acuerdo_pago ON acuerdo_pago.id_clasificacion_gestion = clasificacion_gestion.id_clasificacion_gestion   WHERE acuerdo_pago.fecha_compromiso <= :fecha AND acuerdo_pago.is_active = true AND gestiones.id_asesor = :id_asesor AND total_obligatoria > 0", nativeQuery = true)
         Page<CuentasPorCobrar> obtenerCuentasByFechaCompromiso(@Param("fecha") Date fecha,
                         @Param("id_asesor") Long idAsesor, Pageable pageable);
 
