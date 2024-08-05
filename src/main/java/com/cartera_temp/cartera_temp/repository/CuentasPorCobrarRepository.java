@@ -72,7 +72,7 @@ public interface CuentasPorCobrarRepository
         Page<CuentasPorCobrar> tareas(@Param("fechaInicio") Date fechaInicio, @Param("fechaFin") Date fechaFin,
                         @Param("idNombre") Long id, Pageable pageable);
 
-        @Query(value = "SELECT * FROM `cuentas_por_cobrar` WHERE asesor_cartera_id = :id_asesor ORDER BY dias_vencidos DESC", countQuery = "SELECT COUNT(*) FROM `cuentas_por_cobrar` WHERE asesor_cartera_id = :id_asesor ORDER BY dias_vencidos DESC", nativeQuery = true)
+        @Query(value = "SELECT * FROM `cuentas_por_cobrar` WHERE asesor_cartera_id = :id_asesor AND total_obligatoria > 0 ORDER BY dias_vencidos DESC", countQuery = "SELECT COUNT(*) FROM `cuentas_por_cobrar` WHERE asesor_cartera_id = :id_asesor AND total_obligatoria > 0 ORDER BY dias_vencidos DESC", nativeQuery = true)
         Page<CuentasPorCobrar> findByAsesorOrderByDiasVencidosDesc(@Param("id_asesor") Long idAsesor,
                         Pageable pageable);
 
