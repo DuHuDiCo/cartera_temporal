@@ -81,7 +81,8 @@ public interface CuentasPorCobrarRepository
 
         CuentasPorCobrar findByNumeroObligacion(String obligacion);
 
-        List<CuentasPorCobrar> findByDocumentoCliente(String cliente);
+        List<CuentasPorCobrar> findByDocumentoClienteAndTotalObligatoriaGreaterThan(String cliente,
+                        Double totalobligatoria);
 
         List<CuentasPorCobrar> findByNumeroObligacionContaining(String obligacion);
 
