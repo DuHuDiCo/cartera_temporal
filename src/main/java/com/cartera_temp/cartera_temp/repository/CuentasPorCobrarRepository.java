@@ -60,7 +60,7 @@ public interface CuentasPorCobrarRepository
                                         + "        FROM gestiones AS g "
                                         + "        WHERE g.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar "
                                         + "    ) "
-                                        + "    AND nombres_clasificacion.id_nombre_clasificacion = :idNombre AND total_obligatoria > 0"
+                                        + "    AND nombres_clasificacion.id_nombre_clasificacion = :idNombre AND total_obligatoria > 0 "
                                         + "ORDER BY cuentas_por_cobrar.dias_vencidos DESC", nativeQuery = true)
         Page<CuentasPorCobrar> obtenerTareasFiltro(@Param("bancos") List<String> bancos,
                         @Param("vencimientos") List<String> vencimientos,
