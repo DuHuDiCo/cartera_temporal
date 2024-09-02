@@ -202,7 +202,13 @@ public class Functions {
     }
 
     public static int diferenciaFechas(Date fechaVencimiento) {
-        Date now = new Date();
+        Date now = null;
+        try {
+            now = fechaDateToStringNormal("2024-08-31 00:00:00");
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         long diferenciaMili = now.getTime() - fechaVencimiento.getTime();
 
         long dias = TimeUnit.DAYS.convert(diferenciaMili, TimeUnit.MILLISECONDS);
