@@ -202,13 +202,7 @@ public class Functions {
     }
 
     public static int diferenciaFechas(Date fechaVencimiento) {
-        Date now = null;
-        try {
-            now = fechaDateToStringNormal("2024-08-31 00:00:00");
-        } catch (ParseException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        Date now = new Date();
         long diferenciaMili = now.getTime() - fechaVencimiento.getTime();
 
         long dias = TimeUnit.DAYS.convert(diferenciaMili, TimeUnit.MILLISECONDS);
@@ -324,8 +318,16 @@ public class Functions {
 
     public static Boolean validarUltimaFechaMesAnio(Date fecha) {
 
+        Date dateTemp = null;
+        try {
+            dateTemp = fechaDateToStringNormal("2024-08-31 00:00:00");
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
         // Convertir Date a LocalDate
-        LocalDate fechaLocal = fecha.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate fechaLocal = dateTemp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
         LocalDate fechaActual = LocalDate.now();
 
