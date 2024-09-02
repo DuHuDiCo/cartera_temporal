@@ -40,7 +40,7 @@ public interface CuentasPorCobrarRepository
                         + "        WHERE g.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar "
                         + "    ) "
                         + "    AND nombres_clasificacion.id_nombre_clasificacion = :idNombre  AND total_obligatoria > 0"
-                        + "ORDER BY cuentas_por_cobrar.dias_vencidos DESC", countQuery = "SELECT COUNT(DISTINCT cuentas_por_cobrar.id_cuenta_por_cobrar) FROM cuentas_por_cobrar "
+                        + " ORDER BY cuentas_por_cobrar.dias_vencidos DESC", countQuery = "SELECT COUNT(DISTINCT cuentas_por_cobrar.id_cuenta_por_cobrar) FROM cuentas_por_cobrar "
                                         + "JOIN banco ON cuentas_por_cobrar.banco_id = banco.id_banco "
                                         + "JOIN tipos_vencimiento ON cuentas_por_cobrar.tipo_vencimiento_id = tipos_vencimiento.id_tipo_vencimiento "
                                         + "JOIN sede ON cuentas_por_cobrar.sede_id = sede.id_sede "
@@ -61,7 +61,7 @@ public interface CuentasPorCobrarRepository
                                         + "        WHERE g.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar "
                                         + "    ) "
                                         + "    AND nombres_clasificacion.id_nombre_clasificacion = :idNombre AND total_obligatoria > 0 "
-                                        + "ORDER BY cuentas_por_cobrar.dias_vencidos DESC", nativeQuery = true)
+                                        + " ORDER BY cuentas_por_cobrar.dias_vencidos DESC", nativeQuery = true)
         Page<CuentasPorCobrar> obtenerTareasFiltro(@Param("bancos") List<String> bancos,
                         @Param("vencimientos") List<String> vencimientos,
                         @Param("sedes") List<String> sedes, @Param("juridicas") List<String> juridicas,

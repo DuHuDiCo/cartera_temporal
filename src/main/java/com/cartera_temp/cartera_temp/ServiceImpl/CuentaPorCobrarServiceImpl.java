@@ -223,7 +223,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             // calcular nuevos dias vencidos
             int diasVecidos = Functions.diferenciaFechas(cuenta.getFechaVencimiento());
             CuentasPorCobrarResponse c = modelMapper.map(cuenta, CuentasPorCobrarResponse.class);
-            if (diasVecidos < 0) {
+            if (diasVecidos <= 0) {
                 c.setDiasVencidos(0);
             } else {
                 c.setDiasVencidos(diasVecidos);
@@ -671,6 +671,12 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             cpcResFor.setAsesorCarteraResponse(asesor);
 
             cpcResFor.setGestion(organizarGestiones(cuentasPorCobrar.getGestiones(), dto));
+
+            for (Gestiones gestion : cpcResFor.getGestion()) {
+                if (Functions.validarUltimaFechaMesAnio(gestion.getFechaGestion())) {
+                    cpcResFor.setIsLast(true);
+                }
+            }
 
             List<ClientesDto> clientes = clientesClient
                     .buscarClientesByNumeroObligacion(cuentasPorCobrar.getDocumentoCliente(), token);

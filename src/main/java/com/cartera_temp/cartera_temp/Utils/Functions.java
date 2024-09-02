@@ -71,7 +71,8 @@ public class Functions {
         if (matcher.matches()) {
             return input;
         } else {
-            throw new NumberFormatException("EL NUMERO DE  ".concat(" : ").concat(input).concat(" TIENE UN FORMATO INCORRECTO.  POR FAVOR INGRESE SOLO NUMEROS  "));
+            throw new NumberFormatException("EL NUMERO DE  ".concat(" : ").concat(input)
+                    .concat(" TIENE UN FORMATO INCORRECTO.  POR FAVOR INGRESE SOLO NUMEROS  "));
         }
     }
 
@@ -103,7 +104,8 @@ public class Functions {
 
     public static String obtenerTextoFechaConvenio() {
         try {
-            return "El presente convenio se establece a los " + fechaFormatToLetrasAcuerdo() + " en la ciudad de Medellín.";
+            return "El presente convenio se establece a los " + fechaFormatToLetrasAcuerdo()
+                    + " en la ciudad de Medellín.";
         } catch (Exception e) {
             e.printStackTrace();
             return ""; // Puedes ajustar esto según tus necesidades
@@ -113,7 +115,8 @@ public class Functions {
     public static String fechaFormatToLetrasAcuerdo() {
         try {
             String[] fechaToFormat = fechaDateToStringSinHora().split("-");
-            String ToLetrasAcuerdo = fechaToFormat[2].concat(" días del mes ").concat(fechaToFormat[1]).concat(" del año ").concat(fechaToFormat[0]);
+            String ToLetrasAcuerdo = fechaToFormat[2].concat(" días del mes ").concat(fechaToFormat[1])
+                    .concat(" del año ").concat(fechaToFormat[0]);
             return ToLetrasAcuerdo;
         } catch (Exception e) {
             e.printStackTrace();
@@ -203,7 +206,7 @@ public class Functions {
         long diferenciaMili = now.getTime() - fechaVencimiento.getTime();
 
         long dias = TimeUnit.DAYS.convert(diferenciaMili, TimeUnit.MILLISECONDS);
-        return (int) dias;
+        return dias <= 0 ? 0 : (int) dias;
     }
 
     public static Date obtenerFechaInicalMes(int dia) {
@@ -224,7 +227,6 @@ public class Functions {
 
         // Obtener la fecha del primer día del mes actual
         Date primerDiaDelMes = calendar.getTime();
-        
 
         return primerDiaDelMes;
     }
@@ -247,7 +249,6 @@ public class Functions {
         // Obtener la fecha del primer día del mes actual
         Date primerDiaDelMes = calendar.getTime();
 
-        
         return primerDiaDelMes;
     }
 
@@ -288,7 +289,9 @@ public class Functions {
                     cal.set(Calendar.SECOND, 0); // Establecer los segundos a 0
                     cal.set(Calendar.MILLISECOND, 0); // Establecer los milisegundos a 0
                 } else { // Si el indicador es falso, obtener la fecha final del mes
-                    cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH)); // Establecer el día del mes como el último día del mes
+                    cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH)); // Establecer el día
+                                                                                                 // del mes como el
+                                                                                                 // último día del mes
                     cal.set(Calendar.HOUR_OF_DAY, 23); // Establecer las horas a 23
                     cal.set(Calendar.MINUTE, 59); // Establecer los minutos a 59
                     cal.set(Calendar.SECOND, 59); // Establecer los segundos a 59
@@ -311,5 +314,17 @@ public class Functions {
 
         }
         return cal.getTime(); // Devolver la fecha resultante
+    }
+
+    public static Boolean validarUltimaFechaMesAnio(Date fecha) {
+
+        // Convertir Date a LocalDate
+        LocalDate fechaLocal = fecha.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+        LocalDate fechaActual = LocalDate.now();
+
+        return fechaLocal.getMonth() == fechaActual.getMonth() &&
+                fechaLocal.getYear() == fechaActual.getYear();
+
     }
 }

@@ -39,6 +39,7 @@ public class CuentasPorCobrarResponse {
     private int cuotas;
     private AsesorCarteraResponse asesorCarteraResponse;
     private List<ClientesDto> clientes = new ArrayList<>();
+    private Boolean isLast = false;
 
     public CuentasPorCobrarResponse() {
     }
@@ -71,7 +72,6 @@ public class CuentasPorCobrarResponse {
         this.totalObligatoria = totalObligatoria;
     }
 
-    
     public void setDocumentoCliente(String documentoCliente) {
         this.documentoCliente = documentoCliente;
     }
@@ -274,6 +274,14 @@ public class CuentasPorCobrarResponse {
 
     public void setTiposVencimiento(TiposVencimiento tiposVencimiento) {
         this.tiposVencimiento = tiposVencimiento;
+    }
+
+    public Boolean getIsLast() {
+        return isLast;
+    }
+
+    public void setIsLast(Boolean isLast) {
+        this.isLast = isLast;
     }
 
 }
