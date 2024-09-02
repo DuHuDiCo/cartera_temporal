@@ -327,12 +327,12 @@ public class Functions {
         }
 
         // Convertir Date a LocalDate
-        LocalDate fechaLocal = dateTemp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate fechaLocal = fecha.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate fechaSintem = dateTemp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        // LocalDate fechaActual = LocalDate.now();
 
-        LocalDate fechaActual = LocalDate.now();
-
-        return fechaLocal.getMonth() == fechaActual.getMonth() &&
-                fechaLocal.getYear() == fechaActual.getYear();
+        return fechaLocal.getMonth() == fechaSintem.getMonth() &&
+                fechaLocal.getYear() == fechaSintem.getYear();
 
     }
 }
