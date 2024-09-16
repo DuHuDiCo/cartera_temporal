@@ -68,7 +68,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class GestionesServiceImpl implements GestionesService {
 
-    private final Long adminUserId = 22L;
+    private final Long adminUserId = 1L;
 
     private final GestionesRepository gestionesRepository;
     private final CuentasPorCobrarRepository cuentaCobrarRepository;
