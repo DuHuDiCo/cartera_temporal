@@ -40,6 +40,7 @@ public class CuentasPorCobrarResponse {
     private AsesorCarteraResponse asesorCarteraResponse;
     private List<ClientesDto> clientes = new ArrayList<>();
     private Boolean isLast = false;
+    private Boolean isBlocked;
 
     public CuentasPorCobrarResponse() {
     }
@@ -282,6 +283,14 @@ public class CuentasPorCobrarResponse {
 
     public void setIsLast(Boolean isLast) {
         this.isLast = isLast;
+    }
+
+    public Boolean getIsBlocked() {
+        return isBlocked;
+    }
+
+    public void setIsBlocked(Boolean isBlocked) {
+        this.isBlocked = isBlocked;
     }
 
 }
