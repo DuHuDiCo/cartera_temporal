@@ -72,7 +72,7 @@ public interface CuentasPorCobrarRepository
         Page<CuentasPorCobrar> tareas(@Param("fechaInicio") Date fechaInicio, @Param("fechaFin") Date fechaFin,
                         @Param("idNombre") Long id, Pageable pageable);
 
-        @Query(value = "SELECT * FROM `cuentas_por_cobrar` WHERE asesor_cartera_id = :id_asesor AND total_obligatoria > 0 ORDER BY dias_vencidos DESC", countQuery = "SELECT COUNT(*) FROM `cuentas_por_cobrar` WHERE asesor_cartera_id = :id_asesor AND total_obligatoria > 0 ORDER BY dias_vencidos DESC", nativeQuery = true)
+        @Query(value = "SELECT * FROM `cuentas_por_cobrar` WHERE asesor_cartera_id = :id_asesor AND total_obligatoria > 0 AND mora_obligatoria > 0 ORDER BY dias_vencidos DESC", countQuery = "SELECT COUNT(*) FROM `cuentas_por_cobrar` WHERE asesor_cartera_id = :id_asesor AND total_obligatoria > 0 AND mora_obligatoria > 0 ORDER BY dias_vencidos DESC", nativeQuery = true)
         Page<CuentasPorCobrar> findByAsesorOrderByDiasVencidosDesc(@Param("id_asesor") Long idAsesor,
                         Pageable pageable);
 
@@ -98,13 +98,13 @@ public interface CuentasPorCobrarRepository
 
         List<CuentasPorCobrar> findByAsesor(AsesorCartera asesor);
 
-        @Query(value = "SELECT DISTINCT cuentas_por_cobrar.* FROM cuentas_por_cobrar JOIN gestiones ON gestiones.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar WHERE cuentas_por_cobrar.asesor_cartera_id = :idAsesor AND cuentas_por_cobrar.mora_obligatoria > 0", nativeQuery = true)
+        @Query(value = "SELECT * FROM `cuentas_por_cobrar` WHERE asesor_cartera_id = :idAsesor AND total_obligatoria > 0 AND mora_obligatoria > 0 ORDER BY dias_vencidos DESC", countQuery = "SELECT COUNT(*) FROM `cuentas_por_cobrar` WHERE asesor_cartera_id = :id_asesor AND total_obligatoria > 0 AND mora_obligatoria > 0 ORDER BY dias_vencidos DESC", nativeQuery = true)
         List<CuentasPorCobrar> gestionesAsignadasByAsesorCount(@Param("idAsesor") Long idAsesor);
 
         @Query(value = "SELECT DISTINCT cuentas_por_cobrar.* FROM cuentas_por_cobrar JOIN gestiones ON gestiones.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar WHERE cuentas_por_cobrar.asesor_cartera_id = :idAsesor", nativeQuery = true)
         List<CuentasPorCobrar> gestionesAsignadasByAsesorCountTotal(@Param("idAsesor") Long idAsesor);
 
-        @Query(value = "SELECT DISTINCT cuentas_por_cobrar.* FROM cuentas_por_cobrar JOIN gestiones ON gestiones.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar WHERE cuentas_por_cobrar.asesor_cartera_id = :idAsesor AND (SELECT MAX(gestiones.fecha_gestion) FROM gestiones WHERE gestiones.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar) < :fechaInicial AND cuentas_por_cobrar.mora_obligatoria > 0", nativeQuery = true)
+        @Query(value = "SELECT DISTINCT cuentas_por_cobrar.* FROM cuentas_por_cobrar JOIN gestiones ON gestiones.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar WHERE cuentas_por_cobrar.asesor_cartera_id = :idAsesor AND (SELECT MAX(gestiones.fecha_gestion) FROM gestiones WHERE gestiones.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar) < :fechaInicial AND cuentas_por_cobrar.mora_obligatoria > 0 AND cuentas_por_cobrar.total_obligatoria > 0", nativeQuery = true)
         List<CuentasPorCobrar> gestionesSinGestion(@Param("idAsesor") Long idAsesor,
                         @Param("fechaInicial") Date fechaIncial);
 
