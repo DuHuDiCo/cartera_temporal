@@ -13,6 +13,7 @@ import com.cartera_temp.cartera_temp.Dtos.GestionesDto;
 import com.cartera_temp.cartera_temp.Dtos.LinkDto;
 import com.cartera_temp.cartera_temp.Dtos.LinkToClient;
 import com.cartera_temp.cartera_temp.Dtos.Telefono;
+import com.cartera_temp.cartera_temp.FeignClients.AuthClient;
 import com.cartera_temp.cartera_temp.FeignClients.ClientesClient;
 import com.cartera_temp.cartera_temp.Models.AcuerdoPago;
 import com.cartera_temp.cartera_temp.Models.AsesorCartera;
@@ -67,6 +68,8 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class GestionesServiceImpl implements GestionesService {
 
+    private final Long adminUserId = 1L;
+
     private final GestionesRepository gestionesRepository;
     private final CuentasPorCobrarRepository cuentaCobrarRepository;
     private final UsuarioClientService usuarioClientService;
@@ -88,6 +91,7 @@ public class GestionesServiceImpl implements GestionesService {
     private final HttpServletRequest request;
     private final GenerarPdf pdf;
     private final NotificacionesRepository notificacionesRepository;
+    private final AuthClient authClient;
 
     public GestionesServiceImpl(GestionesRepository gestionesRepository,
             CuentasPorCobrarRepository cuentaCobrarRepository, UsuarioClientService usuarioClientService,
@@ -97,7 +101,8 @@ public class GestionesServiceImpl implements GestionesService {
             NotaRepository notaRepository, TareaRepository tareaRepository,
             NombresClasificacionRepository nombresClasificacionRepository, CuotaRepository cuotaRepository,
             HistoricoAcuerdoPagoRepository historicoAcuerdoPagoRepository, ClientesClient clientesClient,
-            HttpServletRequest request, GenerarPdf pdf, NotificacionesRepository notificacionesRepository) {
+            HttpServletRequest request, GenerarPdf pdf, NotificacionesRepository notificacionesRepository,
+            AuthClient authClient) {
         this.gestionesRepository = gestionesRepository;
         this.cuentaCobrarRepository = cuentaCobrarRepository;
         this.usuarioClientService = usuarioClientService;
@@ -118,6 +123,7 @@ public class GestionesServiceImpl implements GestionesService {
         this.request = request;
         this.pdf = pdf;
         this.notificacionesRepository = notificacionesRepository;
+        this.authClient = authClient;
     }
 
     @Override
@@ -130,11 +136,6 @@ public class GestionesServiceImpl implements GestionesService {
 
         CuentasPorCobrar cpc = cuentaCobrarRepository.findByNumeroObligacion(dto.getNumeroObligacion());
         if (Objects.isNull(cpc)) {
-            return null;
-        }
-
-        Usuario usu = usuarioClientService.obtenerUsuarioById(cpc.getAsesor().getUsuarioId());
-        if (Objects.isNull(usu)) {
             return null;
         }
 
@@ -401,7 +402,35 @@ public class GestionesServiceImpl implements GestionesService {
         ModelMapper map = new ModelMapper();
         GestionResponse gesRes = map.map(gestion, GestionResponse.class);
 
-        gesRes.setAsesorCartera(usu.getNombres() + usu.getApellidos());
+        Usuario usu = null;
+        if (!cpc.getAsesor().getUsuarioId().equals(adminUserId)) {
+            usu = usuarioClientService.obtenerUsuarioById(cpc.getAsesor().getUsuarioId());
+            if (Objects.isNull(usu)) {
+                return null;
+            }
+            gesRes.setAsesorCartera(usu.getNombres() + usu.getApellidos());
+        } else {
+            String token = request.getAttribute("token").toString();
+            String username = authClient.extractUsername(token);
+            if (Objects.isNull(username)) {
+                return null;
+            }
+
+            Usuario user = usuarioClientService.obtenerUsuario(username);
+            if (Objects.isNull(user)) {
+                return null;
+            }
+
+            AsesorCartera aseserNuevo = asesorCartera.findAsesor(user.getIdUsuario());
+            if (Objects.isNull(aseserNuevo)) {
+                return null;
+            }
+
+            cpc.setAsesor(aseserNuevo);
+            cpc.setIsBlocked(false);
+            cpc = cuentaCobrarRepository.save(cpc);
+            gesRes.setAsesorCartera(user.getNombres() + user.getApellidos());
+        }
 
         return gesRes;
 

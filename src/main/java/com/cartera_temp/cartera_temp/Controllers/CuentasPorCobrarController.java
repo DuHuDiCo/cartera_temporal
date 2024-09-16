@@ -115,4 +115,9 @@ public class CuentasPorCobrarController {
         return ResponseEntity.ok(cuentas);
     }
 
+    @GetMapping("/blocked")
+    public ResponseEntity<Object> validarBlocked(@RequestParam(name = "idCuenta") Long idCuenta) {
+        return cuentasPorCobrarService.validarBlocked(idCuenta);
+    }
+
 }

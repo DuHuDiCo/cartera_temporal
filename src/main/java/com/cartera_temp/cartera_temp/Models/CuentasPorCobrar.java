@@ -27,10 +27,10 @@ public class CuentasPorCobrar {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_cuenta_por_cobrar")
     private Long idCuentasPorCobrar;
-    
+
     @Column(name = "numero_obligacion")
     private String numeroObligacion;
-    
+
     @Column(name = "cliente")
     private String cliente;
 
@@ -69,6 +69,9 @@ public class CuentasPorCobrar {
     @Column(name = "detalle")
     private String detalle;
 
+    @Column(name = "IS_BLOCKED")
+    private Boolean isBlocked;
+
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "sede_id", referencedColumnName = "id_sede")
     private Sede sede;
@@ -76,7 +79,7 @@ public class CuentasPorCobrar {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "banco_id", referencedColumnName = "id_banco")
     private Banco banco;
-    
+
     @OneToMany(mappedBy = "cuentasPorCobrar", cascade = CascadeType.ALL, orphanRemoval = false)
     private List<Gestiones> gestiones = new ArrayList<>();
 
@@ -96,7 +99,7 @@ public class CuentasPorCobrar {
     @JoinColumn(name = "clasificacion_juridica_id")
     @JsonIgnore
     private ClasificacionJuridica clasificacionJuridica;
-    
+
     @ManyToOne
     @JoinColumn(name = "condicion_especial_id")
     @JsonIgnore
@@ -122,12 +125,12 @@ public class CuentasPorCobrar {
 
     public CuentasPorCobrar() {
     }
-    
-    public void agregarGestion(Gestiones gestion){
+
+    public void agregarGestion(Gestiones gestion) {
         gestiones.add(gestion);
         gestion.setCuentasPorCobrar(this);
     }
-    
+
     public Long getIdCuentasPorCobrar() {
         return idCuentasPorCobrar;
     }
@@ -354,8 +357,16 @@ public class CuentasPorCobrar {
 
     @Override
     public String toString() {
-        return "CuentasPorCobrar{" + "idCuentasPorCobrar=" + idCuentasPorCobrar + ", numeroObligacion=" + numeroObligacion + ", cliente=" + cliente + ", documentoCliente=" + documentoCliente + '}';
+        return "CuentasPorCobrar{" + "idCuentasPorCobrar=" + idCuentasPorCobrar + ", numeroObligacion="
+                + numeroObligacion + ", cliente=" + cliente + ", documentoCliente=" + documentoCliente + '}';
     }
 
-    
+    public Boolean getIsBlocked() {
+        return isBlocked;
+    }
+
+    public void setIsBlocked(Boolean isBlocked) {
+        this.isBlocked = isBlocked;
+    }
+
 }
