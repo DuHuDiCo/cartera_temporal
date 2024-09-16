@@ -840,8 +840,8 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Message("CUENTA POR COBRAR NO ENCONTRADO"));
         }
 
-        if (!cuenta.getIsBlocked()) {
-            cuenta.setIsBlocked(true);
+        if (cuenta.getIsBlocked()) {
+            cuenta.setIsBlocked(false);
             cuenta = cuentasPorCobrarRepository.save(cuenta);
         }
         return ResponseEntity.status(HttpStatus.OK).body(cuenta);
