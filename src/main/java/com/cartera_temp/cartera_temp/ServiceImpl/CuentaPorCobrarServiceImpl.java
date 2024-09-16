@@ -833,4 +833,18 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
         return ResponseEntity.status(HttpStatus.OK).body(cuenta);
     }
 
+    @Override
+    public ResponseEntity<Object> cambiarBlocked(Long idCuenta) {
+        CuentasPorCobrar cuenta = cuentasPorCobrarRepository.findById(idCuenta).orElse(null);
+        if (Objects.isNull(cuenta)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Message("CUENTA POR COBRAR NO ENCONTRADO"));
+        }
+
+        if (!cuenta.getIsBlocked()) {
+            cuenta.setIsBlocked(true);
+            cuenta = cuentasPorCobrarRepository.save(cuenta);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(cuenta);
+    }
+
 }

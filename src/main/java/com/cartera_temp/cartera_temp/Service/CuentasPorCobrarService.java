@@ -34,4 +34,6 @@ public interface CuentasPorCobrarService {
 
     public ResponseEntity<Object> validarBlocked(Long idCuenta);
 
+    public ResponseEntity<Object> cambiarBlocked(Long idCuenta);
+
 }
