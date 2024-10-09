@@ -8,6 +8,7 @@ import com.cartera_temp.cartera_temp.Dtos.CuentaToCalculateDto;
 import com.cartera_temp.cartera_temp.Dtos.CuentasPorCobrarDto;
 import com.cartera_temp.cartera_temp.Dtos.CuentasPorCobrarResponse;
 import com.cartera_temp.cartera_temp.Dtos.FiltroDto;
+import com.cartera_temp.cartera_temp.Dtos.Message;
 import com.cartera_temp.cartera_temp.FeignClients.ClientesClient;
 import com.cartera_temp.cartera_temp.FeignClients.usuario_client;
 import com.cartera_temp.cartera_temp.Models.AcuerdoPago;
@@ -57,6 +58,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -519,7 +522,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
         }
         for (ClientesDto cliente : clientesFilter) {
             List<CuentasPorCobrar> cuenta = cuentasPorCobrarRepository
-                    .findByDocumentoClienteAndTotalObligatoriaGreaterThan(cliente.getNit(), 0.0);
+                    .findByDocumentoClienteAndTotalObligatoriaGreaterThan(cliente.getNumeroDocumento(), 0.0);
             if (!CollectionUtils.isEmpty(cuenta)) {
                 for (CuentasPorCobrar cuentasPorCobrar : cuenta) {
 
@@ -811,6 +814,37 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             return gestionesDesorganizadas;
         }
         return gestionesOrganizadas;
+    }
+
+    @Override
+    public ResponseEntity<Object> validarBlocked(Long idCuenta) {
+        CuentasPorCobrar cuenta = cuentasPorCobrarRepository.findById(idCuenta).orElse(null);
+        if (Objects.isNull(cuenta)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Message("CUENTA POR COBRAR NO ENCONTRADO"));
+        }
+
+        if (cuenta.getIsBlocked()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new Message("CUENTA POR COBRAR YA FUE TOMADA POR UN ASESOR"));
+        }
+
+        cuenta.setIsBlocked(true);
+        cuenta = cuentasPorCobrarRepository.save(cuenta);
+        return ResponseEntity.status(HttpStatus.OK).body(cuenta);
+    }
+
+    @Override
+    public ResponseEntity<Object> cambiarBlocked(Long idCuenta) {
+        CuentasPorCobrar cuenta = cuentasPorCobrarRepository.findById(idCuenta).orElse(null);
+        if (Objects.isNull(cuenta)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Message("CUENTA POR COBRAR NO ENCONTRADO"));
+        }
+
+        if (cuenta.getIsBlocked()) {
+            cuenta.setIsBlocked(false);
+            cuenta = cuentasPorCobrarRepository.save(cuenta);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(cuenta);
     }
 
 }

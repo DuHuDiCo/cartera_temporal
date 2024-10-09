@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/api/v1/cuentas")
-@CrossOrigin(origins = { "*", "http://localhost:4000" }, maxAge = 3600)
+@CrossOrigin(origins = { "*", "http://localhost:4000", "http://localhost:4200" }, maxAge = 3600)
 public class CuentasPorCobrarController {
 
     private final CuentasPorCobrarService cuentasPorCobrarService;
@@ -113,6 +113,16 @@ public class CuentasPorCobrarController {
         Page<CuentasPorCobrarResponse> cuentas = cuentasPorCobrarService
                 .listarCuentasCobrar(PageRequest.of(page, size));
         return ResponseEntity.ok(cuentas);
+    }
+
+    @GetMapping("/blocked")
+    public ResponseEntity<Object> validarBlocked(@RequestParam(name = "idCuenta") Long idCuenta) {
+        return cuentasPorCobrarService.validarBlocked(idCuenta);
+    }
+
+    @PutMapping("/changeBlocked")
+    public ResponseEntity<Object> cambiarBlocked(@RequestParam(name = "idCuenta") Long idCuenta) {
+        return cuentasPorCobrarService.cambiarBlocked(idCuenta);
     }
 
 }
