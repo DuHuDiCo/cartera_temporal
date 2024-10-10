@@ -12,16 +12,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(name = "clientes-temporal", url = "${clientes.temporal}")
 public interface ClientesClient {
 
-    @GetMapping("/getClienteByCedula/{numero_obligacion}")
-    List<ClientesDto> buscarClientesByNumeroObligacion(@PathVariable("numero_obligacion") String obligacion,
-            @RequestHeader("Authorization") String token);
+        @GetMapping("/getClienteByCedula/{numero_obligacion}")
+        List<ClientesDto> buscarClientesByNumeroObligacion(@PathVariable("numero_obligacion") String obligacion,
+                        @RequestHeader("Authorization") String token);
 
-    @GetMapping("/getClientByNumObligacionOrNombreCliente")
-    List<ClientesDto> buscarClientesByDatos(@RequestParam(name = "dato") String dato,
-            @RequestHeader("Authorization") String token);
+        @GetMapping("/getClientByNumObligacionOrNombreCliente")
+        List<ClientesDto> buscarClientesByDatos(@RequestParam(name = "dato") String dato,
+                        @RequestHeader("Authorization") String token);
 
-    @GetMapping("/getClientByNumDoc")
-    ClientesDto buscarClientesByNumDoc(@RequestParam(name = "cedula") String cedula,
-            @RequestHeader("Authorization") String token);
+        @GetMapping("/getClientByNumDoc")
+        ClientesDto buscarClientesByNumDoc(@RequestParam(name = "cedula") String cedula,
+                        @RequestHeader("Authorization") String token);
 
 }
