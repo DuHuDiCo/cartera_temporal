@@ -411,7 +411,7 @@ public class GestionesServiceImpl implements GestionesService {
             gesRes.setAsesorCartera(usu.getNombres() + usu.getApellidos());
         } else {
             String token = request.getAttribute("token").toString();
-            String username = authClient.extractUsername(token);
+            String username = authClient.extractUsername(token.split(" ")[1]);
             if (Objects.isNull(username)) {
                 return null;
             }

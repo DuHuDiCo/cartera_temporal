@@ -3,6 +3,7 @@ package com.cartera_temp.cartera_temp.repository;
 import com.cartera_temp.cartera_temp.Models.AsesorCartera;
 import com.cartera_temp.cartera_temp.Models.CuentasPorCobrar;
 import com.cartera_temp.cartera_temp.Models.Gestiones;
+import com.cartera_temp.cartera_temp.Models.Banco;
 
 import java.util.Date;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -81,7 +82,7 @@ public interface CuentasPorCobrarRepository
 
         CuentasPorCobrar findByNumeroObligacion(String obligacion);
 
-        List<CuentasPorCobrar> findByDocumentoClienteAndTotalObligatoriaGreaterThan(String cliente,
+        List<CuentasPorCobrar> findByDocumentoClienteAndBancoAndTotalObligatoriaGreaterThan(String cliente, Banco banco,
                         Double totalobligatoria);
 
         List<CuentasPorCobrar> findByNumeroObligacionContaining(String obligacion);

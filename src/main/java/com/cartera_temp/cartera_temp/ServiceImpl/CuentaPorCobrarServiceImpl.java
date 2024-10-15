@@ -521,8 +521,14 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             clientesFilter = clientes;
         }
         for (ClientesDto cliente : clientesFilter) {
+
+            Banco banco = bancoRepository.findByBanco(cliente.getBanco());
+            if (Objects.isNull(banco)) {
+                continue;
+            }
+
             List<CuentasPorCobrar> cuenta = cuentasPorCobrarRepository
-                    .findByDocumentoClienteAndTotalObligatoriaGreaterThan(cliente.getNit(), 0.0);
+                    .findByDocumentoClienteAndBancoAndTotalObligatoriaGreaterThan(cliente.getNit(), banco, 0.0);
             if (!CollectionUtils.isEmpty(cuenta)) {
                 for (CuentasPorCobrar cuentasPorCobrar : cuenta) {
 
