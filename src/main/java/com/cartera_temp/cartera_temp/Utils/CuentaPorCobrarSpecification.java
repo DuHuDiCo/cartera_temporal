@@ -202,26 +202,11 @@ public class CuentaPorCobrarSpecification {
                         filtro.getSaldoCapitalFin()));
             }
 
-            if (idUsuario != 0L) {
+            if (idUsuario != 0L && filtro.getSinAsesor() == 0L) {
                 predicates.add(criteriaBuilder.equal(root.get("asesor").get("usuarioId"), idUsuario));
             }
 
-            if (filtro.getSinAsesor() != 0L) {
-
-                // Eliminar el predicado comparando su contenido
-                Predicate predicateToRemove = null;
-                for (Predicate predicate : predicates) {
-                    Path<Long> path = root.get("asesor").get("usuarioId");
-                    if (predicate.getExpressions().contains(path)) {
-                        predicateToRemove = predicate;
-                        break;
-                    }
-                }
-
-                // Elimina el predicado si fue encontrado
-                if (predicateToRemove != null) {
-                    predicates.remove(predicateToRemove);
-                }
+            if (idUsuario != 0L && filtro.getSinAsesor() != 0L) {
 
                 predicates.add(criteriaBuilder.equal(root.get("asesor").get("idAsesorCartera"), filtro.getSinAsesor()));
             }
