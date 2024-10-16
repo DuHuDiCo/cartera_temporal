@@ -206,6 +206,22 @@ public class CuentaPorCobrarSpecification {
             }
 
             if (filtro.getSinAsesor() != 0L) {
+
+                // Eliminar el predicado basado en 'idUsuario'
+                Predicate predicateToRemove = null;
+                for (Predicate predicate : predicates) {
+                    // Comparar con el Predicate de 'idUsuario'
+                    if (predicate.equals(criteriaBuilder.equal(root.get("asesor").get("usuarioId"), idUsuario))) {
+                        predicateToRemove = predicate;
+                        break; // Sale del ciclo una vez encontrado
+                    }
+                }
+
+                // Elimina el predicado si fue encontrado
+                if (predicateToRemove != null) {
+                    predicates.remove(predicateToRemove);
+                }
+
                 predicates.add(criteriaBuilder.equal(root.get("asesor").get("idAsesorCartera"), filtro.getSinAsesor()));
             }
 
