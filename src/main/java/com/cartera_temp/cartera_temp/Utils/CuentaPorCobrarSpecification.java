@@ -22,6 +22,7 @@ import javax.persistence.Tuple;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Subquery;
@@ -207,13 +208,13 @@ public class CuentaPorCobrarSpecification {
 
             if (filtro.getSinAsesor() != 0L) {
 
-                // Eliminar el predicado basado en 'idUsuario'
+                // Eliminar el predicado comparando su contenido
                 Predicate predicateToRemove = null;
                 for (Predicate predicate : predicates) {
-                    // Comparar con el Predicate de 'idUsuario'
-                    if (predicate.equals(criteriaBuilder.equal(root.get("asesor").get("usuarioId"), idUsuario))) {
+                    Path<Long> path = root.get("asesor").get("usuarioId");
+                    if (predicate.getExpressions().contains(path)) {
                         predicateToRemove = predicate;
-                        break; // Sale del ciclo una vez encontrado
+                        break;
                     }
                 }
 
