@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-
 public class FiltroDto {
 
     private List<String> banco = new ArrayList<>();
@@ -24,6 +23,7 @@ public class FiltroDto {
     private String fechaCompromisoInicio;
     private String fechaCompromisoFin;
     private ClasificacionGestionFiltro clasificacionGestion;
+    private Long sinAsesor;
 
     public FiltroDto() {
     }
@@ -54,6 +54,22 @@ public class FiltroDto {
 
     public List<String> getEdadVencimiento() {
         return edadVencimiento;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean isActive) {
+        this.isActive = isActive;
+    }
+
+    public Long getSinAsesor() {
+        return sinAsesor;
+    }
+
+    public void setSinAsesor(Long sinAsesor) {
+        this.sinAsesor = sinAsesor;
     }
 
     public void setEdadVencimiento(List<String> edadVencimiento) {
@@ -124,15 +140,13 @@ public class FiltroDto {
         this.fechaGestionInicio = fechaGestionInicio;
     }
 
-    
-
     public Date getFechaGestionFin() {
         return fechaGestionFin;
     }
 
     public void setFechaGestionFin(Date fechaGestionFin) {
         this.fechaGestionFin = fechaGestionFin;
-    }   
+    }
 
     public String getFechaCompromisoInicio() {
         return fechaCompromisoInicio;
@@ -166,8 +180,4 @@ public class FiltroDto {
         this.clasificacionGestion = clasificacionGestion;
     }
 
-  
-   
-    
-    
 }

@@ -205,6 +205,10 @@ public class CuentaPorCobrarSpecification {
                 predicates.add(criteriaBuilder.equal(root.get("asesor").get("usuarioId"), idUsuario));
             }
 
+            if (filtro.getSinAsesor() != 0L) {
+                predicates.add(criteriaBuilder.equal(root.get("asesor").get("idAsesorCartera"), filtro.getSinAsesor()));
+            }
+
             predicates.add(criteriaBuilder.greaterThan(root.get("totalObligatoria"), 0));
 
             query.orderBy(criteriaBuilder.desc(root.get("diasVencidos")));
