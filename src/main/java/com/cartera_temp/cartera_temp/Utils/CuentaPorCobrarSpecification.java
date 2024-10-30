@@ -76,13 +76,7 @@ public class CuentaPorCobrarSpecification {
                     Subquery<Date> subquery = query.subquery(Date.class);
                     Root<Gestiones> subRoot = subquery.from(Gestiones.class);
                     subquery.select(criteriaBuilder.max(subRoot.get("fechaGestion")).as(Date.class));
-                    subquery.where(criteriaBuilder.equal(subRoot.get("cuentasPorCobrar"), root));
-
-                    predicates.add(criteriaBuilder.and(
-                            criteriaBuilder.equal(clasificacionGestionJoin.get("clasificacion"),
-                                    filtro.getClasificacionGestion().getTipoClasificacion()),
-                            criteriaBuilder.equal(acuerdoPagoJoin.get("isActive"), active),
-                            criteriaBuilder.equal(gestionesJoin.get("fechaGestion"), subquery)));
+                    subquery.where(criteriaBuilder.equal(subRoo28.get("fechaGestion"), subquery)));
 
                 }
 
