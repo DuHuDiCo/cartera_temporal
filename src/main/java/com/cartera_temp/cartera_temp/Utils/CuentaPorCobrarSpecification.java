@@ -17,7 +17,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import javax.persistence.Tuple;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
@@ -26,6 +26,9 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Subquery;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.CollectionUtils;
@@ -33,6 +36,8 @@ import org.springframework.util.CollectionUtils;
 public class CuentaPorCobrarSpecification {
 
     public static Specification<CuentasPorCobrar> filtrarCuentas(FiltroDto filtro, Long idUsuario) {
+
+        Logger logger = LoggerFactory.getLogger(CuentaPorCobrarSpecification.class);
 
         return (root, query, criteriaBuilder) -> {
 
@@ -104,72 +109,7 @@ public class CuentaPorCobrarSpecification {
 
                 }
 
-                // if
-                // (filtro.getClasificacionGestion().getTipoClasificacion().equals(TipoClasificacion.TAREA.getDato()))
-                // {
-                // try {
-                // System.out.println(TipoClasificacion.TAREA.getDato() + "lina 81");
-                // query.distinct(true);
-                //// Join<CuentasPorCobrar, ClasificacionGestion> clasificacionGestionJoin =
-                // root.join("gestiones").join("clasificacionGestion");
-                //
-                //// Subquery<Date> subquery = query.subquery(Date.class);
-                //// Root<Gestiones> subRoot = subquery.from(Gestiones.class);
-                //// subquery.select(criteriaBuilder.max(subRoot.get("fechaGestion")).as(Date.class));
-                //// subquery.where(criteriaBuilder.equal(subRoot.get("cuentasPorCobrar"),
-                // root));
-                // Join<CuentasPorCobrar, Gestiones> gestionesJoin = root.join("gestiones");
-                // Join<Gestiones, ClasificacionGestion> clasificacionGestionJoin =
-                // gestionesJoin.join("clasificacionGestion");
-                // Join<Gestiones, Tarea> tareaJoin =
-                // criteriaBuilder.treat(clasificacionGestionJoin, Tarea.class);
-                // Join<Tarea, NombresClasificacion> nombresClasificacionJoin =
-                // tareaJoin.join("nombresClasificacion");
-                //
-                // Subquery<Long> subquery = query.subquery(Long.class);
-                // Root<Gestiones> subRoot = subquery.from(Gestiones.class);
-                // subquery.select(criteriaBuilder.max(subRoot.get("clasificacionGestion").get("id_clasificacion_gestion")));
-                // subquery.where(criteriaBuilder.equal(subRoot.get("cuenta_cobrar_id"),
-                // root.get("id_cuenta_por_cobrar")));
-                //
-                // predicates.add(criteriaBuilder.and(
-                // // criteriaBuilder.equal(root.join("gestiones").join("clasificacionGestion",
-                // JoinType.LEFT).join(Tarea.class).get("clasificacion")))
-                // // criteriaBuilder.between(gestionesJoin.get("fechaGestion"),
-                // Functions.fechaConHora(filtro.getFechaGestionInicio(), "inicio"),
-                // filtro.getFechaGestionFin())
-                // //
-                // criteriaBuilder.equal(root.join("gestiones").get("clasificacionGestion").get("clasificacion"),
-                // filtro.getClasificacionGestion().getTipoClasificacion()),
-                // // criteriaBuilder.equal(criteriaBuilder.treat(clasificacionGestionJoin,
-                // Tarea.class).get("nombresClasificacion").get("idNombreClasificacion"),
-                // filtro.getClasificacionGestion().getId()),
-                //
-                // //
-                // criteriaBuilder.equal(nombresClasificacionJoin.get("idNombreClasificacion"),
-                // filtro.getClasificacionGestion().getId())
-                // // criteriaBuilder.equal(root.join("gestiones").get("fechaGestion"),
-                // subquery)
-                // criteriaBuilder.equal(gestionesJoin.get("clasificacionGestion").get("cuenta_cobrar_id"),
-                // subquery), // Ajuste aquí
-                // criteriaBuilder.equal(nombresClasificacionJoin.get("idNombreClasificacion"),
-                // filtro.getClasificacionGestion().getId())
-                //
-                // ));
-                //
-                // System.out.println(Functions.fechaConHora(filtro.getFechaGestionInicio(),
-                // "inicio").toString());
-                // System.out.println(filtro.getFechaGestionFin());
-                // System.out.println(filtro.getClasificacionGestion().getId());
-                // System.out.println(filtro.getClasificacionGestion().getTipoClasificacion());
-                //
-                // } catch (ParseException ex) {
-                // Logger.getLogger(CuentaPorCobrarSpecification.class.getName()).log(Level.SEVERE,
-                // null, ex);
-                // System.out.println(ex.getMessage());
-                // }
-                //
-                // }
+                
             }
 
             if (filtro.getFechaCpcInicio() != null && filtro.getFechaCpcFin() != null) {
@@ -187,7 +127,7 @@ public class CuentaPorCobrarSpecification {
                             Functions.fechaConHora(filtro.getFechaGestionInicio(), "inicio"),
                             filtro.getFechaGestionFin()));
                 } catch (ParseException ex) {
-                    Logger.getLogger(CuentaPorCobrarSpecification.class.getName()).log(Level.SEVERE, null, ex);
+                    java.util.logging.Logger.getLogger(CuentaPorCobrarSpecification.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
 
@@ -208,6 +148,16 @@ public class CuentaPorCobrarSpecification {
             predicates.add(criteriaBuilder.greaterThan(root.get("totalObligatoria"), 0));
 
             query.orderBy(criteriaBuilder.desc(root.get("diasVencidos")));
+
+
+
+
+            for (Predicate predicate : predicates) {
+                logger.info("Filtro banco aplicado: {}", predicate);
+            }
+
+
+
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
 
