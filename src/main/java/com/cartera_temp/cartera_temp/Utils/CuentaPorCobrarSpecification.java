@@ -37,7 +37,7 @@ public class CuentaPorCobrarSpecification {
 
     public static Specification<CuentasPorCobrar> filtrarCuentas(FiltroDto filtro, Long idUsuario) {
 
-        Logger logger = LoggerFactory.getLogger(CuentaPorCobrarSpecification.class);
+        
 
         return (root, query, criteriaBuilder) -> {
 
@@ -46,7 +46,7 @@ public class CuentaPorCobrarSpecification {
             if (filtro.getBanco() != null && !filtro.getBanco().isEmpty()) {
                 Predicate bancoPredicate =root.get("banco").get("banco").in(filtro.getBanco());
                 predicates.add(bancoPredicate);
-                logger.info("Filtro banco aplicado: {}", bancoPredicate);
+                
             }
 
             if (filtro.getSede() != null && !filtro.getSede().isEmpty()) {
@@ -141,7 +141,7 @@ public class CuentaPorCobrarSpecification {
             if (idUsuario != 0L && filtro.getSinAsesor() == 0L) {
                 Predicate asesorPredicate = criteriaBuilder.equal(root.get("asesor").get("usuarioId"), idUsuario);
                 predicates.add(asesorPredicate);
-                logger.info("Filtro asesor aplicado: {}", asesorPredicate);
+                
             }
 
             if (idUsuario != 0L && filtro.getSinAsesor() != 0L) {
@@ -151,7 +151,7 @@ public class CuentaPorCobrarSpecification {
 
             Predicate totalPredicate = criteriaBuilder.greaterThan(root.get("totalObligatoria"), 0);
             predicates.add(totalPredicate);
-            logger.info("Filtro totalObligatoria aplicado: {}", totalPredicate);
+            
 
 
 
