@@ -76,7 +76,7 @@ public class CuentaPorCobrarSpecification {
                     Subquery<Date> subquery = query.subquery(Date.class);
                     Root<Gestiones> subRoot = subquery.from(Gestiones.class);
                     subquery.select(criteriaBuilder.max(subRoot.get("fechaGestion")).as(Date.class));
-                    subquery.where(criteriaBuilder.equal(subRoo28.get("fechaGestion"), subquery)));
+                    subquery.where(criteriaBuilder.equal(subRoo28.get("fechaGestion"), subquery));
 
                 }
 
