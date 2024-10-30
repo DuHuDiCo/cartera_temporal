@@ -44,7 +44,9 @@ public class CuentaPorCobrarSpecification {
             List<Predicate> predicates = new ArrayList<>();
 
             if (filtro.getBanco() != null && !filtro.getBanco().isEmpty()) {
-                predicates.add(root.get("banco").get("banco").in(filtro.getBanco()));
+                Predicate bancoPredicate =root.get("banco").get("banco").in(filtro.getBanco());
+                predicates.add(bancoPredicate);
+                logger.info("Filtro banco aplicado: {}", bancoPredicate);
             }
 
             if (filtro.getSede() != null && !filtro.getSede().isEmpty()) {
@@ -137,7 +139,9 @@ public class CuentaPorCobrarSpecification {
             }
 
             if (idUsuario != 0L && filtro.getSinAsesor() == 0L) {
-                predicates.add(criteriaBuilder.equal(root.get("asesor").get("usuarioId"), idUsuario));
+                Predicate asesorPredicate = criteriaBuilder.equal(root.get("asesor").get("usuarioId"), idUsuario);
+                predicates.add(asesorPredicate);
+                logger.info("Filtro asesor aplicado: {}", asesorPredicate);
             }
 
             if (idUsuario != 0L && filtro.getSinAsesor() != 0L) {
@@ -145,21 +149,22 @@ public class CuentaPorCobrarSpecification {
                 predicates.add(criteriaBuilder.equal(root.get("asesor").get("idAsesorCartera"), filtro.getSinAsesor()));
             }
 
-            predicates.add(criteriaBuilder.greaterThan(root.get("totalObligatoria"), 0));
+            Predicate totalPredicate = criteriaBuilder.greaterThan(root.get("totalObligatoria"), 0);
+            predicates.add(totalPredicate);
+            logger.info("Filtro totalObligatoria aplicado: {}", totalPredicate);
+
+
 
             query.orderBy(criteriaBuilder.desc(root.get("diasVencidos")));
 
 
 
 
-            for (Predicate predicate : predicates) {
-                logger.info("Filtro banco aplicado: {}", predicate);
-            }
+            
+            Predicate finalPredicate =criteriaBuilder.and(predicates.toArray(new Predicate[0]));
 
 
-
-
-            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+            return finalPredicate;
 
         };
 
