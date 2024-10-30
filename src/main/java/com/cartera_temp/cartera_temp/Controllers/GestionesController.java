@@ -13,6 +13,8 @@ import com.cartera_temp.cartera_temp.Models.Gestiones;
 import com.cartera_temp.cartera_temp.Service.GestionesService;
 import java.util.List;
 import java.util.Objects;
+
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -103,5 +105,15 @@ public class GestionesController {
     public ResponseEntity<HttpStatus> desactivarGestion(@RequestParam("idGestion") Long idGestion){
         boolean desativate = gestionesService.desactivarGestiones(idGestion);
         return desativate ? ResponseEntity.ok(HttpStatus.OK):ResponseEntity.badRequest().build();
+    }
+
+
+    @GetMapping("/obtenerCuentasSinGestion")
+    public ResponseEntity<Object> obtenerCuentasSinGestion(@RequestParam("username") String username,
+            @RequestParam("page") Integer page, @RequestParam("size") Integer size) {
+
+        
+        ResponseEntity<Object> response = gestionesService.obtenerCuentasSinGestion(username, PageRequest.of(page, size));
+        return response;
     }
 }

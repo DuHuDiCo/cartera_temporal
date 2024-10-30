@@ -4,7 +4,9 @@ import GestionesDataDto.GestionesDataDto;
 import com.cartera_temp.cartera_temp.Components.GenerarPdf;
 import com.cartera_temp.cartera_temp.Dtos.AcuerdoPagoDto;
 import com.cartera_temp.cartera_temp.Dtos.AlertsGestiones;
+import com.cartera_temp.cartera_temp.Dtos.AsesorCarteraResponse;
 import com.cartera_temp.cartera_temp.Dtos.ClientesDto;
+import com.cartera_temp.cartera_temp.Dtos.CuentasPorCobrarResponse;
 import com.cartera_temp.cartera_temp.Dtos.CuotaDto;
 import com.cartera_temp.cartera_temp.Dtos.CuotasDto;
 import com.cartera_temp.cartera_temp.Dtos.GestionResponse;
@@ -60,6 +62,11 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -92,6 +99,10 @@ public class GestionesServiceImpl implements GestionesService {
     private final GenerarPdf pdf;
     private final NotificacionesRepository notificacionesRepository;
     private final AuthClient authClient;
+    private final ModelMapper modelMapper;
+    private final HttpServletRequest httpServletRequest;
+
+
 
     public GestionesServiceImpl(GestionesRepository gestionesRepository,
             CuentasPorCobrarRepository cuentaCobrarRepository, UsuarioClientService usuarioClientService,
@@ -102,7 +113,7 @@ public class GestionesServiceImpl implements GestionesService {
             NombresClasificacionRepository nombresClasificacionRepository, CuotaRepository cuotaRepository,
             HistoricoAcuerdoPagoRepository historicoAcuerdoPagoRepository, ClientesClient clientesClient,
             HttpServletRequest request, GenerarPdf pdf, NotificacionesRepository notificacionesRepository,
-            AuthClient authClient) {
+            AuthClient authClient,  ModelMapper modelMapper, HttpServletRequest httpServletRequest) {
         this.gestionesRepository = gestionesRepository;
         this.cuentaCobrarRepository = cuentaCobrarRepository;
         this.usuarioClientService = usuarioClientService;
@@ -124,6 +135,8 @@ public class GestionesServiceImpl implements GestionesService {
         this.pdf = pdf;
         this.notificacionesRepository = notificacionesRepository;
         this.authClient = authClient;
+        this.modelMapper = modelMapper;
+        this.httpServletRequest = httpServletRequest;
     }
 
     @Override
@@ -827,4 +840,88 @@ public class GestionesServiceImpl implements GestionesService {
 
     }
 
+    @Override
+    public ResponseEntity<Object> obtenerCuentasSinGestion(String username,Pageable pageable) {
+
+        String token = httpServletRequest.getAttribute("token").toString();
+
+        Usuario usuario = usuarioClientService.obtenerUsuario(username);
+        if (Objects.isNull(usuario)) {
+            return null;
+        }
+
+        AsesorCartera asesor = asesorCartera.findAsesor(usuario.getIdUsuario());
+        if (Objects.isNull(asesor)) {
+            return null;
+        }
+        Date fechaInicialMes = Functions.obtenerFechaInicialFinalMes(true, "MES");
+
+        Page<CuentasPorCobrar> cuentas = cuentaCobrarRepository.gestionesSinGestionPage(asesor.getIdAsesorCartera(), fechaInicialMes, pageable);
+
+
+        List<CuentasPorCobrarResponse> cuentasResponse = new ArrayList<>();
+
+        for (CuentasPorCobrar cuentasPorCobrar : cuentas.getContent()) {
+            // calcular nuevos dias vencidos
+            int diasVecidos = Functions.diferenciaFechas(cuentasPorCobrar.getFechaVencimiento());
+            CuentasPorCobrarResponse c = modelMapper.map(cuentasPorCobrar, CuentasPorCobrarResponse.class);
+            if (diasVecidos <= 0) {
+                c.setDiasVencidos(0);
+            } else {
+                c.setDiasVencidos(diasVecidos);
+            }
+
+            c.setTiposVencimiento(cuentasPorCobrar.getTiposVencimiento());
+            AsesorCarteraResponse asesorResponse = new AsesorCarteraResponse();
+            asesorResponse.setIdAsesorCartera(cuentasPorCobrar.getAsesor().getIdAsesorCartera());
+            asesorResponse.setUsuario(usuario);
+            c.setAsesorCarteraResponse(asesorResponse);
+
+            c.setGestion(cuentasPorCobrar.getGestiones());
+
+            c.setGestion(cuentasPorCobrar.getGestiones());
+
+            String obligacion = cuentasPorCobrar.getDocumentoCliente().concat(cuentasPorCobrar.getSede().getSede())
+                    .concat(cuentasPorCobrar.getBanco().getBanco());
+
+            List<ClientesDto> clientes = clientesClient.buscarClientesByNumeroObligacion(obligacion, token);
+            c.setClientes(clientes);
+
+            if (cuentasPorCobrar.getGestiones().size() > 0) {
+                for (Gestiones gestione : cuentasPorCobrar.getGestiones()) {
+                    if (gestione.getClasificacionGestion() instanceof AcuerdoPago) {
+                        AcuerdoPago acuPago = (AcuerdoPago) gestione.getClasificacionGestion();
+                        for (Cuotas cuotas : acuPago.getCuotasList()) {
+                            if (Objects.nonNull(cuotas.getPagos())) {
+                                String base = null;
+                                try {
+                                    base = saveFiles.pdfToBase64(cuotas.getPagos().getReciboPago().getRuta());
+                                } catch (IOException ex) {
+                                    Logger.getLogger(CuentaPorCobrarServiceImpl.class.getName()).log(Level.SEVERE, null,
+                                            ex);
+                                    continue;
+                                }
+                                System.out.println(cuotas.getIdCuota());
+                                cuotas.getPagos().getReciboPago().setRuta(base);
+                            }
+                        }
+
+                    }
+                }
+            }
+
+            cuentasResponse.add(c);
+            
+        }
+
+
+        Page<CuentasPorCobrarResponse> cuentasPage = new PageImpl(cuentasResponse, pageable,
+                cuentas.getTotalElements());
+                return ResponseEntity.status(HttpStatus.OK).body(cuentasPage);
+
+    }
+
+
+
+    
 }

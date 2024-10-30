@@ -36,4 +36,6 @@ public interface CuentasPorCobrarService {
 
     public ResponseEntity<Object> cambiarBlocked(Long idCuenta);
 
+    
+
 }

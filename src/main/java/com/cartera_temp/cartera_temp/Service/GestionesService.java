@@ -11,6 +11,9 @@ import com.cartera_temp.cartera_temp.Models.Cuotas;
 import com.cartera_temp.cartera_temp.Models.Gestiones;
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
+
 public interface GestionesService {
  
     public GestionResponse saveOneGestion(GestionToSaveDto dto);
@@ -32,5 +35,7 @@ public interface GestionesService {
     public AlertsGestiones alertasDeGestiones(String username, String fecha);
     
     public boolean desactivarGestiones(Long idGestion);
+
+    public ResponseEntity<Object> obtenerCuentasSinGestion(String username, Pageable pageable);
     
 }
