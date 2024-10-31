@@ -149,6 +149,10 @@ public class CuentaPorCobrarSpecification {
                 predicates.add(criteriaBuilder.equal(root.get("asesor").get("idAsesorCartera"), filtro.getSinAsesor()));
             }
 
+            if(idUsuario == 0L && filtro.getSinAsesor() != 0L){
+                predicates.add(criteriaBuilder.equal(root.get("asesor").get("idAsesorCartera"), filtro.getSinAsesor()));
+            }
+
             Predicate totalPredicate = criteriaBuilder.greaterThan(root.get("totalObligatoria"), 0);
             predicates.add(totalPredicate);
             
