@@ -110,8 +110,7 @@ public interface CuentasPorCobrarRepository
                         @Param("fechaInicial") Date fechaIncial);
 
         @Query(value = "SELECT DISTINCT cuentas_por_cobrar.* FROM cuentas_por_cobrar JOIN gestiones ON gestiones.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar WHERE cuentas_por_cobrar.asesor_cartera_id = :idAsesor AND (SELECT MAX(gestiones.fecha_gestion) FROM gestiones WHERE gestiones.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar) < :fechaInicial AND cuentas_por_cobrar.mora_obligatoria > 0 AND cuentas_por_cobrar.total_obligatoria > 0", 
-                        countQuery = "SELECT COUNT(*) FROM cuentas_por_cobrar JOIN gestiones ON gestiones.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar WHERE cuentas_por_cobrar.asesor_cartera_id = :idAsesor AND (SELECT MAX(gestiones.fecha_gestion) FROM gestiones WHERE gestiones.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar) < :fechaInicial AND cuentas_por_cobrar.mora_obligatoria > 0 AND cuentas_por_cobrar.total_obligatoria > 0",
-        nativeQuery = true)
+                        countQuery = "SELECT COUNT(*) FROM (SELECT DISTINCT cuentas_por_cobrar.* FROM cuentas_por_cobrar JOIN gestiones ON gestiones.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar WHERE cuentas_por_cobrar.asesor_cartera_id = :idAsesor AND (SELECT MAX(gestiones.fecha_gestion) FROM gestiones WHERE gestiones.cuenta_cobrar_id = cuentas_por_cobrar.id_cuenta_por_cobrar) < :fechaInicial AND cuentas_por_cobrar.mora_obligatoria > 0 AND cuentas_por_cobrar.total_obligatoria > 0) AS subquery;", nativeQuery = true)
         Page<CuentasPorCobrar> gestionesSinGestionPage(@Param("idAsesor") Long idAsesor,
                         @Param("fechaInicial") Date fechaIncial, Pageable pageable);                
 
