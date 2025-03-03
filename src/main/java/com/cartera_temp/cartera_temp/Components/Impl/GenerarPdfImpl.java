@@ -618,6 +618,9 @@ public class GenerarPdfImpl implements GenerarPdf {
 
         //DECLARACION DE VARIABLES PARA EL BODY DE LA TABLA
         String[] clientePago = cpc.getCliente().split("-");
+        for (String string : clientePago) {
+            System.out.println(string);
+        }
         int valorPago = dto.getValorTotal();
         MoneyConverters converter1 = MoneyConverters.SPANISH_BANKING_MONEY_VALUE;
         String valorEnPalabras = converter1.asWords(new BigDecimal(valorPago)).toUpperCase();
