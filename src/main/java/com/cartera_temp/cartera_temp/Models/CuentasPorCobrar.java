@@ -355,10 +355,21 @@ public class CuentasPorCobrar {
         this.totalObligatoria = totalObligatoria;
     }
 
+  
+
     @Override
     public String toString() {
-        return "CuentasPorCobrar{" + "idCuentasPorCobrar=" + idCuentasPorCobrar + ", numeroObligacion="
-                + numeroObligacion + ", cliente=" + cliente + ", documentoCliente=" + documentoCliente + '}';
+        return "CuentasPorCobrar [idCuentasPorCobrar=" + idCuentasPorCobrar + ", numeroObligacion=" + numeroObligacion
+                + ", cliente=" + cliente + ", documentoCliente=" + documentoCliente + ", fechaCuentaCobrar="
+                + fechaCuentaCobrar + ", fechaVencimiento=" + fechaVencimiento + ", tipo=" + tipo + ", valorNotaDebito="
+                + valorNotaDebito + ", valorCuota=" + valorCuota + ", valorPagos=" + valorPagos + ", nombre_usuario="
+                + nombre_usuario + ", clasificacion=" + clasificacion + ", vendedor=" + vendedor + ", detalle="
+                + detalle + ", isBlocked=" + isBlocked + ", sede=" + sede.getSede() + ", banco=" + banco.getBanco() + ", gestiones="
+                + gestiones + ", asesor=" + asesor + ", diasVencidos=" + diasVencidos + ", tiposVencimiento="
+                + tiposVencimiento.getTipoVencimiento() + ", clasificacionJuridica=" + clasificacionJuridica.getClasificacionJuridica() + ", condicionEspecial="
+                + condicionEspecial + ", numeroCreditos=" + numeroCreditos + ", pagare=" + pagare + ", moraObligatoria="
+                + moraObligatoria + ", totalObligatoria=" + totalObligatoria + ", cuotasMora=" + cuotasMora
+                + ", cuotas=" + cuotas + "]";
     }
 
     public Boolean getIsBlocked() {

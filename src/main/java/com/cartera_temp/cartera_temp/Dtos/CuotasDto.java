@@ -104,6 +104,14 @@ public class CuotasDto {
     public void setSaldoIntereses(double saldoIntereses) {
         this.saldoIntereses = saldoIntereses;
     }
+
+    @Override
+    public String toString() {
+        return "CuotasDto [numeroCuota=" + numeroCuota + ", fechaVencimiento=" + fechaVencimiento + ", valorCuota="
+                + valorCuota + ", capitalCuota=" + capitalCuota + ", honorarios=" + honorarios + ", saldoCapital="
+                + saldoCapital + ", saldoHonorario=" + saldoHonorario + ", saldoIntereses=" + saldoIntereses
+                + ", interesCuota=" + interesCuota + ", pagosDto=" + pagosDto + ", cumplio=" + cumplio + "]";
+    }
     
     
     

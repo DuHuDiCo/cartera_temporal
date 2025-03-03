@@ -26,6 +26,17 @@ public class PagosCuotasDto {
     public PagosCuotasDto() {
     }
 
+    @Override
+    public String toString() {
+        return "PagosCuotasDto [numeroObligacion=" + numeroObligacion + ", numeroRecibo=" + numeroRecibo + ", saldo="
+                + saldo + ", cuotasDto=" + cuotasDto.stream().map(cd->cd.toString()) + ", valorTotal=" + valorTotal + ", capitalTotal=" + capitalTotal
+                + ", acuerdoTotal=" + acuerdoTotal + ", honorariosTotal=" + honorariosTotal + ", saldoCapital="
+                + saldoCapital + ", saldoInteresesMora=" + saldoInteresesMora + ", saldoHonorarios=" + saldoHonorarios
+                + ", interesesTotal=" + interesesTotal + ", metodoPago=" + metodoPago + ", detalle=" + detalle
+                + ", cumpliendo=" + cumpliendo + ", username=" + username + ", nombreClasificacion="
+                + nombreClasificacion + "]";
+    }
+
     public String getNumeroObligacion() {
         return numeroObligacion;
     }

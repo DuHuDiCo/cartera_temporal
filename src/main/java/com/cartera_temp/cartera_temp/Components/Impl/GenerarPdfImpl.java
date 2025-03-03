@@ -596,6 +596,10 @@ public class GenerarPdfImpl implements GenerarPdf {
 
         CuentasPorCobrar cpc = cpcR.findByNumeroObligacion(dto.getNumeroObligacion());
 
+        System.out.println(cpc.toString());
+
+        System.out.println(dto.toString());
+
         if (Objects.isNull(cpc)) {
             return null;
         }
