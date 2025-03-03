@@ -599,6 +599,7 @@ public class GenerarPdfImpl implements GenerarPdf {
         System.out.println(cpc.toString());
 
         System.out.println(dto.toString());
+        
 
         if (Objects.isNull(cpc)) {
             return null;
@@ -625,6 +626,8 @@ public class GenerarPdfImpl implements GenerarPdf {
         for (String string : clientePago) {
             System.out.println(string);
         }
+
+        System.out.println(clientePago[1]);
         int valorPago = dto.getValorTotal();
         MoneyConverters converter1 = MoneyConverters.SPANISH_BANKING_MONEY_VALUE;
         String valorEnPalabras = converter1.asWords(new BigDecimal(valorPago)).toUpperCase();
