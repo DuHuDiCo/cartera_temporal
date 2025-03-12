@@ -20,6 +20,9 @@ public class AlertsGestiones {
     
     private int cuentasTotales;
 
+    private Integer acuerdosPagoVencidos;
+    
+
     public AlertsGestiones() {
     }
 
@@ -85,6 +88,14 @@ public class AlertsGestiones {
 
     public void setCuentasTotales(int cuentasTotales) {
         this.cuentasTotales = cuentasTotales;
+    }
+
+    public Integer getAcuerdosPagoVencidos() {
+        return acuerdosPagoVencidos;
+    }
+
+    public void setAcuerdosPagoVencidos(Integer acuerdosPagoVencidos) {
+        this.acuerdosPagoVencidos = acuerdosPagoVencidos;
     }
     
     

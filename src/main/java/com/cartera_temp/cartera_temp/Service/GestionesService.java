@@ -37,5 +37,8 @@ public interface GestionesService {
     public boolean desactivarGestiones(Long idGestion);
 
     public ResponseEntity<Object> obtenerCuentasSinGestion(String username, Pageable pageable);
+ 
     
+    public ResponseEntity<Object> obtenerAcuerdosPagoActivosVencidos(String username, Pageable pageable);
+
 }

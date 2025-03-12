@@ -1,6 +1,8 @@
 package com.cartera_temp.cartera_temp.Controllers;
 
 import GestionesDataDto.GestionesDataDto;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 import com.cartera_temp.cartera_temp.Dtos.AlertsGestiones;
 import com.cartera_temp.cartera_temp.Dtos.GestionResponse;
 import com.cartera_temp.cartera_temp.Dtos.GestionToSaveDto;
@@ -114,6 +116,19 @@ public class GestionesController {
 
         
         ResponseEntity<Object> response = gestionesService.obtenerCuentasSinGestion(username, PageRequest.of(page, size));
+        return response;
+    }
+
+    @ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "OK"),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Bad Request"),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Internal Server Error") })
+    @GetMapping("/obtenerAcuerdosPagoActivosVencidos")
+    public ResponseEntity<Object> obtenerAcuerdosPagoActivosVencidos(@RequestParam("username") String username,
+            @RequestParam("page") Integer page, @RequestParam("size") Integer size) {
+
+        
+        ResponseEntity<Object> response = gestionesService.obtenerAcuerdosPagoActivosVencidos(username, PageRequest.of(page, size));
         return response;
     }
 }
