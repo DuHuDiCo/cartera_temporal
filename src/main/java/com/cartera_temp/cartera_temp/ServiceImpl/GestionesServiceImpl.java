@@ -966,28 +966,7 @@ public class GestionesServiceImpl implements GestionesService {
             List<ClientesDto> clientes = clientesClient.buscarClientesByNumeroObligacion(obligacion, token);
             c.setClientes(clientes);
 
-            if (cuentasPorCobrar.getGestiones().size() > 0) {
-                for (Gestiones gestione : cuentasPorCobrar.getGestiones()) {
-                    if (gestione.getClasificacionGestion() instanceof AcuerdoPago) {
-                        AcuerdoPago acuPago = (AcuerdoPago) gestione.getClasificacionGestion();
-                        for (Cuotas cuotas : acuPago.getCuotasList()) {
-                            if (Objects.nonNull(cuotas.getPagos())) {
-                                String base = null;
-                                try {
-                                    base = saveFiles.pdfToBase64(cuotas.getPagos().getReciboPago().getRuta());
-                                } catch (IOException ex) {
-                                    Logger.getLogger(CuentaPorCobrarServiceImpl.class.getName()).log(Level.SEVERE, null,
-                                            ex);
-                                    continue;
-                                }
-                                System.out.println(cuotas.getIdCuota());
-                                cuotas.getPagos().getReciboPago().setRuta(base);
-                            }
-                        }
-
-                    }
-                }
-            }
+            
 
             cuentasResponse.add(c);
             
