@@ -650,7 +650,7 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
                 try {
                     cpc = cuentasPorCobrarRepository.obtenerAcuerdosPagoActivosAndFechaCompromiso(
                             asesor.getIdAsesorCartera(),
-                            Functions.stringToDateAndFormat(dto.getFechaCompromisInicio()), pageable);
+                            Functions.stringToDateAndFormat(dto.getFechaCompromisoInicio()), pageable);
                 } catch (ParseException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
