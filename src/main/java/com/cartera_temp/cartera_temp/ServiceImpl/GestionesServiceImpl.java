@@ -804,7 +804,7 @@ public class GestionesServiceImpl implements GestionesService {
                 cuentaCobrarRepository.gestionesSinGestion(asesor.getIdAsesorCartera(), fechaInicialMes).size());
         alerts.setCuentasTotales(
                 cuentaCobrarRepository.gestionesAsignadasByAsesorCountTotal(asesor.getIdAsesorCartera()).size());
-        alerts.setAcuerdosPagoVencidos(cuentaCobrarRepository.obtenerAcuerdosPagoActivosVencidosCount(asesor.getIdAsesorCartera(), fechaFinalDia));
+        alerts.setAcuerdosPagoVencidos(cuentaCobrarRepository.obtenerAcuerdosPagoActivosVencidosCount(asesor.getIdAsesorCartera()));
 
         return alerts;
     }
