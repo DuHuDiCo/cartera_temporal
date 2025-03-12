@@ -24,4 +24,9 @@ public interface ClientesClient {
         ClientesDto buscarClientesByNumDoc(@RequestParam(name = "cedula") String cedula,
                         @RequestHeader("Authorization") String token);
 
+
+        @GetMapping("/getClientByNit")
+        List<ClientesDto> buscarClientesByNit(@RequestParam(name = "nit") String nit,
+                        @RequestHeader("Authorization") String token);
+
 }

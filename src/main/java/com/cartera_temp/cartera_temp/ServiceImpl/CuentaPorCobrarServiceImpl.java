@@ -634,29 +634,41 @@ public class CuentaPorCobrarServiceImpl implements CuentasPorCobrarService {
             }
 
         } else {
-
             Usuario usuFiltro = usuarioClient.getUserByUsername(dto.getUsername());
             if (Objects.isNull(usuFiltro)) {
                 return null;
             }
-
             AsesorCartera asesor = asesorCarteraRepository.findByUsuarioId(usuFiltro.getIdUsuario());
             if (Objects.isNull(asesor)) {
                 return null;
             }
 
-            try {
-                cpc = cuentasPorCobrarRepository.obtenerCuentasByFechaCompromiso(
-                        Functions.stringToDateAndFormat(dto.getFechaCompromisoInicio()), asesor.getIdAsesorCartera(),
-                        pageable);
-                var list = CollectionUtils.isEmpty(cpc.getContent()) ? null : cpc.getContent().size();
 
-            } catch (ParseException ex) {
-                Logger.getLogger(CuentaPorCobrarServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            ClasificacionGestionFiltro acuerdo = dto.getClasificacionGestion();
+
+            if (acuerdo.getTipoClasificacion().equals(TipoClasificacion.ACUERDODEPAGO.getDato())) {
+                try {
+                    cpc = cuentasPorCobrarRepository.obtenerAcuerdosPagoActivosAndFechaCompromiso(
+                            asesor.getIdAsesorCartera(),
+                            Functions.stringToDateAndFormat(dto.getFechaCompromisoFin()), pageable);
+                } catch (ParseException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            } else {
+
+                try {
+                    cpc = cuentasPorCobrarRepository.obtenerCuentasByFechaCompromiso(
+                            Functions.stringToDateAndFormat(dto.getFechaCompromisoInicio()),
+                            asesor.getIdAsesorCartera(),
+                            pageable);
+                    var list = CollectionUtils.isEmpty(cpc.getContent()) ? null : cpc.getContent().size();
+
+                } catch (ParseException ex) {
+                    Logger.getLogger(CuentaPorCobrarServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
-
-        
 
         // List<CuentasPorCobrar> cpc = cuentasPorCobrarRepository.findAll(spec);
         List<CuentasPorCobrarResponse> cpcRes = new ArrayList<>();
