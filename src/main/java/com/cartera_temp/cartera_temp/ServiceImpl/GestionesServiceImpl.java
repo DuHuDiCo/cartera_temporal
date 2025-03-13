@@ -917,7 +917,7 @@ public class GestionesServiceImpl implements GestionesService {
 
 
         Page<CuentasPorCobrarResponse> cuentasPage = new PageImpl(cuentasResponse, pageable,
-                cuentas.getTotalElements());
+                cuentasResponse.size());
                 return ResponseEntity.status(HttpStatus.OK).body(cuentasPage);
 
     }
@@ -937,7 +937,7 @@ public class GestionesServiceImpl implements GestionesService {
         }
 
 
-        Page<CuentasPorCobrar> cuentas = cuentaCobrarRepository.obtenerAcuerdosPagoActivosVencidos(adminUserId, pageable);
+        Page<CuentasPorCobrar> cuentas = cuentaCobrarRepository.obtenerAcuerdosPagoActivosVencidos(asesor.getIdAsesorCartera(), pageable);
         List<CuentasPorCobrarResponse> cuentasResponse = new ArrayList<>();
 
         for (CuentasPorCobrar cuentasPorCobrar : cuentas.getContent()) {
