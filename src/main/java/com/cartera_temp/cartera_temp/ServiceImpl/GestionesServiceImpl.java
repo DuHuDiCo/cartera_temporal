@@ -916,8 +916,7 @@ public class GestionesServiceImpl implements GestionesService {
         }
 
 
-        Page<CuentasPorCobrarResponse> cuentasPage = new PageImpl(cuentasResponse, pageable,
-                cuentasResponse.size());
+        Page<CuentasPorCobrarResponse> cuentasPage = new PageImpl(cuentasResponse, pageable,cuentas.getTotalElements());
                 return ResponseEntity.status(HttpStatus.OK).body(cuentasPage);
 
     }
