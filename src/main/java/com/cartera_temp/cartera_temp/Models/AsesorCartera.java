@@ -19,6 +19,9 @@ public class AsesorCartera {
     @Column(name = "asesor")
     private Long usuarioId;
 
+    @Column(name = "asesor")
+    private Boolean isIA;
+
     public AsesorCartera() {
     }
 
@@ -38,13 +41,12 @@ public class AsesorCartera {
         this.usuarioId = usuarioId;
     }
 
+    public Boolean getIsIA() {
+        return isIA;
+    }
 
-
-  
-
-    
-    
-    
-    
+    public void setIsIA(Boolean isIA) {
+        this.isIA = isIA;
+    }
 
 }
