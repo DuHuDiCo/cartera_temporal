@@ -19,7 +19,7 @@ public class AsesorCartera {
     @Column(name = "asesor")
     private Long usuarioId;
 
-    @Column(name = "asesor")
+    @Column(name = "is_ia")
     private Boolean isIA;
 
     public AsesorCartera() {

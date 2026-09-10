@@ -28,10 +28,9 @@ services:
       - "8021"
 
     volumes:
-      # Firmas de asesores -> /mnt/gdrive/archivos/cartera-temporal/firmas
-      - ${HOST_DATA_PATH:-/mnt/gdrive/archivos/cartera-temporal}/firmas:/data/firmas
-      # Recibos en PDF     -> /mnt/gdrive/archivos/cartera-temporal/recibos/RECIBOS/<sede>/
-      - ${HOST_DATA_PATH:-/mnt/gdrive/archivos/cartera-temporal}/recibos:/data/recibos
+      # Rutas internas fijadas por el Config Server (ruta.firmas / ruta.recibos)
+      - ${HOST_DATA_PATH:-/mnt/gdrive/archivos/cartera-temporal}/Firmas:/uploads/Firmas
+      - ${HOST_DATA_PATH:-/mnt/gdrive/archivos/cartera-temporal}/Recibos:/uploads/Recibos
       # Logs y temporales en disco local, no en el gdrive
       - cartera_logs:/var/log/cartera
       - cartera_tmp:/tmp
