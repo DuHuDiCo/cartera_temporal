@@ -10,20 +10,18 @@ spring:
       
       
  
-      
----
+---      
 spring:
   profiles: develop
   cloud:
     config:
-      uri: http://192.168.1.171:8888
-      
+      uri: http://config-microservice:8888
 ---
 spring:
   profiles: production
   cloud:
     config:
       failFast: true
-      uri: http://192.168.1.241:8888
+      uri: http://config-microservice:8888
       
 
