@@ -1,0 +1,63 @@
+# Despliegue de Cartera Temporal detras de Nginx Proxy Manager.
+# No se publica ningun puerto al host: el acceso entra por NPM,
+# que vive en la misma red 'npm-network' y resuelve por nombre de servicio.
+#
+#   NPM -> Forward Hostname: cartera-temporal-back   Port: 8021
+
+services:
+  cartera-temporal-back:
+    build:
+      context: .
+      dockerfile: Dockerfile.build
+      args:
+        XMX: ${XMX:-1024m}
+        PROFILE: ${PROFILE:-develop}
+    image: cartera-temporal-back:local
+    container_name: cartera-temporal-back
+    restart: unless-stopped
+
+    environment:
+      TZ: ${TZ:-America/Bogota}
+
+    # El proceso Java corre con este UID:GID; tiene que poder escribir
+    # en HOST_DATA_PATH (clave si el mount es rclone/gdrive).
+    user: "${PUID:-1001}:${PGID:-1001}"
+
+    # Solo visible dentro de npm-network, nunca en el host
+    expose:
+      - "8021"
+
+    volumes:
+      # Firmas de asesores -> /mnt/gdrive/archivos/cartera-temporal/firmas
+      - ${HOST_DATA_PATH:-/mnt/gdrive/archivos/cartera-temporal}/firmas:/data/firmas
+      # Recibos en PDF     -> /mnt/gdrive/archivos/cartera-temporal/recibos/RECIBOS/<sede>/
+      - ${HOST_DATA_PATH:-/mnt/gdrive/archivos/cartera-temporal}/recibos:/data/recibos
+      # Logs y temporales en disco local, no en el gdrive
+      - cartera_logs:/var/log/cartera
+      - cartera_tmp:/tmp
+
+    networks:
+      - npm-network
+
+    healthcheck:
+      # Comprueba que el puerto responde, sin depender de auth del actuator
+      test: ["CMD-SHELL", "timeout 3 bash -c '</dev/tcp/127.0.0.1/8021' || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 90s
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+
+networks:
+  npm-network:
+    external: true
+
+volumes:
+  cartera_logs:
+  cartera_tmp:
